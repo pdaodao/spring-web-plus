@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class WithSnowId implements WithId<String> {
+public abstract class AutoIdEntity implements Entity<Long> {
     @Schema(description = "主键")
-    @TableId(type = IdType.ASSIGN_UUID)
-    private String id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 }

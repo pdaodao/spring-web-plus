@@ -1,11 +1,11 @@
 package com.github.apengda.springbootplus.core.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.apengda.springbootplus.core.entity.SysRequestErrorLog;
 import com.github.apengda.springbootplus.core.pojo.R;
 import com.github.apengda.springbootplus.core.pojo.RestCode;
 import com.github.apengda.springbootplus.core.pojo.RestException;
 import com.github.apengda.springbootplus.core.service.SysRequestErrorLogService;
+import com.github.apengda.springbootplus.core.support.SysRequestErrorLog;
 import com.github.apengda.springbootplus.core.util.ExceptionUtil;
 import com.github.apengda.springbootplus.core.util.IdUtil;
 import com.github.apengda.springbootplus.core.util.RequestUtil;

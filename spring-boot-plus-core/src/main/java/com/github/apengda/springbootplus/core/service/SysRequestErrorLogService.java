@@ -1,6 +1,6 @@
 package com.github.apengda.springbootplus.core.service;
 
-import com.github.apengda.springbootplus.core.entity.SysRequestErrorLog;
+import com.github.apengda.springbootplus.core.support.SysRequestErrorLog;
 
 public interface SysRequestErrorLogService {
 

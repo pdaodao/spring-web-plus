@@ -1,13 +1,14 @@
-package com.github.apengda.springbootplus.core.entity;
+package com.github.apengda.springbootplus.core.support;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.apengda.springbootplus.core.entity.SnowIdEntity;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
 @TableName(value = "sys_access_error_log", autoResultMap = true)
-public class SysRequestErrorLog extends WithSnowId {
+public class SysRequestErrorLog extends SnowIdEntity {
     // 用户id
     private String userId;
 

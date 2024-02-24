@@ -28,3 +28,4 @@ webapp
 target
 logs
 *.log
+*.db

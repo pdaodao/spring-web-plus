@@ -1,6 +1,6 @@
 package com.github.apengda.springbootplus.core.entity;
 
-public interface WithId<T> {
+public interface Entity<T> {
 
     T getId();
 
