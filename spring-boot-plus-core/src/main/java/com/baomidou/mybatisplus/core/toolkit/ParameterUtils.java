@@ -7,11 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 参数工具类
+ * 拷贝自mybatis-plus 追加了两行代码
  *
- * @author nieqiuqiu
- * @since 2020-01-10
- * @since 3.3.1
  */
 public class ParameterUtils {
 
@@ -38,6 +35,7 @@ public class ParameterUtils {
                 return Optional.of((IPage) parameterObject);
             }
         }
+        // 加入如下代码
         if (PageHelper.holder.get() != null) {
             return Optional.of(PageHelper.holder.get());
         }
