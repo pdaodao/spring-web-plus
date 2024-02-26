@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.apengda.springwebplus.starter.config.support.CurrentUserInfoParamResolver;
+import com.github.apengda.springwebplus.starter.config.support.HolderClearInterceptor;
 import com.github.apengda.springwebplus.starter.config.support.PageRequestParamResolver;
 import com.github.apengda.springwebplus.starter.config.support.WebappFile;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
-    private final PageRequestParamResolver pageRequestParamResolver;
-    private final CurrentUserInfoParamResolver userInfoParamResolver;
 
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
         return builder -> builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
@@ -44,19 +44,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(pageRequestParamResolver);
-        resolvers.add(userInfoParamResolver);
+        resolvers.add(new PageRequestParamResolver());
+        resolvers.add(new CurrentUserInfoParamResolver());
     }
-//
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        if(interceptorRegistryListeners == null){
-//            return;
-//        }
-//        for(InterceptorRegistryListener listener: interceptorRegistryListeners){
-//            listener.addInterceptors(registry);
-//        }
-//    }
+
+
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(new HolderClearInterceptor());
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

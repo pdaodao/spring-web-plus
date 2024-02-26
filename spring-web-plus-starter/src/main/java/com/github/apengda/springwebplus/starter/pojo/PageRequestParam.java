@@ -24,11 +24,11 @@ public class PageRequestParam {
     private Boolean orderAsc = true;
 
     @JsonIgnoreProperties
-    public static PageRequestParam from(Map<String, Object> params) {
+    public static PageRequestParam from(final Map<String, Object> params) {
         if (params == null) {
             return null;
         }
-        PageRequestParam pageRequestParam = new PageRequestParam();
+        final PageRequestParam pageRequestParam = new PageRequestParam();
         pageRequestParam.setPageNum(null);
         pageRequestParam.setPageSize(null);
         if (params.containsKey("pageNum") && params.containsKey("pageSize")) {
@@ -77,7 +77,7 @@ public class PageRequestParam {
     }
 
     public Page toPage() {
-        Page page = new Page();
+        final Page page = new Page();
         page.setCurrent(getPageNum());
         page.setSize(getPageSize());
         if (StringUtils.isNotBlank(getOrderBy())) {

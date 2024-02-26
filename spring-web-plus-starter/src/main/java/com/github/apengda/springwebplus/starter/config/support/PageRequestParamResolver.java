@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.starter.pojo.PageRequestParam;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
 import com.github.apengda.springwebplus.starter.util.RequestUtil;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -14,7 +13,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Configuration
 public class PageRequestParamResolver implements HandlerMethodArgumentResolver {
     private static Integer validateNum(final String numStr, final String name, final Integer min, final Integer max) {
         Preconditions.checkNotEmpty(numStr, name + "值为空");
