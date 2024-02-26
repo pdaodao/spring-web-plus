@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "测试")
-@RequestMapping("/test")
+@RequestMapping("/api/v1/test")
 public class TestController {
 
     @Operation(summary = "hello")

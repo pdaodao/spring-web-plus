@@ -2,7 +2,7 @@ package com.github.apengda.springwebplus.starter.entity;
 
 import java.io.Serializable;
 
-public interface Entity<T extends Serializable> {
+public interface Entity<T extends Serializable> extends Serializable {
 
     T getId();
 

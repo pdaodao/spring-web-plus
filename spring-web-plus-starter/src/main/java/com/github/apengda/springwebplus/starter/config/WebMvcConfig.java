@@ -3,6 +3,7 @@ package com.github.apengda.springwebplus.starter.config;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.apengda.springwebplus.starter.auth.LoginInterceptor;
 import com.github.apengda.springwebplus.starter.config.support.CurrentUserInfoParamResolver;
 import com.github.apengda.springwebplus.starter.config.support.HolderClearInterceptor;
 import com.github.apengda.springwebplus.starter.config.support.PageRequestParamResolver;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
+    private final LoginInterceptor loginInterceptor;
 
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
         return builder -> builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
@@ -51,6 +53,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/api/**", "/*/api/**");
         registry.addInterceptor(new HolderClearInterceptor());
     }
 

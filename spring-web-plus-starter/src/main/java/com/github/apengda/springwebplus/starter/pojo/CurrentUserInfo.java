@@ -2,6 +2,8 @@ package com.github.apengda.springwebplus.starter.pojo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CurrentUserInfo {
     // 主键
@@ -12,4 +14,6 @@ public class CurrentUserInfo {
     private String password;
     // 昵称
     private String nickname;
+    // 角色编码
+    private List<String> roles;
 }
