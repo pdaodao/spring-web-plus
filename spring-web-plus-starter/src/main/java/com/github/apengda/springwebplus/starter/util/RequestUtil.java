@@ -1,9 +1,11 @@
 package com.github.apengda.springwebplus.starter.util;
 
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
+import com.github.apengda.springwebplus.starter.pojo.PageRequestParam;
 
 public class RequestUtil {
-    private static ThreadLocal<CurrentUserInfo> user = new ThreadLocal<>();
+    private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();
+    private static ThreadLocal<PageRequestParam> pageHolder = new ThreadLocal<>();
 
     public static String getUserId() {
         final CurrentUserInfo userInfo = getCurrentUser();
@@ -19,11 +21,25 @@ public class RequestUtil {
 
 
     public static CurrentUserInfo getCurrentUser() {
-        return user.get();
+        return userHolder.get();
     }
 
     public static void setCurrentUser(final CurrentUserInfo currentUser) {
-        user.set(currentUser);
+        userHolder.set(currentUser);
     }
 
+    public static PageRequestParam getPageParam() {
+        final PageRequestParam pp = pageHolder.get();
+        pageHolder.remove();
+        return pp;
+    }
+
+    public static void setPageParam(final PageRequestParam pp) {
+        pageHolder.set(pp);
+    }
+
+    public static void clearHolder() {
+        userHolder.remove();
+        pageHolder.remove();
+    }
 }

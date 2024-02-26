@@ -4,6 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.starter.pojo.PageRequestParam;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
+import com.github.apengda.springwebplus.starter.util.RequestUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -53,6 +54,7 @@ public class PageRequestParamResolver implements HandlerMethodArgumentResolver {
                 pagerParams.setOrderAsc(Boolean.parseBoolean(httpRequest.getParameter("orderAsc")));
             }
         }
+        RequestUtil.setPageParam(pagerParams);
         return pagerParams;
     }
 }

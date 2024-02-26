@@ -16,7 +16,7 @@ public class PageHelper implements AutoCloseable {
         return new PageHelper();
     }
 
-    public <T> PageR<T> toPageResult(List<T> list) {
+    public <T> PageR<T> toPageResult(final List<T> list) {
         final Page page = holder.get();
         return PageR.build(page.getCurrent(), page.getSize(), page.getTotal(), list);
     }

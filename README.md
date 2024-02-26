@@ -1,4 +1,4 @@
-# spring-boot项目初始化骨架
+# spring-web项目初始化
 
 ## 功能特性
 1. web配置、mybatis-plus配置、缓存配置
@@ -10,13 +10,13 @@
 7. 前端文件history模式支持，前端文件放到webapp文件夹下即可。
 
 ## 如何使用
-1. git clone https://github.com/apengda/spring-boot-plus.git
+1. git clone https://github.com/apengda/spring-web-plus.git
 2. mvn clean install
 3. 引入依赖
 ```
 <dependency>
     <groupId>com.github.apengda</groupId>
-    <artifactId>spring-boot-plus-app</artifactId>
+    <artifactId>spring-web-plus</artifactId>
     <version>2.0</version>
 </dependency>
 ```
