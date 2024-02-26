@@ -28,7 +28,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.Date;
 import java.util.Optional;
 
-@ControllerAdvice
+
 @RestControllerAdvice
 @Slf4j
 @ConditionalOnProperty(value = "global.exception", havingValue = "true", matchIfMissing = true)

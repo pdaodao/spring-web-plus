@@ -31,7 +31,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
         }
         final String name = returnType.getMember().getDeclaringClass().getName();
         return name.startsWith(SpringUtil.getBootPackage())
-                || name.startsWith("com.github.apengda.springbootplus");
+                || name.startsWith("com.github.apengda.springwebplus");
     }
 
     @Nullable

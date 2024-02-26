@@ -8,7 +8,7 @@ import java.util.Set;
 public class DbEntityUtil {
 
     public static void main(String[] args) {
-        final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.github.apengda.springbootplus", Entity.class);
+        final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.github.apengda.springwebplus", Entity.class);
         for (Class clazz : cls) {
             System.out.println(clazz.getName());
         }
