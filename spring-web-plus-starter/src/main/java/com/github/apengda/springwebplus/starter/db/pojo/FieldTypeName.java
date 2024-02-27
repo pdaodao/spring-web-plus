@@ -22,7 +22,7 @@ public class FieldTypeName {
     private String columnDef;
 
 
-    public static FieldTypeName of(final String type, String df){
+    public static FieldTypeName of(final String type, String df) {
         return new FieldTypeName(type, df);
     }
 }

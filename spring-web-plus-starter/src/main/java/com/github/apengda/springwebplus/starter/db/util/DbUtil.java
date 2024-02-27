@@ -1,21 +1,19 @@
 package com.github.apengda.springwebplus.starter.db.util;
 
-import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.SqlExecutor;
 import com.github.apengda.springwebplus.starter.db.pojo.SqlList;
-import com.github.apengda.springwebplus.starter.util.StrUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class DbUtil {
 
     /**
      * 在一个事务中执行多条sql语句
+     *
      * @param dataSource
      * @param sqlList
      * @throws Exception

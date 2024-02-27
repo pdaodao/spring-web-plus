@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class BaseDDLService implements DbDDLService {
     protected final DataTypeConverter dataTypeConverter;
 
-    public String quoteIdentifier(final String name){
+    public String quoteIdentifier(final String name) {
         return name;
     }
 
@@ -122,7 +122,7 @@ public class BaseDDLService implements DbDDLService {
      * @return
      */
     public String genDDLOfPk(TableInfo tableInfo, final DDLBuildContext context) {
-        if(CollUtil.isEmpty(tableInfo.getPkNames())){
+        if (CollUtil.isEmpty(tableInfo.getPkNames())) {
             return null;
         }
         final String names = tableInfo.getPkNames().stream()
@@ -163,7 +163,7 @@ public class BaseDDLService implements DbDDLService {
      * @param indexInfo
      * @return
      */
-    public String genDDLOfCreateIndex(final TableInfo tableInfo, final IndexInfo indexInfo){
+    public String genDDLOfCreateIndex(final TableInfo tableInfo, final IndexInfo indexInfo) {
         return null;
     }
 
@@ -174,7 +174,7 @@ public class BaseDDLService implements DbDDLService {
      * @param ddlBuildContext
      * @return
      */
-    protected  String genDDLTableComment(TableInfo tableInfo, final DDLBuildContext ddlBuildContext){
+    protected String genDDLTableComment(TableInfo tableInfo, final DDLBuildContext ddlBuildContext) {
         return null;
     }
 
@@ -189,7 +189,7 @@ public class BaseDDLService implements DbDDLService {
         return null;
     }
 
-    protected String indexInfoColumns(final IndexInfo indexInfo){
+    protected String indexInfoColumns(final IndexInfo indexInfo) {
         return indexInfo.getColumnIndexInfoList().stream().map(t -> quoteIdentifier(t.getColumnName()))
                 .collect(Collectors.joining(","));
     }

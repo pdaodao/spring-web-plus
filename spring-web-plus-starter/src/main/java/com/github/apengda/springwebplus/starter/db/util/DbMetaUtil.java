@@ -18,13 +18,13 @@ public class DbMetaUtil {
     }
 
     public static TableInfo getTableMeta(DataSource ds, String tableName) {
-        final Table table = MetaUtil.getTableMeta(ds,  null, null, tableName);
+        final Table table = MetaUtil.getTableMeta(ds, null, null, tableName);
         if (table == null) {
             return null;
         }
         final TableInfo info = new TableInfo(table.getTableName());
         BeanUtil.copyProperties(table, info, "columns");
-        for(final Column c : table.getColumns()){
+        for (final Column c : table.getColumns()) {
             final ColumnInfo cc = ColumnInfo.of(c);
             // 字段类型标准化
             info.setColumn(cc);

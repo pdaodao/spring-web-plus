@@ -23,12 +23,12 @@ public class DDLBuildContext {
         this.lastSql = lastSql;
     }
 
-    public static DDLBuildContext of(String tableName, List<String> lastSql){
+    public static DDLBuildContext of(String tableName, List<String> lastSql) {
         return new DDLBuildContext(tableName, lastSql);
     }
 
-    public void addSql(final String sql){
-        if(StrUtil.isBlank(sql)){
+    public void addSql(final String sql) {
+        if (StrUtil.isBlank(sql)) {
             return;
         }
         lastSql.add(sql);

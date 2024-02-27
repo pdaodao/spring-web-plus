@@ -11,6 +11,7 @@ public interface DbDDLService {
 
     /**
      * 建表语句
+     *
      * @param tableInfo
      * @return
      */

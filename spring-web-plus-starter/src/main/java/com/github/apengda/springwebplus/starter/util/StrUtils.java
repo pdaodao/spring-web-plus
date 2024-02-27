@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 public class StrUtils {
 
+    private static final Pattern RemarkPattern = Pattern.compile("[\\\\/:*?\"<>|\r\n|'|\"]");
+
     public static String cut(final String str, int maxLength) {
         if (str == null) {
             return str;
@@ -30,6 +32,4 @@ public class StrUtils {
         }
         return cut(ReUtil.delAll(RemarkPattern, remark.trim()), 200);
     }
-
-    private static final Pattern RemarkPattern = Pattern.compile("[\\\\/:*?\"<>|\r\n|'|\"]");
 }

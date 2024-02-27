@@ -45,11 +45,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         RequestUtil.setCurrentUser(currentUserInfo);
         // 权限判断
         final Permission permission = handlerMethod.getMethodAnnotation(Permission.class);
-        if (permission == null) {
-            return true;
-        }
+        return permission == null;
         // todo
-        return false;
     }
 
     @Override

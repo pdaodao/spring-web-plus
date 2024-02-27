@@ -1,6 +1,5 @@
 package com.github.apengda.springwebplus.starter.db.pojo;
 
-import cn.hutool.db.meta.Column;
 import cn.hutool.db.meta.IndexInfo;
 import cn.hutool.db.meta.Table;
 import lombok.Data;
@@ -64,6 +63,7 @@ public class TableInfo implements Serializable, Cloneable {
     public Collection<ColumnInfo> getColumns() {
         return this.columns.values();
     }
+
     public TableInfo setColumn(ColumnInfo column) {
         this.columns.put(column.getName(), column);
         return this;

@@ -7,6 +7,7 @@ import com.github.apengda.springwebplus.starter.db.pojo.DataType;
 public interface DataTypeConverter {
     /**
      * 转为统一字段类型
+     *
      * @param columnInfo
      * @return
      */
@@ -14,6 +15,7 @@ public interface DataTypeConverter {
 
     /**
      * 生成建表是的字段类型 varchar(32) not null auto_increment default 'abc' comment '测试'
+     *
      * @param columnInfo
      * @param context
      * @return
