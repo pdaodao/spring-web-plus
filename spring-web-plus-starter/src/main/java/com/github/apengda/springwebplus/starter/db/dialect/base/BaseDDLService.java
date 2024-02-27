@@ -59,7 +59,7 @@ public class BaseDDLService implements DbDDLService {
                 if ("PRIMARY".equalsIgnoreCase(indexInfo.getIndexName())) {
                     continue;
                 }
-                final String indexSql = genDDLOfCreateIndex(tableInfo.getTableName(), indexInfo);
+                final String indexSql = genDDLOfCreateIndex(tableInfo, indexInfo);
                 if (StrUtil.isNotBlank(indexSql)) {
                     ddlBuildContext.addSql(indexSql);
                 }
@@ -159,11 +159,11 @@ public class BaseDDLService implements DbDDLService {
     /**
      * 创建索引
      *
-     * @param tableName
+     * @param tableInfo
      * @param indexInfo
      * @return
      */
-    public String genDDLOfCreateIndex(final String tableName, final IndexInfo indexInfo){
+    public String genDDLOfCreateIndex(final TableInfo tableInfo, final IndexInfo indexInfo){
         return null;
     }
 
@@ -187,5 +187,10 @@ public class BaseDDLService implements DbDDLService {
      */
     protected String genDDLTableEngineInfo(TableInfo tableInfo, DDLBuildContext context) {
         return null;
+    }
+
+    protected String indexInfoColumns(final IndexInfo indexInfo){
+        return indexInfo.getColumnIndexInfoList().stream().map(t -> quoteIdentifier(t.getColumnName()))
+                .collect(Collectors.joining(","));
     }
 }
