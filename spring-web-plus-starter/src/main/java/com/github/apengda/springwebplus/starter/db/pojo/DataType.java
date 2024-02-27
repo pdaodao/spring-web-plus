@@ -84,8 +84,7 @@ public enum DataType {
     public boolean isStringFamily() {
         return DataType.STRING == this ||
                 DataType.TEXT == this ||
-                DataType.JSON == this ||
-                DataType.FILE == this;
+                DataType.JSON == this;
     }
 
     /**

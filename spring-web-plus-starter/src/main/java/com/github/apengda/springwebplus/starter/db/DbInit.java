@@ -2,11 +2,10 @@ package com.github.apengda.springwebplus.starter.db;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.sql.SqlExecutor;
 import com.github.apengda.springwebplus.starter.db.pojo.SqlList;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 import com.github.apengda.springwebplus.starter.db.util.DbMetaUtil;
+import com.github.apengda.springwebplus.starter.db.util.DbUtil;
 import com.github.apengda.springwebplus.starter.db.util.SqlUtil;
 import com.github.apengda.springwebplus.starter.util.JsonUtil;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.List;
 
 @Service
@@ -53,37 +51,14 @@ public class DbInit implements CommandLineRunner {
         }
         for (final SqlList block : sqlBlocks) {
             try {
-                executeSqlBlock(block);
+                DbUtil.executeSqlBlock(dataSource, block);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void executeSqlBlock(final SqlList sqlList) throws Exception {
-        if (sqlList == null || sqlList.isEmpty()) {
-            return;
-        }
-        boolean next = true;
-        final Connection connection = dataSource.getConnection();
-        final boolean auto = connection.getAutoCommit();
-        try {
-            connection.setAutoCommit(false);
-            if (StrUtil.isNotBlank(sqlList.getSelectSql())) {
-            }
-            for (final String sql : sqlList.getSqls()) {
-                log.info(sql);
-                SqlExecutor.execute(connection, sql);
-            }
-            connection.commit();
-            ;
-        } catch (Exception e) {
-            connection.rollback();
-        } finally {
-            connection.setAutoCommit(auto);
-            connection.close();
-        }
-    }
+
 
 
 }

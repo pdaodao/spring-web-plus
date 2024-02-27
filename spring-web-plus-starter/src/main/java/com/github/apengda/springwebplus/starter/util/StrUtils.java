@@ -1,5 +1,10 @@
 package com.github.apengda.springwebplus.starter.util;
 
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
+
+import java.util.regex.Pattern;
+
 public class StrUtils {
 
     public static String cut(final String str, int maxLength) {
@@ -12,4 +17,19 @@ public class StrUtils {
         }
         return temp.substring(0, maxLength);
     }
+
+    /**
+     * 清除注释中的无效字符
+     *
+     * @param remark
+     * @return
+     */
+    public static String cleanComment(String remark) {
+        if (StrUtil.isBlank(remark)) {
+            return null;
+        }
+        return cut(ReUtil.delAll(RemarkPattern, remark.trim()), 200);
+    }
+
+    private static final Pattern RemarkPattern = Pattern.compile("[\\\\/:*?\"<>|\r\n|'|\"]");
 }
