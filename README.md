@@ -1,4 +1,4 @@
-# spring-web项目初始化
+# spring-web项目脚手架
 
 ## 功能特性
 
