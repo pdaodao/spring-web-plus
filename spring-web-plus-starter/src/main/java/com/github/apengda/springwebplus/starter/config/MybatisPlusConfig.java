@@ -2,6 +2,9 @@ package com.github.apengda.springwebplus.starter.config;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -18,25 +21,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @AutoConfigureBefore(MybatisPlusAutoConfiguration.class)
 public class MybatisPlusConfig {
 
-//    /**
-//     * 分页插件
-//     */
-//    @Bean
-//    public MybatisPlusInterceptor mybatisPlusInterceptor() {
-//        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
-//        PageInnerInterceptor page = new PageInnerInterceptor();
-//        page.setDbType(DbType.MYSQL);
-//        if (dbConfig.isDm()) {
-//            page.setDbType(DbType.DM);
-//        } else if (dbConfig.isKingbase()) {
-//            page.setDbType(DbType.KINGBASE_ES);
-//        }
-//        addSystemDbTableNameRewrite(mybatisPlusInterceptor);
-//        mybatisPlusInterceptor.addInnerInterceptor(page);
-//        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-//        return mybatisPlusInterceptor;
-//    }
-//
+    /**
+     * 分页插件
+     */
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+        PaginationInnerInterceptor page = new PaginationInnerInterceptor();
+        mybatisPlusInterceptor.addInnerInterceptor(page);
+        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        return mybatisPlusInterceptor;
+    }
 
     @Bean
     @ConditionalOnMissingBean(MetaObjectHandler.class)
