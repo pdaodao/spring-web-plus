@@ -2,16 +2,18 @@ package com.github.apengda.springwebplus.starter.db.dialect.mysql;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.IndexInfo;
-import com.github.apengda.springwebplus.starter.db.dialect.DataTypeConverter;
-import com.github.apengda.springwebplus.starter.db.dialect.base.BaseDDLService;
+import com.github.apengda.springwebplus.starter.db.dialect.DbDialect;
+import com.github.apengda.springwebplus.starter.db.dialect.base.BaseDDLGen;
 import com.github.apengda.springwebplus.starter.db.pojo.DDLBuildContext;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 import com.github.apengda.springwebplus.starter.util.StrUtils;
 
-public class MysqlDDLService extends BaseDDLService {
-    public MysqlDDLService(DataTypeConverter dataTypeConverter) {
-        super(dataTypeConverter);
+public class MysqlDDLGen extends BaseDDLGen {
+
+    public MysqlDDLGen(DbDialect dbDialect) {
+        super(dbDialect);
     }
+
 
     @Override
     public String genDDLOfCreateIndex(TableInfo tableInfo, IndexInfo indexInfo) {

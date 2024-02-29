@@ -1,13 +1,11 @@
-package com.github.apengda.springwebplus.starter.db;
+package com.github.apengda.springwebplus.starter.config;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.github.apengda.springwebplus.starter.db.pojo.SqlList;
-import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
-import com.github.apengda.springwebplus.starter.db.util.DbMetaUtil;
+import com.github.apengda.springwebplus.starter.db.util.DDLUtil;
 import com.github.apengda.springwebplus.starter.db.util.DbUtil;
 import com.github.apengda.springwebplus.starter.db.util.SqlUtil;
-import com.github.apengda.springwebplus.starter.util.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -16,10 +14,13 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.util.List;
 
+/**
+ * 表结构初始化
+ */
 @Service
 @Slf4j
 @AllArgsConstructor
-public class DbInit implements CommandLineRunner {
+public class DbTableInit implements CommandLineRunner {
     private final DataSource dataSource;
 
     @Override
@@ -36,12 +37,7 @@ public class DbInit implements CommandLineRunner {
      * 实体自动转为表结构
      */
     private void entityToTable() {
-        List<String> tables = DbMetaUtil.getTables(dataSource);
-        for (final String t : tables) {
-            System.out.println("-----===== ahha " + t);
-            final TableInfo tableInfo = DbMetaUtil.getTableMeta(dataSource, t);
-            System.out.println(JsonUtil.toJsonString(tableInfo));
-        }
+        DDLUtil.dbCheck(dataSource);
     }
 
     private void sqlInit() {

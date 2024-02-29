@@ -15,6 +15,13 @@ public class SqlList {
         return new SqlList();
     }
 
+    public static SqlList of(final List<String> sqls) {
+        final SqlList list = of();
+        list.setSqls(sqls);
+        return list;
+    }
+
+
     public SqlList setSelectSql(final String sql) {
         selectSql = sql;
         return this;

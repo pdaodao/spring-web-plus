@@ -7,9 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.List;
 
 @Slf4j
 public class DbUtil {
+
+    public static void executeSqlBlock(final DataSource dataSource, final List<String> list) throws Exception {
+        executeSqlBlock(dataSource, SqlList.of(list));
+    }
 
     /**
      * 在一个事务中执行多条sql语句
@@ -37,6 +42,7 @@ public class DbUtil {
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
+            throw e;
         } finally {
             connection.setAutoCommit(auto);
             connection.close();

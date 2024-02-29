@@ -9,12 +9,23 @@ import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DbMetaUtil {
 
     public static List<String> getTables(DataSource ds) {
         return MetaUtil.getTables(ds, TableType.TABLE);
+    }
+
+    public static List<TableInfo> tableInfoList(final DataSource ds) {
+        final List<String> tables = DbMetaUtil.getTables(ds);
+        final List<TableInfo> list = new ArrayList<>();
+        for (final String t : tables) {
+            final TableInfo tableInfo = DbMetaUtil.getTableMeta(ds, t);
+            list.add(tableInfo);
+        }
+        return list;
     }
 
     public static TableInfo getTableMeta(DataSource ds, String tableName) {

@@ -4,11 +4,7 @@ import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 
 import java.util.List;
 
-public interface DbDDLService {
-
-    DataTypeConverter getDataTypeConverter();
-
-
+public interface DbDDLGen {
     /**
      * 建表语句
      *
@@ -16,5 +12,4 @@ public interface DbDDLService {
      * @return
      */
     List<String> createTable(final TableInfo tableInfo);
-
 }

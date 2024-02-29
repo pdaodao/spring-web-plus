@@ -19,5 +19,5 @@ public class SysRoleMenu extends AutoIdWithTimeEntity {
     private Long menuId;
 
     @Schema(description = "是否用户选中 0：否，1：是")
-    private boolean isChoice;
+    private transient Boolean isChoice;
 }

@@ -3,8 +3,8 @@ package com.github.apengda.springwebplus.starter.db.dialect.base;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.IndexInfo;
-import com.github.apengda.springwebplus.starter.db.dialect.DataTypeConverter;
-import com.github.apengda.springwebplus.starter.db.dialect.DbDDLService;
+import com.github.apengda.springwebplus.starter.db.dialect.DbDDLGen;
+import com.github.apengda.springwebplus.starter.db.dialect.DbDialect;
 import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
 import com.github.apengda.springwebplus.starter.db.pojo.DDLBuildContext;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
@@ -15,16 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class BaseDDLService implements DbDDLService {
-    protected final DataTypeConverter dataTypeConverter;
+public class BaseDDLGen implements DbDDLGen {
+    protected final DbDialect dbDialect;
+
 
     public String quoteIdentifier(final String name) {
         return name;
-    }
-
-    @Override
-    public DataTypeConverter getDataTypeConverter() {
-        return dataTypeConverter;
     }
 
     @Override
@@ -41,7 +37,8 @@ public class BaseDDLService implements DbDDLService {
         for (final ColumnInfo field : tableInfo.getColumns()) {
             index++;
             // 生成字段定义
-            final String fieldDdl = dataTypeConverter.fieldDDL(field, ddlBuildContext);
+            final String fieldDdl = quoteIdentifier(field.getName()) + " " +
+                    dbDialect.dataTypeConverter().fieldDDL(field, ddlBuildContext);
             sql.append(fieldDdl);
             if (index < size) {
                 sql.append(",");
