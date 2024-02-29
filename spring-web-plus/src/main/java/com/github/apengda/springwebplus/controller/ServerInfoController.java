@@ -5,10 +5,11 @@ import com.github.apengda.springwebplus.ext.ServerInfoUtil;
 import com.github.apengda.springwebplus.ext.pojo.ProjectInfo;
 import com.github.apengda.springwebplus.ext.pojo.ServerInfo;
 import com.github.apengda.springwebplus.starter.auth.Permission;
+import com.github.apengda.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,20 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "服务器信息")
-@RequestMapping("/api/v1/admin/server")
+@RequestMapping(Constant.ApiPrefix +"/server")
+@AllArgsConstructor
 public class ServerInfoController {
+    private final Environment environment;
 
-    @Autowired
-    private Environment environment;
-
-    /**
-     * 获取服务信息详情
-     *
-     * @return
-     * @throws Exception
-     */
-    @PostMapping("/info")
-    @Operation(summary = "服务信息详情")
+    @PostMapping("info")
+    @Operation(summary = "服务器信息详情")
     @Permission("server:info")
     public ServerInfo getServerInfo() {
         ServerInfo serverInfo = ServerInfoUtil.getServerInfo();
