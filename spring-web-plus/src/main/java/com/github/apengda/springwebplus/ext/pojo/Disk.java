@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 /**
  * 磁盘信息
- *
  */
 @Data
 @Schema(description = "磁盘信息")

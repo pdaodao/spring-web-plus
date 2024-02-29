@@ -1,6 +1,7 @@
 package com.github.apengda.springwebplus.util;
 
 /**
+ *
  **/
 public class DateDiffUtil {
 

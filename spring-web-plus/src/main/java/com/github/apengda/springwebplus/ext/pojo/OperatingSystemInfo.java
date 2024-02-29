@@ -24,5 +24,5 @@ public class OperatingSystemInfo implements Serializable {
     private String version;
 
     @Schema(description = "IP地址")
-   private String address;
+    private String address;
 }

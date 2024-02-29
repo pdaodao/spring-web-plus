@@ -9,7 +9,6 @@ import java.util.Date;
 
 /**
  * JVM信息
- *
  **/
 @Data
 @Schema(description = "JVM信息")

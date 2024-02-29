@@ -21,7 +21,6 @@ import java.util.List;
 
 /**
  * 获取系统服务信息
- *
  **/
 public class ServerInfoUtil {
 
