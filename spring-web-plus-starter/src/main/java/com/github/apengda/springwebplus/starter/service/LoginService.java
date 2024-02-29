@@ -8,27 +8,26 @@ import org.springframework.stereotype.Service;
  * 用户登录服务
  */
 @Service
-public class LoginService {
+public interface LoginService {
 
+    /**
+     * 登录返回token
+     * @param loginInfo
+     * @return
+     */
+    String login(LoginInfo loginInfo);
 
-    public String login(LoginInfo loginInfo) {
-        // todo
-        return null;
-    }
-
-    public void logout() {
-
-    }
+    /**
+     * 退出登录
+     */
+    void logout();
 
 
     /**
-     * 痛殴
+     * 通过token获取用户信息
      *
      * @param token
      * @return
      */
-    public CurrentUserInfo byToken(final String token) {
-        // todo
-        return null;
-    }
+    CurrentUserInfo byToken(final String token);
 }

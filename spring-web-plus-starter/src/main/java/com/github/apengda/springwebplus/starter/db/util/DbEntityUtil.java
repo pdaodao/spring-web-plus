@@ -15,13 +15,11 @@ import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
 import com.github.apengda.springwebplus.starter.db.pojo.DataType;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
+import com.github.apengda.springwebplus.starter.util.SpringUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DbEntityUtil {
 
@@ -31,9 +29,14 @@ public class DbEntityUtil {
      * @return
      */
     public static List<TableInfo> entityList() {
-        final Set<Class<?>> cls = ClassScanner.scanAllPackageByAnnotation(null, TableName.class);
+        final Set<Class<?>> cls = ClassScanner.scanAllPackageByAnnotation( "com.github.apengda", TableName.class);
+        final Set<Class<?>> apps = ClassScanner.scanAllPackageByAnnotation(SpringUtil.getBootPackage(), TableName.class);
+        final Set<Class<?>> all = new HashSet<>();
+        all.addAll(cls);
+        all.addAll(apps);
+
         final List<TableInfo> list = new ArrayList<>();
-        for (Class clazz : cls) {
+        for (final Class clazz : all) {
             final TableInfo info = toTableInfo(clazz);
             list.add(info);
         }
@@ -127,7 +130,7 @@ public class DbEntityUtil {
             }
         }
         // 字段长度
-        final Size size = propDesc.getField().getAnnotation(Size.class);
+        final Length size = propDesc.getField().getAnnotation(Length.class);
         if (size != null && ff.getSize() < 1) {
             ff.setSize(size.max());
         }

@@ -1,7 +1,6 @@
 package com.github.apengda.springwebplus.starter.config;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import com.github.apengda.springwebplus.starter.db.pojo.SqlList;
 import com.github.apengda.springwebplus.starter.db.util.DDLUtil;
 import com.github.apengda.springwebplus.starter.db.util.DbUtil;
@@ -25,8 +24,6 @@ public class DbTableInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        ThreadUtil.sleep(1000);
-        System.out.println("haha");
         //1. 转表结构
         entityToTable();
         //2. 初始化sql
