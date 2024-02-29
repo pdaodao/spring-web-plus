@@ -52,7 +52,7 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
      * @param queryWrapper
      * @return
      */
-    public PageR<T> page(final Wrapper<T> queryWrapper) {
+    public PageR<T> listPage(final Wrapper<T> queryWrapper) {
         try (final PageHelper pageHelper = PageHelper.startPage(RequestUtil.getPageParam())) {
             final List<T> list = list(queryWrapper);
             return pageHelper.toPageResult(list);
