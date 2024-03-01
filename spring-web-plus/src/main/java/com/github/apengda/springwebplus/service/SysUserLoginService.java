@@ -1,15 +1,33 @@
 package com.github.apengda.springwebplus.service;
 
+import cn.hutool.core.util.StrUtil;
+import com.github.apengda.springwebplus.entity.SysUser;
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.apengda.springwebplus.starter.pojo.LoginInfo;
+import com.github.apengda.springwebplus.starter.util.Preconditions;
+import com.github.apengda.springwebplus.util.PasswordUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class SysUserLoginService implements LoginService {
+    private final SysUserService sysUserService;
 
     @Override
     public CurrentUserInfo login(LoginInfo loginInfo) {
-        return null;
+        final SysUser sysUser = sysUserService.byUsername(loginInfo.getUsername());
+        Preconditions.checkNotNull(sysUser, "用户不存在.");
+
+        // 校验密码
+        final String encryptPassword = PasswordUtil.encrypt(loginInfo.getPassword(), sysUser.getSalt());
+        Preconditions.checkArgument(StrUtil.equals(encryptPassword, sysUser.getPassword()), "账号密码错误");
+        final CurrentUserInfo result = new CurrentUserInfo();
+        result.setId(sysUser.getId());
+        result.setUsername(sysUser.getUsername());
+        result.setNickname(sysUser.getNickname());
+
+        return result;
     }
 
     @Override

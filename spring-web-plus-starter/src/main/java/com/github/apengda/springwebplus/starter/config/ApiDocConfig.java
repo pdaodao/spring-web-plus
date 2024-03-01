@@ -24,7 +24,6 @@ public class ApiDocConfig implements InitializingBean {
     }
 
     @Bean
-    @ConditionalOnMissingBean(GroupedOpenApi.class)
     public GroupedOpenApi appApi() {
         final String[] packagedToMatch = {SpringUtil.getBootPackage()};
         return GroupedOpenApi.builder()

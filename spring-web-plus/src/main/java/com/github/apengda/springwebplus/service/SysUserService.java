@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 public class SysUserService {
     private final SysUserDao sysUserDao;
 
+    public SysUser byUsername(final String username){
+        return sysUserDao.byUsername(username);
+    }
+
+
     /**
      * 添加/修改 用户
      *

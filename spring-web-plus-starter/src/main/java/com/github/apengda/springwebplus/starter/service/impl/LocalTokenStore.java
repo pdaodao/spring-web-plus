@@ -1,5 +1,6 @@
 package com.github.apengda.springwebplus.starter.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.starter.config.SysConfigProperties;
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
@@ -7,13 +8,9 @@ import com.github.apengda.springwebplus.starter.service.TokenStore;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import java.time.Duration;
 
-@Configuration
-@ConditionalOnMissingBean(RedisTemplate.class)
 public class LocalTokenStore implements TokenStore {
     private final SysConfigProperties sysConfig;
     private final Cache<String, CurrentUserInfo> map;
@@ -28,7 +25,7 @@ public class LocalTokenStore implements TokenStore {
 
     @Override
     public String buildToken(CurrentUserInfo userInfo) {
-        return null;
+        return IdUtil.simpleUUID();
     }
 
     @Override
