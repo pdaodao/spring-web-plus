@@ -14,42 +14,46 @@ public class SysUserService {
 
     /**
      * 添加/修改 用户
+     *
      * @param sysUser
      * @return
      */
-    public boolean saveUser(SysUser sysUser){
+    public boolean saveUser(SysUser sysUser) {
         sysUserDao.save(sysUser);
         return true;
     }
 
     /**
      * 删除用户
+     *
      * @param id
      * @return
      */
-    public boolean deleteById(final String id){
+    public boolean deleteById(final String id) {
         return true;
     }
 
     /**
      * 用户信息
+     *
      * @param id
      * @return
      */
-    public SysUser getById(final String id){
+    public SysUser getById(final String id) {
         return null;
     }
 
-    public PageR<SysUser> listPage(final SysUserQuery query){
+    public PageR<SysUser> listPage(final SysUserQuery query) {
         return null;
     }
 
     /**
      * 修改密码
+     *
      * @param sysUser
      * @return
      */
-    public boolean updatePassword(final SysUser sysUser){
+    public boolean updatePassword(final SysUser sysUser) {
         return true;
     }
 }

@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -29,7 +28,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @Tag(name = "系统用户")
-@RequestMapping(Constant.ApiPrefix+"/admin/user")
+@RequestMapping(Constant.ApiPrefix + "/admin/user")
 @AllArgsConstructor
 public class SysUserController {
     @Autowired

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
 
-    public void addUser(final SysUser sysUser){
+    public void addUser(final SysUser sysUser) {
 
     }
 }

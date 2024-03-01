@@ -16,4 +16,13 @@ public class CurrentUserInfo {
     private String nickname;
     // 角色编码
     private List<String> roles;
+
+    // 无用户时 伪造一个
+    public static CurrentUserInfo ofNoUser() {
+        final CurrentUserInfo currentUserInfo = new CurrentUserInfo();
+        currentUserInfo.setId(null);
+        currentUserInfo.setUsername("");
+        currentUserInfo.setNickname("匿名");
+        return currentUserInfo;
+    }
 }

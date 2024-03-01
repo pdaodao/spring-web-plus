@@ -29,7 +29,7 @@ public class DbEntityUtil {
      * @return
      */
     public static List<TableInfo> entityList() {
-        final Set<Class<?>> cls = ClassScanner.scanAllPackageByAnnotation( "com.github.apengda", TableName.class);
+        final Set<Class<?>> cls = ClassScanner.scanAllPackageByAnnotation("com.github.apengda", TableName.class);
         final Set<Class<?>> apps = ClassScanner.scanAllPackageByAnnotation(SpringUtil.getBootPackage(), TableName.class);
         final Set<Class<?>> all = new HashSet<>();
         all.addAll(cls);

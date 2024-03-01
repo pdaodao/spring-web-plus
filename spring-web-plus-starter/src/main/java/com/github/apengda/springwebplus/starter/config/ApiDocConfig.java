@@ -4,6 +4,7 @@ import com.github.apengda.springwebplus.starter.util.SpringUtil;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.GroupedOpenApi;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnProperty(value = "swagger.enabled", havingValue = "true", matchIfMissing = true)
-public class ApiDocConfig {
+public class ApiDocConfig implements InitializingBean {
 
     @Bean
     public OpenAPI openApi() {
@@ -45,5 +46,10 @@ public class ApiDocConfig {
                 .addOpenApiCustomiser(openApi -> openApi.info(new Info().title("System API")))
                 .packagesToScan(packagedToMatch)
                 .build();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.setProperty("springdoc.default-flat-param-object", "true");
     }
 }

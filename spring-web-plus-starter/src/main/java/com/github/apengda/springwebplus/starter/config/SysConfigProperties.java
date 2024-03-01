@@ -24,6 +24,9 @@ public class SysConfigProperties {
     @Value("${auth.excludes:}")
     private String authExcludes;
 
+    // 登陆交互有效时长 分钟
+    @Value("${auth.expire:30}")
+    private Long authExpire;
 
     public boolean authExcludeMatch(final String path) {
         if (StrUtil.isEmpty(getAuthExcludes())) {

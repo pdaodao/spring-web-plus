@@ -1,4 +1,4 @@
-package com.github.apengda.springwebplus.starter.service;
+package com.github.apengda.springwebplus.service;
 
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.apengda.springwebplus.starter.pojo.LoginInfo;
@@ -12,22 +12,14 @@ public interface LoginService {
 
     /**
      * 登录返回token
+     *
      * @param loginInfo
      * @return
      */
-    String login(LoginInfo loginInfo);
+    CurrentUserInfo login(LoginInfo loginInfo);
 
     /**
      * 退出登录
      */
-    void logout();
-
-
-    /**
-     * 通过token获取用户信息
-     *
-     * @param token
-     * @return
-     */
-    CurrentUserInfo byToken(final String token);
+    void logout(CurrentUserInfo userInfo);
 }

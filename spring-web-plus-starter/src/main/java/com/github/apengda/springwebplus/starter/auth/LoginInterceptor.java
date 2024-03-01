@@ -2,7 +2,7 @@ package com.github.apengda.springwebplus.starter.auth;
 
 import com.github.apengda.springwebplus.starter.config.SysConfigProperties;
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
-import com.github.apengda.springwebplus.starter.service.LoginService;
+import com.github.apengda.springwebplus.starter.service.TokenStore;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
 import com.github.apengda.springwebplus.starter.util.RequestUtil;
 import com.github.apengda.springwebplus.starter.util.TokenUtil;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @AllArgsConstructor
 public class LoginInterceptor implements HandlerInterceptor {
     private final SysConfigProperties sysConfig;
-    private final LoginService loginService;
+    private final TokenStore tokenStoreService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -27,20 +27,19 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         final HandlerMethod handlerMethod = (HandlerMethod) handler;
         final String path = request.getServletPath();
-        // 在配置的排除路径中
-        if (sysConfig.authExcludeMatch(path)) {
-            return true;
-        }
         // 不需要验签
-        if (handlerMethod.hasMethodAnnotation(IgnoreLogin.class)
+        // 在配置的排除路径中, 带有IgnoreLogin注解
+        if (sysConfig.authExcludeMatch(path)
+                || handlerMethod.hasMethodAnnotation(IgnoreLogin.class)
                 || handlerMethod.getMethod().getDeclaringClass().isAnnotationPresent(IgnoreLogin.class)) {
+            RequestUtil.setCurrentUser(CurrentUserInfo.ofNoUser());
             return true;
         }
         // 用户信息
         final String token = TokenUtil.getToken(request);
         Preconditions.checkNotBlank(token, "请登录后再操作.");
         TokenUtil.setToken(token);
-        final CurrentUserInfo currentUserInfo = loginService.byToken(token);
+        final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(token);
         Preconditions.checkNotNull(currentUserInfo, "登录已过期或登录信息不存在，请重新登录.");
         RequestUtil.setCurrentUser(currentUserInfo);
         // 权限判断

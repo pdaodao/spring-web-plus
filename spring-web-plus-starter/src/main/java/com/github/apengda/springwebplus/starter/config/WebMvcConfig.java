@@ -63,30 +63,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         if (!path.endsWith("/")) {
             path += "/";
         }
-        registry.addResourceHandler("/index.html")
-                .addResourceLocations(path + "index.html")
-                .setCacheControl(CacheControl.noStore());
-
-        registry.addResourceHandler("/data.html")
-                .addResourceLocations(path + "data.html")
-                .setCacheControl(CacheControl.noStore());
-
-        registry.addResourceHandler("/favicon.ico")
-                .addResourceLocations(path + "favicon.ico")
-                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
-
-        registry.addResourceHandler("/assets/**")
-                .addResourceLocations(path + "assets/")
-                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
-
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations(path + "static/")
-                .setCacheControl(CacheControl.maxAge(Duration.ofDays(1)));
-
-        registry.addResourceHandler("/public/**")
-                .addResourceLocations(path + "public/")
-                .setCacheControl(CacheControl.maxAge(Duration.ofDays(1)));
-
+        fileResourceMap(registry, "", path);
         // 处理子应用
         webappSubPathProcess(path, registry);
     }
@@ -107,31 +84,45 @@ public class WebMvcConfig implements WebMvcConfigurer {
         }
         for (final File f : fs) {
             if (f.isDirectory() && !WebappFile.FileNames.contains(f.getName())) {
-                addWebappResource(f.getName(), registry, rootPath);
+                final String subAppName = f.getName();
+                log.info("add sub  app:{}", subAppName);
+                WebappFile.SubApps.add(subAppName);
+                final String filePath = rootPath + subAppName + "/";
+                fileResourceMap(registry, subAppName, filePath);
             }
         }
     }
 
-    protected void addWebappResource(final String subAppName,
-                                     final ResourceHandlerRegistry registry,
-                                     final String webapp) {
-        WebappFile.SubApps.add(subAppName);
-        log.info("add sub  app:{}", subAppName);
-
-        registry.addResourceHandler("/" + subAppName + "/*.html")
-                .addResourceLocations(webapp + subAppName + "/")
+    /**
+     * 静态资源请求映射
+     *
+     * @param registry
+     * @param app
+     * @param filePath
+     */
+    private void fileResourceMap(final ResourceHandlerRegistry registry, final String app, final String filePath) {
+        registry.addResourceHandler(app + "/index.html")
+                .addResourceLocations(filePath + "index.html")
                 .setCacheControl(CacheControl.noStore());
 
-        registry.addResourceHandler("/" + subAppName + "/assets/**")
-                .addResourceLocations(webapp + subAppName + "/assets/")
+        registry.addResourceHandler(app)
+                .addResourceLocations(filePath + "index.html")
+                .setCacheControl(CacheControl.noStore());
+
+        registry.addResourceHandler(app + "/favicon.ico")
+                .addResourceLocations(filePath + "favicon.ico")
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
 
-        registry.addResourceHandler("/" + subAppName + "/static/**")
-                .addResourceLocations(webapp + subAppName + "/static/")
+        registry.addResourceHandler(app + "/assets/**")
+                .addResourceLocations(filePath + "assets/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
+
+        registry.addResourceHandler(app + "/static/**")
+                .addResourceLocations(filePath + "static/")
                 .setCacheControl(CacheControl.maxAge(Duration.ofDays(1)));
 
-        registry.addResourceHandler("/" + subAppName + "/public/**")
-                .addResourceLocations(webapp + subAppName + "/public/")
+        registry.addResourceHandler(app + "/public/**")
+                .addResourceLocations(filePath + "public/")
                 .setCacheControl(CacheControl.maxAge(Duration.ofDays(1)));
     }
 }
