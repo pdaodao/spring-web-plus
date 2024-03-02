@@ -15,7 +15,7 @@
 
     <select id="infoWithRole" resultMap="SysUserRoles">
         select u.id, u.username, u.nickname, u.password, u.salt, u.create_time, u.phone,
-            r.name as r_name, r.id as r_id, r.id_code as r_id_code
+        r.name as r_name, r.id as r_id, r.id_code as r_id_code
         from sys_user u
         left join sys_user_role ur on ur.user_id = u.id
         left join sys_role r on r.id = ur.role_id

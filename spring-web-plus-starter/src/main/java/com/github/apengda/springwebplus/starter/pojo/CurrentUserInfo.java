@@ -2,7 +2,6 @@ package com.github.apengda.springwebplus.starter.pojo;
 
 import lombok.Data;
 
-import java.util.List;
 import java.util.Set;
 
 @Data

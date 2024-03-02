@@ -3,7 +3,6 @@ package com.github.apengda.springwebplus.service;
 import com.github.apengda.springwebplus.dao.SysUserDao;
 import com.github.apengda.springwebplus.entity.SysUser;
 import com.github.apengda.springwebplus.query.SysUserQuery;
-import com.github.apengda.springwebplus.starter.pojo.PageR;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +61,6 @@ public class SysUserService {
      * @return
      */
     public boolean updatePassword(final SysUser sysUser) {
-
 
 
         return true;

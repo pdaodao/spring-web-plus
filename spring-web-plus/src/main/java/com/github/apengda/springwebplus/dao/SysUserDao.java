@@ -1,6 +1,5 @@
 package com.github.apengda.springwebplus.dao;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.apengda.springwebplus.entity.SysUser;
 import com.github.apengda.springwebplus.mapper.SysUserMapper;
 import com.github.apengda.springwebplus.query.SysUserQuery;
@@ -17,7 +16,7 @@ public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
         return baseMapper.infoWithRole(id, username);
     }
 
-    public List<SysUser> list(final SysUserQuery query){
+    public List<SysUser> list(final SysUserQuery query) {
         return list(QueryBuilder.lambda(SysUser.class)
                 .like(query.getUsername(), SysUser::getUsername, SysUser::getNickname)
                 .selectExcludes("password", "salt").build());

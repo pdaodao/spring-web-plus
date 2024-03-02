@@ -4,12 +4,9 @@ import com.github.apengda.springwebplus.entity.SysUser;
 import com.github.apengda.springwebplus.query.SysUserQuery;
 import com.github.apengda.springwebplus.service.SysUserService;
 import com.github.apengda.springwebplus.starter.auth.Permission;
-import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.apengda.springwebplus.starter.pojo.PageR;
 import com.github.apengda.springwebplus.starter.pojo.PageRequestParam;
 import com.github.apengda.springwebplus.starter.util.PageHelper;
-import com.github.apengda.springwebplus.starter.util.Preconditions;
-import com.github.apengda.springwebplus.starter.util.RequestUtil;
 import com.github.apengda.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,7 +66,7 @@ public class SysUserController {
     @GetMapping("/page")
     @Permission("sys:user:page")
     public PageR<SysUser> listPage(SysUserQuery userQuery, PageRequestParam pageRequestParam) {
-        try(final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)){
+        try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
             final List<SysUser> users = sysUserService.list(userQuery);
             return pageHelper.toPageResult(users);
         }

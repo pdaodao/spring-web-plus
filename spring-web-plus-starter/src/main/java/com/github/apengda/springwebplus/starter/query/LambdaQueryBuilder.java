@@ -6,7 +6,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -105,13 +104,13 @@ public class LambdaQueryBuilder<T> {
         return this;
     }
 
-    public LambdaQueryBuilder<T> selectExcludes(final String ... columnNames){
-        if(columnNames == null){
+    public LambdaQueryBuilder<T> selectExcludes(final String... columnNames) {
+        if (columnNames == null) {
             return this;
         }
         final Set<String> names = Arrays.stream(columnNames).collect(Collectors.toSet());
         this.wrap.select(tableFieldInfo -> {
-            if(names.contains(tableFieldInfo.getColumn())){
+            if (names.contains(tableFieldInfo.getColumn())) {
                 return false;
             }
             return true;

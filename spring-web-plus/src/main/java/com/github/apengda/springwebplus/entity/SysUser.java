@@ -2,7 +2,6 @@ package com.github.apengda.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
