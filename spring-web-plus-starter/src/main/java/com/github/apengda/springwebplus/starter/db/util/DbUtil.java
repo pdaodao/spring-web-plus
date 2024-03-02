@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.List;
 
 @Slf4j
@@ -27,13 +28,16 @@ public class DbUtil {
         if (sqlList == null || sqlList.isEmpty()) {
             return;
         }
-        boolean next = true;
         final Connection connection = dataSource.getConnection();
         final boolean auto = connection.getAutoCommit();
         try {
             connection.setAutoCommit(false);
             if (StrUtil.isNotBlank(sqlList.getSelectSql())) {
-
+                try (final ResultSet rs = connection.prepareStatement(sqlList.getSelectSql()).executeQuery()) {
+                    if (rs.next()) {
+                        return;
+                    }
+                }
             }
             for (final String sql : sqlList.getSqls()) {
                 log.info(sql);

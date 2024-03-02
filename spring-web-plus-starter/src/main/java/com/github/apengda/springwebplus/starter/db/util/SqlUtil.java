@@ -1,15 +1,25 @@
 package com.github.apengda.springwebplus.starter.db.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.starter.db.pojo.SqlList;
 import com.github.apengda.springwebplus.starter.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.insert.Insert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class SqlUtil {
     public static final char SQL_DELIMITER = ';';
+    public static final Pattern DatePattern = Pattern.compile("\\d{4}[-/]\\d{2}[-/]\\d{2}");
 
     public static String trim(String sql) {
         sql = sql.replaceAll("((?s)/[*][^+].*?[*]/)", "")
@@ -57,6 +67,10 @@ public class SqlUtil {
                 if (isInBlock) {
                     current.add(tt);
                 } else {
+                    if (ttLowcase.startsWith("insert ")) {
+                        // insert 语句自动添加 select语句做重复插入判断
+                        processInsertAddSelect(current, tt);
+                    }
                     current.add(tt);
                     ret.add(current);
                     current = SqlList.of();
@@ -75,6 +89,48 @@ public class SqlUtil {
 
         }
         return null;
+    }
+
+    private static void processInsertAddSelect(final SqlList sqlList, final String sql) {
+        try {
+            final Statement statement = CCJSqlParserUtil.parse(sql);
+            final Insert st = (Insert) statement;
+            if (CollUtil.isEmpty(st.getColumns())) {
+                return;
+            }
+
+            final StringBuilder selectSql = new StringBuilder();
+            selectSql.append("SELECT 1 FROM ")
+                    .append(st.getTable().getName())
+                    .append(" WHERE ");
+            final List<String> cnds = new ArrayList<>();
+
+            final List<Expression> values = ((ExpressionList) st.getItemsList()).getExpressions();
+            for (int i = 0; i < st.getColumns().size(); i++) {
+                final String field = st.getColumns().get(i).getColumnName();
+                final Expression exp = values.get(i);
+                if (exp == null || StrUtil.isBlank(exp.toString())
+                        || "''".equalsIgnoreCase(exp.toString())
+                        || "null".equalsIgnoreCase(exp.toString())
+                        || DatePattern.matcher(exp.toString()).find()) {
+                    continue;
+                }
+                cnds.add(field + " = " + exp.toString());
+            }
+            selectSql.append(StrUtil.join(" AND ", cnds));
+            sqlList.setSelectSql(selectSql.toString());
+            log.info(selectSql.toString());
+        } catch (Exception e) {
+
+        }
+    }
+
+    public static void main(String[] args) {
+        final String sql = "INSERT INTO sys_menu (id,name,pid,type,id_code, route_url, component_path ,\n" +
+                "                route_redirect,icon, seq,is_show,is_cache,enabled)\n" +
+                "        VALUES ('11', '系统管理', '0', 1, '', '/system', '', '', 'ele-setting', 99, 1, 0, '2023-05-06')";
+        processInsertAddSelect(null, sql);
+
     }
 
     /**
