@@ -7,15 +7,16 @@ import com.github.apengda.springwebplus.starter.pojo.PageR;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class SysUserService {
     private final SysUserDao sysUserDao;
 
-    public SysUser byUsername(final String username) {
-        return sysUserDao.byUsername(username);
+    public SysUser infoWithRole(final String id, final String username) {
+        return sysUserDao.infoWithRole(id, username);
     }
-
 
     /**
      * 添加/修改 用户
@@ -24,6 +25,8 @@ public class SysUserService {
      * @return
      */
     public boolean saveUser(SysUser sysUser) {
+        sysUser.setPassword(null);
+        sysUser.setSalt(null);
         sysUserDao.save(sysUser);
         return true;
     }
@@ -35,7 +38,7 @@ public class SysUserService {
      * @return
      */
     public boolean deleteById(final String id) {
-        return true;
+        return sysUserDao.removeById(id);
     }
 
     /**
@@ -45,11 +48,11 @@ public class SysUserService {
      * @return
      */
     public SysUser getById(final String id) {
-        return null;
+        return sysUserDao.getById(id);
     }
 
-    public PageR<SysUser> listPage(final SysUserQuery query) {
-        return null;
+    public List<SysUser> list(final SysUserQuery query) {
+        return sysUserDao.list(query);
     }
 
     /**
@@ -59,6 +62,9 @@ public class SysUserService {
      * @return
      */
     public boolean updatePassword(final SysUser sysUser) {
+
+
+
         return true;
     }
 }

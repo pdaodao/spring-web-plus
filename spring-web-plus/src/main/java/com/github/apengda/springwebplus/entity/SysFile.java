@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * 系统文件
  */
 @Data
-@TableName("sys_file")
+@TableName(value = "sys_file", autoResultMap = true)
 @Schema(description = "系统文件")
 public class SysFile extends SnowIdWithTimeUserEntity {
     @Schema(description = "日志链路ID")

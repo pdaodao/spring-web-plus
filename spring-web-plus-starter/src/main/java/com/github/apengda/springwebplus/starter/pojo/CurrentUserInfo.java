@@ -3,6 +3,7 @@ package com.github.apengda.springwebplus.starter.pojo;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class CurrentUserInfo {
@@ -15,7 +16,7 @@ public class CurrentUserInfo {
     // 昵称
     private String nickname;
     // 角色编码
-    private List<String> roles;
+    private Set<String> roles;
 
     // 无用户时 伪造一个
     public static CurrentUserInfo ofNoUser() {

@@ -5,7 +5,7 @@ import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeUserEntity;
 import lombok.Data;
 
 @Data
-@TableName("sys_user_role")
+@TableName(value = "sys_user_role", autoResultMap = true)
 public class SysUserRole extends SnowIdWithTimeUserEntity {
     /**
      * 用户id

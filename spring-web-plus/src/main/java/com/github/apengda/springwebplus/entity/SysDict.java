@@ -9,7 +9,7 @@ import lombok.Data;
  * 字典数据
  */
 @Data
-@TableName("sys_dict")
+@TableName(value = "sys_dict", autoResultMap = true)
 @Schema(description = "字典数据")
 public class SysDict extends SnowIdWithTimeUserEntity {
     @Schema(description = "字典值")

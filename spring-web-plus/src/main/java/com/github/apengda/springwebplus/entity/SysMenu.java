@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@TableName("sys_menu")
+@TableName(value = "sys_menu", autoResultMap = true)
 @Schema(description = "系统菜单")
 public class SysMenu extends SnowIdWithTimeEntity {
     @Schema(description = "菜单名称")

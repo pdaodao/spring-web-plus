@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@TableName("sys_log")
+@TableName(value = "sys_log", autoResultMap = true)
 @Schema(description = "系统日志")
 public class SysLog extends SnowIdWithTimeUserEntity {
     @Schema(description = "日志链路ID")

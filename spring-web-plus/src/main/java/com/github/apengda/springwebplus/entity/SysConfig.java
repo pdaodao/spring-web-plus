@@ -9,7 +9,7 @@ import lombok.Data;
  * 系统配置
  */
 @Data
-@TableName("sys_config")
+@TableName(value = "sys_config", autoResultMap = true)
 @Schema(description = "系统配置")
 public class SysConfig extends SnowIdWithTimeUserEntity {
     @Schema(description = "配置名称")

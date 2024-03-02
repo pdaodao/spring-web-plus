@@ -7,6 +7,7 @@ import com.github.apengda.springwebplus.starter.auth.Permission;
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.apengda.springwebplus.starter.pojo.PageR;
 import com.github.apengda.springwebplus.starter.pojo.PageRequestParam;
+import com.github.apengda.springwebplus.starter.util.PageHelper;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
 import com.github.apengda.springwebplus.starter.util.RequestUtil;
 import com.github.apengda.springwebplus.util.Constant;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 系统用户 控制器
@@ -60,22 +62,17 @@ public class SysUserController {
     @GetMapping("/info/{id}")
     @Permission("sys:user:info")
     public SysUser getSysUser(@PathVariable String id) {
-        return sysUserService.getById(id);
-    }
-
-    @Operation(summary = "当前个人信息")
-    @GetMapping("/profile")
-    public SysUser getProfile() {
-        final CurrentUserInfo currentUserInfo = RequestUtil.getCurrentUser();
-        Preconditions.checkNotNull(currentUserInfo, "当前用户信息不存在");
-        return sysUserService.getById(currentUserInfo.getId());
+        return sysUserService.infoWithRole(id, null);
     }
 
     @Operation(summary = "系统用户分页列表")
     @GetMapping("/page")
     @Permission("sys:user:page")
     public PageR<SysUser> listPage(SysUserQuery userQuery, PageRequestParam pageRequestParam) {
-        return sysUserService.listPage(userQuery);
+        try(final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)){
+            final List<SysUser> users = sysUserService.list(userQuery);
+            return pageHelper.toPageResult(users);
+        }
     }
 
     @Operation(summary = "重置用户密码")

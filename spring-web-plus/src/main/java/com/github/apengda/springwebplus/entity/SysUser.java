@@ -1,6 +1,8 @@
 package com.github.apengda.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -10,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
-@TableName("sys_user")
+@TableName(value = "sys_user", autoResultMap = true)
 @Schema(description = "系统用户")
 public class SysUser extends SnowIdWithTimeUserEntity {
 
@@ -24,10 +26,12 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     private String nickname;
 
     @Schema(description = "密码")
+    @JsonIgnore
     @Length(max = 64, message = "密码长度超过限制")
     private String password;
 
     @Schema(description = "盐值")
+    @JsonIgnore
     @Length(max = 16, message = "长度超过限制")
     private String salt;
 
