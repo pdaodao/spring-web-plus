@@ -2,6 +2,7 @@ package com.github.apengda.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.apengda.springwebplus.starter.entity.AutoIdWithTimeUserEntity;
+import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import lombok.Data;
 @Data
 @TableName("sys_config")
 @Schema(description = "系统配置")
-public class SysConfig extends AutoIdWithTimeUserEntity {
+public class SysConfig extends SnowIdWithTimeUserEntity {
     @Schema(description = "配置名称")
     private String configName;
 

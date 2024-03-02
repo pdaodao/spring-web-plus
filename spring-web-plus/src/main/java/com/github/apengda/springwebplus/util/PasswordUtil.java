@@ -8,7 +8,7 @@ public class PasswordUtil {
     private static int MD5_PWD_LENGTH = 32;
 
     public static void main(String[] args) {
-        System.out.println(encrypt("root123", "sa"));
+        System.out.println(encrypt("admin", "sa"));
     }
 
     public static String encrypt(String password, String salt) {

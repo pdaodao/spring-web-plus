@@ -10,13 +10,13 @@ import java.sql.Connection;
  * 数据库类型
  */
 public enum DbType {
-    MYSQL,
-    ORACLE,
-    POSTGRESQL,
-    SQLITE,
-    SQLSERVER,
-    KINGBASE,
-    DM;
+    Mysql,
+    Oracle,
+    Postgresql,
+    Sqlite,
+    Sqlserver,
+    Kingbase,
+    Dm;
 
     /**
      * 通过连接url判断类型

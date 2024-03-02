@@ -2,14 +2,16 @@ package com.github.apengda.springwebplus.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.apengda.springwebplus.starter.entity.AutoIdWithTimeEntity;
+import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @TableName("sys_menu")
 @Schema(description = "系统菜单")
-public class SysMenu extends AutoIdWithTimeEntity {
+public class SysMenu extends SnowIdWithTimeEntity {
     @Schema(description = "菜单名称")
     private String name;
 
@@ -20,7 +22,7 @@ public class SysMenu extends AutoIdWithTimeEntity {
     private Integer type;
 
     @Schema(description = "菜单编码")
-    private String code;
+    private String idCode;
 
     @Schema(description = "前端路由地址")
     private String routeUrl;
@@ -45,4 +47,7 @@ public class SysMenu extends AutoIdWithTimeEntity {
 
     @Schema(description = "是否缓存，0：否 1：是")
     private Boolean isCache;
+
+    @Schema(description = "子项目")
+    private transient List<SysMenu> children;
 }

@@ -13,8 +13,8 @@ public class DbFactory {
     private static Map<DbType, DbDialect> map = new HashMap<>();
 
     static {
-        map.put(DbType.MYSQL, new MysqlDialect());
-        map.put(DbType.SQLITE, new SqliteDialect());
+        map.put(DbType.Mysql, new MysqlDialect());
+        map.put(DbType.Sqlite, new SqliteDialect());
     }
 
     public static DbDialect of(final DbType dbType) {

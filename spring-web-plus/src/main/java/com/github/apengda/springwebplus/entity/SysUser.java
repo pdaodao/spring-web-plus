@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
 @TableName("sys_user")
@@ -45,6 +46,6 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     @Schema(description = "状态，0：禁用，1：启用")
     private Boolean enabled;
 
-    @Schema(description = "角色id")
-    private Long roleId;
+    @Schema(description = "角色列表")
+    private transient List<SysRole> roleList;
 }

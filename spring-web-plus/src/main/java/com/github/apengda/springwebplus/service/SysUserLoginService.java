@@ -18,10 +18,10 @@ public class SysUserLoginService implements LoginService {
     public CurrentUserInfo login(LoginInfo loginInfo) {
         final SysUser sysUser = sysUserService.byUsername(loginInfo.getUsername());
         Preconditions.checkNotNull(sysUser, "用户不存在.");
-
         // 校验密码
         final String encryptPassword = PasswordUtil.encrypt(loginInfo.getPassword(), sysUser.getSalt());
         Preconditions.checkArgument(StrUtil.equals(encryptPassword, sysUser.getPassword()), "账号密码错误");
+
         final CurrentUserInfo result = new CurrentUserInfo();
         result.setId(sysUser.getId());
         result.setUsername(sysUser.getUsername());

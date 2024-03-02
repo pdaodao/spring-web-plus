@@ -2,6 +2,7 @@ package com.github.apengda.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.apengda.springwebplus.starter.entity.AutoIdWithTimeUserEntity;
+import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 @Data
 @TableName("sys_file")
 @Schema(description = "系统文件")
-public class SysFile extends AutoIdWithTimeUserEntity {
+public class SysFile extends SnowIdWithTimeUserEntity {
     @Schema(description = "日志链路ID")
     private String traceId;
 
