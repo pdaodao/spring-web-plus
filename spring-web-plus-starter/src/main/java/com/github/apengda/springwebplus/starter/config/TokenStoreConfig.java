@@ -14,13 +14,13 @@ public class TokenStoreConfig {
 
     @Bean
     @ConditionalOnMissingBean(RedisTemplate.class)
-    public TokenStore localTokenStore(SysConfigProperties configProperties){
+    public TokenStore localTokenStore(SysConfigProperties configProperties) {
         return new LocalTokenStore(configProperties);
     }
 
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
-    public TokenStore redisTokenStore(SysConfigProperties configProperties, RedisTemplate redisTemplate){
+    public TokenStore redisTokenStore(SysConfigProperties configProperties, RedisTemplate redisTemplate) {
         return new RedisTokenStore(configProperties, redisTemplate);
     }
 }

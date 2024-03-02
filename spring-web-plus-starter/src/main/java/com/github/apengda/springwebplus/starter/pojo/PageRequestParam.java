@@ -81,7 +81,7 @@ public class PageRequestParam {
         page.setCurrent(getPageNum());
         page.setSize(getPageSize());
         if (StringUtils.isNotBlank(getOrderBy())) {
-            page.addOrder( getOrderAsc() == true ? OrderItem.asc(getOrderBy()):OrderItem.desc(getOrderBy()));
+            page.addOrder(getOrderAsc() == true ? OrderItem.asc(getOrderBy()) : OrderItem.desc(getOrderBy()));
         }
         // 关闭count 优化
         page.setOptimizeCountSql(false);

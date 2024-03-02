@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
 
-    public SysUser byUsername(final String username){
+    public SysUser byUsername(final String username) {
         Preconditions.checkNotBlank(username, "username is null.");
         return getOne(Wrappers.lambdaQuery(SysUser.class)
-                    .eq(SysUser::getUsername, username));
+                .eq(SysUser::getUsername, username));
     }
 
     public void addUser(final SysUser sysUser) {

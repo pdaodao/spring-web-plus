@@ -13,13 +13,13 @@ import java.util.List;
 @Component
 public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
 
-    public List<SysMenu> list(final List<Integer> types){
+    public List<SysMenu> list(final List<Integer> types) {
         return list(Wrappers.lambdaUpdate(SysMenu.class)
                 .in(CollUtil.isNotEmpty(types), SysMenu::getType, types)
                 .orderByAsc(SysMenu::getSeq));
     }
 
-    public List<SysMenu> menuList(){
+    public List<SysMenu> menuList() {
         return list(ListUtil.of(1, 2));
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 public class RedisTokenStore implements TokenStore {
 
-    public RedisTokenStore(SysConfigProperties sysConfig, RedisTemplate redisTemplate){
+    public RedisTokenStore(SysConfigProperties sysConfig, RedisTemplate redisTemplate) {
 
     }
 

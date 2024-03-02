@@ -7,8 +7,7 @@ import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.apengda.springwebplus.starter.service.TokenStore;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.data.redis.core.RedisTemplate;
+
 import java.time.Duration;
 
 public class LocalTokenStore implements TokenStore {

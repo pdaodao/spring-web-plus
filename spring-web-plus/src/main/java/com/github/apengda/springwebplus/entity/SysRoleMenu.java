@@ -1,7 +1,6 @@
 package com.github.apengda.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.apengda.springwebplus.starter.entity.AutoIdWithTimeEntity;
 import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
