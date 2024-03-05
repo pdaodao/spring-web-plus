@@ -41,11 +41,11 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             return R.success(body);
         }
         final R restResponse = body instanceof R ? (R) body : R.success(body);
-        if (restResponse.getStatus() == null) {
-            restResponse.setStatus(RestCode.SUCCESS.code);
+        if (restResponse.getCode() == null) {
+            restResponse.setCode(RestCode.SUCCESS.code);
         }
-        if (restResponse.getStatus() != null && restResponse.getStatus() < 600) {
-            response.setStatusCode(HttpStatus.resolve(restResponse.getStatus()));
+        if (restResponse.getCode() != null && restResponse.getCode() < 600) {
+            response.setStatusCode(HttpStatus.resolve(restResponse.getCode()));
         }
         //因为handler处理类的返回类型是String，为了保证一致性，这里需要将ResponseResult转回去
         if (selectedConverterType.getName().equals(StringHttpMessageConverter.class.getName())) {

@@ -3,6 +3,7 @@ package com.github.apengda.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeEntity;
+import com.github.apengda.springwebplus.starter.entity.WithChildren;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_menu", autoResultMap = true)
 @Schema(description = "系统菜单")
-public class SysMenu extends SnowIdWithTimeEntity {
+public class SysMenu extends SnowIdWithTimeEntity implements WithChildren<SysMenu> {
     @Schema(description = "菜单名称")
     private String name;
 

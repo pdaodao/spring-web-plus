@@ -8,7 +8,7 @@ import lombok.Data;
 @Schema(description = "接口返回数据封装")
 public class R<T> {
     @Schema(description = "状态码")
-    private Integer status;
+    private Integer code;
 
     @Schema(description = "数据")
     @JsonInclude
@@ -33,7 +33,7 @@ public class R<T> {
     }
 
     public R(RestCode restCode, T data) {
-        this.status = restCode.getCode();
+        this.code = restCode.getCode();
         this.msg = restCode.getMessage();
         this.data = data;
     }

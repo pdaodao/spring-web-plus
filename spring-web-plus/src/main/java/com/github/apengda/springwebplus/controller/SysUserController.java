@@ -18,16 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * 系统用户 控制器
- *
- * @author geekidea
- * @since 2022-12-26
- */
 @Slf4j
 @RestController
 @Tag(name = "系统用户")
-@RequestMapping(Constant.ApiPrefix + "/admin/user")
+@RequestMapping(Constant.ApiPrefix + "/user")
 @AllArgsConstructor
 public class SysUserController {
     @Autowired

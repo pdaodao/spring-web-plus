@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.apengda.springwebplus.mapper.SysMenuMapper">
+
+
+    <select id="userMenu" resultMap="mybatis-plus_SysMenu" resultType="com.github.apengda.springwebplus.entity.SysMenu">
+        select a.*
+        from (
+        select m.id
+        from sys_menu m
+        inner join sys_role_menu rm on m.id = rm.menu_id
+        inner join sys_user su on rm.user_id = su.id
+        where su.id = #{userId}
+        ) a
+    </select>
+
+</mapper>

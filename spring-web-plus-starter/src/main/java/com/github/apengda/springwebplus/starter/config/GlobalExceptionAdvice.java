@@ -108,7 +108,7 @@ public class GlobalExceptionAdvice {
         rest.setRequestId(IdUtil.snowId());
         final String msg = StrUtil.format("[{}]:{}:{}[{}]", rest.getRequestId(),
                 rest.getPath(), rest.getMsg(), rest.getTrace());
-        if (RestCode.INTERNAL_SERVER_ERROR.getCode() == rest.getStatus()) {
+        if (RestCode.INTERNAL_SERVER_ERROR.getCode() == rest.getCode()) {
             log.error(msg);
         } else {
             log.warn(msg);

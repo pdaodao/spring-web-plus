@@ -8,6 +8,7 @@ import com.github.apengda.springwebplus.starter.auth.IgnoreLogin;
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.apengda.springwebplus.starter.pojo.LoginInfo;
 import com.github.apengda.springwebplus.starter.service.TokenStore;
+import com.github.apengda.springwebplus.starter.util.IdUtil;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
 import com.github.apengda.springwebplus.starter.util.RequestUtil;
 import com.github.apengda.springwebplus.starter.util.TokenUtil;
@@ -59,8 +60,8 @@ public class LoginController {
     @Operation(summary = "我的菜单")
     public List<SysMenu> myMenu() {
         final CurrentUserInfo currentUserInfo = RequestUtil.getCurrentUser();
-
-        return menuDao.menuList();
+        final List<SysMenu> ms = menuDao.menuList();
+        return IdUtil.toTree(ms, SysMenu::getId, SysMenu::getPid);
     }
 
     @PostMapping("/logout")

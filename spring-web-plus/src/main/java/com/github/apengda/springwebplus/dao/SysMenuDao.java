@@ -22,4 +22,14 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
     public List<SysMenu> menuList() {
         return list(ListUtil.of(1, 2));
     }
+
+    /**
+     * 用户菜单
+     *
+     * @param userId
+     * @return
+     */
+    public List<SysMenu> userMenu(final String userId) {
+        return baseMapper.userMenu(userId);
+    }
 }
