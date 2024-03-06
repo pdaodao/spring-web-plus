@@ -1,12 +1,16 @@
 package com.github.apengda.springwebplus.starter.auth;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.starter.config.SysConfigProperties;
 import com.github.apengda.springwebplus.starter.pojo.CurrentUserInfo;
+import com.github.apengda.springwebplus.starter.pojo.RestCode;
+import com.github.apengda.springwebplus.starter.pojo.RestException;
 import com.github.apengda.springwebplus.starter.service.TokenStore;
 import com.github.apengda.springwebplus.starter.util.Preconditions;
 import com.github.apengda.springwebplus.starter.util.RequestUtil;
 import com.github.apengda.springwebplus.starter.util.TokenUtil;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -37,15 +41,20 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         // 用户信息
         final String token = TokenUtil.getToken(request);
+        if(StrUtil.isBlank(token)){
+            throw new RestException(RestCode.NO_USER_INFO, "请登录后再操作.");
+        }
         Preconditions.checkNotBlank(token, "请登录后再操作.");
         TokenUtil.setToken(token);
         final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(token);
-        Preconditions.checkNotNull(currentUserInfo, "登录已过期或登录信息不存在，请重新登录.");
+        if(currentUserInfo == null){
+            throw new RestException(RestCode.NO_USER_INFO, "请重新登录后再操作.");
+        }
         RequestUtil.setCurrentUser(currentUserInfo);
         // 权限判断
         final Permission permission = handlerMethod.getMethodAnnotation(Permission.class);
-        return permission == null;
         // todo
+        return true;
     }
 
     @Override

@@ -68,27 +68,27 @@ public enum RestCode {
     /**
      * 无效 token
      */
-    INVALID_TOKEN(601, "无效Token"),
+    INVALID_TOKEN(401, "无效Token"),
 
     /**
      * 无用户信息 需要登录
      */
-    NO_USER_INFO(603, "用户未登录或已失效，请重新登录"),
+    NO_USER_INFO(401, "用户未登录或已失效，请重新登录"),
 
     /**
      * 无访问权限
      */
-    ACCESS_DENIED(700, "无访问权限"),
+    ACCESS_DENIED(403, "无访问权限"),
 
     /**
      * 无数据权限
      */
-    NO_DATA_PERMISSION(800, "无数据权限"),
+    NO_DATA_PERMISSION(403, "无数据权限"),
 
     /**
      * 部分数据权限
      */
-    PART_DATA_PERMISSION(802, "部分数据权限");
+    PART_DATA_PERMISSION(403, "部分数据权限");
 
     public final Integer code;
     public final String message;
