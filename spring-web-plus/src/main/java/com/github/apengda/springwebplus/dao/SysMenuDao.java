@@ -5,7 +5,9 @@ import cn.hutool.core.collection.ListUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.apengda.springwebplus.entity.SysMenu;
 import com.github.apengda.springwebplus.mapper.SysMenuMapper;
+import com.github.apengda.springwebplus.query.SysMenuQuery;
 import com.github.apengda.springwebplus.starter.dao.BaseDao;
+import com.github.apengda.springwebplus.starter.query.QueryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +23,14 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
 
     public List<SysMenu> menuList() {
         return list(ListUtil.of(1, 2));
+    }
+
+    public List<SysMenu> allList(final SysMenuQuery query) {
+        return list(QueryBuilder.lambda(SysMenu.class)
+                .like(query.getKeyword(), SysMenu::getName, SysMenu::getComponentPath, SysMenu::getRouteUrl)
+                .eq(SysMenu::getIsShow, query.getIsShow())
+                .eq(SysMenu::getEnabled, query.getEnabled())
+                .build().orderByAsc(SysMenu::getSeq));
     }
 
     /**
