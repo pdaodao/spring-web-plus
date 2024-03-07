@@ -8,6 +8,7 @@ import com.github.apengda.springwebplus.starter.db.dialect.DbDialect;
 import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
 import com.github.apengda.springwebplus.starter.db.pojo.DDLBuildContext;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
+import com.github.apengda.springwebplus.starter.util.Preconditions;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class BaseDDLGen implements DbDDLGen {
     @Override
     public List<String> createTable(TableInfo tableInfo) {
         final String tableName = getFullTableName(tableInfo);
-        final DDLBuildContext ddlBuildContext = DDLBuildContext.of(tableName, new ArrayList<>());
+        final DDLBuildContext ddlBuildContext = DDLBuildContext.of(tableName);
 
         final StringBuilder sql = new StringBuilder();
         sql.append(createTableSqlPrefix()).append(" ").append(tableName).append(" (\n");
@@ -37,8 +38,7 @@ public class BaseDDLGen implements DbDDLGen {
         for (final ColumnInfo field : tableInfo.getColumns()) {
             index++;
             // 生成字段定义
-            final String fieldDdl = quoteIdentifier(field.getName()) + " " +
-                    dbDialect.dataTypeConverter().fieldDDL(field, ddlBuildContext);
+            final String fieldDdl = dbDialect.dataTypeConverter().fieldDDL(field, ddlBuildContext);
             sql.append(fieldDdl);
             if (index < size) {
                 sql.append(",");
@@ -190,4 +190,60 @@ public class BaseDDLGen implements DbDDLGen {
         return indexInfo.getColumnIndexInfoList().stream().map(t -> quoteIdentifier(t.getColumnName()))
                 .collect(Collectors.joining(","));
     }
+
+
+    @Override
+    public List<String> addColumnSql(final ColumnInfo tableColumn, final DDLBuildContext ddlBuildContext) {
+        final List<String> last = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
+        final String sql = String.format(
+                "ALTER TABLE %s ADD %s", quoteIdentifier(ddlBuildContext.tableName),
+                dbDialect.dataTypeConverter().fieldDDL(tableColumn, ddlBuildContext));
+        list.add(sql);
+        list.addAll(last);
+        return list;
+    }
+
+
+    @Override
+    public List<String> renameColumnSql(final String tableName, String fromColumnName, String toColumnName) {
+        final List<String> list = new ArrayList<>();
+        final String sql = String.format("ALTER TABLE %s RENAME COLUMN %s TO %s",
+                quoteIdentifier(tableName),
+                 quoteIdentifier(fromColumnName),
+                quoteIdentifier(toColumnName));
+        list.add(sql);
+        return list;
+    }
+
+    @Override
+    public List<String> dropColumnSql(final String tableName, String columnName) {
+        final List<String> list = new ArrayList<>();
+        final String sql = String.format("ALTER TABLE %s DROP COLUMN %s",
+                quoteIdentifier(tableName), quoteIdentifier(columnName));
+        list.add(sql);
+        return list;
+    }
+
+    @Override
+    public List<String> alterColumnSql(final ColumnInfo from, final ColumnInfo to, final DDLBuildContext ddlBuildContext) {
+        Preconditions.checkNotNull(from.getDataType(), "{} alterColumnSql from dataType is null of table:{}", from.getName(), ddlBuildContext.tableName);
+        Preconditions.checkNotNull(to.getDataType(), "{} alterColumnSql to dataType is null of table:{}", to.getName(), ddlBuildContext.tableName);
+        final List<String> list = new ArrayList<>();
+        if (!StrUtil.equals(from.getName(), to.getName())) {
+            // 字段名称修改
+            list.addAll(renameColumnSql(ddlBuildContext.tableName, from.getName(), to.getName()));
+        }
+        if (from.diff(to, true)) {
+            final List<String> last = new ArrayList<>();
+            final String sql = String.format(
+                    "ALTER TABLE %s MODIFY COLUMN %s",
+                    quoteIdentifier(ddlBuildContext.tableName),
+                    dbDialect.dataTypeConverter().fieldDDL(to, ddlBuildContext));
+            list.add(sql);
+            list.addAll(last);
+        }
+        return list;
+    }
+
 }

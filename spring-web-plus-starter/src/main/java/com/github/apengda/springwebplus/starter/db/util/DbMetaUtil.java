@@ -5,7 +5,10 @@ import cn.hutool.db.meta.Column;
 import cn.hutool.db.meta.MetaUtil;
 import cn.hutool.db.meta.Table;
 import cn.hutool.db.meta.TableType;
+import com.github.apengda.springwebplus.starter.db.dialect.DbDialect;
+import com.github.apengda.springwebplus.starter.db.dialect.DbFactory;
 import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
+import com.github.apengda.springwebplus.starter.db.pojo.DataType;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 
 import javax.sql.DataSource;
@@ -19,16 +22,17 @@ public class DbMetaUtil {
     }
 
     public static List<TableInfo> tableInfoList(final DataSource ds) {
+        final DbDialect dbDialect = DbFactory.of(ds);
         final List<String> tables = DbMetaUtil.getTables(ds);
         final List<TableInfo> list = new ArrayList<>();
         for (final String t : tables) {
-            final TableInfo tableInfo = DbMetaUtil.getTableMeta(ds, t);
+            final TableInfo tableInfo = DbMetaUtil.getTableMeta(ds, dbDialect, t);
             list.add(tableInfo);
         }
         return list;
     }
 
-    public static TableInfo getTableMeta(DataSource ds, String tableName) {
+    public static TableInfo getTableMeta(DataSource ds, final DbDialect dbDialect, String tableName) {
         final Table table = MetaUtil.getTableMeta(ds, null, null, tableName);
         if (table == null) {
             return null;
@@ -38,6 +42,8 @@ public class DbMetaUtil {
         for (final Column c : table.getColumns()) {
             final ColumnInfo cc = ColumnInfo.of(c);
             // 字段类型标准化
+            final DataType type = dbDialect.dataTypeConverter().toUniType(cc);
+            cc.setDataType(type);
             info.setColumn(cc);
         }
         return info;

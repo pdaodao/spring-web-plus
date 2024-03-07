@@ -122,6 +122,7 @@ public class DbEntityUtil {
         final TableId tableId = propDesc.getField().getAnnotation(TableId.class);
         if (tableId != null) {
             ff.setPk(true);
+            ff.setNullable(false);
             if (tableId.type() == IdType.AUTO) {
                 ff.setAutoIncrement(true);
                 ff.setSize(12);

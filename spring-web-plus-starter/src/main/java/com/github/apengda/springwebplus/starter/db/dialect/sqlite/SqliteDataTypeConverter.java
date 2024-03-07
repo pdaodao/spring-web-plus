@@ -3,6 +3,7 @@ package com.github.apengda.springwebplus.starter.db.dialect.sqlite;
 import com.github.apengda.springwebplus.starter.db.dialect.base.BaseDataTypeConverter;
 import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
 import com.github.apengda.springwebplus.starter.db.pojo.DDLBuildContext;
+import com.github.apengda.springwebplus.starter.db.pojo.DataType;
 import com.github.apengda.springwebplus.starter.db.pojo.FieldTypeName;
 
 public class SqliteDataTypeConverter extends BaseDataTypeConverter {
@@ -18,6 +19,15 @@ public class SqliteDataTypeConverter extends BaseDataTypeConverter {
             return FieldTypeName.of("INTEGER", columnInfo.getColumnDef());
         }
         return super.fieldDDLInt(columnInfo);
+    }
+
+    @Override
+    public DataType toUniType(ColumnInfo columnInfo) {
+        final String dbType = columnInfo.getTypeName().trim().toLowerCase();
+        if (dbType.equals("varchar") && columnInfo.getSize() == 0) {
+            return DataType.TEXT;
+        }
+        return super.toUniType(columnInfo);
     }
 
     @Override

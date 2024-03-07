@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DbTableInit implements CommandLineRunner {
     private final DataSource dataSource;
+    private final SysConfigProperties configProperties;
 
     @Override
     public void run(String... args) throws Exception {
@@ -34,7 +35,10 @@ public class DbTableInit implements CommandLineRunner {
      * 实体自动转为表结构
      */
     private void entityToTable() {
-        DDLUtil.dbCheck(dataSource);
+        if(false == configProperties.getDdlGenEnabled()){
+            return;
+        }
+        DDLUtil.dbCheck(dataSource, configProperties.getDdlGenDeleteField());
     }
 
     private void sqlInit() {

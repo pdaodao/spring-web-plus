@@ -2,6 +2,7 @@ package com.github.apengda.springwebplus.starter.db.pojo;
 
 import cn.hutool.core.util.StrUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,13 +19,13 @@ public class DDLBuildContext {
      */
     public final List<String> lastSql;
 
-    public DDLBuildContext(String tableName, List<String> lastSql) {
+    public DDLBuildContext(String tableName) {
         this.tableName = tableName;
-        this.lastSql = lastSql;
+        this.lastSql = new ArrayList<>();
     }
 
-    public static DDLBuildContext of(String tableName, List<String> lastSql) {
-        return new DDLBuildContext(tableName, lastSql);
+    public static DDLBuildContext of(String tableName) {
+        return new DDLBuildContext(tableName);
     }
 
     public void addSql(final String sql) {

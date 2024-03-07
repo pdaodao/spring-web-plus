@@ -19,6 +19,8 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         Preconditions.checkNotNull(columnInfo.getDataType(), "field {} data-type is null.", columnInfo.getName());
 
         final StringBuilder ret = new StringBuilder();
+        ret.append(columnInfo.getName()).append(" ");
+
         // 字段类型
         final FieldTypeName fieldTypeName = fieldTypeDDL(columnInfo);
 

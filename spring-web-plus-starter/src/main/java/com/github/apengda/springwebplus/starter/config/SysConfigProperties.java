@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.AntPathMatcher;
 
+import javax.validation.Valid;
+
 @Configuration
 @Data
 public class SysConfigProperties {
@@ -27,6 +29,13 @@ public class SysConfigProperties {
     // 登陆交互有效时长 分钟
     @Value("${auth.expire:30}")
     private Long authExpire;
+
+    // 是否自动更新表结构
+    @Value("${dao.ddl.gen.enabled:true}")
+    private Boolean ddlGenEnabled;
+
+    @Value("${dao.ddl.gen.delete:false}")
+    private Boolean ddlGenDeleteField;
 
     public boolean authExcludeMatch(final String path) {
         if (StrUtil.isEmpty(getAuthExcludes())) {
