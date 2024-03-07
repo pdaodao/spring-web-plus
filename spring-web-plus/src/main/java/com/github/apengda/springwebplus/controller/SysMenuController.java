@@ -42,7 +42,7 @@ public class SysMenuController {
     @Operation(summary = "删除系统菜单")
     @Permission("sys:menu:delete")
     public Boolean deleteSysMenu(@PathVariable String id) {
-        return sysMenuDao.removeById(id);
+        return sysMenuDao.deleteById(id);
     }
 
     @GetMapping("/info/{id}")

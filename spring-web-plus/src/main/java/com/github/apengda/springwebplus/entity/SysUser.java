@@ -1,5 +1,7 @@
 package com.github.apengda.springwebplus.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.apengda.springwebplus.starter.entity.SnowIdWithTimeUserEntity;
@@ -32,6 +34,7 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     @Schema(description = "盐值")
     @JsonIgnore
     @Length(max = 16, message = "长度超过限制")
+    @TableField(updateStrategy = FieldStrategy.NEVER)
     private String salt;
 
     @Schema(description = "手机号码")

@@ -1,8 +1,12 @@
 package com.github.apengda.springwebplus.service;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.dao.SysUserDao;
 import com.github.apengda.springwebplus.entity.SysUser;
 import com.github.apengda.springwebplus.query.SysUserQuery;
+import com.github.apengda.springwebplus.starter.util.Preconditions;
+import com.github.apengda.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +23,19 @@ public class SysUserService {
 
     /**
      * 添加/修改 用户
-     *
      * @param sysUser
      * @return
      */
-    public boolean saveUser(SysUser sysUser) {
-        sysUser.setPassword(null);
-        sysUser.setSalt(null);
+    public boolean saveUser(final SysUser sysUser) {
+        if(StrUtil.isBlank(sysUser.getId())){
+            Preconditions.checkNotBlank(sysUser.getPassword(), "密码为空.");
+            final String salt = RandomUtil.randomString(6);;
+            sysUser.setSalt(salt);
+            String password = PasswordUtil.encrypt(sysUser.getPassword(), salt);
+            sysUser.setPassword(password);
+        }else{
+            sysUser.setPassword(null);
+        }
         sysUserDao.save(sysUser);
         return true;
     }
@@ -37,6 +47,9 @@ public class SysUserService {
      * @return
      */
     public boolean deleteById(final String id) {
+
+
+
         return sysUserDao.removeById(id);
     }
 
