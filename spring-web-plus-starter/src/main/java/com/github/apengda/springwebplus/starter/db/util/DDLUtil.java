@@ -1,6 +1,5 @@
 package com.github.apengda.springwebplus.starter.db.util;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.CaseInsensitiveLinkedMap;
 import cn.hutool.core.util.StrUtil;
 import com.github.apengda.springwebplus.starter.db.dialect.DbDialect;
@@ -9,9 +8,7 @@ import com.github.apengda.springwebplus.starter.db.pojo.ColumnInfo;
 import com.github.apengda.springwebplus.starter.db.pojo.DDLBuildContext;
 import com.github.apengda.springwebplus.starter.db.pojo.TableInfo;
 import lombok.extern.slf4j.Slf4j;
-
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +73,7 @@ public class DDLUtil {
         // 对比上次表结构同步后的变化
         final CaseInsensitiveLinkedMap<String, ColumnInfo> fieldMap = new CaseInsensitiveLinkedMap();
         final CaseInsensitiveLinkedMap<String, ColumnInfo> oldFieldMap = new CaseInsensitiveLinkedMap();
-        final List<String> sqls = new ArrayList<>();
+
         final DDLBuildContext ddlBuildContext = new DDLBuildContext(tableInfo.getTableName());
         for (final ColumnInfo f : tableInfo.getColumns()) {
             fieldMap.put(f.getName(), f);
@@ -87,26 +84,25 @@ public class DDLUtil {
             if (!fieldMap.containsKey(f.getName())) {
                 if(true == isDeleteField){
                     final List<String> dSqls = dbDialect.ddlGen().dropColumnSql(tableInfo.getTableName(), f.getName());
-                    if(CollUtil.isNotEmpty(dSqls)){
-                        sqls.addAll(dSqls);
-                    }
+                    ddlBuildContext.addSql(dSqls);
                 }
                 continue;
             }
             // 字段结构发生变化 更新
             final ColumnInfo toUpdated = fieldMap.get(f.getName());
             if (toUpdated.diff(f, false)) {
-                sqls.addAll(dbDialect.ddlGen().alterColumnSql(f, toUpdated, ddlBuildContext));
+                final List<String> alterSqls = dbDialect.ddlGen().alterColumnSql(f, toUpdated, ddlBuildContext);
+                ddlBuildContext.addSql(alterSqls);
             }
         }
         // 新增字段
         for (final ColumnInfo f : tableInfo.getColumns()) {
             if (!oldFieldMap.containsKey(f.getName())) {
-                sqls.addAll(dbDialect.ddlGen().addColumnSql(f, ddlBuildContext));
+                ddlBuildContext.addSql(dbDialect.ddlGen().addColumnSql(f, ddlBuildContext));
             }
         }
-        sqls.addAll(ddlBuildContext.lastSql);
-        return sqls;
+        ddlBuildContext.addSql(ddlBuildContext.lastSql);
+        return ddlBuildContext.sqls;
     }
 
 }

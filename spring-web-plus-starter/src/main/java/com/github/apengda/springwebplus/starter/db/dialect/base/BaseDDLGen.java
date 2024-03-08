@@ -58,7 +58,7 @@ public class BaseDDLGen implements DbDDLGen {
                 }
                 final String indexSql = genDDLOfCreateIndex(tableInfo, indexInfo);
                 if (StrUtil.isNotBlank(indexSql)) {
-                    ddlBuildContext.addSql(indexSql);
+                    ddlBuildContext.addLastSql(indexSql);
                 }
             }
         }

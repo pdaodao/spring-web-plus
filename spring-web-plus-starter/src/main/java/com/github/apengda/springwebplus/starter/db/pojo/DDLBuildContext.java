@@ -1,5 +1,6 @@
 package com.github.apengda.springwebplus.starter.db.pojo;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class DDLBuildContext {
      */
     public final String tableName;
 
+    public final List<String> sqls;
+
     /**
      * 用于收集需要单独添加的sql
      */
@@ -21,6 +24,7 @@ public class DDLBuildContext {
 
     public DDLBuildContext(String tableName) {
         this.tableName = tableName;
+        this.sqls = new ArrayList<>();
         this.lastSql = new ArrayList<>();
     }
 
@@ -28,10 +32,17 @@ public class DDLBuildContext {
         return new DDLBuildContext(tableName);
     }
 
-    public void addSql(final String sql) {
+    public void addLastSql(final String sql) {
         if (StrUtil.isBlank(sql)) {
             return;
         }
         lastSql.add(sql);
+    }
+
+    public void addSql(final List<String> sql) {
+        if (CollUtil.isEmpty(sql)) {
+            return;
+        }
+        sqls.addAll(sql);
     }
 }

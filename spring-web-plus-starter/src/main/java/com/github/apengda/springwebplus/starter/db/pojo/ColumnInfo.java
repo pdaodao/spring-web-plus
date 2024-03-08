@@ -35,15 +35,16 @@ public class ColumnInfo extends Column {
         }
         // 标准字段类型不同
         if(dataType != null && info.dataType != null){
+            if(dataType == DataType.STRING && info.getDataType() == DataType.TEXT){
+                // 字符串类型 和 text 类型比较
+                return false;
+            }
             if(dataType != info.dataType){
                 return true;
             }
             if(dataType.lengthNotRequired()){
                 return false;
             }
-        }
-        if(dataType != null && !dataType.lengthNotRequired()){
-            return true;
         }
         // 长度不同
         if(!ObjectUtil.equals(getSize(), info.getSize())){

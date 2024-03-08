@@ -40,7 +40,6 @@ public class DbUtil {
                 }
             }
             for (final String sql : sqlList.getSqls()) {
-                log.info(sql);
                 SqlExecutor.execute(connection, sql);
             }
             connection.commit();
