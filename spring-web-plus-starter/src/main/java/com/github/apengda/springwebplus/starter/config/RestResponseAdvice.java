@@ -1,5 +1,6 @@
 package com.github.apengda.springwebplus.starter.config;
 
+import com.github.apengda.springwebplus.starter.pojo.IResponse;
 import com.github.apengda.springwebplus.starter.pojo.R;
 import com.github.apengda.springwebplus.starter.pojo.RestCode;
 import com.github.apengda.springwebplus.starter.util.JsonUtil;
@@ -40,12 +41,15 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
         if (body == null && returnType.getGenericParameterType().getTypeName().equals("void")) {
             return R.success(body);
         }
-        final R restResponse = body instanceof R ? (R) body : R.success(body);
-        if (restResponse.getCode() == null) {
-            restResponse.setCode(RestCode.SUCCESS.code);
-        }
-        if (restResponse.getCode() != null && restResponse.getCode() < 600) {
-            response.setStatusCode(HttpStatus.resolve(restResponse.getCode()));
+        final IResponse restResponse = body instanceof IResponse ? (IResponse) body : R.success(body);
+        if(response instanceof R){
+            R r = (R) response;
+            if(r.getCode() == null){
+                r.setCode(RestCode.SUCCESS.code);
+            }
+            if (r.getCode() != null && r.getCode() < 600) {
+                response.setStatusCode(HttpStatus.resolve(r.getCode()));
+            }
         }
         //因为handler处理类的返回类型是String，为了保证一致性，这里需要将ResponseResult转回去
         if (selectedConverterType.getName().equals(StringHttpMessageConverter.class.getName())) {

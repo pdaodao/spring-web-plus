@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "接口返回数据封装")
-public class R<T> {
+public class R<T> implements IResponse{
     @Schema(description = "状态码")
     private Integer code;
 
