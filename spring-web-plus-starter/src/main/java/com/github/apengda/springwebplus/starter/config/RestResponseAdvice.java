@@ -42,8 +42,8 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             return R.success(body);
         }
         final IResponse restResponse = body instanceof IResponse ? (IResponse) body : R.success(body);
-        if(response instanceof R){
-            R r = (R) response;
+        if(restResponse instanceof R){
+            R r = (R) restResponse;
             if(r.getCode() == null){
                 r.setCode(RestCode.SUCCESS.code);
             }
