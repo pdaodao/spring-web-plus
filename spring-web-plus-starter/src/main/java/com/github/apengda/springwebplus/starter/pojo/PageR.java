@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Schema(description = "接口返回分页数据封装")
-public class PageR<T> extends R<T> {
+public class PageR<T> extends R<List<T>> {
     private PageInfo pageInfo;
 
     public static <T> PageR<T> build(Long pageNum, Long pageSize, Long total, List<T> data) {
