@@ -21,7 +21,11 @@
             <groupId>com.github.apengda</groupId>
             <artifactId>spring-web-plus-fs</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.verhas</groupId>
+            <artifactId>license3j</artifactId>
+            <version>2.0.0-JVM8</version>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
