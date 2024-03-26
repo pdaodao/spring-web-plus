@@ -29,7 +29,7 @@ import java.util.Date;
 public class LicenseUtil {
     private static final Logger logger = LoggerFactory.getLogger(LicenseUtil.class);
     public static String FileName = "license.dat";
-    private static byte[] key;
+    public static byte[] key;
     // 方便可以把 license 配置到配置中心
     public static String LicenseStr = null;
 
@@ -40,28 +40,25 @@ public class LicenseUtil {
     public static void processLicense(){
         Preconditions.assertTrue(ArrayUtil.isEmpty(key), "license-secrete-key is null");
         final Long current = DateUtil.current();
+        final StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(StrUtil.repeat("#", 50)).append("\n\n");
         try{
-            logger.warn(StrUtil.repeat("=", 30));
-            logger.warn("     machine-id:"+getMachineId());
-            logger.warn(StrUtil.repeat("=", 30));
+            sb.append("     machine-id:"+getMachineId()).append("\n");
             final LicenseInfo licenseInfo = LicenseUtil.readLicense();
-            Preconditions.checkNotNull(licenseInfo.getExpire(), "illegal license");
+            Preconditions.checkNotNull(licenseInfo.getExpire(), "illegal expire time");
             Long expired = licenseInfo.getExpire().getTime();
             if(StrUtil.isNotBlank(licenseInfo.getMachineId())){
                 final String id = getMachineId();
-                Preconditions.checkNotNull(StrUtil.equalsIgnoreCase(licenseInfo.getMachineId(), id), "invalid machine-id");
+                Preconditions.checkArgument(StrUtil.equalsIgnoreCase(licenseInfo.getMachineId(), id), "invalid machine-id");
             }
-            final StringBuilder sb = new StringBuilder();
             sb.append("\n");
-            sb.append(StrUtil.repeat("#", 50)).append("\n\n");
-
-
             if(DateTimeUtil.addDays(new Date(), 5).getTime() > expired){
-                sb.append("license will expired at "+ DateTimeUtil.formatDate(expired));
+                sb.append("license will expired at "+ DateTimeUtil.formatDate(expired)).append("\n");
             }
             if(current > expired){
-                sb.append("license expired");
-                sb.append("sys exist");
+                sb.append("license expired").append("\n");
+                sb.append("sys exist").append("\n");
                 logger.error(sb.toString());
                 System.exit(0);
             }
@@ -70,10 +67,9 @@ public class LicenseUtil {
             sb.append("\n\n").append(StrUtil.repeat("#", 50));
             logger.info(sb.toString());
         }catch (Exception e){
-            logger.error(StrUtil.repeat("#", 50));
-            logger.error("read license file error.");
-            logger.error(ExceptionUtil.getRootCauseMessage(e));
-            logger.error(StrUtil.repeat("#", 50));
+            sb.append(ExceptionUtil.getRootCauseMessage(e)).append("\n");
+            sb.append(StrUtil.repeat("#", 50));
+            logger.error(sb.toString());
             System.exit(0);
         }
     }
