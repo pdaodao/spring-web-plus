@@ -8,6 +8,7 @@ import com.github.apengda.springwebplus.starter.db.util.SqlUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -19,9 +20,14 @@ import java.util.List;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class DbTableInit implements CommandLineRunner {
+public class DbTableInit implements CommandLineRunner, Ordered {
     private final DataSource dataSource;
     private final SysConfigProperties configProperties;
+
+    @Override
+    public int getOrder() {
+        return 1;
+    }
 
     @Override
     public void run(String... args) throws Exception {
