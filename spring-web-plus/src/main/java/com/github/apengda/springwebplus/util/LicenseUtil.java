@@ -28,6 +28,7 @@ import java.util.Date;
  */
 public class LicenseUtil {
     private static final Logger logger = LoggerFactory.getLogger(LicenseUtil.class);
+    public static boolean useNetwork = false;
     public static String FileName = "license.dat";
     public static byte[] key;
     // 方便可以把 license 配置到配置中心
@@ -106,6 +107,9 @@ public class LicenseUtil {
 
     public static String getMachineId() throws UnsupportedEncodingException, SocketException, UnknownHostException {
         final HardwareBinder h = new HardwareBinder();
+        if(false == useNetwork){
+            h.ignoreNetwork();
+        }
         return h.getMachineIdString();
     }
 
