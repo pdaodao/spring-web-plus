@@ -66,7 +66,7 @@ public class TableInfo implements Serializable, Cloneable {
 
     public TableInfo setColumn(ColumnInfo column) {
         this.columns.put(column.getName(), column);
-        if (!column.isAutoIncrement() && column.isPk()) {
+        if(column.isPk()) {
             addPk(column.getName());
         }
         return this;
