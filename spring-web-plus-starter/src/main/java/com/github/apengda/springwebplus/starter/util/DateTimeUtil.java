@@ -20,6 +20,10 @@ public class DateTimeUtil {
         return DATE_TIME_FORMATTER.format(date);
     }
 
+    public static String formatDateTime(Long date) {
+        return DATE_TIME_FORMATTER.format(date);
+    }
+
     public static final Date addDays(Date aDate, int days) {
         Calendar cal = Calendar.getInstance();
 
