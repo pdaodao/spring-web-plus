@@ -27,6 +27,9 @@ public class ServerInfo implements Serializable {
     @Schema(description = "磁盘列表")
     private List<Disk> diskList;
 
+    @Schema(description = "当前盘")
+    private Disk disk;
+
     @Schema(description = "操作系统信息")
     private OperatingSystemInfo operatingSystemInfo;
 

@@ -40,6 +40,7 @@ public class ServerInfoUtil {
         serverInfo.setMemory(memory);
         serverInfo.setJvm(jvm);
         serverInfo.setDiskList(diskList);
+        serverInfo.setDisk(currentDisk());
         serverInfo.setOperatingSystemInfo(operatingSystemInfo);
         return serverInfo;
     }
@@ -184,42 +185,13 @@ public class ServerInfoUtil {
      */
     public static List<Disk> getDiskList() {
         try {
-            SystemInfo systemInfo = new SystemInfo();
-            OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
-            FileSystem fileSystem = operatingSystem.getFileSystem();
-            List<OSFileStore> fileStores = fileSystem.getFileStores();
-            List<Disk> disks = new ArrayList<>();
+            final SystemInfo systemInfo = new SystemInfo();
+            final OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
+            final FileSystem fileSystem = operatingSystem.getFileSystem();
+            final List<OSFileStore> fileStores = fileSystem.getFileStores();
+            final List<Disk> disks = new ArrayList<>();
             for (OSFileStore fileStore : fileStores) {
-                // 磁盘路径
-                String mount = fileStore.getMount();
-                // 文件系统类型
-                String type = fileStore.getType();
-                // 磁盘名称
-                String name = fileStore.getName();
-                // 磁盘总大小
-                long totalSpace = fileStore.getTotalSpace();
-                // 磁盘可用空间大小
-                long usableSpace = fileStore.getUsableSpace();
-                // 磁盘已使用空间大小
-                long usedSpace = totalSpace - usableSpace;
-                String totalSpaceUnit = FileUtil.readableFileSize(totalSpace);
-                String usableSpaceUnit = FileUtil.readableFileSize(usableSpace);
-                String usedSpaceUnit = FileUtil.readableFileSize(usedSpace);
-                BigDecimal usableRate = NumberUtil.round(usableSpace * 1.0 / totalSpace * 100, 2);
-                BigDecimal usedRate = NumberUtil.sub(100.0, usableRate);
-                Disk disk = new Disk();
-                disk.setMount(mount);
-                disk.setType(type);
-                disk.setName(name);
-                disk.setTotalSpace(totalSpace);
-                disk.setUsableSpace(usableSpace);
-                disk.setUsedSpace(usedSpace);
-                disk.setTotalSpaceUnit(totalSpaceUnit);
-                disk.setUsableSpaceUnit(usableSpaceUnit);
-                disk.setUsedSpaceSpaceUnit(usedSpaceUnit);
-                disk.setUsableRate(usableRate);
-                disk.setUsedRate(usedRate);
-                disks.add(disk);
+                disks.add(diskInfo(fileStore));
             }
             return disks;
         } catch (Exception e) {
@@ -227,6 +199,7 @@ public class ServerInfoUtil {
         }
         return null;
     }
+
 
     /**
      * 获取操作系统信息
@@ -251,6 +224,68 @@ public class ServerInfoUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static Disk diskInfo(final OSFileStore fileStore){
+        // 磁盘路径
+        String mount = fileStore.getMount();
+        // 文件系统类型
+        String type = fileStore.getType();
+        // 磁盘名称
+        String name = fileStore.getName();
+        // 磁盘总大小
+        long totalSpace = fileStore.getTotalSpace();
+        // 磁盘可用空间大小
+        long usableSpace = fileStore.getUsableSpace();
+        // 磁盘已使用空间大小
+        long usedSpace = totalSpace - usableSpace;
+        String totalSpaceUnit = FileUtil.readableFileSize(totalSpace);
+        String usableSpaceUnit = FileUtil.readableFileSize(usableSpace);
+        String usedSpaceUnit = FileUtil.readableFileSize(usedSpace);
+        BigDecimal usableRate = NumberUtil.round(usableSpace * 1.0 / totalSpace * 100, 2);
+        BigDecimal usedRate = NumberUtil.sub(100.0, usableRate);
+        Disk disk = new Disk();
+        disk.setMount(mount);
+        disk.setType(type);
+        disk.setName(name);
+        disk.setTotalSpace(totalSpace);
+        disk.setUsableSpace(usableSpace);
+        disk.setUsedSpace(usedSpace);
+        disk.setTotalSpaceUnit(totalSpaceUnit);
+        disk.setUsableSpaceUnit(usableSpaceUnit);
+        disk.setUsedSpaceSpaceUnit(usedSpaceUnit);
+        disk.setUsableRate(usableRate);
+        disk.setUsedRate(usedRate);
+        return disk;
+    }
+
+    /**
+     * 当前应用所在盘
+     *
+     * @return
+     */
+    public static Disk currentDisk() {
+        try {
+            final String currentDir = System.getProperty("user.dir");
+            final SystemInfo systemInfo = new SystemInfo();
+            final OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
+            final FileSystem fileSystem = operatingSystem.getFileSystem();
+            final List<OSFileStore> fileStores = fileSystem.getFileStores();
+            for(final OSFileStore fileStore: fileStores){
+                if(currentDir.startsWith(fileStore.getLogicalVolume())){
+                    return diskInfo(fileStore);
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        final Disk dist = currentDisk();
+        System.out.println(dist.getTotalSpaceUnit()+" : "+dist.getUsedSpaceSpaceUnit());
     }
 
 }
