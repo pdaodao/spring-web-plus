@@ -253,7 +253,7 @@ public class ServerInfoUtil {
         disk.setUsedSpace(usedSpace);
         disk.setTotalSpaceUnit(totalSpaceUnit);
         disk.setUsableSpaceUnit(usableSpaceUnit);
-        disk.setUsedSpaceSpaceUnit(usedSpaceUnit);
+        disk.setUsedSpaceUnit(usedSpaceUnit);
         disk.setUsableRate(usableRate);
         disk.setUsedRate(usedRate);
         return disk;
@@ -285,7 +285,7 @@ public class ServerInfoUtil {
 
     public static void main(String[] args) {
         final Disk dist = currentDisk();
-        System.out.println(dist.getTotalSpaceUnit()+" : "+dist.getUsedSpaceSpaceUnit());
+        System.out.println(dist.getTotalSpaceUnit()+" : "+dist.getUsedSpaceUnit());
     }
 
 }

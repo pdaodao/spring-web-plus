@@ -40,7 +40,7 @@ public class Disk implements Serializable {
     private String usableSpaceUnit;
 
     @Schema(description = "磁盘总大小带单位")
-    private String usedSpaceSpaceUnit;
+    private String usedSpaceUnit;
 
     @Schema(description = "可用百分比")
     private BigDecimal usableRate;
