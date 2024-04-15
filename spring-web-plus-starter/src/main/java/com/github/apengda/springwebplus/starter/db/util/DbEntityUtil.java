@@ -132,7 +132,7 @@ public class DbEntityUtil {
         }
         // 字段长度
         final Length size = propDesc.getField().getAnnotation(Length.class);
-        if (size != null && ff.getSize() > 1) {
+        if (size != null && size.max() > 1) {
             ff.setSize(size.max());
         }
         // 字符串类型
