@@ -12,15 +12,15 @@
 
 ## 如何使用
 
-1. git clone https://github.com/apengda/spring-web-plus.git
+1. git clone https://github.com/pdaodao/spring-web-plus.git
 2. mvn clean install
 3. 引入依赖
 
 ```
 <dependency>
-    <groupId>com.github.apengda</groupId>
-    <artifactId>spring-web-plus</artifactId>
-    <version>2.0</version>
+    <groupId>com.github.pdaodao</groupId>
+    <artifactId>spring-web-plus-starter</artifactId>
+    <version>3.0</version>
 </dependency>
 ```
 

@@ -4,16 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.apengda</groupId>
-
-    <artifactId>spring-web-plus-parent</artifactId>
+    <groupId>com.github.pdaodao</groupId>
+    <artifactId>spring-web-plus</artifactId>
     <packaging>pom</packaging>
-
-    <version>2.0</version>
+    <version>3.0</version>
     <modules>
-        <module>spring-web-plus-starter</module>
-        <module>spring-web-plus</module>
+        <module>spring-web-plus-base</module>
         <module>spring-web-plus-fs</module>
+        <module>spring-web-plus-starter</module>
     </modules>
 
     <properties>
@@ -47,21 +45,20 @@
                 <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
                 <version>4.5.0</version>
             </dependency>
-
             <dependency>
-                <groupId>com.github.apengda</groupId>
-                <artifactId>spring-web-plus-starter</artifactId>
-                <version>2.0</version>
+                <groupId>com.github.pdaodao</groupId>
+                <artifactId>spring-web-plus-base</artifactId>
+                <version>3.0</version>
             </dependency>
             <dependency>
-                <groupId>com.github.apengda</groupId>
+                <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-fs</artifactId>
-                <version>2.0</version>
+                <version>3.0</version>
             </dependency>
             <dependency>
-                <groupId>com.github.apengda</groupId>
-                <artifactId>spring-web-plus</artifactId>
-                <version>2.0</version>
+                <groupId>com.github.pdaodao</groupId>
+                <artifactId>spring-web-plus-starter</artifactId>
+                <version>3.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
