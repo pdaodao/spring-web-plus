@@ -2,8 +2,8 @@ package com.github.pdaodao.springwebplus.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.pdaodao.springwebplus.starter.entity.SnowIdWithTimeEntity;
-import com.github.pdaodao.springwebplus.starter.entity.WithChildren;
+import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeEntity;
+import com.github.pdaodao.springwebplus.base.entity.WithChildren;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

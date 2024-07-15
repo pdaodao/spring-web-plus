@@ -1,7 +1,7 @@
 package com.baomidou.mybatisplus.core.toolkit;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.github.pdaodao.springwebplus.starter.util.PageHelper;
+import com.github.pdaodao.springwebplus.base.util.PageHelper;
 
 import java.util.Map;
 import java.util.Optional;

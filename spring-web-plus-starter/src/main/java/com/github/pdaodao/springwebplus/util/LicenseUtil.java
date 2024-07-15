@@ -10,8 +10,8 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.pdaodao.springwebplus.starter.util.DateTimeUtil;
-import com.github.pdaodao.springwebplus.starter.util.JsonUtil;
+import com.github.pdaodao.springwebplus.base.util.DateTimeUtil;
+import com.github.pdaodao.springwebplus.base.util.JsonUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.javax0.license3j.licensor.HardwareBinder;
 import lombok.Data;
@@ -78,7 +78,7 @@ public class LicenseUtil {
 
 
     public static LicenseInfo readLicense() throws Exception {
-        final String json = com.github.pdaodao.springwebplus.starter.util.FileUtil.loadClassPathFileStr(FileName);
+        final String json = com.github.pdaodao.springwebplus.base.util.FileUtil.loadClassPathFileStr(FileName);
         return parse(json);
     }
 

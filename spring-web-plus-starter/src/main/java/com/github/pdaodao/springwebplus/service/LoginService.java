@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.service;
 
-import com.github.pdaodao.springwebplus.starter.pojo.CurrentUserInfo;
-import com.github.pdaodao.springwebplus.starter.pojo.LoginInfo;
+import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
+import com.github.pdaodao.springwebplus.base.pojo.LoginInfo;
 import org.springframework.stereotype.Service;
 
 /**

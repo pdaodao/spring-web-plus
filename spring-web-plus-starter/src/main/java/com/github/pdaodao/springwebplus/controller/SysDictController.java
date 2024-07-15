@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.controller;
 
 import com.github.pdaodao.springwebplus.dao.SysDicDao;
 import com.github.pdaodao.springwebplus.entity.SysDict;
-import com.github.pdaodao.springwebplus.starter.auth.Permission;
+import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

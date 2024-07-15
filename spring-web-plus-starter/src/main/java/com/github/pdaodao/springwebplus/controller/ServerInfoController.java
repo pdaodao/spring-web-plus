@@ -4,7 +4,7 @@ import cn.hutool.system.SystemUtil;
 import com.github.pdaodao.springwebplus.ext.ServerInfoUtil;
 import com.github.pdaodao.springwebplus.ext.pojo.ProjectInfo;
 import com.github.pdaodao.springwebplus.ext.pojo.ServerInfo;
-import com.github.pdaodao.springwebplus.starter.auth.Permission;
+import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

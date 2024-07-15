@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.dao;
 
 import com.github.pdaodao.springwebplus.entity.SysUserRole;
 import com.github.pdaodao.springwebplus.mapper.SysUserRoleMapper;
-import com.github.pdaodao.springwebplus.starter.dao.BaseDao;
+import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,8 +3,8 @@ package com.github.pdaodao.springwebplus.dao;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.mapper.SysUserMapper;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
-import com.github.pdaodao.springwebplus.starter.dao.BaseDao;
-import com.github.pdaodao.springwebplus.starter.query.QueryBuilder;
+import com.github.pdaodao.springwebplus.base.dao.BaseDao;
+import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
