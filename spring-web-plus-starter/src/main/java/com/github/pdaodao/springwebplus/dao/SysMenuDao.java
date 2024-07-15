@@ -11,6 +11,7 @@ import com.github.pdaodao.springwebplus.starter.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -50,14 +51,15 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
     }
 
     /**
-     *  删除菜单
+     * 删除菜单
+     *
      * @param id
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteById(final String id){
+    public Boolean deleteById(final String id) {
         final SysMenu sysMenu = getById(id);
-        if(sysMenu == null){
+        if (sysMenu == null) {
             return true;
         }
         // 查询到子项
@@ -70,15 +72,16 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
 
     /**
      * 所有的子项列表
+     *
      * @param id
      * @return
      */
     private Set<String> subDeepIds(final String id) {
         final Set<String> ids = getIdByPids(ListUtil.list(false, id));
         int size = ids.size();
-        for(int i = 0 ;i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             ids.addAll(getIdByPids(ids));
-            if(size >= ids.size()){
+            if (size >= ids.size()) {
                 break;
             }
             size = ids.size();
@@ -86,14 +89,14 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
         return ids;
     }
 
-    private Set<String> getIdByPids(final Collection<String> pids){
+    private Set<String> getIdByPids(final Collection<String> pids) {
         final List<SysMenu> list = byPids(pids);
         return list.stream().map(t -> t.getId()).collect(Collectors.toSet());
     }
 
 
-    private List<SysMenu> byPids(final Collection<String> pids){
-        if(CollUtil.isEmpty(pids)){
+    private List<SysMenu> byPids(final Collection<String> pids) {
+        if (CollUtil.isEmpty(pids)) {
             return ListUtil.empty();
         }
         return list(QueryBuilder.lambda(SysMenu.class)

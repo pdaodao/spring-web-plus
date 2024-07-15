@@ -15,7 +15,7 @@ public class DbFieldFillHandler implements MetaObjectHandler {
         final Date now = new Date();
         this.setFieldValByName("createTime", now, metaObject);
         this.setFieldValByName("updateTime", now, metaObject);
-        if(metaObject.hasSetter("creatorId")){
+        if (metaObject.hasSetter("creatorId")) {
             this.setFieldValByName("creatorId", RequestUtil.getUserId(), metaObject);
             this.setFieldValByName("creatorNick", RequestUtil.getUserNickname(), metaObject);
             this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
@@ -27,7 +27,7 @@ public class DbFieldFillHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         Date now = new Date();
         this.setFieldValByName("updateTime", now, metaObject);
-        if(metaObject.hasSetter("updatorId")){
+        if (metaObject.hasSetter("updatorId")) {
             this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
             this.setFieldValByName("updatorNick", RequestUtil.getUserId(), metaObject);
         }

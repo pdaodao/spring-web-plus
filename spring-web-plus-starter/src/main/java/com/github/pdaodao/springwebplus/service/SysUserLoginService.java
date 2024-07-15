@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.starter.pojo.LoginInfo;
-import com.github.pdaodao.springwebplus.starter.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

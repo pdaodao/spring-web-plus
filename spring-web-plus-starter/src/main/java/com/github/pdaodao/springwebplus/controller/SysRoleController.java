@@ -5,7 +5,7 @@ import com.github.pdaodao.springwebplus.entity.SysRole;
 import com.github.pdaodao.springwebplus.entity.SysRoleMenu;
 import com.github.pdaodao.springwebplus.query.SysRoleQuery;
 import com.github.pdaodao.springwebplus.starter.auth.Permission;
-import com.github.pdaodao.springwebplus.starter.pojo.PageR;
+import com.github.pdaodao.springwebplus.starter.pojo.PageResult;
 import com.github.pdaodao.springwebplus.starter.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.starter.util.PageHelper;
 import com.github.pdaodao.springwebplus.util.Constant;
@@ -58,8 +58,8 @@ public class SysRoleController {
     @GetMapping("/page")
     @Operation(summary = "系统角色分页列表")
     @Permission("sys:role:page")
-    public PageR<SysRole> getSysRolePage(SysRoleQuery query,
-                                         final PageRequestParam pageRequestParam) {
+    public PageResult<SysRole> getSysRolePage(SysRoleQuery query,
+                                              final PageRequestParam pageRequestParam) {
         try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
             List<SysRole> list = roleDao.list();
             return pageHelper.toPageResult(list);

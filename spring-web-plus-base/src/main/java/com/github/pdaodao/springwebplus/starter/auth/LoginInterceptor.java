@@ -6,7 +6,7 @@ import com.github.pdaodao.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.starter.pojo.RestCode;
 import com.github.pdaodao.springwebplus.starter.pojo.RestException;
 import com.github.pdaodao.springwebplus.starter.service.TokenStore;
-import com.github.pdaodao.springwebplus.starter.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.starter.util.RequestUtil;
 import com.github.pdaodao.springwebplus.starter.util.TokenUtil;
 import lombok.AllArgsConstructor;
@@ -40,13 +40,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         // 用户信息
         final String token = TokenUtil.getToken(request);
-        if(StrUtil.isBlank(token)){
+        if (StrUtil.isBlank(token)) {
             throw new RestException(RestCode.NO_USER_INFO, "请登录后再操作.");
         }
         Preconditions.checkNotBlank(token, "请登录后再操作.");
         TokenUtil.setToken(token);
         final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(token);
-        if(currentUserInfo == null){
+        if (currentUserInfo == null) {
             throw new RestException(RestCode.NO_USER_INFO, "请重新登录后再操作.");
         }
         RequestUtil.setCurrentUser(currentUserInfo);

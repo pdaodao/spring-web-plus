@@ -44,10 +44,10 @@ public class ResponseUtil {
 
 
     /**
-     * @param fileName 文件名称
-     * @param bytes    文件二进制
+     * @param fileName  文件名称
+     * @param bytes     文件二进制
      * @param response
-     * @param isAttach 是否是附件的方式
+     * @param isAttach  是否是附件的方式
      * @param cacheTime 缓存时间
      * @throws Exception
      */
@@ -64,6 +64,7 @@ public class ResponseUtil {
 
     /**
      * 设置相应头
+     *
      * @param fileName
      * @param response
      * @param isAttach
@@ -74,8 +75,8 @@ public class ResponseUtil {
         if (isAttach) {
             response.setContentType("application/octet-stream; charset=UTF-8");
         } else {
-            if(cacheTime != null){
-                response.setHeader("Cache-Control", "max-age="+cacheTime);
+            if (cacheTime != null) {
+                response.setHeader("Cache-Control", "max-age=" + cacheTime);
             }
             final String suffix = FileUtil.getSuffix(fileName);
             if (StringUtils.isNotEmpty(suffix)) {

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pdaodao.springwebplus.starter.entity.Entity;
-import com.github.pdaodao.springwebplus.starter.pojo.PageR;
+import com.github.pdaodao.springwebplus.starter.pojo.PageResult;
 import com.github.pdaodao.springwebplus.starter.util.PageHelper;
 import com.github.pdaodao.springwebplus.starter.util.RequestUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +52,7 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
      * @param queryWrapper
      * @return
      */
-    public PageR<T> listPage(final Wrapper<T> queryWrapper) {
+    public PageResult<T> listPage(final Wrapper<T> queryWrapper) {
         try (final PageHelper pageHelper = PageHelper.startPage(RequestUtil.getPageParam())) {
             final List<T> list = list(queryWrapper);
             return pageHelper.toPageResult(list);

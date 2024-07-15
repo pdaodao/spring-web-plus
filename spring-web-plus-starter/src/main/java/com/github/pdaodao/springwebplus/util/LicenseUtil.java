@@ -12,11 +12,12 @@ import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pdaodao.springwebplus.starter.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.starter.util.JsonUtil;
-import com.github.pdaodao.springwebplus.starter.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.javax0.license3j.licensor.HardwareBinder;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
@@ -34,30 +35,30 @@ public class LicenseUtil {
     // 方便可以把 license 配置到配置中心
     public static String LicenseStr = null;
 
-    private static AES getAes(){
+    private static AES getAes() {
         return SecureUtil.aes(key);
     }
 
-    public static void processLicense(){
+    public static void processLicense() {
         Preconditions.assertTrue(ArrayUtil.isEmpty(key), "license-secrete-key is null");
         final Long current = DateUtil.current();
         final StringBuilder sb = new StringBuilder();
         sb.append("\n");
         sb.append(StrUtil.repeat("#", 50)).append("\n\n");
-        try{
-            sb.append("     machine-id:"+getMachineId()).append("\n");
+        try {
+            sb.append("     machine-id:" + getMachineId()).append("\n");
             final LicenseInfo licenseInfo = LicenseUtil.readLicense();
             Preconditions.checkNotNull(licenseInfo.getExpire(), "illegal expire time");
             Long expired = licenseInfo.getExpire().getTime();
-            if(StrUtil.isNotBlank(licenseInfo.getMachineId())){
+            if (StrUtil.isNotBlank(licenseInfo.getMachineId())) {
                 final String id = getMachineId();
                 Preconditions.checkArgument(StrUtil.equalsIgnoreCase(licenseInfo.getMachineId(), id), "invalid machine-id");
             }
             sb.append("\n");
-            if(DateTimeUtil.addDays(new Date(), 5).getTime() > expired){
-                sb.append("license will expired at "+ DateTimeUtil.formatDate(expired)).append("\n");
+            if (DateTimeUtil.addDays(new Date(), 5).getTime() > expired) {
+                sb.append("license will expired at " + DateTimeUtil.formatDate(expired)).append("\n");
             }
-            if(current > expired){
+            if (current > expired) {
                 sb.append("license expired").append("\n");
                 sb.append("sys exist").append("\n");
                 logger.error(sb.toString());
@@ -67,7 +68,7 @@ public class LicenseUtil {
                     DateTimeUtil.formatDateTime(licenseInfo.getExpire())));
             sb.append("\n\n").append(StrUtil.repeat("#", 50));
             logger.info(sb.toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             sb.append(ExceptionUtil.getRootCauseMessage(e)).append("\n");
             sb.append(StrUtil.repeat("#", 50));
             logger.error(sb.toString());
@@ -76,18 +77,17 @@ public class LicenseUtil {
     }
 
 
-
-    public static LicenseInfo readLicense() throws Exception{
+    public static LicenseInfo readLicense() throws Exception {
         final String json = com.github.pdaodao.springwebplus.starter.util.FileUtil.loadClassPathFileStr(FileName);
         return parse(json);
     }
 
-    public static LicenseInfo parse(String content){
+    public static LicenseInfo parse(String content) {
         Preconditions.checkNotEmpty(content, "文件为空");
-        try{
+        try {
             content = decryptPassword(content);
             return JSONUtil.toBean(content, LicenseInfo.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("illegal license.");
         }
     }
@@ -107,13 +107,13 @@ public class LicenseUtil {
 
     public static String getMachineId() throws UnsupportedEncodingException, SocketException, UnknownHostException {
         final HardwareBinder h = new HardwareBinder();
-        if(false == useNetwork){
+        if (false == useNetwork) {
             h.ignoreNetwork();
         }
         return h.getMachineIdString();
     }
 
-    public static void gen(String machineId, String name, Integer day){
+    public static void gen(String machineId, String name, Integer day) {
         final LicenseUtil.LicenseInfo info = new LicenseUtil.LicenseInfo();
         info.setMachineId(machineId);
         info.setName(name);
@@ -122,7 +122,7 @@ public class LicenseUtil {
         String json = JsonUtil.toJsonString(info);
         json = encryptPassword(json);
         String dir = System.getProperty("user.dir");
-        dir =   dir + File.separator + LicenseUtil.FileName;
+        dir = dir + File.separator + LicenseUtil.FileName;
         FileUtil.writeUtf8String(json, dir);
     }
 
@@ -134,7 +134,7 @@ public class LicenseUtil {
     }
 
     @Data
-    public static class LicenseInfo{
+    public static class LicenseInfo {
         // 机器码
         private String machineId;
         // 名称

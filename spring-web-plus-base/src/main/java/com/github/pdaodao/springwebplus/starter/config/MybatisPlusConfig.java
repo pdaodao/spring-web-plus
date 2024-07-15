@@ -37,7 +37,7 @@ public class MybatisPlusConfig {
     }
 
     @Bean
-    public VendorDatabaseIdProvider databaseIdProvider(){
+    public VendorDatabaseIdProvider databaseIdProvider() {
         return new VendorDatabaseIdProvider();
     }
 

@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.starter.pojo;
 
-import com.github.pdaodao.springwebplus.starter.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
 
 /**

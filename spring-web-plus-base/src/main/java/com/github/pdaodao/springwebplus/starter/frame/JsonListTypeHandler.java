@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * 数组数据 json 处理
+ *
  * @param <T>
  */
 public abstract class JsonListTypeHandler<T extends Object> extends AbstractJsonTypeHandler<List<T>> {

@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.starter.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.starter.pojo.R;
 import com.github.pdaodao.springwebplus.starter.pojo.RestCode;
+import com.github.pdaodao.springwebplus.starter.pojo.RestResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
@@ -25,12 +25,12 @@ public class MyErrorController implements ErrorController {
 
     @RequestMapping
     @ResponseBody
-    public R handleError(final HttpServletRequest request, final HttpServletResponse response,
-                         final ModelAndView modelAndView) {
+    public RestResponse handleError(final HttpServletRequest request, final HttpServletResponse response,
+                                    final ModelAndView modelAndView) {
         final String errorMsg = Objects.toString(request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
         final String url = Objects.toString(request.getAttribute(RequestDispatcher.FORWARD_SERVLET_PATH));
         final RestCode code = "Not Found".equals(errorMsg) ? RestCode.NOT_FOUND : RestCode.INTERNAL_SERVER_ERROR;
-        final R restResponse = R.error(code);
+        final RestResponse restResponse = RestResponse.error(code);
         restResponse.setPath(url);
         if (StrUtil.isNotBlank(errorMsg)) {
             restResponse.setMsg(errorMsg);

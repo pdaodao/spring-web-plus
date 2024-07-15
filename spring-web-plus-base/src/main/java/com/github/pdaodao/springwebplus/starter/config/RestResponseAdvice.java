@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.starter.config;
 
 import com.github.pdaodao.springwebplus.starter.pojo.IResponse;
-import com.github.pdaodao.springwebplus.starter.pojo.R;
 import com.github.pdaodao.springwebplus.starter.pojo.RestCode;
+import com.github.pdaodao.springwebplus.starter.pojo.RestResponse;
 import com.github.pdaodao.springwebplus.starter.util.JsonUtil;
 import com.github.pdaodao.springwebplus.starter.util.SpringUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,12 +39,12 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(@Nullable final Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body == null && returnType.getGenericParameterType().getTypeName().equals("void")) {
-            return R.success(body);
+            return RestResponse.success(body);
         }
-        final IResponse restResponse = body instanceof IResponse ? (IResponse) body : R.success(body);
-        if(restResponse instanceof R){
-            R r = (R) restResponse;
-            if(r.getCode() == null){
+        final IResponse restResponse = body instanceof IResponse ? (IResponse) body : RestResponse.success(body);
+        if (restResponse instanceof RestResponse) {
+            RestResponse r = (RestResponse) restResponse;
+            if (r.getCode() == null) {
                 r.setCode(RestCode.SUCCESS.code);
             }
             if (r.getCode() != null && r.getCode() < 600) {

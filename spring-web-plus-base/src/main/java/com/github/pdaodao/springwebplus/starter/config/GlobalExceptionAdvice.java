@@ -1,15 +1,15 @@
 package com.github.pdaodao.springwebplus.starter.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.starter.pojo.R;
 import com.github.pdaodao.springwebplus.starter.pojo.RestCode;
 import com.github.pdaodao.springwebplus.starter.pojo.RestException;
+import com.github.pdaodao.springwebplus.starter.pojo.RestResponse;
 import com.github.pdaodao.springwebplus.starter.service.SysRequestErrorLogService;
 import com.github.pdaodao.springwebplus.starter.support.SysRequestErrorLog;
 import com.github.pdaodao.springwebplus.starter.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.starter.util.IdUtil;
 import com.github.pdaodao.springwebplus.starter.util.RequestUtil;
-import com.github.pdaodao.springwebplus.starter.util.StrUtils;
+import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +36,7 @@ public class GlobalExceptionAdvice {
     private final Optional<SysRequestErrorLogService> logService;
 
     @ExceptionHandler(RestException.class)
-    public R restCodeException(RestException e, HttpServletRequest request, HttpServletResponse response) {
+    public RestResponse restCodeException(RestException e, HttpServletRequest request, HttpServletResponse response) {
         final RestCode restCode = e != null ? e.getCode() : RestCode.INTERNAL_SERVER_ERROR;
         if (restCode.getCode() >= 700) {
             // 局部内容
@@ -52,7 +52,7 @@ public class GlobalExceptionAdvice {
 
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler(ConstraintViolationException.class)
-    public R handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+    public RestResponse handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         String message = e.getConstraintViolations().iterator().next().getMessage();
         return error(RestCode.NOT_ACCEPTABLE, null, request, new Exception(message));
     }
@@ -60,20 +60,20 @@ public class GlobalExceptionAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public RestResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
 
         return error(RestCode.NOT_ACCEPTABLE, null, request, RestException.invalidParam(processBindingResult(e.getBindingResult())));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
-    public R handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+    public RestResponse handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         return error(RestCode.INTERNAL_SERVER_ERROR, null, request, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalArgumentException.class)
-    public R handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+    public RestResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         return error(RestCode.INTERNAL_SERVER_ERROR, null, request, e);
     }
 
@@ -89,8 +89,8 @@ public class GlobalExceptionAdvice {
         return sb.toString();
     }
 
-    private R error(RestCode restCode, Object data, HttpServletRequest request, Exception e) {
-        final R rest = R.error(restCode, data);
+    private RestResponse error(RestCode restCode, Object data, HttpServletRequest request, Exception e) {
+        final RestResponse rest = RestResponse.error(restCode, data);
         rest.setPath(request.getRequestURI());
         rest.setMsg(restCode.getMessage());
         if (e != null) {
@@ -124,7 +124,7 @@ public class GlobalExceptionAdvice {
         return rest;
     }
 
-    private void saveLog(final R ret) {
+    private void saveLog(final RestResponse ret) {
         if (ret == null || !logService.isPresent() || StrUtil.isBlank(ret.getRequestId())) {
             return;
         }

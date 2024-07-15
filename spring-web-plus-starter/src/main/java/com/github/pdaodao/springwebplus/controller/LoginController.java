@@ -9,7 +9,7 @@ import com.github.pdaodao.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.starter.pojo.LoginInfo;
 import com.github.pdaodao.springwebplus.starter.service.TokenStore;
 import com.github.pdaodao.springwebplus.starter.util.IdUtil;
-import com.github.pdaodao.springwebplus.starter.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.starter.util.RequestUtil;
 import com.github.pdaodao.springwebplus.starter.util.TokenUtil;
 import com.github.pdaodao.springwebplus.util.Constant;

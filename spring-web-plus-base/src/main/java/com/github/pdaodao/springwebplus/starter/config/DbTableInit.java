@@ -1,10 +1,10 @@
 package com.github.pdaodao.springwebplus.starter.config;
 
 import cn.hutool.core.collection.CollUtil;
-import com.github.pdaodao.springwebplus.starter.db.pojo.SqlList;
-import com.github.pdaodao.springwebplus.starter.db.util.DDLUtil;
-import com.github.pdaodao.springwebplus.starter.db.util.DbUtil;
-import com.github.pdaodao.springwebplus.starter.db.util.SqlUtil;
+import com.github.pdaodao.springwebplus.starter.util.DDLUtil;
+import com.github.pdaodao.springwebplus.starter.util.SqlUtil;
+import com.github.pdaodao.springwebplus.tool.db.pojo.SqlList;
+import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -41,7 +41,7 @@ public class DbTableInit implements CommandLineRunner, Ordered {
      * 实体自动转为表结构
      */
     private void entityToTable() {
-        if(false == configProperties.getDdlGenEnabled()){
+        if (false == configProperties.getDdlGenEnabled()) {
             return;
         }
         DDLUtil.dbCheck(dataSource, configProperties.getDdlGenDeleteField());

@@ -12,6 +12,8 @@
         <module>spring-web-plus-base</module>
         <module>spring-web-plus-fs</module>
         <module>spring-web-plus-starter</module>
+        <module>spring-web-plus-bflow</module>
+        <module>spring-web-plus-tool</module>
     </modules>
 
     <properties>
@@ -47,6 +49,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.pdaodao</groupId>
+                <artifactId>spring-web-plus-tool</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-base</artifactId>
                 <version>3.0</version>
             </dependency>
@@ -58,6 +65,11 @@
             <dependency>
                 <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-starter</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pdaodao</groupId>
+                <artifactId>spring-web-plus-bflow</artifactId>
                 <version>3.0</version>
             </dependency>
         </dependencies>

@@ -226,7 +226,7 @@ public class ServerInfoUtil {
         return null;
     }
 
-    private static Disk diskInfo(final OSFileStore fileStore){
+    private static Disk diskInfo(final OSFileStore fileStore) {
         // 磁盘路径
         String mount = fileStore.getMount();
         // 文件系统类型
@@ -271,8 +271,8 @@ public class ServerInfoUtil {
             final OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
             final FileSystem fileSystem = operatingSystem.getFileSystem();
             final List<OSFileStore> fileStores = fileSystem.getFileStores();
-            for(final OSFileStore fileStore: fileStores){
-                if(currentDir.startsWith(fileStore.getLogicalVolume())){
+            for (final OSFileStore fileStore : fileStores) {
+                if (currentDir.startsWith(fileStore.getLogicalVolume())) {
                     return diskInfo(fileStore);
                 }
             }
@@ -285,7 +285,7 @@ public class ServerInfoUtil {
 
     public static void main(String[] args) {
         final Disk dist = currentDisk();
-        System.out.println(dist.getTotalSpaceUnit()+" : "+dist.getUsedSpaceUnit());
+        System.out.println(dist.getTotalSpaceUnit() + " : " + dist.getUsedSpaceUnit());
     }
 
 }

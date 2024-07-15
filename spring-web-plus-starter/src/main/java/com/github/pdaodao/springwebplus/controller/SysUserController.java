@@ -4,7 +4,7 @@ import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.service.SysUserService;
 import com.github.pdaodao.springwebplus.starter.auth.Permission;
-import com.github.pdaodao.springwebplus.starter.pojo.PageR;
+import com.github.pdaodao.springwebplus.starter.pojo.PageResult;
 import com.github.pdaodao.springwebplus.starter.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.starter.util.PageHelper;
 import com.github.pdaodao.springwebplus.util.Constant;
@@ -59,7 +59,7 @@ public class SysUserController {
     @Operation(summary = "系统用户分页列表")
     @GetMapping("/page")
     @Permission("sys:user:page")
-    public PageR<SysUser> listPage(SysUserQuery userQuery, PageRequestParam pageRequestParam) {
+    public PageResult<SysUser> listPage(SysUserQuery userQuery, PageRequestParam pageRequestParam) {
         try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
             final List<SysUser> users = sysUserService.list(userQuery);
             return pageHelper.toPageResult(users);

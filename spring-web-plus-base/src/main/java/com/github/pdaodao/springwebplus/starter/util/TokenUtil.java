@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.starter.util;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

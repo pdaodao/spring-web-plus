@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.starter.util;
 
 import com.github.pdaodao.springwebplus.starter.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.starter.pojo.PageRequestParam;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 public class RequestUtil {
     private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();

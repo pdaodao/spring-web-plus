@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.starter.config.support;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.starter.pojo.PageRequestParam;
-import com.github.pdaodao.springwebplus.starter.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.starter.util.RequestUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
