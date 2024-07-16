@@ -28,7 +28,7 @@ public class MysqlDDLGen extends BaseDDLGen {
     protected String genDDLTableComment(TableInfo tableInfo, DDLBuildContext ddlBuildContext) {
         final StringBuilder sb = new StringBuilder();
         if (StrUtil.isNotBlank(tableInfo.getComment())) {
-            sb.append("\nCOMMENT '").append(StrUtils.cleanComment(tableInfo.getComment())).append("'");
+            sb.append("\nCOMMENT '").append(StrUtils.clean(tableInfo.getComment(), 60)).append("'");
         }
         return sb.toString();
     }
