@@ -68,7 +68,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @return
      */
     protected String genDDLFieldComment(ColumnInfo field, DDLBuildContext context) {
-        return StrUtil.format(" COMMENT '{}' ", StrUtils.cleanComment(field.getComment()));
+        return StrUtil.format(" COMMENT '{}' ", StrUtils.clean(field.getComment(), 60));
     }
 
 

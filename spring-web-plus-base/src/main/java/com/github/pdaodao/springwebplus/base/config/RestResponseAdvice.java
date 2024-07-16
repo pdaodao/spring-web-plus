@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * 接口返回值封装
  */
 @RestControllerAdvice
-@ConditionalOnProperty(value = "global.restresponse", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "global.restResponse", havingValue = "true", matchIfMissing = true)
 public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
