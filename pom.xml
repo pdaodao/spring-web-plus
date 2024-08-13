@@ -77,6 +77,16 @@
                 <artifactId>opencsv</artifactId>
                 <version>5.9</version>
             </dependency>
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>3.17.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>8.3.8</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

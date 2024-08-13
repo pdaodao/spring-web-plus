@@ -1,0 +1,5 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.pdaodao.springwebplus.fs.local.LocalAutoConfig,\
+com.github.pdaodao.springwebplus.fs.minio.MinioAutoConfig,\
+com.github.pdaodao.springwebplus.fs.oss.OssAutoConfig
