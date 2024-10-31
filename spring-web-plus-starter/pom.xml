@@ -23,11 +23,6 @@
             <artifactId>spring-web-plus-fs</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.verhas</groupId>
-            <artifactId>license3j</artifactId>
-            <version>2.0.0-JVM8</version>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
@@ -35,7 +30,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.4.1</version>
+            <version>6.6.5</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>

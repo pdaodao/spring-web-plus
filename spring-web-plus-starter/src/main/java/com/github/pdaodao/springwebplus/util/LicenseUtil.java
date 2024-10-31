@@ -7,21 +7,22 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pdaodao.springwebplus.base.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.base.util.JsonUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import com.javax0.license3j.licensor.HardwareBinder;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.ComputerSystem;
+import oshi.hardware.HardwareAbstractionLayer;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Date;
 
 /**
@@ -76,7 +77,6 @@ public class LicenseUtil {
         }
     }
 
-
     public static LicenseInfo readLicense() throws Exception {
         final String json = com.github.pdaodao.springwebplus.base.util.FileUtil.loadClassPathFileStr(FileName);
         return parse(json);
@@ -92,6 +92,7 @@ public class LicenseUtil {
         }
     }
 
+
     /**
      * 解密密码
      *
@@ -105,12 +106,24 @@ public class LicenseUtil {
         return getAes().decryptStr(password);
     }
 
-    public static String getMachineId() throws UnsupportedEncodingException, SocketException, UnknownHostException {
-        final HardwareBinder h = new HardwareBinder();
-        if (false == useNetwork) {
-            h.ignoreNetwork();
-        }
-        return h.getMachineIdString();
+    public static String getMachineId() {
+        // 获取硬件信息
+        final SystemInfo systemInfo = new SystemInfo();
+        final HardwareAbstractionLayer hardware = systemInfo.getHardware();
+        final CentralProcessor processor = hardware.getProcessor();
+        final ComputerSystem computerSystem = hardware.getComputerSystem();
+
+        // 获取 CPU 序列号、主板序列号、磁盘序列号
+        final String cpuSerial = processor.getProcessorIdentifier().getProcessorID();
+        final String motherboardSerial = computerSystem.getBaseboard().getSerialNumber();
+        final String diskSerial = hardware.getDiskStores().stream()
+                .findFirst().map(disk -> disk.getSerial()).orElse("unknown");
+
+        // 将所有序列号连接
+        final String uniqueInfo = cpuSerial + motherboardSerial + diskSerial;
+
+        // 对信息进行哈希，生成唯一机器码
+        return DigestUtil.sha256Hex(uniqueInfo);
     }
 
     public static void gen(String machineId, String name, Integer day) {
@@ -124,6 +137,11 @@ public class LicenseUtil {
         String dir = System.getProperty("user.dir");
         dir = dir + File.separator + LicenseUtil.FileName;
         FileUtil.writeUtf8String(json, dir);
+    }
+
+    public static void main(String[] args) throws Exception {
+        final String id = getMachineId();
+        System.out.println(id);
     }
 
     public static String encryptPassword(String password) {
