@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.service;
 
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
-import com.github.pdaodao.springwebplus.base.pojo.LoginInfo;
+import com.github.pdaodao.springwebplus.base.pojo.LoginUserInfo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +15,7 @@ public interface LoginService {
      * @param loginInfo
      * @return
      */
-    CurrentUserInfo login(final LoginInfo loginInfo);
+    CurrentUserInfo login(final LoginUserInfo loginInfo);
 
     /*
      * 退出登录

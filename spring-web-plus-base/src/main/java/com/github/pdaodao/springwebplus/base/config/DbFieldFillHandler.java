@@ -17,9 +17,9 @@ public class DbFieldFillHandler implements MetaObjectHandler {
         this.setFieldValByName("updateTime", now, metaObject);
         if (metaObject.hasSetter("creatorId")) {
             this.setFieldValByName("creatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("creatorNick", RequestUtil.getUserNickname(), metaObject);
+            this.setFieldValByName("creatorTitle", RequestUtil.getUserNickname(), metaObject);
             this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("updatorNick", RequestUtil.getUserId(), metaObject);
+            this.setFieldValByName("updatorTitle", RequestUtil.getUserId(), metaObject);
         }
     }
 
@@ -29,7 +29,7 @@ public class DbFieldFillHandler implements MetaObjectHandler {
         this.setFieldValByName("updateTime", now, metaObject);
         if (metaObject.hasSetter("updatorId")) {
             this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("updatorNick", RequestUtil.getUserId(), metaObject);
+            this.setFieldValByName("updatorTitle", RequestUtil.getUserId(), metaObject);
         }
     }
 }

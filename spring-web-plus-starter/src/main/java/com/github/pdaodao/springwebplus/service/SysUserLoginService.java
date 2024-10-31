@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
-import com.github.pdaodao.springwebplus.base.pojo.LoginInfo;
+import com.github.pdaodao.springwebplus.base.pojo.LoginUserInfo;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
@@ -18,7 +18,7 @@ public class SysUserLoginService implements LoginService {
     private final SysUserService sysUserService;
 
     @Override
-    public CurrentUserInfo login(final LoginInfo loginInfo) {
+    public CurrentUserInfo login(final LoginUserInfo loginInfo) {
         Preconditions.checkNotBlank(loginInfo.getUsername(), "用户名为空.");
         Preconditions.checkNotBlank(loginInfo.getPassword(), "密码为空.");
         final SysUser sysUser = sysUserService.infoWithRole(null, loginInfo.getUsername());

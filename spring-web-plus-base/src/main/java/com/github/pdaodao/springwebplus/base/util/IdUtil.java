@@ -10,21 +10,15 @@ import java.util.*;
 import java.util.function.Function;
 
 public class IdUtil {
-    public static final String BaseChar = "123456789abcdefghjkmnpqrstuvwxyz";
+    public static final String BaseChar = "123456789abcdefghjkmnpqrstvwxyz";
+    public static final int Size = BaseChar.length();
 
-    /**
-     * 转为字符串
-     *
-     * @param number
-     * @return
-     */
     private static String convertToAlphanumeric(long number) {
-        int base = BaseChar.length();
         final StringBuilder result = new StringBuilder();
         while (number > 0) {
-            int remainder = (int) (number % base);
+            int remainder = (int) (number % Size);
             result.insert(0, BaseChar.charAt(remainder));
-            number /= base;
+            number /= Size;
         }
         return result.toString();
     }

@@ -13,12 +13,12 @@ public class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity implements Wi
 
     @Schema(description = "创建者姓名")
     @TableField(updateStrategy = FieldStrategy.NEVER)
-    private String creatorNick;
+    private String creatorTitle;
 
 
     @Schema(description = "更新者id")
     private String updatorId;
 
     @Schema(description = "更新者姓名")
-    private String updatorNick;
+    private String updatorTitle;
 }

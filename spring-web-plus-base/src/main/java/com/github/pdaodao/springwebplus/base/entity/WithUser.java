@@ -5,15 +5,15 @@ public interface WithUser {
 
     void setCreatorId(String creatorId);
 
-    String getCreatorNick();
+    String getCreatorTitle();
 
-    void setCreatorNick(String creatorNick);
+    void setCreatorTitle(String creatorNick);
 
     String getUpdatorId();
 
     void setUpdatorId(String updatorId);
 
-    String getUpdatorNick();
+    String getUpdatorTitle();
 
-    void setUpdatorNick(String updatorNick);
+    void setUpdatorTitle(String updatorNick);
 }

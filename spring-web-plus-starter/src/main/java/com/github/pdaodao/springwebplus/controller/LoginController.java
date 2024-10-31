@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.controller;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
-import com.github.pdaodao.springwebplus.base.pojo.LoginInfo;
+import com.github.pdaodao.springwebplus.base.pojo.LoginUserInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
@@ -35,7 +35,7 @@ public class LoginController {
     @PostMapping
     @Operation(summary = "登录")
     @IgnoreLogin
-    public CurrentUserInfo login(@Valid @RequestBody LoginInfo loginInfo, HttpServletResponse response) {
+    public CurrentUserInfo login(@Valid @RequestBody LoginUserInfo loginInfo, HttpServletResponse response) {
         final CurrentUserInfo userInfo = loginService.login(loginInfo);
         final String token = tokenStore.buildToken(userInfo);
         tokenStore.storeToken(token, userInfo);

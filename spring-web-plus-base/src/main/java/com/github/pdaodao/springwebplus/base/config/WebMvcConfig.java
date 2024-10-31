@@ -3,6 +3,10 @@ package com.github.pdaodao.springwebplus.base.config;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.github.pdaodao.springwebplus.base.auth.LoginInterceptor;
 import com.github.pdaodao.springwebplus.base.config.support.CurrentUserInfoParamResolver;
 import com.github.pdaodao.springwebplus.base.config.support.HolderClearInterceptor;
@@ -11,6 +15,7 @@ import com.github.pdaodao.springwebplus.base.config.support.WebappFile;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -22,6 +27,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +40,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
     private final LoginInterceptor loginInterceptor;
 
-    public Jackson2ObjectMapperBuilderCustomizer customizer() {
-        return builder -> builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
+        return builder -> {
+            builder.simpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            builder.failOnUnknownProperties(false);
+            builder.timeZone("Asia/Shanghai");
+            builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+            builder.serializerByType(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            builder.deserializerByType(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            builder.serializerByType(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            builder.deserializerByType(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        };
     }
 
     @Override

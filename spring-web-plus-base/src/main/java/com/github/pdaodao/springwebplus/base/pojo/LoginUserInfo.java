@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "登录信息")
-public class LoginInfo {
+public class LoginUserInfo {
     @Schema(description = "用户名")
     @NotBlank(message = "用户名不能为空")
     private String username;
