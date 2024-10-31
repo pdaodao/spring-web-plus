@@ -13,27 +13,28 @@ import java.util.Date;
 public interface FileStorage {
     /**
      * 文件保存时拼装全路径
-     * @param baseRootPath     根路径
-     * @param relativePath     相对路径
-     * @param fileName         文件名称
+     *
+     * @param baseRootPath 根路径
+     * @param relativePath 相对路径
+     * @param fileName     文件名称
      * @return
      */
-    default String concatPathForSave(final String baseRootPath, final String relativePath, String fileName){
+    default String concatPathForSave(final String baseRootPath, final String relativePath, String fileName) {
         Preconditions.checkNotEmpty(fileName, "文件名称不能为空");
         fileName = FileNameUtil.cleanInvalid(fileName);
 
         String fullPath = FilePathUtil.pathJoin(baseRootPath, relativePath, fileName);
         fullPath = processPathForSave(fullPath);
-        if(exist(fullPath)){
+        if (exist(fullPath)) {
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            for(int i = 0; i < 100; i++){
-                String name = sdf.format(new Date())+i+fileName;
-                if(i > 90){
-                    name = IdUtil.fastSimpleUUID()+fileName;
+            for (int i = 0; i < 100; i++) {
+                String name = sdf.format(new Date()) + i + fileName;
+                if (i > 90) {
+                    name = IdUtil.fastSimpleUUID() + fileName;
                 }
                 fullPath = FilePathUtil.pathJoin(baseRootPath, relativePath, name);
                 fullPath = processPathForSave(fullPath);
-                if(!exist(fullPath)){
+                if (!exist(fullPath)) {
                     break;
                 }
             }
@@ -43,13 +44,14 @@ public interface FileStorage {
 
     void init() throws Exception;
 
-    default String processPathForSave(String fullPath){
+    default String processPathForSave(String fullPath) {
         return fullPath;
     }
 
 
     /**
      * 文件是否存在
+     *
      * @param fullPath 文件全路径
      * @return
      */
@@ -58,10 +60,11 @@ public interface FileStorage {
 
     /**
      * 上传文件
-     * @param basePath          相对地址
-     * @param fileSize          文件大小
-     * @param fileName          文件名称
-     * @param inputStream       输入文件流
+     *
+     * @param basePath    相对地址
+     * @param fileSize    文件大小
+     * @param fileName    文件名称
+     * @param inputStream 输入文件流
      * @return
      * @throws IOException
      */
@@ -69,13 +72,14 @@ public interface FileStorage {
 
     /**
      * 上传文件
-     * @param basePath          相对地址
-     * @param fileName          文件名称
-     * @param inputStream       输入文件流
+     *
+     * @param basePath    相对地址
+     * @param fileName    文件名称
+     * @param inputStream 输入文件流
      * @return
      * @throws IOException
      */
-    default String upload(String basePath, String fileName, InputStream inputStream) throws IOException{
+    default String upload(String basePath, String fileName, InputStream inputStream) throws IOException {
         return upload(basePath, Long.valueOf(inputStream.available()), fileName, inputStream);
     }
 

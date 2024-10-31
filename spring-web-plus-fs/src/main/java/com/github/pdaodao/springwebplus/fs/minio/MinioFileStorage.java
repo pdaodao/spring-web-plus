@@ -40,10 +40,10 @@ public class MinioFileStorage implements FileStorage {
 
     @Override
     public Boolean exist(String fullPath) {
-        try{
+        try {
             client.statObject(StatObjectArgs.builder().bucket(config.getBucketName())
                     .object(fullPath).build());
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
         return true;
@@ -58,9 +58,9 @@ public class MinioFileStorage implements FileStorage {
                 .stream(inputStream, fileSize, -1)
                 .contentType(contentType)
                 .build();
-        try{
+        try {
             client.putObject(build);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IOException(e);
         }
         return fullPath;
@@ -68,32 +68,32 @@ public class MinioFileStorage implements FileStorage {
 
     @Override
     public InputStreamWrap download(String fullPath) throws IOException {
-        try{
+        try {
             final GetObjectArgs getObjectArgs = GetObjectArgs.builder()
                     .bucket(config.getBucketName())
                     .object(fullPath)
                     .build();
             return InputStreamWrap.of(client.getObject(getObjectArgs));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }
 
     @Override
     public boolean delete(String fullPath) throws IOException, UnsupportedOperationException {
-        try{
+        try {
             client.removeObject(RemoveObjectArgs.builder()
                     .bucket(config.getBucketName())
                     .object(fullPath).build());
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }
 
     @Override
     public String processPathForSave(String fullPath) {
-        return  fullPath.startsWith("/")
+        return fullPath.startsWith("/")
                 ? fullPath.substring(1) : fullPath;
     }
 }

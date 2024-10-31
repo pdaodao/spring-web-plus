@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.tool.util;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+
 import java.util.regex.Pattern;
 
 /**
@@ -13,6 +14,7 @@ public class StrUtils {
 
     /**
      * 截取字符串
+     *
      * @param str
      * @param maxLength
      * @return
@@ -43,6 +45,7 @@ public class StrUtils {
 
     /**
      * 清除字符串中的无效字符的同时截取指定长度
+     *
      * @param remark
      * @param maxLength
      * @return
@@ -61,7 +64,7 @@ public class StrUtils {
      * @return
      */
     public static String toUnderlineCase(final String name) {
-        if(StrUtil.isBlank(name)){
+        if (StrUtil.isBlank(name)) {
             return StrUtil.EMPTY;
         }
         return CharSequenceUtil.toUnderlineCase(name.trim()).toLowerCase();
@@ -74,7 +77,7 @@ public class StrUtils {
      * @return
      */
     public static String toCamelCase(final String name) {
-        if(StrUtil.isBlank(name)){
+        if (StrUtil.isBlank(name)) {
             return StrUtil.EMPTY;
         }
         return CharSequenceUtil.toCamelCase(name.trim());

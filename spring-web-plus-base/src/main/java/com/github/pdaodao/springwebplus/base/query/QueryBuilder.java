@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.base.query;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 
 public class QueryBuilder {
 

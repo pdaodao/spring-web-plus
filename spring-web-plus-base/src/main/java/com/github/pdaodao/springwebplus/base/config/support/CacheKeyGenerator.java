@@ -2,11 +2,11 @@ package com.github.pdaodao.springwebplus.base.config.support;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import com.github.pdaodao.springwebplus.base.util.JsonUtil;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.core.io.InputStreamSource;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.lang.reflect.Method;
 
 

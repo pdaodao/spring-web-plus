@@ -1,10 +1,10 @@
 package com.github.pdaodao.springwebplus.dao;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.github.pdaodao.springwebplus.entity.SysRoleMenu;
-import com.github.pdaodao.springwebplus.mapper.SysRoleMenuMapper;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
+import com.github.pdaodao.springwebplus.entity.SysRoleMenu;
+import com.github.pdaodao.springwebplus.mapper.SysRoleMenuMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

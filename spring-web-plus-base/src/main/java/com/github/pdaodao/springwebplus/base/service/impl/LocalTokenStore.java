@@ -2,11 +2,11 @@ package com.github.pdaodao.springwebplus.base.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 
 import java.time.Duration;
 

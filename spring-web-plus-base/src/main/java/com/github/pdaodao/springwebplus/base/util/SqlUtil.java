@@ -104,7 +104,8 @@ public class SqlUtil {
                     .append(" WHERE ");
             final List<String> cnds = new ArrayList<>();
 
-            final List<Expression> values = ((ExpressionList) st.getItemsList()).getExpressions();
+
+            final List<Expression> values = ((ExpressionList) st.getWithItemsList()).getExpressions();
             for (int i = 0; i < st.getColumns().size(); i++) {
                 final String field = st.getColumns().get(i).getColumnName();
                 final Expression exp = values.get(i);

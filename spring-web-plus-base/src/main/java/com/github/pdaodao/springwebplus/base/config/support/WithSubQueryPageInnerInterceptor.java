@@ -23,7 +23,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ import java.util.Map;
  * 例如 当按订单分页查询同时需要带上商品信息时 使用
  * select a.*, g.*
  * from (
- *  select * from t_orders LIMIT 0
+ * select * from t_orders LIMIT 0
  * ) a
  * left join t_goods g on a.id = g.order_id
  */
@@ -42,23 +41,24 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
 
     /**
      * 处理 LIMIT 0   返回中间部分
-     * @param sql              原始sql
-     * @param replacedSql      替换后的sql语句接收器
+     *
+     * @param sql         原始sql
+     * @param replacedSql 替换后的sql语句接收器
      * @return
      */
-    protected String getAndReplaceSubQueryPage(final String sql, final StringBuilder replacedSql){
-        try{
+    protected String getAndReplaceSubQueryPage(final String sql, final StringBuilder replacedSql) {
+        try {
             final Select select = (Select) CCJSqlParserUtil.parse(sql);
             final PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
             // LIMIT 0 部分
-            final SelectBody r = parseSubPagePart(plainSelect);
-            if(r == null){
+            final PlainSelect r = parseSubPagePart(plainSelect);
+            if (r == null) {
                 return sql;
             }
             final String ret = r.toString();
 
             // 把该部分 sql 语句暂时替换为 一个表名 方便后续处理
-            final PlainSelect rp = (PlainSelect)r;
+            final PlainSelect rp = (PlainSelect) r;
             rp.setJoins(null);
             rp.setFromItem(new Table("zdzq1"));
             rp.setWhere(null);
@@ -70,17 +70,18 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
 
             replacedSql.append(select);
             return ret;
-        }catch (Exception e){
-            logger.warn("sub query page LIMIT 0: "+e.getMessage());
+        } catch (Exception e) {
+            logger.warn("sub query page LIMIT 0: " + e.getMessage());
         }
         return sql;
     }
 
     /**
      * 如果当前为非分页状态 需要把中间的 LIMIT 0 去掉
+     *
      * @param boundSql
      */
-    private void dropSubQueryPagePart(final BoundSql boundSql){
+    private void dropSubQueryPagePart(final BoundSql boundSql) {
         final PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
         final List<ParameterMapping> mappings = mpBoundSql.parameterMappings();
         final String sql = boundSql.getSql().replace(LimitZeroZero, "");
@@ -89,13 +90,13 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
     }
 
     @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         final boolean isSubQueryPage = isSubPage(boundSql.getSql());
         // 1. pdaodao 获取分页信息
         final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.holder.get());
         if (null == page) {
             // 不需要分页 删除该部分
-            if(isSubQueryPage){
+            if (isSubQueryPage) {
                 dropSubQueryPagePart(boundSql);
             }
             return;
@@ -103,7 +104,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         String buildSql = boundSql.getSql();
         // 2. pdaodao 如果是子查询带分页
         final StringBuilder replacedSql = new StringBuilder();
-        if(isSubQueryPage){
+        if (isSubQueryPage) {
             // 提取中间部分的 sql
             buildSql = getAndReplaceSubQueryPage(buildSql, replacedSql);
         }
@@ -132,7 +133,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         DialectModel model = dialect.buildPaginationSql(buildSql, page.offset(), page.getSize());
 
         // 3. pdaodao 还原 sql
-        if(isSubQueryPage && replacedSql.length() > 1){
+        if (isSubQueryPage && replacedSql.length() > 1) {
             final String ret = replacedSql.toString().replaceFirst("SELECT  FROM zdzq1", model.getDialectSql());
             ReflectUtil.setFieldValue(model, "dialectSql", ret);
         }
@@ -147,11 +148,12 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
 
     /**
      * 是否是子查询中包含分页标识 LIMIT 0
+     *
      * @param sql
      * @return
      */
-    protected boolean isSubPage(final String sql){
-        if(StrUtil.isNotBlank(sql)){
+    protected boolean isSubPage(final String sql) {
+        if (StrUtil.isNotBlank(sql)) {
             return sql.contains(LimitZeroZero);
         }
         return false;
@@ -159,33 +161,34 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
 
     /**
      * 找出子查询分页部分 sql
+     *
      * @param body
      * @return
      */
-    protected SelectBody parseSubPagePart(final SelectBody body){
-        if(body == null){
+    protected PlainSelect parseSubPagePart(final PlainSelect body) {
+        if (body == null) {
             return null;
         }
-        if(body instanceof PlainSelect){
+        if (body instanceof PlainSelect) {
             final PlainSelect ps = (PlainSelect) body;
             final Limit limit = ((PlainSelect) body).getLimit();
-            if(limit != null && StrUtil.equals("0", limit.getRowCount().toString())){
+            if (limit != null && StrUtil.equals("0", limit.getRowCount().toString())) {
                 ((PlainSelect) body).setLimit(null);
                 return body;
             }
-            final FromItem fromItem =  ps.getFromItem();
-            if(fromItem != null && fromItem instanceof SubSelect){
-                final SelectBody subBody = ((SubSelect) fromItem).getSelectBody();
-                final SelectBody r = parseSubPagePart(subBody);
-                if(r != null){
+            final FromItem fromItem = ps.getFromItem();
+            if (fromItem != null && fromItem instanceof LateralSubSelect) {
+                final PlainSelect subBody = (PlainSelect) ((LateralSubSelect) fromItem).getSelectBody();
+                final PlainSelect r = parseSubPagePart(subBody);
+                if (r != null) {
                     return r;
                 }
             }
-            if(CollUtil.isNotEmpty(ps.getJoins())){
-                for(final Join join: ps.getJoins()){
+            if (CollUtil.isNotEmpty(ps.getJoins())) {
+                for (final Join join : ps.getJoins()) {
                     final FromItem rightItem = join.getRightItem();
-                    final SelectBody r = parseSubPagePart(((SubSelect) rightItem).getSelectBody());
-                    if(r != null){
+                    final PlainSelect r = parseSubPagePart((PlainSelect) ((LateralSubSelect) rightItem).getSelectBody());
+                    if (r != null) {
                         return r;
                     }
                 }

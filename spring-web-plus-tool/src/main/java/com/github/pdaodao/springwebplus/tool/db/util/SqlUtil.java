@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.util.StrUtil;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -16,10 +17,11 @@ public class SqlUtil {
 
     /**
      * 提取sql语句中的数据表名称
+     *
      * @param sql
      * @return
      */
-    public static Set<String> parseTableNames(final String sql){
+    public static Set<String> parseTableNames(final String sql) {
         final Set<String> ts = new LinkedHashSet<>();
         if (StrUtil.isBlank(sql)) {
             return ts;
@@ -34,10 +36,11 @@ public class SqlUtil {
 
     /**
      * 提取 sql 语句中的变量 如 #{a}  ${b}
+     *
      * @param sql
      * @return
      */
-    public static Set<String> parseVariables(final String sql){
+    public static Set<String> parseVariables(final String sql) {
         final Set<String> vs = new LinkedHashSet<>();
         if (StrUtil.isBlank(sql)) {
             return vs;
@@ -51,11 +54,12 @@ public class SqlUtil {
 
     /**
      * 去掉 sql语句中的备注
+     *
      * @param sql
      * @return
      */
     public static String trim(final String sql) {
-        if(StrUtil.isBlank(sql)){
+        if (StrUtil.isBlank(sql)) {
             return "";
         }
         return sql.replaceAll("/\\*+[^+][^\\*\r\n\n;]*\\*+/", "")
@@ -69,6 +73,7 @@ public class SqlUtil {
 
     /**
      * 去掉 sql 语句中的转义符
+     *
      * @param sql
      * @return
      */

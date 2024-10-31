@@ -15,12 +15,12 @@ public class InputStreamWrap implements AutoCloseable {
         this.client = client;
     }
 
-    public static InputStreamWrap of(final InputStream in){
+    public static InputStreamWrap of(final InputStream in) {
         final InputStreamWrap w = new InputStreamWrap(in, null);
         return w;
     }
 
-    public static InputStreamWrap of(final InputStream in, Closeable client){
+    public static InputStreamWrap of(final InputStream in, Closeable client) {
         final InputStreamWrap w = new InputStreamWrap(in, client);
         return w;
     }

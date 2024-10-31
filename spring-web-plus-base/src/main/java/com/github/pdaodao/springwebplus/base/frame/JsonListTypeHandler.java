@@ -22,6 +22,7 @@ public abstract class JsonListTypeHandler<T extends Object> extends AbstractJson
     JavaType javaType;
 
     public JsonListTypeHandler(Class<T> clazz) {
+        super(clazz);
         Assert.notNull(clazz, "JsonTypeHandler class is null");
         ResolvableType resolvableType = ResolvableType.forClass(getClass());
         Type type = resolvableType.as(JsonListTypeHandler.class).getGeneric().getType();
@@ -30,8 +31,15 @@ public abstract class JsonListTypeHandler<T extends Object> extends AbstractJson
                 .constructParametricType(ArrayList.class, getObjectMapper().constructType(type));
     }
 
+    public static ObjectMapper getObjectMapper() {
+        if (null == OBJECT_MAPPER) {
+            OBJECT_MAPPER = new ObjectMapper();
+        }
+        return OBJECT_MAPPER;
+    }
+
     @Override
-    protected List<T> parse(final String json) {
+    public List<T> parse(final String json) {
         if (StringUtils.isEmpty(json)) return null;
         try {
             return (List<T>) getObjectMapper().readValue(json, javaType);
@@ -42,18 +50,11 @@ public abstract class JsonListTypeHandler<T extends Object> extends AbstractJson
     }
 
     @Override
-    protected String toJson(List<T> obj) {
+    public String toJson(List<T> obj) {
         try {
             return getObjectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static ObjectMapper getObjectMapper() {
-        if (null == OBJECT_MAPPER) {
-            OBJECT_MAPPER = new ObjectMapper();
-        }
-        return OBJECT_MAPPER;
     }
 }

@@ -13,14 +13,14 @@
         <module>spring-web-plus-base</module>
         <module>spring-web-plus-fs</module>
         <module>spring-web-plus-starter</module>
-        <module>spring-web-plus-bflow</module>
+        <module>spring-web-plus-flow</module>
     </modules>
 
     <properties>
-        <java.version>1.8</java.version>
-        <spring.boot.version>2.7.18</spring.boot.version>
-        <mybatis.plus.version>3.5.4.1</mybatis.plus.version>
-        <kotlin.version>1.9.0</kotlin.version>
+        <java.version>17</java.version>
+        <spring.boot.version>3.3.5</spring.boot.version>
+        <mybatis.plus.version>3.5.9</mybatis.plus.version>
+        <!--        <kotlin.version>1.9.0</kotlin.version>-->
     </properties>
 
     <dependencyManagement>
@@ -33,20 +33,41 @@
                 <type>pom</type>
             </dependency>
             <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>3.0.4</version>
+            </dependency>
+            <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis.plus.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatis.plus.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.23</version>
+                <version>5.8.32</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
                 <version>4.5.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>com.github.yitter</groupId>-->
+            <!--                <artifactId>yitter-idgenerator</artifactId>-->
+            <!--                <version>1.0.6</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-tool</artifactId>
@@ -69,7 +90,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.pdaodao</groupId>
-                <artifactId>spring-web-plus-bflow</artifactId>
+                <artifactId>spring-web-plus-flow</artifactId>
                 <version>3.0</version>
             </dependency>
             <dependency>
@@ -104,7 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -113,7 +134,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.data.DataType;
 
 public interface DataTypeConverter {
     /**

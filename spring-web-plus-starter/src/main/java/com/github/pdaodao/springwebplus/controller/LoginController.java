@@ -1,26 +1,26 @@
 package com.github.pdaodao.springwebplus.controller;
 
-import cn.hutool.extra.servlet.ServletUtil;
-import com.github.pdaodao.springwebplus.dao.SysMenuDao;
-import com.github.pdaodao.springwebplus.entity.SysMenu;
-import com.github.pdaodao.springwebplus.service.LoginService;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.LoginInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.TokenUtil;
+import com.github.pdaodao.springwebplus.dao.SysMenuDao;
+import com.github.pdaodao.springwebplus.entity.SysMenu;
+import com.github.pdaodao.springwebplus.service.LoginService;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -42,7 +42,7 @@ public class LoginController {
         final Cookie cookie = new Cookie(TokenUtil.TokenName, token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        ServletUtil.addCookie(response, cookie);
+        JakartaServletUtil.addCookie(response, cookie);
         return userInfo;
     }
 
@@ -71,7 +71,7 @@ public class LoginController {
         final CurrentUserInfo userInfo = tokenStore.byToken(token);
         loginService.logout(userInfo);
         tokenStore.removeToken(token);
-        ServletUtil.addCookie(response, TokenUtil.TokenName, "", 0);
+        JakartaServletUtil.addCookie(response, TokenUtil.TokenName, "", 0);
         return true;
     }
 }

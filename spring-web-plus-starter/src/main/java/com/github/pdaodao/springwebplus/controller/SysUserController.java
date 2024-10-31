@@ -1,21 +1,21 @@
 package com.github.pdaodao.springwebplus.controller;
 
+import com.github.pdaodao.springwebplus.base.auth.Permission;
+import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
+import com.github.pdaodao.springwebplus.base.pojo.PageResult;
+import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.service.SysUserService;
-import com.github.pdaodao.springwebplus.base.auth.Permission;
-import com.github.pdaodao.springwebplus.base.pojo.PageResult;
-import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
-import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j

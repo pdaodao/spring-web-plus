@@ -30,7 +30,7 @@ public class OssFileSystem implements FileStorage {
     /**
      * 初始化连接
      */
-    public void init(){
+    public void init() {
         final OSSBuilder ossBuilder = new OSSClientBuilder();
         oss = ossBuilder.build(ossConfig.getEndpoint(),
                 ossConfig.getAccessKeyId(),
@@ -68,7 +68,7 @@ public class OssFileSystem implements FileStorage {
 
     @Override
     public String processPathForSave(String fullPath) {
-        return  fullPath.startsWith("/")
+        return fullPath.startsWith("/")
                 ? fullPath.substring(1) : fullPath;
     }
 }

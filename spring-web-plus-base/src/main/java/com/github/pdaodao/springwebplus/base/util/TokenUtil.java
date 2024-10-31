@@ -1,11 +1,10 @@
 package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class TokenUtil {
     public static String TokenName = "Authorization";
@@ -38,7 +37,7 @@ public class TokenUtil {
             return headToken;
         }
         // 从cookie中获取
-        final Cookie cookie = ServletUtil.getCookie(request, TokenName);
+        final Cookie cookie = JakartaServletUtil.getCookie(request, TokenName);
         if (cookie != null && StrUtil.isNotBlank(cookie.getValue())) {
             return cookie.getValue();
         }

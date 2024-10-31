@@ -2,10 +2,10 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeName;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;

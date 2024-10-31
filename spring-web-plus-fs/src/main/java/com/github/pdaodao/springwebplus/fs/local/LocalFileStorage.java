@@ -21,8 +21,8 @@ public class LocalFileStorage implements FileStorage {
         Preconditions.checkNotBlank(config.rootPath, "file local storage root-path is empty.");
     }
 
-    public void init(){
-        if(!FileUtil.exist(config.rootPath)){
+    public void init() {
+        if (!FileUtil.exist(config.rootPath)) {
             FileUtil.mkdir(config.rootPath);
         }
     }
@@ -34,9 +34,9 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public String upload(String basePath, Long fileSize, String fileName, InputStream inputStream) throws IOException {
-        if(StrUtil.isNotBlank(basePath)){
+        if (StrUtil.isNotBlank(basePath)) {
             String path = FilePathUtil.pathJoin(config.rootPath, basePath);
-            if(!FileUtil.exist(path)){
+            if (!FileUtil.exist(path)) {
                 FileUtil.mkdir(path);
             }
         }

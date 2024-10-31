@@ -6,16 +6,16 @@ import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.TokenUtil;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 @AllArgsConstructor

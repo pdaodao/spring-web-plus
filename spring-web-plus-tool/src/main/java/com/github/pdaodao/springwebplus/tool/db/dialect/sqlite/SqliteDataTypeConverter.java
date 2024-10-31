@@ -1,9 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.sqlite;
 
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeName;
 
 public class SqliteDataTypeConverter extends BaseDataTypeConverter {

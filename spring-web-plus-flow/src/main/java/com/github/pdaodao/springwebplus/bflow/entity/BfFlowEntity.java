@@ -13,5 +13,5 @@ public class BfFlowEntity extends SnowIdWithTimeEntity {
     @Schema(description = "名称")
     private String title;
 
-    
+
 }

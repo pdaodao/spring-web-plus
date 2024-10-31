@@ -5,10 +5,10 @@ import cn.hutool.db.meta.Column;
 import cn.hutool.db.meta.MetaUtil;
 import cn.hutool.db.meta.Table;
 import cn.hutool.db.meta.TableType;
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
 import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
-import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.pojo.TableInfo;
 
 import javax.sql.DataSource;

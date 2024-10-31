@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,50 +21,54 @@ public class FileStorageService {
 
     /**
      * 文件是否存在
-     * @param fullPath   文件全路径
+     *
+     * @param fullPath 文件全路径
      * @return
      */
-    public Boolean exist(final String fullPath){
+    public Boolean exist(final String fullPath) {
         return fileStorage.exist(fullPath);
     }
 
     /**
      * 上传文件
-     * @param basePath       相对路径
-     * @param fileSize       文件大小
-     * @param fileName       文件名称
-     * @param inputStream    文件流
+     *
+     * @param basePath    相对路径
+     * @param fileSize    文件大小
+     * @param fileName    文件名称
+     * @param inputStream 文件流
      * @return
      * @throws IOException
      */
     public String upload(final String basePath, final Long fileSize, final String fileName,
-                         final InputStream inputStream) throws IOException{
+                         final InputStream inputStream) throws IOException {
         return fileStorage.upload(basePath, fileSize, fileName, inputStream);
     }
 
 
     /**
      * 上传文件
-     * @param basePath        相对路径
-     * @param fileName        文件名称
-     * @param inputStream     文件流
+     *
+     * @param basePath    相对路径
+     * @param fileName    文件名称
+     * @param inputStream 文件流
      * @return
      * @throws IOException
      */
-    public String upload(final String basePath, final String fileName, final InputStream inputStream) throws IOException{
+    public String upload(final String basePath, final String fileName, final InputStream inputStream) throws IOException {
         return fileStorage.upload(basePath, fileName, inputStream);
     }
 
     /**
      * 上传文件
+     *
      * @param basePath
      * @param file
      * @return
      * @throws IOException
      */
-    public FileInfo upload(final String basePath, final MultipartFile file) throws IOException{
+    public FileInfo upload(final String basePath, final MultipartFile file) throws IOException {
         final String fileName = FileUtil.cleanInvalid(file.getOriginalFilename());
-        try(final InputStream inputStream = file.getInputStream()){
+        try (final InputStream inputStream = file.getInputStream()) {
             final String fullPath = upload(basePath, file.getSize(), fileName, inputStream);
             final FileInfo fileInfo = new FileInfo();
             fileInfo.setName(fileName);
@@ -81,7 +86,7 @@ public class FileStorageService {
      * @return 输出流
      * @throws IOException 发生IO异常时抛出
      */
-    public InputStreamWrap download(final String fullPath) throws IOException{
+    public InputStreamWrap download(final String fullPath) throws IOException {
         return fileStorage.download(fullPath);
     }
 
@@ -93,7 +98,7 @@ public class FileStorageService {
      * @throws IOException                   发生IO异常时抛出
      * @throws UnsupportedOperationException 当目标文件系统不支持删除文件操作时抛出
      */
-    public boolean delete(final String fullPath) throws IOException, UnsupportedOperationException{
+    public boolean delete(final String fullPath) throws IOException, UnsupportedOperationException {
         return fileStorage.delete(fullPath);
     }
 }

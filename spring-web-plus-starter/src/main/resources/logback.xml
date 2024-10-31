@@ -15,17 +15,13 @@
             <DefaultValue>log</DefaultValue>
         </discriminator>
         <sift>
-            <appender name="FILE-ai" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <File>./logs/log.log</File>
-                <rollingPolicy
-                        class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                    <!-- rollover daily -->
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <fileNamePattern>./logs/log-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
-                    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                        <!-- or whenever the file size reaches 100MB -->
-                        <maxFileSize>512MB</maxFileSize>
-                    </timeBasedFileNamingAndTriggeringPolicy>
-                    <maxHistory>60</maxHistory>
+                    <maxFileSize>512MB</maxFileSize>
+                    <maxHistory>180</maxHistory>
+                    <totalSizeCap>60</totalSizeCap>
                 </rollingPolicy>
                 <encoder>
                     <pattern>
@@ -35,6 +31,12 @@
             </appender>
         </sift>
     </appender>
+
+    <logger name="com.zaxxer.hikari" level="info" additivity="true">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.apache.http" level="info"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

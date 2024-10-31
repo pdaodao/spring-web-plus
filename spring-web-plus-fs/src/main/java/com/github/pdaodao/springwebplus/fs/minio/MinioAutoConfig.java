@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 public class MinioAutoConfig {
 
     @Bean
-    public FileStorage fileSystemMinio(MinioConfig minioConfig) throws Exception{
+    public FileStorage fileSystemMinio(MinioConfig minioConfig) throws Exception {
         MinioFileStorage fileSystem = new MinioFileStorage(minioConfig);
         fileSystem.init();
         return fileSystem;

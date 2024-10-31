@@ -1,10 +1,9 @@
 package com.github.pdaodao.springwebplus.base.config.support;
 
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class HolderClearInterceptor implements HandlerInterceptor {
     @Override

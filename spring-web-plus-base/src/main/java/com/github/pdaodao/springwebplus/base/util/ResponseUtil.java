@@ -3,10 +3,10 @@ package com.github.pdaodao.springwebplus.base.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.server.MimeMappings;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
