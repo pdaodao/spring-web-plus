@@ -19,6 +19,6 @@ public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
     public List<SysUser> list(final SysUserQuery query) {
         return list(QueryBuilder.lambda(SysUser.class)
                 .like(query.getUsername(), SysUser::getUsername, SysUser::getNickname)
-                .selectExcludes("password", "salt").build());
+                .selectExclude("password", "salt").build());
     }
 }
