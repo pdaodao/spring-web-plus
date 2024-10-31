@@ -28,7 +28,7 @@ import java.time.Duration;
 @Configuration
 @ConditionalOnClass(RedisConnectionFactory.class)
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-@ConditionalOnProperty("spring.redis.host")
+@ConditionalOnProperty("spring.data.redis.host")
 @AllArgsConstructor
 public class RedisCacheConfig {
     final SysConfigProperties config;
