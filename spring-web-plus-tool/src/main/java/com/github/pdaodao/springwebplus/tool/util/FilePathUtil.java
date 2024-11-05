@@ -65,4 +65,17 @@ public class FilePathUtil {
         }
         return sb.toString();
     }
+
+    /**
+     * 返回去掉跟路径的路径
+     * @param fullpath
+     * @param rootPath
+     * @return
+     */
+    public static String dropRootPath(final String fullpath, final String rootPath){
+        if(StrUtil.isBlank(rootPath)){
+            return fullpath;
+        }
+        return fullpath.replaceFirst(rootPath, "");
+    }
 }

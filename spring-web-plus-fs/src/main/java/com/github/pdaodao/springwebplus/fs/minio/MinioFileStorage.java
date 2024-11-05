@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.fs.minio;
 
 import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
+import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import io.minio.*;
 import io.minio.errors.*;
@@ -41,8 +42,9 @@ public class MinioFileStorage implements FileStorage {
     @Override
     public Boolean exist(String fullPath) {
         try {
+            final String path = pathAddRoot(config.getRootPath(), fullPath);
             client.statObject(StatObjectArgs.builder().bucket(config.getBucketName())
-                    .object(fullPath).build());
+                    .object(path).build());
         } catch (Exception e) {
             return false;
         }
@@ -63,15 +65,16 @@ public class MinioFileStorage implements FileStorage {
         } catch (Exception e) {
             throw new IOException(e);
         }
-        return fullPath;
+        return FilePathUtil.dropRootPath(fullPath, config.getRootPath());
     }
 
     @Override
     public InputStreamWrap download(String fullPath) throws IOException {
         try {
+            final String path = pathAddRoot(config.getRootPath(), fullPath);
             final GetObjectArgs getObjectArgs = GetObjectArgs.builder()
                     .bucket(config.getBucketName())
-                    .object(fullPath)
+                    .object(path)
                     .build();
             return InputStreamWrap.of(client.getObject(getObjectArgs));
         } catch (Exception e) {
@@ -82,9 +85,10 @@ public class MinioFileStorage implements FileStorage {
     @Override
     public boolean delete(String fullPath) throws IOException, UnsupportedOperationException {
         try {
+            final String path = pathAddRoot(config.getRootPath(), fullPath);
             client.removeObject(RemoveObjectArgs.builder()
                     .bucket(config.getBucketName())
-                    .object(fullPath).build());
+                    .object(path).build());
             return true;
         } catch (Exception e) {
             throw new IOException(e);

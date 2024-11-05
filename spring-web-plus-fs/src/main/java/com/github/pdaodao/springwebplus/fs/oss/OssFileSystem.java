@@ -7,6 +7,7 @@ import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.OSSObject;
 import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
+import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,25 +45,28 @@ public class OssFileSystem implements FileStorage {
 
     @Override
     public Boolean exist(final String fullPath) {
-        return oss.doesObjectExist(ossConfig.getBucketName(), fullPath);
+        final String path = pathAddRoot(ossConfig.getRootPath(), fullPath);
+        return oss.doesObjectExist(ossConfig.getBucketName(), path);
     }
 
     @Override
     public String upload(final String basePath, Long fileSize, String fileName, InputStream inputStream) throws IOException {
         final String fullPath = concatPathForSave(ossConfig.getRootPath(), basePath, fileName);
         oss.putObject(ossConfig.getBucketName(), fullPath, inputStream);
-        return fullPath;
+        return FilePathUtil.dropRootPath(fullPath, ossConfig.getRootPath());
     }
 
     @Override
     public InputStreamWrap download(String fullPath) throws IOException {
-        final OSSObject ossObject = oss.getObject(ossConfig.getBucketName(), fullPath);
+        final String path = pathAddRoot(ossConfig.getRootPath(), fullPath);
+        final OSSObject ossObject = oss.getObject(ossConfig.getBucketName(), path);
         return InputStreamWrap.of(ossObject.getObjectContent());
     }
 
     @Override
     public boolean delete(String fullPath) throws IOException, UnsupportedOperationException {
-        oss.deleteObject(ossConfig.getBucketName(), fullPath);
+        final String path = pathAddRoot(ossConfig.getRootPath(), fullPath);
+        oss.deleteObject(ossConfig.getBucketName(), path);
         return true;
     }
 

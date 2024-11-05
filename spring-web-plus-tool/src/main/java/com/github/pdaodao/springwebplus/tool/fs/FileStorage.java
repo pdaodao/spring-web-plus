@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.tool.fs;
 
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
@@ -46,6 +47,11 @@ public interface FileStorage {
 
     default String processPathForSave(String fullPath) {
         return fullPath;
+    }
+
+    default String pathAddRoot(final String root, final String path){
+        final String p = FilePathUtil.pathJoin(root, path);
+        return processPathForSave(p);
     }
 
 

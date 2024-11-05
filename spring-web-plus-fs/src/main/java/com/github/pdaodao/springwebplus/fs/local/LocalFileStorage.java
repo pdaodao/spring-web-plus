@@ -29,7 +29,7 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public Boolean exist(String fullPath) {
-        return FileUtil.exist(fullPath);
+        return FileUtil.exist(pathAddRoot(config.rootPath, fullPath));
     }
 
     @Override
@@ -42,16 +42,18 @@ public class LocalFileStorage implements FileStorage {
         }
         final String fullPath = concatPathForSave(config.rootPath, basePath, fileName);
         FileUtil.writeFromStream(inputStream, fullPath);
-        return fullPath;
+        return FilePathUtil.dropRootPath(fullPath, config.rootPath);
     }
 
     @Override
     public InputStreamWrap download(String fullPath) throws IOException {
-        return InputStreamWrap.of(FileUtil.getInputStream(fullPath));
+        final String path = pathAddRoot(config.rootPath, fullPath);
+        return InputStreamWrap.of(FileUtil.getInputStream(path));
     }
 
     @Override
     public boolean delete(String fullPath) throws IOException, UnsupportedOperationException {
-        return FileUtil.del(fullPath);
+        final String path = pathAddRoot(config.rootPath, fullPath);
+        return FileUtil.del(path);
     }
 }
