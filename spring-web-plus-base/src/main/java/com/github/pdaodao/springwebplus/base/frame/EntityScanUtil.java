@@ -149,29 +149,22 @@ public class EntityScanUtil {
             ff.setTitle(ff.getRemark());
         }
         // 处理索引
-        final TableFieldHelper tableFieldHelper = propDesc.getField().getAnnotation(TableFieldHelper.class);
+        final TableFieldIndex tableFieldHelper = propDesc.getField().getAnnotation(TableFieldIndex.class);
         if (tableFieldHelper != null) {
-            // 指定的字段类型
-            if (tableFieldHelper.dataType() != null && tableFieldHelper.dataType() != DataType.UNKNOWN) {
-                ff.setDataType(tableFieldHelper.dataType());
-            }
-            // todo 考虑字段历史名称问题
-            if (tableFieldHelper.isIndex()) {
-                final TableIndex indexInfo = new TableIndex();
-                if (StrUtil.isBlank(tableFieldHelper.fields())) {
-                    indexInfo.addColumn(ff.getName());
-                } else {
-                    // 组合索引
-                    for (final String f : StrUtil.split(tableFieldHelper.fields(), ",")) {
-                        indexInfo.addColumn(f);
-                    }
+            final TableIndex indexInfo = new TableIndex();
+            if (StrUtil.isBlank(tableFieldHelper.fields())) {
+                indexInfo.addColumn(ff.getName());
+            } else {
+                // 组合索引
+                for (final String f : StrUtil.split(tableFieldHelper.fields(), ",")) {
+                    indexInfo.addColumn(f);
                 }
-                indexInfo.setIsUnique(tableFieldHelper.isUnique());
-                if (StrUtil.isNotBlank(tableFieldHelper.indexName())) {
-                    indexInfo.setName(tableFieldHelper.indexName());
-                }
-                indexList.add(indexInfo);
             }
+            indexInfo.setIsUnique(tableFieldHelper.isUnique());
+            if (StrUtil.isNotBlank(tableFieldHelper.indexName())) {
+                indexInfo.setName(tableFieldHelper.indexName());
+            }
+            indexList.add(indexInfo);
         }
 
         // 处理字段类型相关
@@ -295,13 +288,10 @@ public class EntityScanUtil {
      * @param tableFieldHelper
      * @return
      */
-    private static Integer getFieldSize(final PropDesc p, final TableFieldHelper tableFieldHelper) {
+    private static Integer getFieldSize(final PropDesc p, final TableFieldIndex tableFieldHelper) {
         final TableFieldSize tableFieldSize = p.getField().getAnnotation(TableFieldSize.class);
         if (tableFieldSize != null && tableFieldSize.value() > 1) {
             return tableFieldSize.value();
-        }
-        if (tableFieldHelper != null && tableFieldHelper.size() > 1) {
-            return tableFieldHelper.size();
         }
         final Size size = p.getField().getAnnotation(Size.class);
         final Integer maxLength = size != null && size.max() > 0 ? size.max() : null;
