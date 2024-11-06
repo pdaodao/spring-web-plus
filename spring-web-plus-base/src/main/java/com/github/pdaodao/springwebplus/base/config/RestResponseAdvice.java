@@ -1,11 +1,11 @@
 package com.github.pdaodao.springwebplus.base.config;
 
 import com.github.pdaodao.springwebplus.base.pojo.IResponse;
-import com.github.pdaodao.springwebplus.base.pojo.PageResult;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
 import com.github.pdaodao.springwebplus.base.util.JsonUtil;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
+import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;

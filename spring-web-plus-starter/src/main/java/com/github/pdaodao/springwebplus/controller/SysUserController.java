@@ -2,11 +2,11 @@ package com.github.pdaodao.springwebplus.controller;
 
 import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
-import com.github.pdaodao.springwebplus.base.pojo.PageResult;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.service.SysUserService;
+import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

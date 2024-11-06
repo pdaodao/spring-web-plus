@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.base.pojo;
+package com.github.pdaodao.springwebplus.tool.data;
 
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;

@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pdaodao.springwebplus.base.entity.Entity;
-import com.github.pdaodao.springwebplus.base.pojo.PageResult;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
+import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
