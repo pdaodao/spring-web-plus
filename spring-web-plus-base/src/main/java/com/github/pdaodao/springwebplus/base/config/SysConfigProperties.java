@@ -35,6 +35,9 @@ public class SysConfigProperties {
     @Value("${dao.ddl.gen.delete:false}")
     private Boolean ddlGenDeleteField;
 
+    @Value("${spring.datasource.url:}")
+    private String datasourceUrl;
+
     public boolean authExcludeMatch(final String path) {
         if (StrUtil.isEmpty(getAuthExcludes())) {
             return false;

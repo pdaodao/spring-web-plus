@@ -3,10 +3,10 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
-import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeName;
+import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeNameWrap;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -15,22 +15,22 @@ import lombok.extern.slf4j.Slf4j;
 public class BaseDataTypeConverter implements DataTypeConverter {
 
     @Override
-    public String fieldDDL(final ColumnInfo columnInfo, final DDLBuildContext context) {
+    public String fieldDDL(final TableColumn columnInfo, final DDLBuildContext context) {
         Preconditions.checkNotNull(columnInfo.getDataType(), "field {} data-type is null.", columnInfo.getName());
 
         final StringBuilder ret = new StringBuilder();
         ret.append(columnInfo.getName()).append(" ");
 
         // 字段类型
-        final FieldTypeName fieldTypeName = fieldTypeDDL(columnInfo);
+        final FieldTypeNameWrap fieldTypeName = fieldTypeDDL(columnInfo);
 
         ret.append(fieldTypeName.getTypeName());
         // 是否为空
-        if (ObjectUtil.equals(false, columnInfo.isNullable())) {
+        if (ObjectUtil.equals(false, columnInfo.getNullable())) {
             ret.append(" NOT NULL");
         }
         // 自增
-        if (ObjectUtil.equals(true, columnInfo.isAutoIncrement())) {
+        if (ObjectUtil.equals(true, columnInfo.getIsAuto())) {
             final String autoStr = genDDLFieldAutoIncrement(columnInfo, fieldTypeName, context);
             if (StrUtil.isNotBlank(autoStr)) {
                 ret.append(" ").append(autoStr);
@@ -41,7 +41,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
             ret.append(" DEFAULT ").append(fieldTypeName.getColumnDef());
         }
         // 备注
-        final String remark = columnInfo.getComment();
+        final String remark = columnInfo.getRemark();
         if (StrUtil.isNotBlank(remark)) {
             final String ct = genDDLFieldComment(columnInfo, context);
             if (StrUtil.isNotBlank(ct)) {
@@ -56,7 +56,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      *
      * @return
      */
-    protected String genDDLFieldAutoIncrement(ColumnInfo tableColumn, FieldTypeName typeWithDefault, final DDLBuildContext context) {
+    protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, final DDLBuildContext context) {
         return null;
     }
 
@@ -67,12 +67,12 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param context
      * @return
      */
-    protected String genDDLFieldComment(ColumnInfo field, DDLBuildContext context) {
-        return StrUtil.format(" COMMENT '{}' ", StrUtils.clean(field.getComment(), 60));
+    protected String genDDLFieldComment(TableColumn field, DDLBuildContext context) {
+        return StrUtil.format(" COMMENT '{}' ", StrUtils.clean(field.getRemark(), 60));
     }
 
 
-    public FieldTypeName fieldTypeDDL(final ColumnInfo columnInfo) {
+    public FieldTypeNameWrap fieldTypeDDL(final TableColumn columnInfo) {
         Preconditions.checkNotNull(columnInfo.getDataType(), "colunm [{}] data-type is null.", columnInfo.getName());
         final DataType dataType = columnInfo.getDataType();
         // 布尔
@@ -106,8 +106,8 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         return null;
     }
 
-    public FieldTypeName fieldDDLDate(final ColumnInfo columnInfo) {
-        final FieldTypeName ret = FieldTypeName.of("datetime", columnInfo.getColumnDef());
+    public FieldTypeNameWrap fieldDDLDate(final TableColumn columnInfo) {
+        final FieldTypeNameWrap ret = FieldTypeNameWrap.of("datetime", columnInfo.getDefaultValue());
         if (DataType.TIMESTAMP == columnInfo.getDataType()) {
             ret.setTypeName("timestamp");
             return ret;
@@ -129,18 +129,18 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeName fieldDDLDouble(final ColumnInfo columnInfo) {
+    public FieldTypeNameWrap fieldDDLDouble(final TableColumn columnInfo) {
         if (DataType.DECIMAL == columnInfo.getDataType()) {
-            if (columnInfo.getDigit() != null && columnInfo.getDigit() > 0) {
-                long length = columnInfo.getSize() > 0 ? columnInfo.getSize() : 20;
-                final String type = StrUtil.format("decimal({},{})", length, columnInfo.getDigit());
-                return FieldTypeName.of(type, columnInfo.getColumnDef());
+            if (columnInfo.getScale() != null && columnInfo.getScale() > 0) {
+                long length = columnInfo.getLength() > 0 ? columnInfo.getLength() : 20;
+                final String type = StrUtil.format("decimal({},{})", length, columnInfo.getScale());
+                return FieldTypeNameWrap.of(type, columnInfo.getDefaultValue());
             }
         }
-        if (StrUtil.contains(columnInfo.getComment(), "金额")) {
-            return FieldTypeName.of("decimal(20,6)", columnInfo.getColumnDef());
+        if (StrUtil.contains(columnInfo.getRemark(), "金额")) {
+            return FieldTypeNameWrap.of("decimal(20,6)", columnInfo.getDefaultValue());
         }
-        return FieldTypeName.of("double", columnInfo.getColumnDef());
+        return FieldTypeNameWrap.of("double", columnInfo.getDefaultValue());
     }
 
     /**
@@ -149,14 +149,14 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeName fieldDDLInt(final ColumnInfo columnInfo) {
+    public FieldTypeNameWrap fieldDDLInt(final TableColumn columnInfo) {
         if (DataType.BIGINT == columnInfo.getDataType()) {
-            return FieldTypeName.of("bigint", columnInfo.getColumnDef());
+            return FieldTypeNameWrap.of("bigint", columnInfo.getDefaultValue());
         }
         if (StrUtil.isNotBlank(columnInfo.getTypeName()) && columnInfo.getTypeName().toLowerCase().contains("small")) {
-            return FieldTypeName.of("smallint", columnInfo.getColumnDef());
+            return FieldTypeNameWrap.of("smallint", columnInfo.getDefaultValue());
         }
-        return FieldTypeName.of("int", columnInfo.getColumnDef());
+        return FieldTypeNameWrap.of("int", columnInfo.getDefaultValue());
     }
 
     /**
@@ -165,8 +165,8 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeName fieldDDLBinary(final ColumnInfo columnInfo) {
-        return FieldTypeName.of("LONGBLOB", null);
+    public FieldTypeNameWrap fieldDDLBinary(final TableColumn columnInfo) {
+        return FieldTypeNameWrap.of("LONGBLOB", null);
     }
 
 
@@ -176,8 +176,8 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeName fieldDDLJson(final ColumnInfo columnInfo) {
-        return FieldTypeName.of("text", columnInfo.getColumnDef());
+    public FieldTypeNameWrap fieldDDLJson(final TableColumn columnInfo) {
+        return FieldTypeNameWrap.of("text", columnInfo.getDefaultValue());
     }
 
     /**
@@ -186,8 +186,8 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeName fieldDDLBool(final ColumnInfo columnInfo) {
-        String df = columnInfo.getColumnDef();
+    public FieldTypeNameWrap fieldDDLBool(final TableColumn columnInfo) {
+        String df = columnInfo.getDefaultValue();
         if (StrUtil.isNotBlank(df)) {
             if (df.equalsIgnoreCase("b'0'")) {
                 df = "0";
@@ -202,7 +202,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
                 df = "1";
             }
         }
-        return FieldTypeName.of("tinyint", df);
+        return FieldTypeNameWrap.of("tinyint", df);
     }
 
 
@@ -212,16 +212,16 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeName fieldDDLStr(final ColumnInfo columnInfo) {
-        if (columnInfo.getSize() == 0 || columnInfo.getSize() > 500) {
-            return FieldTypeName.of("text", columnInfo.getColumnDef());
+    public FieldTypeNameWrap fieldDDLStr(final TableColumn columnInfo) {
+        if (columnInfo.getLength() == 0 || columnInfo.getLength() > 500) {
+            return FieldTypeNameWrap.of("text", columnInfo.getDefaultValue());
         }
-        long length = columnInfo.getSize();
-        return FieldTypeName.of("varchar(" + length + ")", columnInfo.getColumnDef());
+        long length = columnInfo.getLength();
+        return FieldTypeNameWrap.of("varchar(" + length + ")", columnInfo.getDefaultValue());
     }
 
     @Override
-    public DataType toUniType(ColumnInfo columnInfo) {
+    public DataType toUniType(TableColumn columnInfo) {
         if (StrUtil.isBlank(columnInfo.getTypeName())) {
             return null;
         }

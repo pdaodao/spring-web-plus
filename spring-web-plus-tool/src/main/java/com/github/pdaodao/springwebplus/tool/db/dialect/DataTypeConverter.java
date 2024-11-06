@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
 
 public interface DataTypeConverter {
@@ -11,7 +11,7 @@ public interface DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    DataType toUniType(final ColumnInfo columnInfo);
+    DataType toUniType(final TableColumn columnInfo);
 
     /**
      * 生成建表是的字段类型 varchar(32) not null auto_increment default 'abc' comment '测试'
@@ -20,5 +20,5 @@ public interface DataTypeConverter {
      * @param context
      * @return
      */
-    String fieldDDL(final ColumnInfo columnInfo, final DDLBuildContext context);
+    String fieldDDL(final TableColumn columnInfo, final DDLBuildContext context);
 }

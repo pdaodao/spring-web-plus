@@ -1,37 +1,37 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.sqlite;
 
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDataTypeConverter;
-import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeName;
+import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeNameWrap;
 
 public class SqliteDataTypeConverter extends BaseDataTypeConverter {
 
     @Override
-    protected String genDDLFieldAutoIncrement(ColumnInfo tableColumn, FieldTypeName typeWithDefault, DDLBuildContext context) {
+    protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
         return "PRIMARY KEY AUTOINCREMENT";
     }
 
     @Override
-    public FieldTypeName fieldDDLInt(ColumnInfo columnInfo) {
-        if (columnInfo.isAutoIncrement()) {
-            return FieldTypeName.of("INTEGER", columnInfo.getColumnDef());
+    public FieldTypeNameWrap fieldDDLInt(TableColumn columnInfo) {
+        if (columnInfo.getIsAuto()) {
+            return FieldTypeNameWrap.of("INTEGER", columnInfo.getDefaultValue());
         }
         return super.fieldDDLInt(columnInfo);
     }
 
     @Override
-    public DataType toUniType(ColumnInfo columnInfo) {
+    public DataType toUniType(TableColumn columnInfo) {
         final String dbType = columnInfo.getTypeName().trim().toLowerCase();
-        if (dbType.equals("varchar") && columnInfo.getSize() == 0) {
+        if (dbType.equals("varchar") && columnInfo.getLength() == 0) {
             return DataType.TEXT;
         }
         return super.toUniType(columnInfo);
     }
 
     @Override
-    protected String genDDLFieldComment(ColumnInfo field, DDLBuildContext context) {
+    protected String genDDLFieldComment(TableColumn field, DDLBuildContext context) {
         return null;
     }
 }

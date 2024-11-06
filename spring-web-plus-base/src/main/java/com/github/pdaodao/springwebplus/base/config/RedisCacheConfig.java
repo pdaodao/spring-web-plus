@@ -46,8 +46,7 @@ public class RedisCacheConfig {
 
     @Bean
     public Jackson2JsonRedisSerializer jackson2JsonRedisSerializer() {
-        final Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         objectMapper.configure(MapperFeature.USE_ANNOTATIONS, true);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -57,8 +56,8 @@ public class RedisCacheConfig {
         objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL,
                 JsonTypeInfo.As.PROPERTY);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
 
+        final Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(objectMapper, Object.class);
         return jackson2JsonRedisSerializer;
     }
 }

@@ -1,1 +1,4 @@
 com.github.pdaodao.springwebplus.base.SpringwebplusAutoConfiguration
+com.github.pdaodao.springwebplus.base.config.fs.local.LocalAutoConfig
+com.github.pdaodao.springwebplus.base.config.fs.minio.MinioAutoConfig
+com.github.pdaodao.springwebplus.base.config.fs.oss.OssAutoConfig

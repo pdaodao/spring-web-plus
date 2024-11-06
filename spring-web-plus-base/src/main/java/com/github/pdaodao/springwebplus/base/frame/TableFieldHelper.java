@@ -1,5 +1,7 @@
 package com.github.pdaodao.springwebplus.base.frame;
 
+import com.github.pdaodao.springwebplus.tool.data.DataType;
+
 import java.lang.annotation.*;
 
 /**
@@ -9,6 +11,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface TableFieldHelper {
+    /**
+     * 字段长度
+     *
+     * @return
+     */
+    int size() default 0;
+
+
     /**
      * 是否是索引
      *
@@ -29,6 +39,15 @@ public @interface TableFieldHelper {
      * @return
      */
     boolean isUnique() default false;
+
+    DataType dataType() default DataType.UNKNOWN;
+
+    /**
+     * 组合索引字段
+     *
+     * @return
+     */
+    String fields() default "";
 
     /**
      * 该字段以前是叫什么名称

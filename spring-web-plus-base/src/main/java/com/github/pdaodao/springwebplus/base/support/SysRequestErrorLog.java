@@ -12,7 +12,7 @@ public class SysRequestErrorLog extends SnowIdEntity {
     // 用户id
     private String userId;
 
-    private String userName;
+    private String userTitle;
 
     // 请求路径
     private String path;

@@ -23,8 +23,18 @@ public class DateDiffUtil {
         long minute = (diff % (60 * 60)) / 60;
         // 计算秒数
         long second = diff % 60;
-        String desc = day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
-        return desc;
+        final StringBuilder sb = new StringBuilder();
+        if (day > 0) {
+            sb.append(day).append("天");
+        }
+        if (hour > 0) {
+            sb.append(hour).append("小时");
+        }
+        if (minute > 0) {
+            sb.append(minute).append("分钟");
+        }
+        sb.append(second).append("秒");
+        return sb.toString();
     }
 
 }

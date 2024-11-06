@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
+import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.mysql.MysqlDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.sqlite.SqliteDialect;
-import com.github.pdaodao.springwebplus.tool.db.util.DbType;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 import javax.sql.DataSource;

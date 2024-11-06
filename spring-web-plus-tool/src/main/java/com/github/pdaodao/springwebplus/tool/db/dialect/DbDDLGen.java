@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
-import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.db.pojo.TableInfo;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface DbDDLGen {
      * @param ddlBuildContext
      * @return
      */
-    List<String> addColumnSql(final ColumnInfo tableColumn, DDLBuildContext ddlBuildContext);
+    List<String> addColumnSql(final TableColumn tableColumn, DDLBuildContext ddlBuildContext);
 
 
     /**
@@ -43,7 +43,7 @@ public interface DbDDLGen {
      * @param to
      * @return
      */
-    List<String> alterColumnSql(ColumnInfo from, ColumnInfo to, DDLBuildContext ddlBuildContext);
+    List<String> alterColumnSql(TableColumn from, TableColumn to, DDLBuildContext ddlBuildContext);
 
     /**
      * 删除字段

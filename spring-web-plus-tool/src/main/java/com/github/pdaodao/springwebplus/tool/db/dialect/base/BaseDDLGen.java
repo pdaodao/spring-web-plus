@@ -2,12 +2,12 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.meta.IndexInfo;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
+import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
-import com.github.pdaodao.springwebplus.tool.db.pojo.ColumnInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.db.pojo.TableInfo;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 
@@ -35,7 +35,7 @@ public class BaseDDLGen implements DbDDLGen {
         final int size = tableInfo.getColumns().size();
         int index = 0;
         // 普通字段
-        for (final ColumnInfo field : tableInfo.getColumns()) {
+        for (final TableColumn field : tableInfo.getColumns()) {
             index++;
             // 生成字段定义
             final String fieldDdl = dbDialect.dataTypeConverter().fieldDDL(field, ddlBuildContext);
@@ -51,9 +51,9 @@ public class BaseDDLGen implements DbDDLGen {
             sql.append(",\n").append(pk);
         }
         // 索引
-        if (CollUtil.isNotEmpty(tableInfo.getIndexInfoList())) {
-            for (final IndexInfo indexInfo : tableInfo.getIndexInfoList()) {
-                if ("PRIMARY".equalsIgnoreCase(indexInfo.getIndexName())) {
+        if (CollUtil.isNotEmpty(tableInfo.getIndexList())) {
+            for (final TableIndex indexInfo : tableInfo.getIndexList()) {
+                if ("PRIMARY".equalsIgnoreCase(indexInfo.getName())) {
                     continue;
                 }
                 final String indexSql = genDDLOfCreateIndex(tableInfo, indexInfo);
@@ -98,7 +98,7 @@ public class BaseDDLGen implements DbDDLGen {
      * @return
      */
     public String getFullTableName(final TableInfo tableInfo) {
-        final String name = tableInfo.getTableName().trim();
+        final String name = tableInfo.getName().trim();
         if (StrUtil.isNotBlank(tableInfo.getSchema())) {
             return quoteIdentifier(tableInfo.getSchema()) + "."
                     + quoteIdentifier(name);
@@ -119,10 +119,10 @@ public class BaseDDLGen implements DbDDLGen {
      * @return
      */
     public String genDDLOfPk(TableInfo tableInfo, final DDLBuildContext context) {
-        if (CollUtil.isEmpty(tableInfo.getPkNames())) {
+        if (CollUtil.isEmpty(tableInfo.pkColumns())) {
             return null;
         }
-        final String names = tableInfo.getPkNames().stream()
+        final String names = tableInfo.pkColumns().stream()
                 .map(t -> quoteIdentifier(t))
                 .collect(Collectors.joining(","));
         if (StrUtil.isEmpty(names)) {
@@ -160,7 +160,7 @@ public class BaseDDLGen implements DbDDLGen {
      * @param indexInfo
      * @return
      */
-    public String genDDLOfCreateIndex(final TableInfo tableInfo, final IndexInfo indexInfo) {
+    public String genDDLOfCreateIndex(final TableInfo tableInfo, final TableIndex indexInfo) {
         return null;
     }
 
@@ -186,14 +186,14 @@ public class BaseDDLGen implements DbDDLGen {
         return null;
     }
 
-    protected String indexInfoColumns(final IndexInfo indexInfo) {
-        return indexInfo.getColumnIndexInfoList().stream().map(t -> quoteIdentifier(t.getColumnName()))
+    protected String indexInfoColumns(final TableIndex tableIndex) {
+        return tableIndex.getFields().stream().map(t -> quoteIdentifier(t))
                 .collect(Collectors.joining(","));
     }
 
 
     @Override
-    public List<String> addColumnSql(final ColumnInfo tableColumn, final DDLBuildContext ddlBuildContext) {
+    public List<String> addColumnSql(final TableColumn tableColumn, final DDLBuildContext ddlBuildContext) {
         final List<String> last = new ArrayList<>();
         final List<String> list = new ArrayList<>();
         final String sql = String.format(
@@ -226,7 +226,7 @@ public class BaseDDLGen implements DbDDLGen {
     }
 
     @Override
-    public List<String> alterColumnSql(final ColumnInfo from, final ColumnInfo to, final DDLBuildContext ddlBuildContext) {
+    public List<String> alterColumnSql(final TableColumn from, final TableColumn to, final DDLBuildContext ddlBuildContext) {
         Preconditions.checkNotNull(from.getDataType(), "{} alterColumnSql from dataType is null of table:{}", from.getName(), ddlBuildContext.tableName);
         Preconditions.checkNotNull(to.getDataType(), "{} alterColumnSql to dataType is null of table:{}", to.getName(), ddlBuildContext.tableName);
         final List<String> list = new ArrayList<>();
