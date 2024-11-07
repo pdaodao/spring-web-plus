@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.service;
 
 import cn.hutool.http.HttpUtil;
-import com.github.pdaodao.springwebplus.base.util.JsonUtil;
 import com.github.pdaodao.springwebplus.config.WxMpProperties;
+import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

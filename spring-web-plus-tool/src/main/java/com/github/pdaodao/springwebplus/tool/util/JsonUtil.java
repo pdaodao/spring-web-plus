@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.base.util;
+package com.github.pdaodao.springwebplus.tool.util;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;

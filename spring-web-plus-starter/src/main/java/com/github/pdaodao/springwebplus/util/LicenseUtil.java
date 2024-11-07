@@ -12,7 +12,7 @@ import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pdaodao.springwebplus.base.util.DateTimeUtil;
-import com.github.pdaodao.springwebplus.base.util.JsonUtil;
+import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
 import org.slf4j.Logger;

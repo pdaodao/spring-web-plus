@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.base.config.support;
 
 import cn.hutool.crypto.digest.DigestUtil;
-import com.github.pdaodao.springwebplus.base.util.JsonUtil;
+import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import org.springframework.cache.interceptor.KeyGenerator;
