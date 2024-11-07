@@ -1,6 +1,14 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.db.core.FilterItem;
+import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.db.core.WhereOperator;
+import com.github.pdaodao.springwebplus.tool.db.util.support.MybatisHelper;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -187,5 +195,70 @@ public class SqlUtil {
             return sql;
         }
         return sql + ";";
+    }
+
+
+    /**
+     * 动态条件拼装, 过滤条件项不存在时自动消失 如 select a , b from t1 where a = #a and b = #b
+     *
+     * @param sql
+     * @param filterItems
+     * @return
+     */
+    public static SqlWithMapParams dynamicFilter(String sql, final List<FilterItem> filterItems) throws Exception {
+        if (StrUtil.isBlank(sql)) {
+            return null;
+        }
+        if (CollUtil.isEmpty(filterItems)) {
+            return SqlWithMapParams.of(sql, null);
+        }
+        // 处理 if{a != null, sql...}
+        if (MybatisHelper.hasIf(sql)) {
+            sql = MybatisHelper.processIf(sql, filterItems);
+        }
+        sql = dropPlaceholderBracket(sql);
+        final Statement st = CCJSqlParserUtil.parse(sql);
+        if (!(st instanceof PlainSelect)) {
+            throw new IllegalArgumentException("只支持数据查询语句." + sql);
+        }
+        final PlainSelect select = (PlainSelect) st;
+        System.out.println("aa");
+
+        return null;
+    }
+
+
+    /**
+     * 替换 #{param} 为 #param 替换 ${param} 为 $param
+     *
+     * @param sql
+     * @return
+     */
+    public static String dropPlaceholderBracket(final String sql) {
+        // 替换 #{ param } 为 #param
+        String t = sql.replaceAll("#\\{\\s*([^}]+?)\\s*}", "#$1");
+        // 替换 ${ param } 为 $param
+        t = t.replaceAll("\\$\\{\\s*([^}]+?)\\s*}", "\\$$1");
+        return t;
+    }
+
+    public static void main1(String[] args) {
+        String sql = "a = #{ a} and b = #{b} and c > #c and d < #d  and e >= :e order by a desc";
+        // 替换 #{ param } 为 #param
+        sql = sql.replaceAll("#\\{\\s*([^}]+?)\\s*}", "#$1");
+
+        // 替换 ${ param } 为 $param
+        sql = sql.replaceAll("\\$\\{\\s*([^}]+?)\\s*}", "\\$$1");
+
+        System.out.println(sql);
+    }
+
+    public static void main(String[] args) throws Exception {
+        final String sql = "select * from t1 where a = #{a} if{b > 1, and b = #b and c > #c and d < #d }  and e >= :e order by a desc";
+        final List<FilterItem> fs = new ArrayList<>();
+        fs.add(FilterItem.of("a", WhereOperator.eq, "a"));
+        fs.add(FilterItem.of("b", WhereOperator.eq, "2"));
+
+        dynamicFilter(sql, fs);
     }
 }
