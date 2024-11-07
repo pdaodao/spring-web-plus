@@ -38,6 +38,13 @@ public class SysConfigProperties {
     @Value("${spring.datasource.url:}")
     private String datasourceUrl;
 
+    /**
+     * http 代理配置 a -> http://baidu.com/aa, b-> ...
+     */
+    @Value("${http.proxy:}")
+    private String httpProxy;
+
+
     public boolean authExcludeMatch(final String path) {
         if (StrUtil.isEmpty(getAuthExcludes())) {
             return false;

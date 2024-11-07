@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.base.config;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -12,9 +13,13 @@ import com.github.pdaodao.springwebplus.base.config.support.CurrentUserInfoParam
 import com.github.pdaodao.springwebplus.base.config.support.HolderClearInterceptor;
 import com.github.pdaodao.springwebplus.base.config.support.PageRequestParamResolver;
 import com.github.pdaodao.springwebplus.base.config.support.WebappFile;
+import com.github.pdaodao.springwebplus.base.support.ProxyServlet;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
@@ -39,6 +44,21 @@ import java.util.concurrent.TimeUnit;
 public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
     private final LoginInterceptor loginInterceptor;
+    private final ProxyServlet proxyServlet;
+
+    @Bean
+    @ConditionalOnProperty("http.proxy")
+    public ServletRegistrationBean proxyServletRegistrationBean() {
+        final List<String> list = StrUtil.split(configProperties.getHttpProxy(), ",");
+        for (final String p : list) {
+            final List<String> part = StrUtil.split(p, "->");
+            Preconditions.checkArgument(part.size() == 2, "error http-proxy mapping config:" + p);
+            proxyServlet.addMapping(part.get(0).trim(), part.get(1).trim());
+        }
+        final ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(proxyServlet, proxyServlet.urlMapping());
+        log.warn("proxy-servlet:" + StrUtil.join(", ", proxyServlet.urlMapping()));
+        return servletRegistrationBean;
+    }
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {

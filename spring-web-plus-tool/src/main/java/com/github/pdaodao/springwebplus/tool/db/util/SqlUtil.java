@@ -213,20 +213,27 @@ public class SqlUtil {
             return SqlWithMapParams.of(sql, null);
         }
         // 处理 if{a != null, sql...}
-        if (MybatisHelper.hasIf(sql)) {
-            sql = MybatisHelper.processIf(sql, filterItems);
-        }
+        sql = processIf(sql, filterItems);
         sql = dropPlaceholderBracket(sql);
         final Statement st = CCJSqlParserUtil.parse(sql);
         if (!(st instanceof PlainSelect)) {
             throw new IllegalArgumentException("只支持数据查询语句." + sql);
         }
         final PlainSelect select = (PlainSelect) st;
-        System.out.println("aa");
+        return dynamicFilter(select, filterItems);
+    }
 
+    public static SqlWithMapParams dynamicFilter(final PlainSelect select, final List<FilterItem> filterItems) throws Exception {
+        // todo
         return null;
     }
 
+    public static String processIf(final String sql, final List<FilterItem> filterItems) {
+        if (!MybatisHelper.hasIf(sql)) {
+            return sql;
+        }
+        return MybatisHelper.processIf(sql, filterItems);
+    }
 
     /**
      * 替换 #{param} 为 #param 替换 ${param} 为 $param
@@ -254,7 +261,7 @@ public class SqlUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        final String sql = "select * from t1 where a = #{a} if{b > 1, and b = #b and c > #c and d < #d }  and e >= :e order by a desc";
+        final String sql = "select * from t1 where a = #{a} if{b > 1, and b = #b and c > #{c} and d < #d }  and e >= :e order by a desc";
         final List<FilterItem> fs = new ArrayList<>();
         fs.add(FilterItem.of("a", WhereOperator.eq, "a"));
         fs.add(FilterItem.of("b", WhereOperator.eq, "2"));

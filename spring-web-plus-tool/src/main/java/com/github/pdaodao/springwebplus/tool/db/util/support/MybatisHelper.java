@@ -43,6 +43,7 @@ public class MybatisHelper {
         return IF_TOKEN_PARSER.parse(sql.trim(), text -> {
             AtomicBoolean ifTrue = new AtomicBoolean(false);
             String val = IF_PARAM_TOKEN_PARSER.parse("if{" + text, param -> {
+                // todo 未来替换为自研引擎
                 final Object rr = OgnlCache.getValue(param, map);
                 if (ObjectUtil.equal(true, rr)) {
                     ifTrue.set(true);
