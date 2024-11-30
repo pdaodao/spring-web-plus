@@ -4,8 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.FilterItem;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
-import com.github.pdaodao.springwebplus.tool.db.core.WhereOperator;
 import com.github.pdaodao.springwebplus.tool.db.util.support.MybatisHelper;
+import com.github.pdaodao.springwebplus.tool.db.util.visitor.DynamicWhereVisitor;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -220,13 +220,9 @@ public class SqlUtil {
             throw new IllegalArgumentException("只支持数据查询语句." + sql);
         }
         final PlainSelect select = (PlainSelect) st;
-        return dynamicFilter(select, filterItems);
+        return DynamicWhereVisitor.dynamicFilter(select, filterItems);
     }
 
-    public static SqlWithMapParams dynamicFilter(final PlainSelect select, final List<FilterItem> filterItems) throws Exception {
-        // todo
-        return null;
-    }
 
     public static String processIf(final String sql, final List<FilterItem> filterItems) {
         if (!MybatisHelper.hasIf(sql)) {
@@ -247,25 +243,5 @@ public class SqlUtil {
         // 替换 ${ param } 为 $param
         t = t.replaceAll("\\$\\{\\s*([^}]+?)\\s*}", "\\$$1");
         return t;
-    }
-
-    public static void main1(String[] args) {
-        String sql = "a = #{ a} and b = #{b} and c > #c and d < #d  and e >= :e order by a desc";
-        // 替换 #{ param } 为 #param
-        sql = sql.replaceAll("#\\{\\s*([^}]+?)\\s*}", "#$1");
-
-        // 替换 ${ param } 为 $param
-        sql = sql.replaceAll("\\$\\{\\s*([^}]+?)\\s*}", "\\$$1");
-
-        System.out.println(sql);
-    }
-
-    public static void main(String[] args) throws Exception {
-        final String sql = "select * from t1 where a = #{a} if{b > 1, and b = #b and c > #{c} and d < #d }  and e >= :e order by a desc";
-        final List<FilterItem> fs = new ArrayList<>();
-        fs.add(FilterItem.of("a", WhereOperator.eq, "a"));
-        fs.add(FilterItem.of("b", WhereOperator.eq, "2"));
-
-        dynamicFilter(sql, fs);
     }
 }
