@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.kingbase;
 
-import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDataTypeConverter;
+import com.github.pdaodao.springwebplus.tool.db.dialect.pg.PgDataTypeConverter;
 
-public class KingbaseDataTypeConverter extends BaseDataTypeConverter {
+public class KingbaseDataTypeConverter extends PgDataTypeConverter {
 }

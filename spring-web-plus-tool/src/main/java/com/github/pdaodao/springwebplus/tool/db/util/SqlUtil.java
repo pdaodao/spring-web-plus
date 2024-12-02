@@ -1,9 +1,11 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.FilterItem;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.util.support.MybatisHelper;
 import com.github.pdaodao.springwebplus.tool.db.util.visitor.DynamicWhereVisitor;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -195,6 +197,20 @@ public class SqlUtil {
             return sql;
         }
         return sql + ";";
+    }
+
+    /**
+     * 使用逗号拼装多个字段为字符串
+     *
+     * @param dialect
+     * @param fields
+     * @return
+     */
+    public static String joinFields(final DbDialect dialect, final List<String> fields) {
+        if (CollectionUtil.isEmpty(fields)) {
+            return null;
+        }
+        return fields.stream().map(t -> dialect.quoteIdentifier(t)).collect(Collectors.joining(","));
     }
 
 
