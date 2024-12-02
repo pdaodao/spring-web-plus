@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -102,7 +103,11 @@ public interface DbDialect {
         final String kf = keywordsFile();
         if (StrUtil.isNotBlank(kf)) {
             try {
-                return FileUtil.readUtf8Lines(ResourceUtil.getResource(kf, this.getClass()))
+                final URL url = ResourceUtil.getResource(kf, this.getClass());
+                if(url == null){
+                    return null;
+                }
+                return FileUtil.readUtf8Lines(url)
                         .stream()
                         .filter(t -> !StrUtil.isBlank(t))
                         .filter(t -> !t.startsWith("#"))
@@ -123,7 +128,7 @@ public interface DbDialect {
         }
         final Set<String> ks = keywords();
         if (CollectionUtil.isEmpty(ks)) {
-            return true;
+            return false;
         }
         if (name.contains("-")) {
             return true;

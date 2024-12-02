@@ -38,8 +38,14 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     @Override
     public FieldTypeNameWrap fieldDDLBool(TableColumn columnInfo) {
         final FieldTypeNameWrap ff = super.fieldDDLBool(columnInfo);
-        ff.setTypeName("boolean");
+        ff.setTypeName("smallint");
         return ff;
+    }
+
+    @Override
+    public FieldTypeNameWrap fieldDDLDate(TableColumn columnInfo) {
+        final FieldTypeNameWrap ret = FieldTypeNameWrap.of("timestamp", columnInfo.getDefaultValue());
+        return ret;
     }
 
     @Override

@@ -21,7 +21,7 @@ public class BaseDDLGen implements DbDDLGen {
 
 
     public String quoteIdentifier(final String name) {
-        return name;
+        return dbDialect.quoteIdentifier(name);
     }
 
     @Override

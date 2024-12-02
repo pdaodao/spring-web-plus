@@ -46,7 +46,7 @@ public class PgDialect extends BaseDbDialect {
 
     @Override
     public String keywordsFile() {
-        return "/META-INF/db-keywords/mysql.keywords";
+        return "/META-INF/db-keywords/postgresql.keywords";
     }
 
     @Override
