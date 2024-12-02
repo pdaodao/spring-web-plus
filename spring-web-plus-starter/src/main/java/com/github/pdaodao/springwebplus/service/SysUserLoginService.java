@@ -8,6 +8,7 @@ import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;

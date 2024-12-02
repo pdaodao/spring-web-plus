@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.mysql;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
@@ -18,7 +19,7 @@ public class MysqlDDLGen extends BaseDDLGen {
     @Override
     public String genDDLOfCreateIndex(TableInfo tableInfo, TableIndex indexInfo) {
         return StrUtil.format("CREATE {} INDEX {} ON {} ({})",
-                false == indexInfo.getIsUnique() ? "UNIQUE" : "",
+                BooleanUtil.isTrue(indexInfo.getIsUnique()) ? "UNIQUE" : "",
                 indexInfo.getName(),
                 getFullTableName(tableInfo),
                 indexInfoColumns(indexInfo));

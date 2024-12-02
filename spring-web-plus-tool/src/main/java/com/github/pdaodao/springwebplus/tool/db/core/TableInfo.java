@@ -65,7 +65,7 @@ public class TableInfo implements Serializable, Cloneable {
      * @return
      */
     public List<String> pkColumns() {
-        if (CollUtil.isNotEmpty(columns)) {
+        if (CollUtil.isEmpty(columns)) {
             return ListUtil.empty();
         }
         return columns.stream().filter(t -> BooleanUtil.isTrue(t.isPk) || BooleanUtil.isTrue(t.isAuto))

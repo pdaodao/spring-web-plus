@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity implements WithUser {
+public abstract class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity implements WithUser {
     @Schema(description = "创建者id")
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private String creatorId;

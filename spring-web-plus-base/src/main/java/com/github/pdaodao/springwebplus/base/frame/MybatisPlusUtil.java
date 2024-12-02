@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.base.frame;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
 
 import java.lang.reflect.Field;
 
@@ -13,7 +14,7 @@ public class MybatisPlusUtil {
             return null;
         }
         final TableName tableName = (TableName) clazz.getAnnotation(TableName.class);
-        return tableName.value();
+        return SqlUtil.dropSqlEscape(tableName.value());
     }
 
     public static String tableField(final Field field) {
@@ -24,7 +25,7 @@ public class MybatisPlusUtil {
         if (ObjectUtil.equal(false, tableField.exist())) {
             return null;
         }
-        return tableField.value();
+        return SqlUtil.dropSqlEscape(tableField.value());
     }
 
     public static boolean isFieldIgnore(final Field field) {
