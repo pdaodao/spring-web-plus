@@ -23,13 +23,13 @@ public class ApiDocConfig implements InitializingBean {
     }
 
     @Bean
-    public GroupedOpenApi appApi() {
+    public GroupedOpenApi curentAppApi() {
         final String[] packagedToMatch = {SpringUtil.getBootPackage()};
         return GroupedOpenApi.builder()
-                .group("1." + SpringUtil.getAppName())
+                .group("1_" + SpringUtil.getAppName())
                 .pathsToMatch("/**")
                 .addOpenApiCustomizer(openApi -> openApi.info(new Info().title(SpringUtil.getAppName() + " API")))
-                .packagesToExclude("com.github.pdaodao.springwebplus")
+                // .packagesToExclude("com.github.pdaodao.springwebplus")
                 .packagesToScan(packagedToMatch)
                 .build();
     }

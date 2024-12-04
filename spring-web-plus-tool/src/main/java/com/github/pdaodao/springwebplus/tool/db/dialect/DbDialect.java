@@ -104,7 +104,7 @@ public interface DbDialect {
         if (StrUtil.isNotBlank(kf)) {
             try {
                 final URL url = ResourceUtil.getResource(kf, this.getClass());
-                if(url == null){
+                if (url == null) {
                     return null;
                 }
                 return FileUtil.readUtf8Lines(url)

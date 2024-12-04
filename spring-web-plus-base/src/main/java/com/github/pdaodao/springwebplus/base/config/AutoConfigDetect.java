@@ -40,7 +40,7 @@ public class AutoConfigDetect implements AutoConfigurationImportFilter, Environm
             } else if (clazz.contains("JCacheCacheConfiguration")) {
                 arr[i] = false;
             } else if (clazz.contains("RedisAutoConfiguration")) {
-                final String host = env.getProperty("spring.redis.host");
+                final String host = env.getProperty("sspring.data.redis.host");
                 if (StrUtil.isBlank(host) || !hasClass("org.springframework.data.redis.cache.RedisCacheManager")) {
                     arr[i] = false;
                 }

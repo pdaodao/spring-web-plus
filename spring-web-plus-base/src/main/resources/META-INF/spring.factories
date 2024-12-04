@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+com.github.pdaodao.springwebplus.base.config.AutoConfigDetect

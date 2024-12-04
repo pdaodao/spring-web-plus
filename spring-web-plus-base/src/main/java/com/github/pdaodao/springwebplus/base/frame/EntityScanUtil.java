@@ -164,7 +164,7 @@ public class EntityScanUtil {
             if (StrUtil.isNotBlank(tableFieldHelper.indexName())) {
                 indexInfo.setName(tableFieldHelper.indexName());
             }
-            if(StrUtil.isEmpty(indexInfo.getName()) && CollUtil.isNotEmpty(indexInfo.getFields())){
+            if (StrUtil.isEmpty(indexInfo.getName()) && CollUtil.isNotEmpty(indexInfo.getFields())) {
                 indexInfo.setName(StrUtil.join("_", indexInfo.getFields()));
             }
             indexList.add(indexInfo);

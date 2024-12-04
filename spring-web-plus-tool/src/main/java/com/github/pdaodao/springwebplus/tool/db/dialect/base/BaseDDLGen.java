@@ -99,8 +99,8 @@ public class BaseDDLGen implements DbDDLGen {
      */
     public String getFullTableName(final TableInfo tableInfo) {
         final String name = tableInfo.getName().trim();
-        if (StrUtil.isNotBlank(tableInfo.getSchema())) {
-            return quoteIdentifier(tableInfo.getSchema()) + "."
+        if (StrUtil.isNotBlank(tableInfo.getDbSchema())) {
+            return quoteIdentifier(tableInfo.getDbSchema()) + "."
                     + quoteIdentifier(name);
         }
         return quoteIdentifier(name);

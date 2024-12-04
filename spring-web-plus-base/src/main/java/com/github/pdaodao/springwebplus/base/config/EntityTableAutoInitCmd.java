@@ -35,12 +35,16 @@ public class EntityTableAutoInitCmd implements CommandLineRunner, Ordered {
 
     @Override
     public void run(String... args) throws Exception {
-        //1. 执行前置 sql 语句
-        SqlInitUtil.dbSqlInit("before", dataSource);
-        //2. 表结构初始化
-        entityToTable();
-        //3. 执行后置 sql 语句
-        SqlInitUtil.dbSqlInit("", dataSource);
+        try {
+            //1. 执行前置 sql 语句
+            SqlInitUtil.dbSqlInit("before", dataSource);
+            //2. 表结构初始化
+            entityToTable();
+            //3. 执行后置 sql 语句
+            SqlInitUtil.dbSqlInit("", dataSource);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     /**

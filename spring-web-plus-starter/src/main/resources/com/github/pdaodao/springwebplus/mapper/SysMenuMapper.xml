@@ -3,7 +3,7 @@
 <mapper namespace="com.github.pdaodao.springwebplus.mapper.SysMenuMapper">
 
 
-    <select id="userMenu" resultMap="mybatis-plus_SysMenu" resultType="com.github.pdaodao.springwebplus.entity.SysMenu">
+    <select id="userMenu" resultType="com.github.pdaodao.springwebplus.entity.SysMenu">
         select a.*
         from (
         select m.id

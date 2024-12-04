@@ -31,7 +31,7 @@ public class TableInfo implements Serializable, Cloneable {
     /**
      * table所在的schema
      */
-    private String schema;
+    private String dbSchema;
     /**
      * 中文名称
      */
