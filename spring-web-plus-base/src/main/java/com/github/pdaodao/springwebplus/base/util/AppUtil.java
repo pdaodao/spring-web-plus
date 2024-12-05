@@ -21,6 +21,7 @@ public class AppUtil {
             if (!BACKSLASH.equals(contextPath)) {
                 contextPath = contextPath + BACKSLASH;
             }
+            System.out.println("usr.dir:"+System.getProperty("user.dir"));
             String localhostDocUrl = "\nhttp://localhost:" + serverPort + contextPath + "doc.html";
             System.out.println(localhostDocUrl);
             String localhostSwaggerUrl = "http://localhost:" + serverPort + contextPath + "swagger-ui/index.html";

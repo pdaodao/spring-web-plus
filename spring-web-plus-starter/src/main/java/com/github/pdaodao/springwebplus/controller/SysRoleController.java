@@ -44,14 +44,14 @@ public class SysRoleController {
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统角色")
     @Permission("sys:role:delete")
-    public Boolean deleteSysRole(@PathVariable String id) {
+    public Boolean deleteSysRole(@PathVariable(name = "id") String id) {
         return roleDao.removeById(id);
     }
 
     @GetMapping("/info/{id}")
     @Operation(summary = "系统角色详情")
     @Permission("sys:role:info")
-    public SysRole getSysRole(@PathVariable String id) {
+    public SysRole getSysRole(@PathVariable(name = "id") String id) {
         return roleDao.getById(id);
     }
 
@@ -86,7 +86,7 @@ public class SysRoleController {
 
     @GetMapping("/{roleId}/menu-ids")
     @Operation(summary = "获取角色权限ID集合")
-    public List<String> getMenuIdsByRoleId(@PathVariable Long roleId) {
+    public List<String> getMenuIdsByRoleId(@PathVariable("roleId") Long roleId) {
 //        List<Long> list = sysMenuService.getMenuIdsByRoleId(roleId);
 //        return ApiResult.success(list);
         return new ArrayList<>();

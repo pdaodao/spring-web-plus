@@ -38,14 +38,14 @@ public class SysDictController {
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除字典类型")
     @Permission("sys:dict:delete")
-    public Boolean deleteSysDictType(@PathVariable String id) {
+    public Boolean deleteSysDictType(@PathVariable("id") String id) {
         return dicDao.removeById(id);
     }
 
     @GetMapping("/info/{id}")
     @Operation(summary = "字典详情")
     @Permission("sys:dict:info")
-    public SysDict getSysDictType(@PathVariable String id) {
+    public SysDict getSysDictType(@PathVariable("id") String id) {
         return dicDao.getById(id);
     }
 

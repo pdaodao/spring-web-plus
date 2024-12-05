@@ -46,9 +46,10 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
         if (typename.startsWith("org.springframework")) {
             return false;
         }
-        final String name = returnType.getMember().getDeclaringClass().getName();
-        return name.startsWith(SpringUtil.getBootPackage())
-                || name.startsWith("com.github.pdaodao.springwebplus");
+        return true;
+//        final String name = returnType.getMember().getDeclaringClass().getName();
+//        return name.startsWith(SpringUtil.getBootPackage())
+//                || name.startsWith("com.github.pdaodao.springwebplus");
     }
 
     @Nullable
