@@ -5,9 +5,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.FilterItem;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.util.support.MybatisHelper;
 import com.github.pdaodao.springwebplus.tool.db.util.visitor.DynamicWhereVisitor;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -213,6 +216,114 @@ public class SqlUtil {
         return fields.stream().map(t -> dialect.quoteIdentifier(t)).collect(Collectors.joining(","));
     }
 
+    public static String joinTableColumns(final DbDialect dialect, final List<TableColumn> fields) {
+        if (CollectionUtil.isEmpty(fields)) {
+            return null;
+        }
+        return joinFields(dialect, fields.stream().map(t -> t.getName()).collect(Collectors.toList()));
+    }
+
+
+    /**
+     * 查询语句
+     *
+     * @param dialect
+     * @param tableInfo
+     * @return
+     */
+    public static String genQuerySql(final DbDialect dialect, final TableInfo tableInfo) {
+        Preconditions.checkNotNull(tableInfo, "table-info is null.");
+        Preconditions.checkArgument(CollectionUtil.isNotEmpty(tableInfo.getColumns()), "fields info is empty for table {}.", tableInfo.getName());
+        return StrUtil.format("SELECT {} FROM {}", joinTableColumns(dialect, tableInfo.getColumns()),
+                dialect.quoteIdentifier(tableInfo.getName()));
+    }
+
+    public static String genQuerySql(final DbDialect dialect, final String tableName, List<String> names) {
+        Preconditions.checkNotBlank(tableName, "table-name is null.");
+        Preconditions.checkArgument(CollUtil.isNotEmpty(names), "fields is empty for table {}", tableName);
+        return StrUtil.format("SELECT {} FROM {}", joinFields(dialect, names),
+                dialect.quoteIdentifier(tableName));
+    }
+
+    /**
+     * insert into 插入语句
+     *
+     * @param dialect
+     * @param tableInfo
+     * @return
+     */
+    public static String genInsertIntoSql(final DbDialect dialect, final TableInfo tableInfo) {
+        Preconditions.checkNotNull(tableInfo, "table-info is null.");
+        Preconditions.checkArgument(CollectionUtil.isNotEmpty(tableInfo.getColumns()), "fields info is empty for table {}.", tableInfo.getName());
+
+        return StrUtil.format("INSERT INTO {} ({}) values ({})",
+                dialect.quoteIdentifier(tableInfo.getName()),
+                joinTableColumns(dialect, tableInfo.getColumns()),
+                StrUtil.repeatAndJoin("?", tableInfo.getColumns().size(), ","));
+    }
+
+    public static String genInsertIntoSql(final DbDialect dialect, final String tableName, final List<TableColumn> fs) {
+        Preconditions.checkNotBlank(tableName, "table name is null.");
+        Preconditions.checkArgument(CollectionUtil.isNotEmpty(fs), "fields info is empty for table {}.", tableName);
+
+        return StrUtil.format("INSERT INTO {} ({}) values ({})",
+                dialect.quoteIdentifier(tableName),
+                joinTableColumns(dialect, fs),
+                StrUtil.repeatAndJoin("?", fs.size(), ","));
+    }
+
+    /**
+     * 统计行数的 sql
+     *
+     * @param sql
+     * @return
+     */
+    public static String countSql(String sql) {
+        if (StrUtil.isEmpty(sql)) return StrUtil.EMPTY;
+        StringBuilder commentSb = new StringBuilder();
+        sql = dropSqlPrefixComment(sql, commentSb);
+        // 去掉最后的分号
+        if (sql.endsWith(";")) {
+            sql = sql.substring(0, sql.length() - 1);
+        }
+        String comment = commentSb.toString();
+
+//        if (!Select.matcher(sql).find()) return null;
+
+        final StringBuilder stringBuilder = new StringBuilder(sql.length() + 40);
+        stringBuilder.append("select count(");
+        stringBuilder.append(1);
+        stringBuilder.append(") from ( \n");
+        stringBuilder.append(sql);
+        stringBuilder.append("\n ) tmp_count");
+        String t = stringBuilder.toString();
+
+        if (StrUtil.isNotBlank(comment) && !t.contains(comment)) {
+            t = comment + t;
+        }
+        return t;
+    }
+
+    /**
+     * 去掉 sql 开头的注释
+     *
+     * @param sql
+     * @param sb
+     * @return
+     */
+    public static String dropSqlPrefixComment(String sql, StringBuilder sb) {
+        String comment = StrUtil.EMPTY;
+        if (sql.trim().startsWith("/*")) {
+            int index = sql.indexOf("*/");
+            if (index > 0) {
+                index = index + 2;
+                comment = sql.substring(0, index);
+                sql = sql.substring(index);
+            }
+        }
+        sb.append(comment);
+        return sql;
+    }
 
     /**
      * 动态条件拼装, 过滤条件项不存在时自动消失 如 select a , b from t1 where a = #a and b = #b

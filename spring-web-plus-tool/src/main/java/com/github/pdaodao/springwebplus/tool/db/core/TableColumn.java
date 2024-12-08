@@ -27,6 +27,12 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
      * 字段名称(英文)
      */
     protected String name;
+
+    /**
+     * 来源字段
+     */
+    protected String from;
+
     /**
      * 中文名称
      */

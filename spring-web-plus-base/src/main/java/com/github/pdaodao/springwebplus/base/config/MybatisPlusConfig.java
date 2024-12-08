@@ -1,10 +1,14 @@
 package com.github.pdaodao.springwebplus.base.config;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.github.pdaodao.springwebplus.base.config.support.WithSubQueryPageInnerInterceptor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -45,5 +49,23 @@ public class MybatisPlusConfig {
     @ConditionalOnMissingBean(MetaObjectHandler.class)
     public DbFieldFillHandler fieldFillHandler() {
         return new DbFieldFillHandler();
+    }
+
+    @Bean
+    public MybatisPlusPropertiesCustomizer plusPropertiesCustomizer() {
+        return new MybatisPlusPropertiesCustomizer() {
+            @Override
+            public void customize(MybatisPlusProperties properties) {
+                final String[] old = properties.getMapperLocations();
+                final String names = StringUtils.join(old, ",");
+                if (names.contains("citycloud")) {
+                    return;
+                }
+                final String[] locations = ArrayUtil.addAll(old, new String[]{
+                        "classpath*:/cn/com/citycloud/**/*.xml"
+                });
+                properties.setMapperLocations(locations);
+            }
+        };
     }
 }

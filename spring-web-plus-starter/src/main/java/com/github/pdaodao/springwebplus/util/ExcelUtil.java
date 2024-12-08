@@ -22,6 +22,9 @@ import java.util.function.Function;
 
 public class ExcelUtil {
 
+
+
+
     /**
      * 写实体数据到 excel文件中
      *
@@ -78,6 +81,15 @@ public class ExcelUtil {
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    /**
+     * sheet列表
+     * @param inputStream
+     * @return
+     */
+    public List<String> getSheetNames(final InputStream inputStream){
+        return cn.hutool.poi.excel.ExcelUtil.getReader(inputStream).getSheetNames();
     }
 
     /**

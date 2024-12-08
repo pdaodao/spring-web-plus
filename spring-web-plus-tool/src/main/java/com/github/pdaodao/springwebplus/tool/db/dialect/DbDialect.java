@@ -75,7 +75,7 @@ public interface DbDialect {
      * @param size   返回数据行数
      * @return
      */
-    String pageSql(final String sql, Integer offset, Integer size);
+    String pageSql(final String sql, Long offset, Long size);
 
 
     /**

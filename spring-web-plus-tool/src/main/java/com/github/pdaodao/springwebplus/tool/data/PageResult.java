@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.tool.data;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,5 +26,22 @@ public class PageResult<T> {
         pageR.setList(data);
         pageR.setPageInfo(pageInfo);
         return pageR;
+    }
+
+    public static <T> PageResult<T> of(List<T> data) {
+        final PageResult pageR = new PageResult();
+        pageR.setList(data);
+        return pageR;
+    }
+
+    public PageResult<T> add(T row) {
+        if (row == null) {
+            return this;
+        }
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        list.add(row);
+        return this;
     }
 }

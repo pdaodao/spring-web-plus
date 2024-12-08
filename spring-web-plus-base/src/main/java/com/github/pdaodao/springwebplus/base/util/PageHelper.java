@@ -10,7 +10,7 @@ public class PageHelper implements AutoCloseable {
     public static ThreadLocal<Page> holder = new ThreadLocal<>();
 
     public static PageHelper startPage(final PageRequestParam pageRequestParam) {
-        if (pageRequestParam != null) {
+        if (pageRequestParam != null && pageRequestParam.getPageSize() != null && pageRequestParam.getPageSize() > 1) {
             holder.set(pageRequestParam.toPage());
         }
         return new PageHelper();
@@ -22,6 +22,9 @@ public class PageHelper implements AutoCloseable {
 
     public <T> PageResult<T> toPageResult(final List<T> list) {
         final Page page = holder.get();
+        if(page == null){
+            return PageResult.of(list);
+        }
         return PageResult.build(page.getCurrent(), page.getSize(), page.getTotal(), list);
     }
 

@@ -54,7 +54,7 @@ public class MysqlDialect extends BaseDbDialect {
     }
 
     @Override
-    public String pageSql(String sql, Integer offset, Integer size) {
+    public String pageSql(String sql, Long offset, Long size) {
         if (offset == null || offset < 1) {
             return DbUtil.pageSqlWrap(sql, "limit " + size);
         }

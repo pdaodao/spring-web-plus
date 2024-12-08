@@ -33,7 +33,7 @@ public class SqliteDialect extends BaseDbDialect {
     }
 
     @Override
-    public String pageSql(String sql, Integer offset, Integer size) {
+    public String pageSql(String sql, Long offset, Long size) {
         return null;
     }
 

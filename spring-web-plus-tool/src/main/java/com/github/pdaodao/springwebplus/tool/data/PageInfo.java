@@ -23,6 +23,18 @@ public class PageInfo {
      */
     private Long total;
 
+    /**
+     * 起始行数
+     *
+     * @return
+     */
+    public Long offset() {
+        if (pageNum == null || pageNum < 1) {
+            return 0l;
+        }
+        return (pageNum - 1) * pageSize;
+    }
+
     public void check() {
         Preconditions.checkArgument(pageNum >= 1, "pageNum should >=1");
         Preconditions.checkArgument(pageSize >= 1, "pageSize should >=1");

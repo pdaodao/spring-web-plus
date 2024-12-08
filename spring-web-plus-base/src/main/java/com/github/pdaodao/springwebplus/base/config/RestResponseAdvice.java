@@ -46,8 +46,11 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
         if (typename.startsWith("org.springframework")) {
             return false;
         }
+        final String name = returnType.getMember().getDeclaringClass().getName();
+        if(name.startsWith("org.spring")){
+            return false;
+        }
         return true;
-//        final String name = returnType.getMember().getDeclaringClass().getName();
 //        return name.startsWith(SpringUtil.getBootPackage())
 //                || name.startsWith("com.github.pdaodao.springwebplus");
     }
@@ -58,16 +61,19 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
         if (body == null && returnType.getGenericParameterType().getTypeName().equals("void")) {
             return RestResponse.success(body);
         }
-        // 保持分页接口 和 列表接口 格式一致
-        if (isCollectionReturnType(returnType)) {
-            final PageResult p = new PageResult();
-            if (body != null) {
-                p.setList((Collection) body);
+        IResponse restResponse;
+        if(body == null){
+            restResponse = RestResponse.success(null);
+        }else{
+            if(body instanceof IResponse){
+                restResponse = (IResponse) body;
+            }else if(body instanceof PageResult<?>){
+                final PageResult p = (PageResult) body;
+                restResponse = RestResponse.success(p.getList(), p.getPageInfo());
+            }else{
+                restResponse = RestResponse.success(body);
             }
-            body = p;
         }
-
-        final IResponse restResponse = body instanceof IResponse ? (IResponse) body : RestResponse.success(body);
         if (restResponse instanceof RestResponse) {
             RestResponse r = (RestResponse) restResponse;
             if (r.getCode() == null) {

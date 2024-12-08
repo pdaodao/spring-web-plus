@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.pdaodao.springwebplus.tool.data.PageInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -14,11 +15,15 @@ public class RestResponse<T> implements IResponse {
     @JsonInclude
     private T data;
 
+    @Schema(description = "分页信息")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private PageInfo pageInfo;
+
     @Schema(description = "提示信息")
     private String msg;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "错误信息详情")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String trace;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -42,6 +47,13 @@ public class RestResponse<T> implements IResponse {
     public static RestResponse success(Object data) {
         return new RestResponse(RestCode.SUCCESS, data);
     }
+
+    public static RestResponse success(Object data, final PageInfo pageInfo) {
+        final RestResponse r =  new RestResponse(RestCode.SUCCESS, data);
+        r.setPageInfo(pageInfo);
+        return r;
+    }
+
 
     public static RestResponse error(RestCode restCode) {
         return new RestResponse(restCode, null);

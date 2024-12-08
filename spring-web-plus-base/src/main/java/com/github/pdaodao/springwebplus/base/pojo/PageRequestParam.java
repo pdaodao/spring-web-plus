@@ -15,9 +15,9 @@ import java.util.Objects;
 @Schema(description = "分页查询请求参数")
 public class PageRequestParam {
     @Schema(description = "页码 从1开始", example = "1")
-    private Integer pageNum = 1;
+    private Integer pageNum;
     @Schema(description = "每页大小 默认为10", example = "10")
-    private Integer pageSize = 10;
+    private Integer pageSize;
     @Schema(description = "排序字段,为实体类的属性名称")
     private String orderBy;
     @Schema(description = "是否为升序, 默认为true")
