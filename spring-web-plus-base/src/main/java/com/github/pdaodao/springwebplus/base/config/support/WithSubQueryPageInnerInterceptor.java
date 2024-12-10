@@ -15,6 +15,7 @@ import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
+import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -23,6 +24,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -87,6 +89,43 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         final String sql = boundSql.getSql().replace(LimitZeroZero, "");
         mpBoundSql.sql(sql);
         mpBoundSql.parameterMappings(mappings);
+    }
+
+
+    /**
+     * 这里进行count,如果count为0这返回false(就是不再执行sql了)
+     */
+    @Override
+    public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.holder.get());
+        if (page == null || page.getSize() < 0 || !page.searchCount()) {
+            return true;
+        }
+
+        BoundSql countSql;
+        MappedStatement countMs = buildCountMappedStatement(ms, page.countId());
+        if (countMs != null) {
+            countSql = countMs.getBoundSql(parameter);
+        } else {
+            countMs = buildAutoCountMappedStatement(ms);
+            String countSqlStr = autoCountSql(page, boundSql.getSql());
+            PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
+            countSql = new BoundSql(countMs.getConfiguration(), countSqlStr, mpBoundSql.parameterMappings(), parameter);
+            PluginUtils.setAdditionalParameter(countSql, mpBoundSql.additionalParameters());
+        }
+
+        CacheKey cacheKey = executor.createCacheKey(countMs, parameter, rowBounds, countSql);
+        List<Object> result = executor.query(countMs, parameter, rowBounds, resultHandler, cacheKey, countSql);
+        long total = 0;
+        if (CollectionUtils.isNotEmpty(result)) {
+            // 个别数据库 count 没数据不会返回 0
+            Object o = result.get(0);
+            if (o != null) {
+                total = Long.parseLong(o.toString());
+            }
+        }
+        page.setTotal(total);
+        return continuePage(page);
     }
 
     @Override

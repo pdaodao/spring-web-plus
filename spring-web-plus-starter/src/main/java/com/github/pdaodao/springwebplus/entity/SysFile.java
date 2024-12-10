@@ -1,11 +1,14 @@
 package com.github.pdaodao.springwebplus.entity;
 
+import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
-import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * 系统文件
@@ -14,55 +17,35 @@ import java.math.BigDecimal;
 @TableName(value = "sys_file", autoResultMap = true)
 @Schema(description = "系统文件")
 public class SysFile extends SnowIdWithTimeUserEntity {
-    @Schema(description = "日志链路ID")
-    private String traceId;
+    @Schema(description = "文件名称")
+    @Length(max = 500, message = "文件名称长度超过500限制")
+    private String name;
 
-    @Schema(description = "服务类型 1：本地服务，2：阿里云OSS")
-    private Integer serverType;
+    @Schema(description = "命名空间")
+    private String namespace;
 
-    @Schema(description = "上传类型")
-    private String uploadType;
+    @Schema(description = "对象id")
+    private String pid;
 
-    @Schema(description = "目录名称")
-    private String dirName;
+    @Schema(description = "存储路径")
+    @Length(max = 800, message = "存储路径长度超过800限制")
+    private String path;
 
-    @Schema(description = "源文件名称")
-    private String originalFileName;
-
-    @Schema(description = "生成的文件名称")
-    private String fileName;
-
-    @Schema(description = "文件内容类型")
+    @Schema(description = "类型")
+    @Length(max = 100, message = "类型长度超过100限制")
     private String contentType;
 
-    @Schema(description = "文件后缀")
-    private String extension;
-
-    @Schema(description = "文件大小")
+    @Schema(description = "大小")
     private Long size;
 
-    @Schema(description = "文件大小MB")
-    private BigDecimal sizeMb;
+    @Schema(description = "可读大小")
+    private transient String readableSize;
 
-    @Schema(description = "访问的URL")
-    private String url;
-
-    @Schema(description = "系统类型 1：管理端，2：移动端")
-    private Integer systemType;
-
-    @Schema(description = "用户ID")
-    private Long userId;
-
-    @Schema(description = "本地文件服务时的物流文件位置")
-    private String filePath;
-
-    @Schema(description = "文件类型 1：图片，2：音视频，3：文档，4：文件")
-    private Integer fileType;
-
-    @Schema(description = "IP地址")
-    private String ip;
-
-    @Schema(description = "IP区域")
-    private String ipArea;
+    public String getReadableSize() {
+        if (Objects.isNull(size)) {
+            return "0";
+        }
+        return FileUtil.readableFileSize(size);
+    }
 }
 

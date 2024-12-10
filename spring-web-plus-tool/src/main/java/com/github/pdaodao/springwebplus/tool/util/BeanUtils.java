@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.tool.util;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,6 +11,7 @@ import cn.hutool.json.JSONUtil;
 import com.github.pdaodao.springwebplus.tool.data.LinkedCaseInsensitiveMap;
 import com.github.pdaodao.springwebplus.tool.util.pojo.EntityDiffWrap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,6 +48,17 @@ public class BeanUtils {
         final String fromStr = JSONUtil.toJsonStr(fromMap);
         final String toStr = JSONUtil.toJsonStr(toMap);
         return StrUtil.equals(fromStr, toStr);
+    }
+
+    public static <T> List<Map<String, ?>> toMapList(final List<T> list) {
+        if(CollUtil.isEmpty(list)){
+            return ListUtil.empty();
+        }
+        final List<Map<String, ?>> ret = new ArrayList<>();
+        for(final T t: list){
+            ret.add(beanToMap(t));
+        }
+        return ret;
     }
 
     /**
@@ -92,6 +105,11 @@ public class BeanUtils {
         }
         result.setOldMap(oldMap);
         return result;
+    }
+
+
+    public static Map<String, Object> beanToMap(Object bean, String... properties){
+        return BeanUtil.beanToMap(bean, properties);
     }
 
     /**

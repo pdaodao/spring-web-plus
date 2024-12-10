@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -80,6 +81,19 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
         final TableColumn r = new TableColumn();
         BeanUtil.copyProperties(column, r);
         return r;
+    }
+
+    public String getTitle() {
+        if(StrUtil.isNotBlank(title)){
+            return title;
+        }
+        if(StrUtil.isNotBlank(remark)){
+            return StrUtils.clean(remark);
+        }
+        if(StrUtil.isNotBlank(name)){
+            return name;
+        }
+        return title;
     }
 
     /**

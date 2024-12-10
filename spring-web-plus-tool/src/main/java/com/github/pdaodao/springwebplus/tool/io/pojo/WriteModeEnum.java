@@ -14,6 +14,10 @@ public enum WriteModeEnum {
      */
     APPEND,
     /**
+     * 更新部分字段
+     */
+    UPDATE,
+    /**
      * 动态数据变更
      */
     CDC;

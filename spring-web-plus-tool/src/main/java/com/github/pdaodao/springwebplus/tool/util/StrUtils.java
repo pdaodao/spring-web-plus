@@ -70,6 +70,10 @@ public class StrUtils {
         return CharSequenceUtil.toUnderlineCase(name.trim()).toLowerCase();
     }
 
+    public static boolean equalsIgnoreUnderLine(final String st1, final String st2){
+        return StrUtil.equalsIgnoreCase(toCamelCase(st1), toCamelCase(st2));
+    }
+
     /**
      * 下划线转驼峰
      *

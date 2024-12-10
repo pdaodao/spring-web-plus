@@ -18,12 +18,17 @@ public class ExcelReader implements Reader {
     protected final transient List<List<Object>> rows;
     private final InputStreamWrap inputStreamWrap;
     protected transient long total = 0;
+    protected transient int sheetId = 0;
     protected transient List<TableColumn> fields;
     protected transient int currentIndex = 0;
 
     public ExcelReader(InputStreamWrap inputStreamWrap) {
         this.inputStreamWrap = inputStreamWrap;
         this.rows = new ArrayList<>();
+    }
+
+    public void setSheetId(int sheetId) {
+        this.sheetId = sheetId;
     }
 
     @Override
@@ -47,7 +52,7 @@ public class ExcelReader implements Reader {
 
     @Override
     public void open() throws Exception {
-        ExcelUtil.readBySax(inputStreamWrap.inputStream, 0, new RowHandler() {
+        ExcelUtil.readBySax(inputStreamWrap.inputStream, sheetId, new RowHandler() {
             @Override
             public void handle(int sheetIndex, long rowIndex, List<Object> rowCells) {
                 rows.add(rowCells);

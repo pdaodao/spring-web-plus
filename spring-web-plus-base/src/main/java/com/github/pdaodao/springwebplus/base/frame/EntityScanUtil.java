@@ -36,7 +36,7 @@ public class EntityScanUtil {
      */
     public static List<TableInfo> entityList() {
         final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.github.pdaodao", DaoEntity.class);
-        final Set<Class<?>> apps = ClassScanner.scanAllPackageBySuper(SpringUtil.getBootPackage(), DaoEntity.class);
+        final Set<Class<?>> apps = ClassScanner.scanAllPackageBySuper(SpringUtil.getBootScanPackage(), DaoEntity.class);
         final Set<Class<?>> all = new HashSet<>();
         all.addAll(cls);
         all.addAll(apps);

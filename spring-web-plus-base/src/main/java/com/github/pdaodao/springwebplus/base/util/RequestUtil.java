@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.base.util;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Enumeration;
 
 public class RequestUtil {
     private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();
@@ -42,6 +45,38 @@ public class RequestUtil {
 
     public static void setPageParam(final PageRequestParam pp) {
         pageHolder.set(pp);
+    }
+
+    public static String getFromHead(String name) {
+        if (StrUtil.isBlank(name)) {
+            return null;
+        }
+        final HttpServletRequest httpServletRequest = getRequest();
+        if (httpServletRequest == null) {
+            return null;
+        }
+        return getFromHeader(httpServletRequest, name);
+    }
+
+    public static String getFromHeader(HttpServletRequest httpRequest, String head){
+        final Enumeration<String> names = httpRequest.getHeaderNames();
+        while (names.hasMoreElements()){
+            final String h = names.nextElement();
+            if(equalsIgnoreLine(h, head)){
+                head = h;
+                break;
+            }
+        }
+        return httpRequest.getHeader(head);
+    }
+
+    private static boolean equalsIgnoreLine(String h, String head){
+        if(StrUtil.isBlank(h) |  StrUtil.isBlank(head)){
+            return false;
+        }
+        h = h.trim().toLowerCase().replaceAll("-","").replaceAll("_","");
+        head = head.trim().toLowerCase().replaceAll("-","").replaceAll("_","");
+        return h.equals(head);
     }
 
     public static HttpServletRequest getRequest() {

@@ -1,5 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.io.jdbc;
 
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
@@ -13,6 +15,7 @@ import com.github.pdaodao.springwebplus.tool.lang.JdbcConnectionProvider;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +59,22 @@ public class JdbcWriter implements Writer {
             final String sql = SqlUtil.genInsertIntoSql(connectionProvider.getDialect(), tableName, fields);
             this.ps = connection.prepareStatement(sql);
             return;
+        }else if(WriteModeEnum.UPDATE == writeMode){
+            TableColumn pk = null;
+            final List<TableColumn> updateFields = new ArrayList<>();
+            for(final TableColumn f: fields){
+                if(BooleanUtil.isTrue(f.getIsPk())){
+                    pk = f;
+                    continue;
+                }
+                updateFields.add(f);
+            }
+            final String sql = SqlUtil.genUpdateSql(connectionProvider.getDialect(), tableName, pk, updateFields);
+            this.ps = connection.prepareStatement(sql);
+            fields = new ArrayList<>();
+            fields.addAll(updateFields);
+            fields.add(pk);
+            return;
         }
         throw new UnsupportedOperationException("jdbc write not support writeMode:" + writeMode);
     }
@@ -74,7 +93,10 @@ public class JdbcWriter implements Writer {
         total++;
         int i = 1;
         for (final TableColumn t : fields) {
-            final Object value = row.getFieldAs(t.getFrom());
+            Object value = row.getFieldAs(t.getFrom());
+            if(t.getDataType() != null && t.getDataType().isDoubleFamily() && ObjectUtil.isEmpty(value)){
+                value = null;
+            }
             ps.setObject(i++, value);
         }
         ps.addBatch();

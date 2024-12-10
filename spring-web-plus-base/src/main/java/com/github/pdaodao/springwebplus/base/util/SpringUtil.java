@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -45,6 +47,24 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
         final String pkg = name.substring(0, name.lastIndexOf("."));
         return pkg;
     }
+
+    public static String getBootScanPackage() {
+        final String p = getBootPackage();
+        final List<String> list = new ArrayList<>();
+        for(final String t: StrUtil.split(p, ".")){
+            if("com".equalsIgnoreCase(t)
+                    || "cn".equalsIgnoreCase(t)
+                    ||"github".equalsIgnoreCase(t)){
+                list.add(t);
+            }else{
+                list.add(t);
+                break;
+            }
+        }
+        return StrUtil.join(".", list);
+    }
+
+
 
     public static Class getBootClass() {
         Map<String, Object> annotatedBeans = getApplicationContext().getBeansWithAnnotation(SpringBootApplication.class);

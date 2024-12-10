@@ -8,10 +8,14 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.sax.handler.RowHandler;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
+import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.http.util.EntityUtils;
 import org.springframework.web.util.UriUtils;
 
 import java.io.InputStream;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ExcelUtil {
 
@@ -39,6 +44,13 @@ public class ExcelUtil {
         write(fileName, datas, head, RequestUtil.getResponse());
     }
 
+    public static <T> void write(final String fileName, final List<T> entityList, final TableInfo tableInfo){
+        final List<Map<String, ?>> mapList = BeanUtils.toMapList(entityList);
+        tableInfo.toCamelCase();
+        writeMapData(fileName, mapList, tableInfo);
+    }
+
+
     /**
      * 写map数据到excel
      *
@@ -52,6 +64,16 @@ public class ExcelUtil {
         final List<List<?>> datas = toListRowWithMap(mapList, fields);
         write(fileName, datas, head, RequestUtil.getResponse());
     }
+
+    public static void writeMapData(final String fileName, final List<Map<String, ?>> mapList, final TableInfo tableInfo) {
+        Preconditions.checkNotNull(tableInfo, "下载字段信息为空");
+        Preconditions.assertTrue(CollUtil.isEmpty(tableInfo.getColumns()), "无下载字段");
+        final List<String> fs = tableInfo.getColumns().stream().map(t -> t.getName()).collect(Collectors.toList());
+        final List<List<?>> datas = toListRowWithMap(mapList, fs.toArray(new String[0]));
+        final List<String> head = tableInfo.getColumns().stream().map(t -> t.getTitle()).collect(Collectors.toList());
+        write(fileName, datas, head, RequestUtil.getResponse());
+    }
+
 
 
     /**
@@ -88,7 +110,7 @@ public class ExcelUtil {
      * @param inputStream
      * @return
      */
-    public List<String> getSheetNames(final InputStream inputStream){
+    public static List<String> getSheetNames(final InputStream inputStream){
         return cn.hutool.poi.excel.ExcelUtil.getReader(inputStream).getSheetNames();
     }
 

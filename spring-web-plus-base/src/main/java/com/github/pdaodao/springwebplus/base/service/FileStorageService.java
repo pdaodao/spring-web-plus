@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.base.service;
 
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
 import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
@@ -66,14 +67,14 @@ public class FileStorageService {
      * @return
      * @throws IOException
      */
-    public FileInfo upload(final String basePath, final MultipartFile file) throws IOException {
+    public FileInfo upload(final String basePath, final MultipartFile file) throws Exception {
         final String fileName = FileUtil.cleanInvalid(file.getOriginalFilename());
         try (final InputStream inputStream = file.getInputStream()) {
-            final String fullPath = upload(basePath, file.getSize(), fileName, inputStream);
             final FileInfo fileInfo = new FileInfo();
             fileInfo.setName(fileName);
+            fileInfo.setContentType(FileTypeUtil.getType(null, file.getOriginalFilename(), true));
+            final String fullPath = upload(basePath, file.getSize(), fileName, inputStream);
             fileInfo.setPath(fullPath);
-            fileInfo.setContentType(file.getContentType());
             fileInfo.setSize(file.getSize());
             return fileInfo;
         }

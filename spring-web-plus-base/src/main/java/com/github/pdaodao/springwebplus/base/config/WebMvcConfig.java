@@ -13,6 +13,7 @@ import com.github.pdaodao.springwebplus.base.config.support.CurrentUserInfoParam
 import com.github.pdaodao.springwebplus.base.config.support.HolderClearInterceptor;
 import com.github.pdaodao.springwebplus.base.config.support.PageRequestParamResolver;
 import com.github.pdaodao.springwebplus.base.config.support.WebappFile;
+import com.github.pdaodao.springwebplus.base.frame.SysDateTimeFormat;
 import com.github.pdaodao.springwebplus.base.support.ProxyServlet;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
@@ -29,13 +30,13 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -45,6 +46,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
     private final LoginInterceptor loginInterceptor;
     private final ProxyServlet proxyServlet;
+    private final Optional<SysDateTimeFormat> sysDateTimeFormatOption;
 
     @Bean
     @ConditionalOnProperty("http.proxy")
@@ -63,14 +65,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
         return builder -> {
-            builder.simpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String dateFormat = sysDateTimeFormatOption.isPresent() ? sysDateTimeFormatOption.get().dateFormat() : "yyyy-MM-dd";
+            final String dateTimeFormat = sysDateTimeFormatOption.isPresent() ? sysDateTimeFormatOption.get().datetimeFormat() : "yyyy-MM-dd HH:mm:ss";
+            builder.simpleDateFormat(dateFormat);
             builder.failOnUnknownProperties(false);
             builder.timeZone("Asia/Shanghai");
             builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-            builder.serializerByType(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            builder.deserializerByType(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            builder.serializerByType(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            builder.deserializerByType(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            builder.serializerByType(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
+            builder.deserializerByType(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
+            builder.serializerByType(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
+            builder.deserializerByType(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(dateFormat)));
         };
     }
 
