@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.fs;
 
 import cn.hutool.core.io.FileUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,7 +14,7 @@ public class FileInfo {
     private String contentType;
     private Long size;
     private transient String readableSize;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+
     protected Date createTime;
 
     private String namespace;

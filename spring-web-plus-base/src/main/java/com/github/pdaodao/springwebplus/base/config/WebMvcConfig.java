@@ -67,7 +67,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return builder -> {
             final String dateFormat = sysDateTimeFormatOption.isPresent() ? sysDateTimeFormatOption.get().dateFormat() : "yyyy-MM-dd";
             final String dateTimeFormat = sysDateTimeFormatOption.isPresent() ? sysDateTimeFormatOption.get().datetimeFormat() : "yyyy-MM-dd HH:mm:ss";
-            builder.simpleDateFormat(dateFormat);
+            builder.simpleDateFormat(dateTimeFormat);
             builder.failOnUnknownProperties(false);
             builder.timeZone("Asia/Shanghai");
             builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
