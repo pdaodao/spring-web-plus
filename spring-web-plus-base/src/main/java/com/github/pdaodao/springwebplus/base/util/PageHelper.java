@@ -22,7 +22,7 @@ public class PageHelper implements AutoCloseable {
 
     public <T> PageResult<T> toPageResult(final List<T> list) {
         final Page page = holder.get();
-        if(page == null){
+        if (page == null) {
             return PageResult.of(list);
         }
         return PageResult.build(page.getCurrent(), page.getSize(), page.getTotal(), list);

@@ -3,7 +3,6 @@ package com.github.pdaodao.springwebplus.base.config;
 import com.github.pdaodao.springwebplus.base.pojo.IResponse;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
-import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -47,7 +46,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             return false;
         }
         final String name = returnType.getMember().getDeclaringClass().getName();
-        if(name.startsWith("org.spring")){
+        if (name.startsWith("org.spring")) {
             return false;
         }
         return true;
@@ -62,15 +61,15 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             return RestResponse.success(body);
         }
         IResponse restResponse;
-        if(body == null){
+        if (body == null) {
             restResponse = RestResponse.success(null);
-        }else{
-            if(body instanceof IResponse){
+        } else {
+            if (body instanceof IResponse) {
                 restResponse = (IResponse) body;
-            }else if(body instanceof PageResult<?>){
+            } else if (body instanceof PageResult<?>) {
                 final PageResult p = (PageResult) body;
                 restResponse = RestResponse.success(p.getList(), p.getPageInfo());
-            }else{
+            } else {
                 restResponse = RestResponse.success(body);
             }
         }

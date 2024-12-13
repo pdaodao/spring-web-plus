@@ -51,19 +51,18 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
     public static String getBootScanPackage() {
         final String p = getBootPackage();
         final List<String> list = new ArrayList<>();
-        for(final String t: StrUtil.split(p, ".")){
-            if("com".equalsIgnoreCase(t)
+        for (final String t : StrUtil.split(p, ".")) {
+            if ("com".equalsIgnoreCase(t)
                     || "cn".equalsIgnoreCase(t)
-                    ||"github".equalsIgnoreCase(t)){
+                    || "github".equalsIgnoreCase(t)) {
                 list.add(t);
-            }else{
+            } else {
                 list.add(t);
                 break;
             }
         }
         return StrUtil.join(".", list);
     }
-
 
 
     public static Class getBootClass() {

@@ -51,11 +51,11 @@ public class BeanUtils {
     }
 
     public static <T> List<Map<String, ?>> toMapList(final List<T> list) {
-        if(CollUtil.isEmpty(list)){
+        if (CollUtil.isEmpty(list)) {
             return ListUtil.empty();
         }
         final List<Map<String, ?>> ret = new ArrayList<>();
-        for(final T t: list){
+        for (final T t : list) {
             ret.add(beanToMap(t));
         }
         return ret;
@@ -108,7 +108,7 @@ public class BeanUtils {
     }
 
 
-    public static Map<String, Object> beanToMap(Object bean, String... properties){
+    public static Map<String, Object> beanToMap(Object bean, String... properties) {
         return BeanUtil.beanToMap(bean, properties);
     }
 

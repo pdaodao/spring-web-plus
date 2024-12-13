@@ -2,7 +2,6 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.FilterItem;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
@@ -13,12 +12,13 @@ import com.github.pdaodao.springwebplus.tool.db.util.support.MybatisHelper;
 import com.github.pdaodao.springwebplus.tool.db.util.visitor.DynamicWhereVisitor;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 
-import javax.swing.text.html.Option;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -274,6 +274,7 @@ public class SqlUtil {
 
     /**
      * 根据主键更新数据
+     *
      * @param dialect
      * @param tableName
      * @param pk
@@ -286,8 +287,8 @@ public class SqlUtil {
         Preconditions.checkArgument(CollectionUtil.isNotEmpty(fs), "fields update is empty for table {}.", tableName);
         Preconditions.checkNotNull(pk, "请指定主键.");
         final List<String> updateFields = new ArrayList<>();
-        for(final TableColumn f: fs){
-            updateFields.add(dialect.quoteIdentifier(f.getName()) +" = ?");
+        for (final TableColumn f : fs) {
+            updateFields.add(dialect.quoteIdentifier(f.getName()) + " = ?");
         }
         return StrUtil.format("UPDATE {} SET {} WHERE {} = ?",
                 dialect.quoteIdentifier(tableName),

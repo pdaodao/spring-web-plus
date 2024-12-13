@@ -49,7 +49,7 @@ public class RestResponse<T> implements IResponse {
     }
 
     public static RestResponse success(Object data, final PageInfo pageInfo) {
-        final RestResponse r =  new RestResponse(RestCode.SUCCESS, data);
+        final RestResponse r = new RestResponse(RestCode.SUCCESS, data);
         r.setPageInfo(pageInfo);
         return r;
     }
