@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
@@ -38,7 +39,7 @@ public class BaseDDLGen implements DbDDLGen {
         for (final TableColumn field : tableInfo.getColumns()) {
             index++;
             // 生成字段定义
-            final String fieldDdl = dbDialect.dataTypeConverter().fieldDDL(field, ddlBuildContext);
+            final String fieldDdl = dbDialect.dataTypeConverter().fieldDDL(null, field, ddlBuildContext);
             sql.append(fieldDdl);
             if (index < size) {
                 sql.append(",");
@@ -197,8 +198,8 @@ public class BaseDDLGen implements DbDDLGen {
         final List<String> last = new ArrayList<>();
         final List<String> list = new ArrayList<>();
         final String sql = String.format(
-                "ALTER TABLE %s ADD %s", quoteIdentifier(ddlBuildContext.tableName),
-                dbDialect.dataTypeConverter().fieldDDL(tableColumn, ddlBuildContext));
+                "ALTER TABLE %s ADD COLUMN %s", quoteIdentifier(ddlBuildContext.tableName),
+                dbDialect.dataTypeConverter().fieldDDL(null, tableColumn, ddlBuildContext));
         list.add(sql);
         list.addAll(last);
         return list;
@@ -234,16 +235,22 @@ public class BaseDDLGen implements DbDDLGen {
             // 字段名称修改
             list.addAll(renameColumnSql(ddlBuildContext.tableName, from.getName(), to.getName()));
         }
-        if (from.diff(to, true)) {
+        if (from.diff(to, true) && !(BooleanUtil.isTrue(to.isAuto) && from != null && BooleanUtil.isTrue(from.isAuto))) {
+            ddlBuildContext.isModifyColumn = true;
             final List<String> last = new ArrayList<>();
             final String sql = String.format(
-                    "ALTER TABLE %s MODIFY COLUMN %s",
+                    "ALTER TABLE %s %s %s",
                     quoteIdentifier(ddlBuildContext.tableName),
-                    dbDialect.dataTypeConverter().fieldDDL(to, ddlBuildContext));
+                    modifyColumn(),
+                    dbDialect.dataTypeConverter().fieldDDL(from, to, ddlBuildContext));
+            ddlBuildContext.isModifyColumn = false;
             list.add(sql);
             list.addAll(last);
         }
         return list;
     }
 
+    protected String modifyColumn() {
+        return "MODIFY COLUMN";
+    }
 }

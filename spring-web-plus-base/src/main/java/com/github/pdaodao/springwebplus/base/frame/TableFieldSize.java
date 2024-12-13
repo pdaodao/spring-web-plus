@@ -7,4 +7,6 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface TableFieldSize {
     int value() default 255;
+
+    String defaultValue() default "";
 }

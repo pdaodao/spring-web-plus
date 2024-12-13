@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.io.jdbc;
 
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
@@ -11,6 +10,7 @@ import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
 import com.github.pdaodao.springwebplus.tool.lang.ConnectionProviderFactory;
 import com.github.pdaodao.springwebplus.tool.lang.JdbcConnectionProvider;
+import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,11 +59,11 @@ public class JdbcWriter implements Writer {
             final String sql = SqlUtil.genInsertIntoSql(connectionProvider.getDialect(), tableName, fields);
             this.ps = connection.prepareStatement(sql);
             return;
-        }else if(WriteModeEnum.UPDATE == writeMode){
+        } else if (WriteModeEnum.UPDATE == writeMode) {
             TableColumn pk = null;
             final List<TableColumn> updateFields = new ArrayList<>();
-            for(final TableColumn f: fields){
-                if(BooleanUtil.isTrue(f.getIsPk())){
+            for (final TableColumn f : fields) {
+                if (BooleanUtil.isTrue(f.getIsPk())) {
                     pk = f;
                     continue;
                 }
@@ -94,9 +94,7 @@ public class JdbcWriter implements Writer {
         int i = 1;
         for (final TableColumn t : fields) {
             Object value = row.getFieldAs(t.getFrom());
-            if(t.getDataType() != null && t.getDataType().isDoubleFamily() && ObjectUtil.isEmpty(value)){
-                value = null;
-            }
+            value = DataValueUtil.toAs(value, t.getDataType());
             ps.setObject(i++, value);
         }
         ps.addBatch();

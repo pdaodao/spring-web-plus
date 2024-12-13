@@ -16,9 +16,10 @@ public interface DataTypeConverter {
     /**
      * 生成建表是的字段类型 varchar(32) not null auto_increment default 'abc' comment '测试'
      *
+     * @param from
      * @param columnInfo
      * @param context
      * @return
      */
-    String fieldDDL(final TableColumn columnInfo, final DDLBuildContext context);
+    String fieldDDL(final TableColumn from, final TableColumn columnInfo, final DDLBuildContext context);
 }

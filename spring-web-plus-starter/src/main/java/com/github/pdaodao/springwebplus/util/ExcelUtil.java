@@ -10,12 +10,9 @@ import cn.hutool.poi.excel.sax.handler.RowHandler;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
-import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.http.util.EntityUtils;
 import org.springframework.web.util.UriUtils;
 
 import java.io.InputStream;
@@ -26,8 +23,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ExcelUtil {
-
-
 
 
     /**
@@ -44,7 +39,7 @@ public class ExcelUtil {
         write(fileName, datas, head, RequestUtil.getResponse());
     }
 
-    public static <T> void write(final String fileName, final List<T> entityList, final TableInfo tableInfo){
+    public static <T> void write(final String fileName, final List<T> entityList, final TableInfo tableInfo) {
         final List<Map<String, ?>> mapList = BeanUtils.toMapList(entityList);
         tableInfo.toCamelCase();
         writeMapData(fileName, mapList, tableInfo);
@@ -73,7 +68,6 @@ public class ExcelUtil {
         final List<String> head = tableInfo.getColumns().stream().map(t -> t.getTitle()).collect(Collectors.toList());
         write(fileName, datas, head, RequestUtil.getResponse());
     }
-
 
 
     /**
@@ -107,10 +101,11 @@ public class ExcelUtil {
 
     /**
      * sheet列表
+     *
      * @param inputStream
      * @return
      */
-    public static List<String> getSheetNames(final InputStream inputStream){
+    public static List<String> getSheetNames(final InputStream inputStream) {
         return cn.hutool.poi.excel.ExcelUtil.getReader(inputStream).getSheetNames();
     }
 
@@ -172,8 +167,8 @@ public class ExcelUtil {
             final List<Object> row = new ArrayList<>();
             for (final Function<T, ?> fn : fields) {
                 final Object v = fn.apply(entity);
-                final String vv = DataValueUtil.convertToString(v);
-                row.add(vv);
+                //  final String vv = DataValueUtil.convertToString(v);
+                row.add(v);
             }
             result.add(row);
         }
@@ -190,8 +185,8 @@ public class ExcelUtil {
             final List<Object> row = new ArrayList<>();
             for (final String ff : fields) {
                 final Object v = map.get(ff);
-                final String vv = DataValueUtil.convertToString(v);
-                row.add(vv);
+                // final String vv = DataValueUtil.convertToString(v);
+                row.add(v);
             }
             result.add(row);
         }

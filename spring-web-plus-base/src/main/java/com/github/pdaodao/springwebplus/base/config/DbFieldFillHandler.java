@@ -19,7 +19,7 @@ public class DbFieldFillHandler implements MetaObjectHandler {
             this.setFieldValByName("creatorId", RequestUtil.getUserId(), metaObject);
             this.setFieldValByName("creatorTitle", RequestUtil.getUserNickname(), metaObject);
             this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("updatorTitle", RequestUtil.getUserId(), metaObject);
+            this.setFieldValByName("updatorTitle", RequestUtil.getUserNickname(), metaObject);
         }
     }
 

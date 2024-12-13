@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.pg;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
@@ -14,15 +13,15 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
 
     @Override
     protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
-        if (DataType.INT == tableColumn.getDataType()) {
-            typeWithDefault.setTypeName("SERIAL");
-        }
-        typeWithDefault.setTypeName("BIGSERIAL");
+        typeWithDefault.setTypeName("SERIAL");
         return null;
     }
 
     @Override
-    protected String genDDLFieldComment(TableColumn field, DDLBuildContext context) {
+    protected String genDDLFieldComment(final TableColumn from, TableColumn field, DDLBuildContext context) {
+        if (from != null && StrUtil.equals(from.getRemark(), StrUtils.clean(field.getRemark()))) {
+            return null;
+        }
         final String fieldName = DbFactory.of(DbType.Postgresql).quoteIdentifier(field.getName());
         final String sql = StrUtil.format("COMMENT ON COLUMN {}.{} IS '{}'", context.tableName,
                 fieldName, StrUtils.clean(field.getRemark()));
@@ -31,8 +30,13 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
+    protected String modifyColumnTypePrefix() {
+        return " TYPE ";
+    }
+
+    @Override
     public FieldTypeNameWrap fieldDDLDouble(TableColumn columnInfo) {
-        return FieldTypeNameWrap.of("numeric", columnInfo.getDefaultValue());
+        return FieldTypeNameWrap.of("float8", columnInfo.getDefaultValue());
     }
 
     @Override

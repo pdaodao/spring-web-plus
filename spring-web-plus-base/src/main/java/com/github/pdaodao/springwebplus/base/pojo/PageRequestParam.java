@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.pojo;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -81,7 +83,40 @@ public class PageRequestParam {
         page.setCurrent(getPageNum());
         page.setSize(getPageSize());
         if (StringUtils.isNotBlank(getOrderBy())) {
-            page.addOrder(getOrderAsc() == true ? OrderItem.asc(getOrderBy()) : OrderItem.desc(getOrderBy()));
+            if (!StrUtil.contains(getOrderBy(), ",")) {
+                if (StrUtil.endWith(getOrderBy(), "+")) {
+                    page.addOrder(OrderItem.asc(getOrderBy()));
+                } else if (StrUtil.endWith(getOrderBy(), "-")) {
+                    page.addOrder(OrderItem.desc(getOrderBy()));
+                } else {
+                    page.addOrder(getOrderAsc() == true ? OrderItem.asc(getOrderBy()) : OrderItem.desc(getOrderBy()));
+                }
+            } else {
+                final List<String> sp = StrUtil.split(getOrderBy(), ",");
+                for (final String t : sp) {
+                    String f = t.trim();
+                    boolean asc = true;
+                    if (getOrderAsc() != null) {
+                        asc = getOrderAsc();
+                    }
+                    if (t.contains(" ")) {
+                        if (t.contains(" asc") || t.contains(" ASC")) {
+                            asc = true;
+                        }
+                        if (t.contains(" desc") || t.contains(" DESC")) {
+                            asc = false;
+                        }
+                        f = f.substring(0, f.indexOf(" "));
+                    } else if (t.endsWith("+")) {
+                        asc = true;
+                        f = f.substring(0, f.length() - 1);
+                    } else if (t.endsWith("-")) {
+                        asc = false;
+                        f = f.substring(0, f.length() - 1);
+                    }
+                    page.addOrder(asc == true ? OrderItem.asc(f) : OrderItem.desc(f));
+                }
+            }
         }
         // 关闭count 优化
         page.setOptimizeCountSql(false);

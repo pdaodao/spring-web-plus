@@ -174,6 +174,7 @@ public class EntityScanUtil {
         // 主键字段
         if (propDesc.getField().isAnnotationPresent(TableId.class)) {
             ff.setIsPk(true);
+            ff.setLength(32);
             if (XpTableUtil.fieldHasUuid(propDesc.getField())
                     || StrUtil.equals("String", propDesc.getField().getGenericType().getTypeName())
                     || propDesc.getFieldClass().equals(String.class)
@@ -191,12 +192,13 @@ public class EntityScanUtil {
             ff.setNullable(false);
             return ff;
         }
-        final Integer maxLength = getFieldSize(propDesc, tableFieldHelper);
+        final Integer maxLength = getFieldSize(propDesc, ff);
 
         // 字符串类型
         if (propDesc.getFieldClass().equals(String.class)) {
             ff.setDataType(DataType.STRING);
             ff.setTypeName("varchar");
+            ff.setLength(50);
             if (propDesc.getFieldName().endsWith("id")) {
                 ff.setLength(36);
             } else if (maxLength != null && maxLength > 0) {
@@ -239,9 +241,9 @@ public class EntityScanUtil {
         }
 
         if (propDesc.getFieldClass().equals(Double.class) || propDesc.getFieldClass().getName().equals("double")) {
-            ff.setDataType(DataType.DECIMAL);
-            ff.setTypeName("decimal");
-            ff.setScale(6);
+            ff.setDataType(DataType.DOUBLE);
+            ff.setTypeName("double");
+            ff.setScale(8);
             ff.setLength(20);
             return ff;
         }
@@ -277,6 +279,9 @@ public class EntityScanUtil {
             if (maxLength != null && maxLength > 1000) {
                 ff.setDataType(DataType.TEXT);
             }
+            if (ff.getLength() == null) {
+                ff.setLength(3000);
+            }
             return ff;
         }
         Preconditions.assertTrue(true, "unknows type {} for {}", propDesc.getFieldClass().getSimpleName(), propDesc.getFieldName());
@@ -288,13 +293,18 @@ public class EntityScanUtil {
      * 获取字段长度
      *
      * @param p
-     * @param tableFieldHelper
+     * @param ff
      * @return
      */
-    private static Integer getFieldSize(final PropDesc p, final TableFieldIndex tableFieldHelper) {
+    private static Integer getFieldSize(final PropDesc p, final TableColumn ff) {
         final TableFieldSize tableFieldSize = p.getField().getAnnotation(TableFieldSize.class);
-        if (tableFieldSize != null && tableFieldSize.value() > 1) {
-            return tableFieldSize.value();
+        if (tableFieldSize != null) {
+            if (StrUtil.isNotBlank(tableFieldSize.defaultValue())) {
+                ff.setDefaultValue(tableFieldSize.defaultValue());
+            }
+            if (tableFieldSize.value() > 1) {
+                return tableFieldSize.value();
+            }
         }
         final Size size = p.getField().getAnnotation(Size.class);
         final Integer maxLength = size != null && size.max() > 0 ? size.max() : null;

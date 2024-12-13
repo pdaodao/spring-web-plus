@@ -18,12 +18,18 @@ public class RequestUtil {
 
     public static String getUserId() {
         final CurrentUserInfo userInfo = getCurrentUser();
+        if (userInfo == null) {
+            return null;
+        }
         Preconditions.checkNotNull(userInfo, "current-user-info is null.");
         return userInfo.getId();
     }
 
     public static String getUserNickname() {
         final CurrentUserInfo userInfo = getCurrentUser();
+        if (userInfo == null) {
+            return null;
+        }
         Preconditions.checkNotNull(userInfo, "current-user-info is null.");
         return userInfo.getNickname();
     }
@@ -58,11 +64,11 @@ public class RequestUtil {
         return getFromHeader(httpServletRequest, name);
     }
 
-    public static String getFromHeader(HttpServletRequest httpRequest, String head){
+    public static String getFromHeader(HttpServletRequest httpRequest, String head) {
         final Enumeration<String> names = httpRequest.getHeaderNames();
-        while (names.hasMoreElements()){
+        while (names.hasMoreElements()) {
             final String h = names.nextElement();
-            if(equalsIgnoreLine(h, head)){
+            if (equalsIgnoreLine(h, head)) {
                 head = h;
                 break;
             }
@@ -70,12 +76,12 @@ public class RequestUtil {
         return httpRequest.getHeader(head);
     }
 
-    private static boolean equalsIgnoreLine(String h, String head){
-        if(StrUtil.isBlank(h) |  StrUtil.isBlank(head)){
+    private static boolean equalsIgnoreLine(String h, String head) {
+        if (StrUtil.isBlank(h) | StrUtil.isBlank(head)) {
             return false;
         }
-        h = h.trim().toLowerCase().replaceAll("-","").replaceAll("_","");
-        head = head.trim().toLowerCase().replaceAll("-","").replaceAll("_","");
+        h = h.trim().toLowerCase().replaceAll("-", "").replaceAll("_", "");
+        head = head.trim().toLowerCase().replaceAll("-", "").replaceAll("_", "");
         return h.equals(head);
     }
 

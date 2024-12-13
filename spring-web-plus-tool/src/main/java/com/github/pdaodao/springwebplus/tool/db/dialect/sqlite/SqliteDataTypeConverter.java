@@ -31,7 +31,7 @@ public class SqliteDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
-    protected String genDDLFieldComment(TableColumn field, DDLBuildContext context) {
+    protected String genDDLFieldComment(final TableColumn from, TableColumn field, DDLBuildContext context) {
         return null;
     }
 }

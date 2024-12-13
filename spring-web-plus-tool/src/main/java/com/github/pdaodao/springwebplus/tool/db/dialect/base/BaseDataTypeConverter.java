@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
@@ -15,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BaseDataTypeConverter implements DataTypeConverter {
 
     @Override
-    public String fieldDDL(final TableColumn columnInfo, final DDLBuildContext context) {
+    public String fieldDDL(final TableColumn from, final TableColumn columnInfo, final DDLBuildContext context) {
         Preconditions.checkNotNull(columnInfo.getDataType(), "field {} data-type is null.", columnInfo.getName());
 
         final StringBuilder ret = new StringBuilder();
@@ -23,32 +24,44 @@ public class BaseDataTypeConverter implements DataTypeConverter {
 
         // 字段类型
         final FieldTypeNameWrap fieldTypeName = fieldTypeDDL(columnInfo);
-
-        ret.append(fieldTypeName.getTypeName());
-        // 是否为空
-        if (ObjectUtil.equals(false, columnInfo.getNullable())) {
-            ret.append(" NOT NULL");
-        }
+        String fieldAutoSuffix = null;
         // 自增
         if (ObjectUtil.equals(true, columnInfo.getIsAuto())) {
             final String autoStr = genDDLFieldAutoIncrement(columnInfo, fieldTypeName, context);
             if (StrUtil.isNotBlank(autoStr)) {
-                ret.append(" ").append(autoStr);
+                fieldAutoSuffix = " " + autoStr;
             }
         }
+        if (BooleanUtil.isTrue(context.isModifyColumn)) {
+            ret.append(modifyColumnTypePrefix());
+        }
+        ret.append(fieldTypeName.getTypeName());
+        // 是否为空
+        if (ObjectUtil.equals(false, columnInfo.getNullable()) &&
+                (from == null || ObjectUtil.notEqual(columnInfo.getNullable(), from.getNullable()))) {
+            ret.append(" NOT NULL");
+        }
+        if (StrUtil.isNotBlank(fieldAutoSuffix)) {
+            ret.append(fieldAutoSuffix);
+        }
         // 默认值
-        if (StrUtil.isNotBlank(fieldTypeName.getColumnDef())) {
+        if (StrUtil.isNotBlank(fieldTypeName.getColumnDef()) &&
+                (from == null || !StrUtil.equals(from.getDefaultValue(), columnInfo.getDefaultValue()))) {
             ret.append(" DEFAULT ").append(fieldTypeName.getColumnDef());
         }
         // 备注
         final String remark = columnInfo.getRemark();
         if (StrUtil.isNotBlank(remark)) {
-            final String ct = genDDLFieldComment(columnInfo, context);
+            final String ct = genDDLFieldComment(from, columnInfo, context);
             if (StrUtil.isNotBlank(ct)) {
                 ret.append(" ").append(ct);
             }
         }
         return ret.toString();
+    }
+
+    protected String modifyColumnTypePrefix() {
+        return "";
     }
 
     /**
@@ -63,11 +76,12 @@ public class BaseDataTypeConverter implements DataTypeConverter {
     /**
      * 字段注释
      *
+     * @param from
      * @param field
      * @param context
      * @return
      */
-    protected String genDDLFieldComment(TableColumn field, DDLBuildContext context) {
+    protected String genDDLFieldComment(final TableColumn from, TableColumn field, DDLBuildContext context) {
         return StrUtil.format(" COMMENT '{}' ", StrUtils.clean(field.getRemark(), 60));
     }
 
@@ -229,6 +243,9 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         if (dbType.contains("int") && dbType.contains("unsigned")) {
             return DataType.BIGINT;
         }
+        if (dbType.contains("int8")) {
+            return DataType.BIGINT;
+        }
         if (dbType.contains("numeric") || dbType.contains("decimal") || dbType.equals("dec")) {
             return DataType.DECIMAL;
         }
@@ -260,10 +277,12 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         if (dbType.contains("binary") || dbType.contains("blob")) {
             return DataType.BINARY;
         }
-        if (dbType.contains("bigint") || dbType.contains("long") || dbType.contains("bigserial")) {
+        if (dbType.contains("bigint") || dbType.contains("long")
+                || dbType.contains("serial")
+                || dbType.contains("bigserial")) {
             return DataType.BIGINT;
         }
-        if (dbType.contains("int") || dbType.contains("serial")) {
+        if (dbType.contains("int")) {
             return DataType.INT;
         }
         if (dbType.contains("json")) {

@@ -9,10 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.github.pdaodao.springwebplus.base.auth.LoginInterceptor;
-import com.github.pdaodao.springwebplus.base.config.support.CurrentUserInfoParamResolver;
-import com.github.pdaodao.springwebplus.base.config.support.HolderClearInterceptor;
-import com.github.pdaodao.springwebplus.base.config.support.PageRequestParamResolver;
-import com.github.pdaodao.springwebplus.base.config.support.WebappFile;
+import com.github.pdaodao.springwebplus.base.config.support.*;
 import com.github.pdaodao.springwebplus.base.frame.SysDateTimeFormat;
 import com.github.pdaodao.springwebplus.base.support.ProxyServlet;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -30,6 +27,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -47,6 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final LoginInterceptor loginInterceptor;
     private final ProxyServlet proxyServlet;
     private final Optional<SysDateTimeFormat> sysDateTimeFormatOption;
+    private final List<InterceptorRegistryListener> interceptorRegistryListeners;
 
     @Bean
     @ConditionalOnProperty("http.proxy")
@@ -95,7 +94,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/api/**", "/*/api/**");
+//        registry.addInterceptor(loginInterceptor).addPathPatterns("/api/**", "/*/api/**");
+        if (CollUtil.isNotEmpty(interceptorRegistryListeners)) {
+            for (InterceptorRegistryListener listener : interceptorRegistryListeners) {
+                listener.addInterceptors(registry);
+            }
+        }
         registry.addInterceptor(new HolderClearInterceptor());
     }
 

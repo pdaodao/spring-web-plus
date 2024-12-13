@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.base.util;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.format.FastDateFormat;
 
 import java.util.Calendar;
@@ -30,5 +31,19 @@ public class DateTimeUtil {
         cal.setTime(aDate);
         cal.add(Calendar.DATE, days);
         return cal.getTime();
+    }
+
+    public static final Date beginOfDay(final Date aDate) {
+        if (aDate == null) {
+            return null;
+        }
+        return DateUtil.beginOfDay(new Date()).toJdkDate();
+    }
+
+    public static Date endOfDay(final Date aDate) {
+        if (aDate == null) {
+            return null;
+        }
+        return DateUtil.endOfDay(aDate).toJdkDate();
     }
 }

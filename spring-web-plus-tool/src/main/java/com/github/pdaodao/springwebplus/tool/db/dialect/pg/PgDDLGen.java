@@ -43,7 +43,7 @@ public class PgDDLGen extends BaseDDLGen {
     public String genDDLOfCreateIndex(TableInfo tableInfo, TableIndex indexInfo) {
         return StrUtil.format("CREATE {} INDEX {} ON {} ({})",
                 false == indexInfo.getIsUnique() ? "UNIQUE" : "",
-                indexInfo.getName(),
+                genIndexName(indexInfo.getName(), tableInfo.getName()),
                 getFullTableName(tableInfo),
                 indexInfoColumns(indexInfo));
     }
@@ -53,5 +53,10 @@ public class PgDDLGen extends BaseDDLGen {
         final String sql = StrUtil.format("COMMENT ON TABLE {} IS '{}'", ddlBuildContext.tableName, StrUtils.clean(tableInfo.getRemark()));
         ddlBuildContext.addLastSql(sql);
         return null;
+    }
+
+    @Override
+    protected String modifyColumn() {
+        return "ALTER COLUMN";
     }
 }

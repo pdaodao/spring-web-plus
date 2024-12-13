@@ -1,5 +1,10 @@
 package com.github.pdaodao.springwebplus.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.SaLoginConfig;
+import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
@@ -35,7 +40,8 @@ public class LoginController {
     @PostMapping
     @Operation(summary = "登录")
     @IgnoreLogin
-    public CurrentUserInfo login(@Valid @RequestBody LoginUserInfo loginInfo, HttpServletResponse response) {
+    @SaIgnore
+    public SaTokenInfo login(@Valid @RequestBody LoginUserInfo loginInfo, HttpServletResponse response) {
         final CurrentUserInfo userInfo = loginService.login(loginInfo);
         final String token = tokenStore.buildToken(userInfo);
         tokenStore.storeToken(token, userInfo);
@@ -43,7 +49,27 @@ public class LoginController {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         JakartaServletUtil.addCookie(response, cookie);
-        return userInfo;
+
+
+        // 记住我--->`SaLoginModel`为登录参数Model，其有诸多参数决定登录时的各种逻辑
+        final SaLoginModel saLoginModel = SaLoginConfig
+                .setDevice("PC")
+                .setIsLastingCookie(true)
+                .setIsWriteHeader(true);
+        // 7 天
+        saLoginModel.setTimeout(60 * 60 * 24 * 7);
+
+        //加入权限和角色
+//        List<String> roleList = StpUtil.getRoleList(admin.getId());
+//        saLoginModel.setExtra("roles", roleList);
+//        List<String> permissionList = StpUtil.getPermissionList(admin.getId());
+//        saLoginModel.setExtra("permissions", permissionList);
+        //这里的id是admin的id主键
+        StpUtil.login(userInfo.getId(), saLoginModel);
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+
+        return tokenInfo;
+        // return userInfo;
     }
 
     @GetMapping("profile")

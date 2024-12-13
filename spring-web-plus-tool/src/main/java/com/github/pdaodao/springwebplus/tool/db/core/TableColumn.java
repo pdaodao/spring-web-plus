@@ -84,13 +84,13 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
     }
 
     public String getTitle() {
-        if(StrUtil.isNotBlank(title)){
+        if (StrUtil.isNotBlank(title)) {
             return title;
         }
-        if(StrUtil.isNotBlank(remark)){
+        if (StrUtil.isNotBlank(remark)) {
             return StrUtils.clean(remark);
         }
-        if(StrUtil.isNotBlank(name)){
+        if (StrUtil.isNotBlank(name)) {
             return name;
         }
         return title;
@@ -112,9 +112,15 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
             return true;
         }
         // 标准字段类型不同
-        if (dataType != null && info.dataType != null) {
+        if (ObjectUtil.notEqual(dataType, info.getDataType())) {
             if (dataType == DataType.STRING && info.getDataType() == DataType.TEXT) {
                 // 字符串类型 和 text 类型比较
+                return false;
+            }
+            if (dataType == DataType.DATETIME && info.getDataType() == DataType.TIMESTAMP) {
+                return false;
+            }
+            if (dataType == DataType.BOOLEAN && info.getDataType() == DataType.INT) {
                 return false;
             }
             if (dataType != info.dataType) {
@@ -125,12 +131,25 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
             }
         }
         // 长度不同
-        if (!ObjectUtil.equals(getLength(), info.getLength())) {
+        if (dataType != null && !dataType.lengthNotRequired()
+                && dataType.isDoubleFamily()
+                && !ObjectUtil.equals(getLength(), info.getLength())) {
             return true;
         }
         // 精度不同
-        if (!ObjectUtil.equals(getScale(), info.getScale())) {
-            return true;
+        if (dataType.isDoubleFamily()) {
+            if (getScale() != null && getScale() == 0) {
+                setScale(null);
+            }
+            if (info.getScale() != null && info.getScale() == 0) {
+                info.setScale(0);
+            }
+            if (info.getScale() != null && getScale() != null && info.getScale() > getScale()) {
+                return false;
+            }
+            if (!ObjectUtil.equals(getScale(), info.getScale())) {
+                return true;
+            }
         }
         return false;
     }

@@ -22,6 +22,9 @@ public class DDLBuildContext {
      */
     public final List<String> lastSql;
 
+    // 是否是修改字段
+    public boolean isModifyColumn = false;
+
     public DDLBuildContext(String tableName) {
         this.tableName = tableName;
         this.sqls = new ArrayList<>();
