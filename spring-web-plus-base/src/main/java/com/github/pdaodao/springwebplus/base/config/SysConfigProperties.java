@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.config;
 
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,12 @@ public class SysConfigProperties {
     @Value("${auth.excludes:}")
     private String authExcludes;
 
-    // 登陆交互有效时长 分钟
+    // 登录地址
+    @Value("${auth.login:}")
+    private String loginUrl;
+
+
+    // 登录交互有效时长 分钟
     @Value("${auth.expire:30}")
     private Long authExpire;
 
@@ -44,6 +50,15 @@ public class SysConfigProperties {
     @Value("${http.proxy:}")
     private String httpProxy;
 
+    @Value("${cors.path:/*/api/v1/**}")
+    private String corsPath;
+
+    @Value("${cors.origins:}")
+    private String corsOrigins;
+
+    @Value("${cors.head:Origin}")
+    private String corsHead;
+
 
     public boolean authExcludeMatch(final String path) {
         if (StrUtil.isEmpty(getAuthExcludes())) {
@@ -57,5 +72,12 @@ public class SysConfigProperties {
             }
         }
         return false;
+    }
+
+    public String getLoginUrl() {
+        if(StrUtil.isNotBlank(loginUrl)){
+            return loginUrl;
+        }
+        return SpringUtil.getContextPath()+"/login";
     }
 }

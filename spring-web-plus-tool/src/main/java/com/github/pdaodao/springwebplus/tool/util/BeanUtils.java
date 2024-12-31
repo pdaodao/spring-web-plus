@@ -10,7 +10,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.pdaodao.springwebplus.tool.data.LinkedCaseInsensitiveMap;
 import com.github.pdaodao.springwebplus.tool.util.pojo.EntityDiffWrap;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +70,13 @@ public class BeanUtils {
      * @param <T>
      * @return
      */
-    public static <T> EntityDiffWrap<T> diff(final List<T> list, final List<T> oldList, final Function<T, String> keyFun) {
+    public static <T> EntityDiffWrap<T> diff(final List<T> list, final List<T> oldList, final Function<T, Serializable> keyFun) {
         final EntityDiffWrap result = new EntityDiffWrap();
         //1. 旧数据map
         final LinkedCaseInsensitiveMap<T> oldMap = new LinkedCaseInsensitiveMap<>();
         if (CollUtil.isNotEmpty(oldList)) {
             for (final T t : oldList) {
-                oldMap.put(keyFun.apply(t), t);
+                oldMap.put(ObjectUtil.toString(keyFun.apply(t)), t);
             }
         }
         //2. 新数据 map
@@ -84,7 +84,7 @@ public class BeanUtils {
         //3. 和老数据对比得到需要新增 和 修改的数据
         if (CollUtil.isNotEmpty(list)) {
             for (final T t : list) {
-                map.put(keyFun.apply(t), t);
+                map.put(ObjectUtil.toString(keyFun.apply(t)), t);
                 final T old = oldMap.get(keyFun.apply(t));
                 if (old != null) {
                     // 合并属性
@@ -123,6 +123,16 @@ public class BeanUtils {
         BeanUtil.copyProperties(source, target,
                 CopyOptions.create().setTransientSupport(false)
                         .setIgnoreProperties(ignoreProperties));
+    }
+
+    public static <T> List<T> copyToList(final List<?> list, final Class<T> targetType, String... ignoreProperties) {
+        return BeanUtil.copyToList(list, targetType, CopyOptions.create().setTransientSupport(false)
+                .setIgnoreProperties(ignoreProperties));
+    }
+
+    public static <T> List<T> copyToListIgnoreTransient(final List<?> list, final Class<T> targetType, String... ignoreProperties) {
+        return BeanUtil.copyToList(list, targetType, CopyOptions.create().setTransientSupport(true)
+                .setIgnoreProperties(ignoreProperties));
     }
 
     public static void copyPropertiesIgnoreTransient(Object source, Object target, String... ignoreProperties) {

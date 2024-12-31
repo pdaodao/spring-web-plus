@@ -20,6 +20,7 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -43,7 +44,7 @@ public class EntityScanUtil {
 
         final List<TableInfo> list = new ArrayList<>();
         for (final Class clazz : all) {
-            final TableInfo info = toTableInfo(clazz);
+            final TableInfo info = toTableInfo(clazz, true);
             if (info == null) {
                 continue;
             }
@@ -56,9 +57,10 @@ public class EntityScanUtil {
      * 从类中提取表结构信息
      *
      * @param clazz
+     * @param ignoreTransient 是否忽略 transient
      * @return
      */
-    public static TableInfo toTableInfo(final Class clazz) {
+    public static TableInfo toTableInfo(final Class clazz, final boolean ignoreTransient) {
         if (ClassUtil.isAbstractOrInterface(clazz)) {
             return null;
         }
@@ -94,7 +96,7 @@ public class EntityScanUtil {
         // 属性
         final BeanDesc beanDesc = BeanUtil.getBeanDesc(clazz);
         for (final PropDesc propDesc : beanDesc.getProps()) {
-            final TableColumn columnInfo = toColumnInfo(propDesc, tableInfo.getIndexList());
+            final TableColumn columnInfo = toColumnInfo(propDesc, tableInfo.getIndexList(), ignoreTransient);
             if (columnInfo == null) {
                 continue;
             }
@@ -112,11 +114,15 @@ public class EntityScanUtil {
      * @param indexList
      * @return
      */
-    private static TableColumn toColumnInfo(final PropDesc propDesc, final List<TableIndex> indexList) {
-        if (java.lang.reflect.Modifier.isTransient(propDesc.getField().getModifiers())) {
-            return null;
-        }
+    private static TableColumn toColumnInfo(final PropDesc propDesc, final List<TableIndex> indexList, final boolean ignoreTransient) {
         final TableColumn ff = new TableColumn();
+        ff.setIsTransient(false);
+        if(java.lang.reflect.Modifier.isTransient(propDesc.getField().getModifiers())){
+            if(ignoreTransient){
+                return null;
+            }
+            ff.setIsTransient(true);
+        }
         ff.setIsAuto(false);
         ff.setIsPk(false);
         ff.setNullable(true);
@@ -270,13 +276,13 @@ public class EntityScanUtil {
         // pojo 类型
         if (!propDesc.getFieldClass().isPrimitive()) {
             ff.setIsAuto(false);
-            ff.updateDataTypeIfNull(DataType.STRING);
+            ff.updateDataTypeIfNull(DataType.MAP);
             ff.setLength(maxLength);
             if (propDesc.getField().getType().getName().contains(".List")) {
-                ff.setDataType(DataType.TEXT);
+                ff.setDataType(DataType.ARRAY);
                 ff.setLength(3500);
             }
-            if (maxLength != null && maxLength > 1000) {
+            if ((ff.getDataType() == null || ff.getDataType() == DataType.STRING) && maxLength != null && maxLength > 1000) {
                 ff.setDataType(DataType.TEXT);
             }
             if (ff.getLength() == null) {
@@ -307,8 +313,15 @@ public class EntityScanUtil {
             }
         }
         final Size size = p.getField().getAnnotation(Size.class);
-        final Integer maxLength = size != null && size.max() > 0 ? size.max() : null;
-        return maxLength;
+        if(size != null){
+            final Integer maxLength = size != null && size.max() > 0 ? size.max() : null;
+            return maxLength;
+        }
+        final Length length = p.getField().getAnnotation(Length.class);
+        if(length != null && length.max() > 0 && length.max() < 1000000){
+            return length.max();
+        }
+        return 255;
     }
 
     /**

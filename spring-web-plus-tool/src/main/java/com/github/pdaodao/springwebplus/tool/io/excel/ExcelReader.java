@@ -2,8 +2,10 @@ package com.github.pdaodao.springwebplus.tool.io.excel;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.sax.handler.RowHandler;
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
@@ -52,12 +54,7 @@ public class ExcelReader implements Reader {
 
     @Override
     public void open() throws Exception {
-        ExcelUtil.readBySax(inputStreamWrap.inputStream, sheetId, new RowHandler() {
-            @Override
-            public void handle(int sheetIndex, long rowIndex, List<Object> rowCells) {
-                rows.add(rowCells);
-            }
-        });
+        ExcelUtil.readBySax(inputStreamWrap.inputStream, sheetId,  new ExcelRowCollectHandler(rows));
         if (CollUtil.isNotEmpty(rows)) {
             total = rows.size() - 1;
             this.fields = new ArrayList<>();
@@ -66,6 +63,7 @@ public class ExcelReader implements Reader {
                 int index = 1;
                 for (final Object v : head) {
                     final TableColumn f = new TableColumn();
+                    f.setSeq(index);
                     f.setFrom("c" + (index++));
                     f.setName(f.getFrom());
                     f.setTitle(StrUtils.clean(ObjectUtil.toString(v)));
@@ -77,6 +75,14 @@ public class ExcelReader implements Reader {
                 int index = 0;
                 for (final TableColumn f : fields) {
                     final TableColumn dataType = types.get(index++);
+                    if(dataType.getDataType() != null && dataType.getDataType().isIntFamily()
+                            && ( StrUtil.contains(f.getTitle(), "码") || StrUtil.contains(f.getTitle(), "级") || StrUtil.contains(f.getTitle(), "标识"))){
+                        dataType.setDataType(DataType.STRING);
+                        dataType.setTypeName("varchar");
+                        if(dataType.getLength() < 2){
+                            dataType.setLength(64);
+                        }
+                    }
                     f.setDataType(dataType.getDataType());
                     f.setLength(dataType.getLength());
                     if (f.getDataType() != null) {

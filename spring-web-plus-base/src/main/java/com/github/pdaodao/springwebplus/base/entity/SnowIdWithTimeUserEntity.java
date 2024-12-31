@@ -9,14 +9,14 @@ import lombok.Data;
 public abstract class SnowIdWithTimeUserEntity extends SnowIdWithTimeEntity implements WithUser {
     @Schema(description = "创建者id")
     @TableField(updateStrategy = FieldStrategy.NEVER)
-    private String creatorId;
+    private Long creatorId;
 
     @Schema(description = "创建者姓名")
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private String creatorTitle;
 
     @Schema(description = "更新者id")
-    private String updatorId;
+    private Long updatorId;
 
     @Schema(description = "更新者姓名")
     private String updatorTitle;

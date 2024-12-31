@@ -82,10 +82,13 @@ public class JdbcSqlExecutor implements AutoCloseable {
         log.debug("page sql:{}", pageSql);
 
         try (final Connection connection = provider.getConnection()) {
-            final PreparedStatement ps = ps(connection, sql);
+            final PreparedStatement ps = ps(connection, pageSql);
             final DbRsTableDataConsumer consumer = new DbRsTableDataConsumer();
             SqlExecutor.queryAndClosePs(ps, new DbRowRsHandler(consumer, MaxBound, provider.getDialect()), args);
             final TableData result = consumer.getData();
+            if(pageInfo != null && result.getPageInfo() != null){
+                pageInfo.setTotal(result.getPageInfo().getTotal());
+            }
             result.setPageInfo(pageInfo);
             if (result.getPageInfo().getTotal() < pageInfo.getPageSize() || result.getPageInfo().getPageNum() < 1) {
                 // 不用查询总数

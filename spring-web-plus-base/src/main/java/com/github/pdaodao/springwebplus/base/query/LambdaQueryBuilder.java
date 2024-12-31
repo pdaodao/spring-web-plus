@@ -239,12 +239,12 @@ public class LambdaQueryBuilder<T> {
             return this;
         }
 
-        public OrList in(SFunction<T, ?> columnName, List<?> vals) {
+        public OrList in(SFunction<T, ?> columnName, Collection<?> vals) {
             if (columnName == null || CollUtil.isEmpty(vals)) {
                 return this;
             }
             if (vals.size() == 1) {
-                return eq(columnName, vals.get(0));
+                return eq(columnName, vals.iterator().next());
             }
             list.add(w -> w.in(columnName, vals));
             return this;

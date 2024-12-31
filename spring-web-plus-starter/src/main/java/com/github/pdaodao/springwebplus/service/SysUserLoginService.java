@@ -32,7 +32,7 @@ public class SysUserLoginService implements LoginService {
         result.setUsername(sysUser.getUsername());
         result.setNickname(sysUser.getNickname());
         if (CollUtil.isNotEmpty(sysUser.getRoleList())) {
-            result.setRoles(sysUser.getRoleList().stream().map(t -> t.getIdCode()).collect(Collectors.toSet()));
+           // result.setRoles(sysUser.getRoleList().stream().map(t -> t.getIdCode()).collect(Collectors.toSet()));
         }
         return result;
     }

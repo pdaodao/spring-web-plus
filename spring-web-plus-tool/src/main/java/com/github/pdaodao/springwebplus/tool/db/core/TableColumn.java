@@ -5,6 +5,7 @@ import cn.hutool.core.comparator.CompareUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
@@ -16,13 +17,17 @@ import java.io.Serializable;
  */
 @Data
 public class TableColumn implements Serializable, Cloneable, Comparable<TableColumn> {
+
     /**
      * 小数点位数
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Integer scale;
+
     /**
      * 是否自增
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean isAuto;
     /**
      * 字段名称(英文)
@@ -32,49 +37,70 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
     /**
      * 来源字段
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String from;
 
     /**
      * 中文名称
      */
     protected String title;
+
+    /**
+     * 是否不存储
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected Boolean isTransient;
+
     /**
      * 备注
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String remark;
     /**
      * 表名称
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String tableName;
     /**
      * 字段类型名称
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String typeName;
+
     /**
      * 字段长度
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Integer length;
 
     /**
      * 排序
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Integer seq;
 
     /**
      * 是否是主键
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Boolean isPk;
+
     /**
      * 是否可为空
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Boolean nullable;
+
     /**
      * 默认值
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String defaultValue;
+
     /**
      * 标准字段类型
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private DataType dataType;
 
     public static TableColumn of(final Column column) {

@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.map.CaseInsensitiveLinkedMap;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
@@ -57,6 +58,13 @@ public class DBDdLUtil {
 
         final DDLBuildContext ddlBuildContext = new DDLBuildContext(tableInfo.getName());
         for (final TableColumn f : tableInfo.getColumns()) {
+            if(f.getDataType() == DataType.ARRAY || f.getDataType() == DataType.MAP){
+                if(f.getLength() >= 3000){
+                    f.setDataType(DataType.TEXT);
+                }else{
+                    f.setDataType(DataType.STRING);
+                }
+            }
             fieldMap.put(f.getName(), f);
         }
         for (final TableColumn f : old.getColumns()) {

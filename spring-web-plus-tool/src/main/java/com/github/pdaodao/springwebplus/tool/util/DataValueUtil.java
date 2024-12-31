@@ -5,6 +5,8 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class DataValueUtil {
@@ -21,7 +23,7 @@ public class DataValueUtil {
             return obj;
         }
         if (dataType.isStringFamily()) {
-            return toString(obj);
+            return toString(obj, dataType);
         }
         if (dataType.isDoubleFamily()) {
             return toDouble(obj);
@@ -44,9 +46,23 @@ public class DataValueUtil {
      * @param obj
      * @return
      */
-    public static String toString(final Object obj) {
+    public static String toString(final Object obj, final DataType dataType) {
         if (obj == null) {
             return null;
+        }
+        if(obj instanceof Date){
+            if(dataType == null){
+                final String str = DateTimeUtil.formatDateTime((Date) obj);
+                return DateTimeUtil.dropLastZero(str);
+            }
+            if(DataType.DATE == dataType){
+                return DateTimeUtil.formatDate((Date) obj);
+            }
+            return DateTimeUtil.formatDateTime((Date) obj);
+        }
+        if(obj instanceof LocalDateTime){
+            final String str = ((LocalDateTime)obj).toString().replace("T", " ");
+            return str;
         }
         return ObjectUtil.toString(obj);
     }
@@ -91,6 +107,21 @@ public class DataValueUtil {
         return NumberUtil.parseLong(str);
     }
 
+    public static Integer toInt(final Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if(obj instanceof Integer){
+            return (Integer) obj;
+        }
+        final String str = StrUtil.toStringOrEmpty(obj);
+        if (StrUtil.isBlank(str)) {
+            return null;
+        }
+        return NumberUtil.parseInt(str, null);
+    }
+
+
     /**
      * 转为 Date
      *
@@ -109,7 +140,17 @@ public class DataValueUtil {
         }
         if (obj instanceof String) {
             final String str = (String) obj;
-            // todo
+            if(StrUtil.isBlank(str)){
+                return null;
+            }
+            return DateTimeUtil.tryParse(str);
+        }
+        if(obj instanceof LocalDateTime){
+            final LocalDateTime datetime = (LocalDateTime) obj;
+            return new Date(datetime.atZone(ZoneId.of("Asia/Shanghai")).toInstant().toEpochMilli());
+        }
+        if(obj instanceof Long){
+            return new Date((Long) obj);
         }
         return null;
     }

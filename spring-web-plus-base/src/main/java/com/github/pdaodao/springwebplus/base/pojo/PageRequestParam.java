@@ -67,6 +67,11 @@ public class PageRequestParam {
         return pageRequestParam;
     }
 
+
+    public boolean empty(){
+        return (pageSize == null || pageSize < 1 ) && StrUtil.isEmpty(orderBy);
+    }
+
     @JsonIgnoreProperties
     public static String keys() {
         return "pageNum,pageSize,orderBy,orderAsc,";
@@ -80,8 +85,8 @@ public class PageRequestParam {
 
     public Page toPage() {
         final Page page = new Page();
-        page.setCurrent(getPageNum());
-        page.setSize(getPageSize());
+        page.setCurrent(getPageNum() == null ? 0l :getPageNum());
+        page.setSize(getPageSize() == null ? -1l : getPageSize());
         if (StringUtils.isNotBlank(getOrderBy())) {
             if (!StrUtil.contains(getOrderBy(), ",")) {
                 if (StrUtil.endWith(getOrderBy(), "+")) {

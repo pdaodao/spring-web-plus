@@ -48,7 +48,7 @@ public class DbRowRsHandler implements RsHandler<Long> {
     public Long handle(ResultSet rs) throws SQLException {
         final ResultSetMetaData meta = rs.getMetaData();
         final int columnCount = meta.getColumnCount();
-        final List<TableColumn> fields = DbMetaUtil.parseFields(rs, dbDialect);
+        final List<TableColumn> fields = DbMetaUtil.parseFieldsByData(rs, dbDialect);
         dbRsConsumer.fields(fields);
         long total = 0;
         while (rs.next()) {

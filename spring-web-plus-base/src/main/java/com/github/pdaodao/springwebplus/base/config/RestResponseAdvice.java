@@ -67,8 +67,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             if (body instanceof IResponse) {
                 restResponse = (IResponse) body;
             } else if (body instanceof PageResult<?>) {
-                final PageResult p = (PageResult) body;
-                restResponse = RestResponse.success(p.getList(), p.getPageInfo());
+                restResponse = RestResponse.success((PageResult) body);
             } else {
                 restResponse = RestResponse.success(body);
             }

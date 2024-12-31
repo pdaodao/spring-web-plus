@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.pg;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
@@ -42,7 +43,7 @@ public class PgDDLGen extends BaseDDLGen {
     @Override
     public String genDDLOfCreateIndex(TableInfo tableInfo, TableIndex indexInfo) {
         return StrUtil.format("CREATE {} INDEX {} ON {} ({})",
-                false == indexInfo.getIsUnique() ? "UNIQUE" : "",
+                BooleanUtil.isTrue(indexInfo.getIsUnique()) ? "UNIQUE" : "",
                 genIndexName(indexInfo.getName(), tableInfo.getName()),
                 getFullTableName(tableInfo),
                 indexInfoColumns(indexInfo));

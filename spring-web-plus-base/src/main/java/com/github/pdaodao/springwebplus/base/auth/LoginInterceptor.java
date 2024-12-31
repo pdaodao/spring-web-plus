@@ -1,11 +1,13 @@
 package com.github.pdaodao.springwebplus.base.auth;
 
-import cn.hutool.core.util.StrUtil;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
+import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.TokenUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -38,26 +40,23 @@ public class LoginInterceptor implements HandlerInterceptor {
             RequestUtil.setCurrentUser(CurrentUserInfo.ofNoUser());
             return true;
         }
-        // 用户信息
-        final String token = TokenUtil.getToken(request);
-        if (StrUtil.isBlank(token)) {
-            throw new RestException(RestCode.NO_USER_INFO, "请登录后再操作.");
+        try{
+            StpUtil.checkLogin();
+            final SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+            Preconditions.checkNotNull(tokenInfo, "请重新登录后再操作.");
+            final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(tokenInfo.tokenValue);
+            RequestUtil.setCurrentUser(currentUserInfo);
+            Preconditions.checkNotNull(currentUserInfo, "请重新登录后再操作.");
+        }catch (Exception e){
+            throw new RestException(RestCode.NO_USER_INFO, ExceptionUtil.getSimpleMsg(e))
+                    .setData(sysConfig.getLoginUrl());
         }
-        Preconditions.checkNotBlank(token, "请登录后再操作.");
-        TokenUtil.setToken(token);
-        final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(token);
-        if (currentUserInfo == null) {
-            throw new RestException(RestCode.NO_USER_INFO, "请重新登录后再操作.");
-        }
-        RequestUtil.setCurrentUser(currentUserInfo);
-        // 权限判断
-        final Permission permission = handlerMethod.getMethodAnnotation(Permission.class);
-        // todo
         return true;
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         TokenUtil.clearHolder();
+        RequestUtil.clearHolder();
     }
 }

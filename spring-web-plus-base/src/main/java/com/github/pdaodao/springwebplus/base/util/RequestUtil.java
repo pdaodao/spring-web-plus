@@ -1,6 +1,12 @@
 package com.github.pdaodao.springwebplus.base.util;
 
+import cn.dev33.satoken.config.SaCookieConfig;
+import cn.dev33.satoken.config.SaTokenConfig;
+import cn.dev33.satoken.context.SaHolder;
+import cn.dev33.satoken.context.model.SaCookie;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -10,13 +16,15 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Map;
 
 public class RequestUtil {
     private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();
     private static ThreadLocal<PageRequestParam> pageHolder = new ThreadLocal<>();
 
-    public static String getUserId() {
+    public static Long getUserId() {
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -103,8 +111,42 @@ public class RequestUtil {
         return response;
     }
 
+    public static SaTokenConfig saTokenConfig(){
+        return SpringUtil.getBean(SaTokenConfig.class);
+    }
+
+    public void addCookie(final String name, final String tokenValue, long cookieTimeout){
+        final SaCookieConfig cfg = saTokenConfig().getCookie();
+        if(cookieTimeout >= 0 && cookieTimeout <= 3){
+            cookieTimeout = saTokenConfig().getTimeout();
+        }
+        final SaCookie cookie = new SaCookie()
+                .setName(name)
+                .setValue(tokenValue)
+                .setMaxAge((int) cookieTimeout)
+                .setDomain(cfg.getDomain())
+                .setPath(cfg.getPath())
+                .setSecure(cfg.getSecure())
+                .setHttpOnly(cfg.getHttpOnly())
+                .setSameSite(cfg.getSameSite());
+        SaHolder.getResponse().addCookie(cookie);
+    }
+
+    public static void sendRedirect(final String redirect) throws IOException {
+        Preconditions.checkNotBlank(redirect, "重定向地址不能为空");
+        getResponse().sendRedirect(redirect);
+    }
+
+    public static void sendRedirect(final String redirect, final Map<String, ?> params) throws IOException {
+        Preconditions.checkNotBlank(redirect, "重定向地址不能为空");
+        String r = redirect;
+        if(MapUtil.isNotEmpty(params)){
+            r = r + "?"+HttpUtil.toParams(params);
+        }
+        getResponse().sendRedirect(r);
+    }
+
     public static void clearHolder() {
         userHolder.remove();
-        pageHolder.remove();
     }
 }

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Tag(name = "用户登陆")
+@Tag(name = "用户登录")
 @RequestMapping(Constant.ApiPrefix + "/login")
 @AllArgsConstructor
 public class LoginController {

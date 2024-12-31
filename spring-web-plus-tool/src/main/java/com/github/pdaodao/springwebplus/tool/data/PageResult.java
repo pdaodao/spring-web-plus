@@ -1,11 +1,11 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class PageResult<T> {
@@ -14,17 +14,33 @@ public class PageResult<T> {
      */
     private Collection<T> list;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    /**
+     * 分页
+     */
     private PageInfo pageInfo;
 
+    /**
+     * 字段列表
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<TableColumn> columns;
+
+    /**
+     *  其他信息
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, Object> meta;
+
     public static <T> PageResult<T> build(Long pageNum, Long pageSize, Long total, List<T> data) {
-        final PageInfo pageInfo = new PageInfo();
-        pageInfo.setPageNum(pageNum);
-        pageInfo.setPageSize(pageSize);
-        pageInfo.setTotal(total);
         final PageResult pageR = new PageResult();
         pageR.setList(data);
-        pageR.setPageInfo(pageInfo);
+        if(pageSize != null && pageSize >= 0){
+            final PageInfo pageInfo = new PageInfo();
+            pageInfo.setPageNum(pageNum);
+            pageInfo.setPageSize(pageSize);
+            pageInfo.setTotal(total);
+            pageR.setPageInfo(pageInfo);
+        }
         return pageR;
     }
 
@@ -43,5 +59,15 @@ public class PageResult<T> {
         }
         list.add(row);
         return this;
+    }
+
+    public void putMeta(final String key, Object val){
+        if(StrUtil.isBlank(key)){
+            return;
+        }
+        if(meta == null){
+            meta = new LinkedHashMap<>();
+        }
+        meta.put(key, val);
     }
 }

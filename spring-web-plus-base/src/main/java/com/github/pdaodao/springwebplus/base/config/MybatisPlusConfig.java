@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.config;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
@@ -8,8 +9,11 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.github.pdaodao.springwebplus.base.config.support.WithSubQueryPageInnerInterceptor;
+import com.github.pdaodao.springwebplus.base.frame.PgBoolToIntTypeHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -43,6 +47,15 @@ public class MybatisPlusConfig {
     @Bean
     public VendorDatabaseIdProvider databaseIdProvider() {
         return new VendorDatabaseIdProvider();
+    }
+
+    @Bean(name = "plusConfigurationCustomizer")
+    public ConfigurationCustomizer configurationCustomizer() {
+        final ConfigurationCustomizer customizer = configuration -> {
+            final TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+            typeHandlerRegistry.register(Boolean.class, new PgBoolToIntTypeHandler());
+        };
+        return customizer;
     }
 
     @Bean

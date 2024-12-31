@@ -28,7 +28,7 @@ public class SysUserService {
      * @return
      */
     public boolean saveUser(final SysUser sysUser) {
-        if (StrUtil.isBlank(sysUser.getId())) {
+        if (sysUser.getId() == null) {
             Preconditions.checkNotBlank(sysUser.getPassword(), "密码为空.");
             final String salt = RandomUtil.randomString(6);
             ;
@@ -48,8 +48,7 @@ public class SysUserService {
      * @param id
      * @return
      */
-    public boolean deleteById(final String id) {
-
+    public boolean deleteById(final Long id) {
 
         return sysUserDao.removeById(id);
     }
@@ -60,7 +59,7 @@ public class SysUserService {
      * @param id
      * @return
      */
-    public SysUser getById(final String id) {
+    public SysUser getById(final Long id) {
         return sysUserDao.getById(id);
     }
 

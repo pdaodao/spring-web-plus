@@ -57,7 +57,7 @@ public class JdbcReader implements Reader {
                 ps.setFetchSize(executor.getDialect().fetchSize());
             }
             rs = ps.executeQuery();
-            fields = DbMetaUtil.parseFields(rs, executor.getDialect());
+            fields = DbMetaUtil.parseFieldsByData(rs, executor.getDialect());
         } catch (Exception e) {
             close();
             throw e;

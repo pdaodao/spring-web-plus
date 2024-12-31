@@ -9,5 +9,13 @@ import lombok.Data;
 public abstract class AutoIdEntity implements Entity<Long> {
     @Schema(description = "主键")
     @TableId(type = IdType.AUTO)
-    private Long id;
+    protected Long id;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

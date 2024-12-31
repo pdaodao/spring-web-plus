@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @TableName(value = "sys_role", autoResultMap = true)
 @Schema(description = "系统角色")
-public class SysRole extends SnowIdWithTimeUserEntity {
+public class SysRole extends AutoIdWithTimeUserEntity {
     @Schema(description = "角色名称")
     @Length(max = 32, message = "名称长度超过限制")
     private String name;

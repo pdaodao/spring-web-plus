@@ -18,7 +18,7 @@ public class SysRoleMenuDao extends BaseDao<SysRoleMenuMapper, SysRoleMenu> {
      * @param ids
      * @return
      */
-    public boolean deleteByMenuId(final Collection<String> ids) {
+    public boolean deleteByMenuId(final Collection<Long> ids) {
         if (CollectionUtil.isEmpty(ids)) {
             return true;
         }

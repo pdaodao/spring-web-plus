@@ -17,7 +17,7 @@ public class FileInfo {
     private transient String readableSize;
     private String namespace;
 
-    private String pid;
+    private Object pid;
 
     public String getReadableSize() {
         if (Objects.isNull(size)) {

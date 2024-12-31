@@ -3,6 +3,9 @@
 todo
 https://sa-token.cc/doc.html#/more/link
 
+todo
+https://jtablesaw.github.io/tablesaw/gettingstarted
+
 ## 功能特性
 
 1. web配置、mybatis-plus配置、缓存配置
@@ -29,3 +32,10 @@ https://sa-token.cc/doc.html#/more/link
 
 参考
 https://github.com/geekidea/spring-boot-plus
+
+    @Parameters({
+            @Parameter(name = "id",description = "文件id",in = ParameterIn.PATH),
+            @Parameter(name = "file",description = "文件",required = true,in=ParameterIn.DEFAULT,
+                    schema = @Schema(name = "file",format = "binary")),
+            @Parameter(name = "name",description = "文件名称",required = true),
+    })

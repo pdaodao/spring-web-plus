@@ -15,6 +15,7 @@ import com.github.pdaodao.springwebplus.base.support.ProxyServlet;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -23,10 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.io.File;
 import java.time.Duration;
@@ -42,10 +40,11 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
-    private final LoginInterceptor loginInterceptor;
     private final ProxyServlet proxyServlet;
     private final Optional<SysDateTimeFormat> sysDateTimeFormatOption;
     private final List<InterceptorRegistryListener> interceptorRegistryListeners;
+
+
 
     @Bean
     @ConditionalOnProperty("http.proxy")
@@ -78,6 +77,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        if (StringUtils.isNotBlank(configProperties.getCorsPath()) && StrUtil.isNotBlank(configProperties.getCorsOrigins())) {
+            for (final String p : configProperties.getCorsPath().split(",")) {
+                registry.addMapping(p)
+                        .allowedOriginPatterns(configProperties.getCorsOrigins().split(","))
+                        .allowedMethods("POST", "GET", "PUT", "OPTIONS")
+                        .allowedHeaders(configProperties.getCorsHead().split(","))
+                        .maxAge(3600)
+                        .allowCredentials(true);
+            }
+        }
+    }
+
+    @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
                 .defaultContentType(MediaType.APPLICATION_JSON)
@@ -94,7 +107,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-//        registry.addInterceptor(loginInterceptor).addPathPatterns("/api/**", "/*/api/**");
         if (CollUtil.isNotEmpty(interceptorRegistryListeners)) {
             for (InterceptorRegistryListener listener : interceptorRegistryListeners) {
                 listener.addInterceptors(registry);

@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.base.config;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
@@ -18,8 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,6 +38,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class GlobalExceptionAdvice {
     private final Optional<SysRequestErrorLogService> logService;
+    private final SysConfigProperties configProperties;
 
     @ExceptionHandler(RestException.class)
     public RestResponse restCodeException(RestException e, HttpServletRequest request, HttpServletResponse response) {
@@ -46,6 +51,9 @@ public class GlobalExceptionAdvice {
             response.setStatus(401);
         } else {
             response.setStatus(restCode.getCode());
+        }
+        if(ObjectUtil.equals(401, restCode.getCode())){
+            e.setData(configProperties.getLoginUrl());
         }
         return error(restCode, e.getData(), request, e);
     }
@@ -71,6 +79,12 @@ public class GlobalExceptionAdvice {
         return error(RestCode.INTERNAL_SERVER_ERROR, null, request, e);
     }
 
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(ServletRequestBindingException.class)
+    public RestResponse handleServletRequestBindingException(ServletRequestBindingException e, HttpServletRequest request){
+        return error(RestCode.NOT_ACCEPTABLE, null, request, e);
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalArgumentException.class)
     public RestResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
@@ -94,11 +108,16 @@ public class GlobalExceptionAdvice {
         rest.setPath(request.getRequestURI());
         rest.setMsg(restCode.getMessage());
         if (e != null) {
-            rest.setMsg(e.getMessage());
+            if(e instanceof BadSqlGrammarException){
+                log.error(e.getMessage(), e);
+                rest.setMsg("数据库交互语句错误");
+            }else{
+                rest.setMsg(e.getMessage());
+            }
             if (StringUtils.isBlank(rest.getMsg())) {
                 rest.setMsg(ExceptionUtil.getSimpleMsg(e));
             }
-            if (RestCode.INTERNAL_SERVER_ERROR == restCode) {
+            if (RestCode.INTERNAL_SERVER_ERROR == restCode && ( StrUtil.isBlank(rest.getMsg())|| StrUtil.contains(rest.getMsg(), "内部"))) {
                 rest.setTrace(ExceptionUtil.getTraceMsg(e));
             }
             if (StringUtils.isBlank(rest.getMsg())) {
@@ -129,7 +148,7 @@ public class GlobalExceptionAdvice {
             return;
         }
         final SysRequestErrorLog log = new SysRequestErrorLog();
-        log.setId(ret.getRequestId());
+        log.setTraceId(ret.getRequestId());
         log.setPath(ret.getPath());
         log.setUserId(RequestUtil.getUserId());
         log.setMsg(StrUtils.cut(ret.getMsg(), 500));

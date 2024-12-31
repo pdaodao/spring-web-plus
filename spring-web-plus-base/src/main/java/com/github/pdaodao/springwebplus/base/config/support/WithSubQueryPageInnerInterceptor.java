@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
@@ -133,10 +135,20 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         final boolean isSubQueryPage = isSubPage(boundSql.getSql());
         // 1. pdaodao 获取分页信息
         final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.holder.get());
-        if (null == page) {
+        if (null == page || page.getSize() < 1) {
             // 不需要分页 删除该部分
             if (isSubQueryPage) {
                 dropSubQueryPagePart(boundSql);
+            }
+            // 处理 orderBy 拼接
+            if(page != null){
+                final List<OrderItem> orders = page.orders();
+                if (CollectionUtils.isNotEmpty(orders)) {
+                    String buildSql = boundSql.getSql();
+                    checkOrderField(buildSql, orders);
+                    buildSql = this.concatOrderBy(buildSql, orders);
+                    PluginUtils.mpBoundSql(boundSql).sql(buildSql);
+                }
             }
             return;
         }
@@ -153,6 +165,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         List<OrderItem> orders = page.orders();
         if (CollectionUtils.isNotEmpty(orders)) {
             addOrdered = true;
+            checkOrderField(buildSql, orders);
             buildSql = this.concatOrderBy(buildSql, orders);
         }
 
@@ -196,6 +209,21 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
             return sql.contains(LimitZeroZero);
         }
         return false;
+    }
+
+    protected void checkOrderField(final String sql, List<OrderItem> orders ){
+        if(StrUtil.isBlank(sql) || CollUtil.isEmpty(orders)){
+            return;
+        }
+        for(final OrderItem i: orders){
+            if(StrUtil.contains(sql, i.getColumn())){
+                continue;
+            }
+            if(StrUtil.contains(sql, StrUtils.toUnderlineCase(i.getColumn()))){
+                i.setColumn(StrUtils.toUnderlineCase(i.getColumn()));
+                continue;
+            }
+        }
     }
 
     /**

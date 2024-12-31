@@ -4,9 +4,20 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.SqlExecutor;
+import com.github.pdaodao.springwebplus.tool.data.RowKind;
+import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.TableData;
+import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
+import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
+import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
+import com.github.pdaodao.springwebplus.tool.io.Writer;
+import com.github.pdaodao.springwebplus.tool.io.excel.ExcelReader;
+import com.github.pdaodao.springwebplus.tool.io.lang.ReaderWriterLoader;
+import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
+import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -143,5 +155,36 @@ public class DbUtil {
             sql = "select * from ( " + sql + ") jzzz";
         }
         return sql + " " + limitSegment + (isEndWith ? ";" : "");
+    }
+
+    /**
+     * 写数据表
+     * @param data
+     * @param dbInfo
+     * @param tableInfo
+     * @return
+     * @throws Exception
+     */
+    public static long writeTable(final TableData data,  final DbInfo dbInfo,
+                                  final TableInfo tableInfo) throws Exception {
+        Preconditions.checkNotNull(data, "数据为空.");
+        Preconditions.checkNotNull(dbInfo, "数据源不存在");
+        Preconditions.checkNotNull(tableInfo, "数据表不存在.");
+        Preconditions.checkArgument(CollUtil.isNotEmpty(tableInfo.getColumns()), "字段为空.");
+        if(CollUtil.isEmpty(data.getList())){
+            return 0l;
+        }
+        final WriterInfo writerInfo = new WriterInfo();
+        writerInfo.setDbInfo(dbInfo);
+        writerInfo.setTableName(tableInfo.getName());
+        writerInfo.setWriteModeEnum(WriteModeEnum.APPEND);
+        writerInfo.setFields(tableInfo.getColumns().stream().filter(t -> StrUtil.isNotBlank(t.getFrom())).collect(Collectors.toList()));
+        try (final Writer writer = ReaderWriterLoader.createWriter(writerInfo)) {
+             writer.open();
+             for(final TableDataRow row : data.getList()){
+                 writer.write(StreamRow.ofKind(RowKind.INSERT, row));
+             }
+             return writer.total();
+         }
     }
 }

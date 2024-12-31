@@ -1,11 +1,10 @@
 package com.github.pdaodao.springwebplus.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.system.SystemUtil;
-import com.github.pdaodao.springwebplus.base.auth.Permission;
-import com.github.pdaodao.springwebplus.ext.ServerInfoUtil;
-import com.github.pdaodao.springwebplus.ext.pojo.ProjectInfo;
-import com.github.pdaodao.springwebplus.ext.pojo.ServerInfo;
-import com.github.pdaodao.springwebplus.util.Constant;
+import com.github.pdaodao.springwebplus.base.ext.ServerInfoUtil;
+import com.github.pdaodao.springwebplus.base.ext.pojo.ProjectInfo;
+import com.github.pdaodao.springwebplus.base.ext.pojo.ServerInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "服务器信息")
-@RequestMapping(Constant.ApiPrefix + "/server")
+@RequestMapping("/sys/api/v1/server")
 @AllArgsConstructor
 public class ServerInfoController {
     private final Environment environment;
 
     @Operation(summary = "服务器信息详情")
     @GetMapping("info")
-    @Permission("server:info")
+    @SaCheckPermission("server:info")
     public ServerInfo getServerInfo() {
         ServerInfo serverInfo = ServerInfoUtil.getServerInfo();
         // 获取项目信息

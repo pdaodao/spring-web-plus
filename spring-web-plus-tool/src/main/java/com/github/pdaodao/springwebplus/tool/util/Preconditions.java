@@ -13,29 +13,21 @@ public final class Preconditions {
         return reference;
     }
 
-    public static <T> T checkNotNull(T reference, String errorMessage) {
-        if (reference == null) {
-            throw new IllegalArgumentException(String.valueOf(errorMessage));
-        }
-        return reference;
-    }
-
-    public static String checkNotEmpty(String reference, String errorMessage) {
+    public static String checkNotEmpty(String reference, String errorMessage, Object... errorMessageArgs) {
         if (StrUtil.isBlank(reference)) {
-            throw new IllegalArgumentException(String.valueOf(errorMessage));
+            throw new IllegalArgumentException(format(errorMessage, errorMessageArgs));
         }
         return reference;
     }
 
-    public static String checkNotBlank(String reference, String errorMessage) {
+    public static String checkNotBlank(String reference, String errorMessage, Object... errorMessageArgs) {
         if (StrUtil.isBlank(reference)) {
-            throw new IllegalArgumentException(String.valueOf(errorMessage));
+            throw new IllegalArgumentException(format(errorMessage, errorMessageArgs));
         }
         return reference;
     }
 
-    public static <T> T checkNotNull(
-            T reference, String errorMessageTemplate, Object... errorMessageArgs) {
+    public static <T> T checkNotNull(T reference, String errorMessageTemplate, Object... errorMessageArgs) {
         if (reference == null) {
             throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -54,11 +46,6 @@ public final class Preconditions {
         }
     }
 
-    public static void assertTrue(boolean condition, Object errorMessage) {
-        if (condition) {
-            throw new IllegalArgumentException(String.valueOf(errorMessage));
-        }
-    }
 
     public static void checkArgument(Boolean condition, Object errorMessage) {
         if (condition == null || !condition) {
@@ -66,8 +53,7 @@ public final class Preconditions {
         }
     }
 
-    public static void assertTrue(
-            boolean condition, String errorMessageTemplate, Object... errorMessageArgs) {
+    public static void assertTrue(boolean condition, String errorMessageTemplate, Object... errorMessageArgs) {
         if (condition) {
             throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
         }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +16,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_user", autoResultMap = true)
 @Schema(description = "系统用户")
-public class SysUser extends SnowIdWithTimeUserEntity {
+public class SysUser extends AutoIdWithTimeUserEntity {
 
     @Schema(description = "用户名")
     @NotBlank(message = "用户名不能为空")
@@ -23,7 +24,7 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     private String username;
 
     @Schema(description = "昵称")
-    @Length(max = 32, message = "密码长度超过限制")
+    @Length(max = 32, message = "昵称长度超过32限制")
     private String nickname;
 
     @Schema(description = "密码")

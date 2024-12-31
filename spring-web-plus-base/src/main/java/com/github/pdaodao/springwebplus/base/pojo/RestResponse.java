@@ -2,8 +2,13 @@ package com.github.pdaodao.springwebplus.base.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.PageInfo;
+import com.github.pdaodao.springwebplus.tool.data.PageResult;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Schema(description = "接口返回数据封装")
@@ -18,6 +23,19 @@ public class RestResponse<T> implements IResponse {
     @Schema(description = "分页信息")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PageInfo pageInfo;
+
+    /**
+     * 字段列表
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<TableColumn> columns;
+
+    /**
+     *  其他信息
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, Object> meta;
+
 
     @Schema(description = "提示信息")
     private String msg;
@@ -54,6 +72,13 @@ public class RestResponse<T> implements IResponse {
         return r;
     }
 
+    public static RestResponse success(final PageResult pageResult) {
+        final RestResponse r = new RestResponse(RestCode.SUCCESS, pageResult.getList());
+        r.setPageInfo(pageResult.getPageInfo());
+        r.setColumns(pageResult.getColumns());
+        r.setMeta(pageResult.getMeta());
+        return r;
+    }
 
     public static RestResponse error(RestCode restCode) {
         return new RestResponse(restCode, null);

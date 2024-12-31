@@ -1,17 +1,17 @@
 package com.github.pdaodao.springwebplus.base.entity;
 
 public interface WithUser {
-    String getCreatorId();
+    Long getCreatorId();
 
-    void setCreatorId(String creatorId);
+    void setCreatorId(Long creatorId);
 
     String getCreatorTitle();
 
     void setCreatorTitle(String creatorNick);
 
-    String getUpdatorId();
+    Long getUpdatorId();
 
-    void setUpdatorId(String updatorId);
+    void setUpdatorId(Long updatorId);
 
     String getUpdatorTitle();
 

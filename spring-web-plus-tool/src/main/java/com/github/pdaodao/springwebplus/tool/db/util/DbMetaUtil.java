@@ -125,14 +125,29 @@ public class DbMetaUtil {
         return tableInfo;
     }
 
+    public static List<TableColumn> parseFieldsByData(final ResultSet rs, final DbDialect dialect) throws SQLException {
+        final List<TableColumn> list = new ArrayList<>();
+        final ResultSetMetaData rsMeta = rs.getMetaData();
+        int count = rsMeta.getColumnCount();
+        for (int i = 1; i <= count; i++) {
+            final TableColumn f = new TableColumn();
+            f.setSeq(i);
+            f.setName(rsMeta.getColumnLabel(i));
+            f.setTypeName(rsMeta.getColumnTypeName(i));
+            f.setDataType(dialect.dataTypeConverter().toUniType(f));
+            list.add(f);
+        }
+        return list;
+    }
 
-    /**
-     * 从查询结果中提取表结构字段信息
-     *
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
+
+        /**
+         * 从getColumn 中提取表结构字段信息
+         *
+         * @param rs
+         * @return
+         * @throws SQLException
+         */
     public static List<TableColumn> parseFields(final ResultSet rs, final DbDialect dialect) throws SQLException {
         final List<TableColumn> list = new ArrayList<>();
         final CaseInsensitiveMap<String, Boolean> rsFieldMap = new CaseInsensitiveMap<>();
@@ -141,7 +156,6 @@ public class DbMetaUtil {
         for (int i = 1; i <= count; i++) {
             rsFieldMap.put(rsMeta.getColumnLabel(i), true);
         }
-
         while (rs.next()) {
             final TableColumn f = new TableColumn();
             f.setName(rs.getString("COLUMN_NAME"));

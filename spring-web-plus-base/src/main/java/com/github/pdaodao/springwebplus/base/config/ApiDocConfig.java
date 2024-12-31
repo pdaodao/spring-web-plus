@@ -35,16 +35,16 @@ public class ApiDocConfig implements InitializingBean {
     }
 
 
-    @Bean
-    public GroupedOpenApi sysApi() {
-        final String[] packagedToMatch = {"com.github.pdaodao.springwebplus"};
-        return GroupedOpenApi.builder()
-                .group("sys")
-                .pathsToMatch("/**")
-                .addOpenApiCustomizer(openApi -> openApi.info(new Info().title("System API")))
-                .packagesToScan(packagedToMatch)
-                .build();
-    }
+//    @Bean
+//    public GroupedOpenApi sysApi() {
+//        final String[] packagedToMatch = {"com.github.pdaodao.springwebplus"};
+//        return GroupedOpenApi.builder()
+//                .group("sys")
+//                .pathsToMatch("/**")
+//                .addOpenApiCustomizer(openApi -> openApi.info(new Info().title("System API")))
+//                .packagesToScan(packagedToMatch)
+//                .build();
+//    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
