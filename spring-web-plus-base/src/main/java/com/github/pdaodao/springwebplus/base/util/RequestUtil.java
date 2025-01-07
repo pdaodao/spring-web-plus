@@ -6,10 +6,12 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaCookie;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestAttributes;
@@ -71,6 +73,23 @@ public class RequestUtil {
         }
         return getFromHeader(httpServletRequest, name);
     }
+
+    public static String getFromCookie(final String name) {
+        if (StrUtil.isBlank(name)) {
+            return null;
+        }
+        final HttpServletRequest httpServletRequest = getRequest();
+        if (httpServletRequest == null) {
+            return null;
+        }
+        for(final Cookie ck: httpServletRequest.getCookies()){
+            if(equalsIgnoreLine(ck.getName(), name)){
+                return StrUtil.trim(ck.getValue());
+            }
+        }
+        return null;
+    }
+
 
     public static String getFromHeader(HttpServletRequest httpRequest, String head) {
         final Enumeration<String> names = httpRequest.getHeaderNames();

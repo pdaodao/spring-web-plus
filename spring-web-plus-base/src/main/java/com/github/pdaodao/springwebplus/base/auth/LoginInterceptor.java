@@ -1,7 +1,5 @@
 package com.github.pdaodao.springwebplus.base.auth;
 
-import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.dev33.satoken.stp.StpUtil;
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
@@ -37,14 +35,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (sysConfig.authExcludeMatch(path)
                 || handlerMethod.hasMethodAnnotation(IgnoreLogin.class)
                 || handlerMethod.getMethod().getDeclaringClass().isAnnotationPresent(IgnoreLogin.class)) {
+            final CurrentUserInfo userInfo = LoginUtil.userInfo();
+            if(userInfo != null){
+                RequestUtil.setCurrentUser(userInfo);
+                return true;
+            }
             RequestUtil.setCurrentUser(CurrentUserInfo.ofNoUser());
             return true;
         }
         try{
-            StpUtil.checkLogin();
-            final SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-            Preconditions.checkNotNull(tokenInfo, "请重新登录后再操作.");
-            final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(tokenInfo.tokenValue);
+            LoginUtil.checkLogin();
+            final CurrentUserInfo currentUserInfo = LoginUtil.userInfo();
             RequestUtil.setCurrentUser(currentUserInfo);
             Preconditions.checkNotNull(currentUserInfo, "请重新登录后再操作.");
         }catch (Exception e){

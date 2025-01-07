@@ -1,18 +1,16 @@
 package com.github.pdaodao.springwebplus.base.service.impl;
 
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
-import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
+import com.github.pdaodao.springwebplus.base.pojo.TokenInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
-
 import java.time.Duration;
 
 public class LocalTokenStore implements TokenStore {
     private final SysConfigProperties sysConfig;
-    private final Cache<String, CurrentUserInfo> map;
+    private final Cache<String, TokenInfo> map;
 
     public LocalTokenStore(SysConfigProperties sysConfig) {
         this.sysConfig = sysConfig;
@@ -22,13 +20,9 @@ public class LocalTokenStore implements TokenStore {
                 .build();
     }
 
-    @Override
-    public String buildToken(CurrentUserInfo userInfo) {
-        return IdUtil.simpleUUID();
-    }
 
     @Override
-    public CurrentUserInfo byToken(final String token) {
+    public TokenInfo byToken(final String token) {
         return map.getIfPresent(token);
     }
 
@@ -38,7 +32,7 @@ public class LocalTokenStore implements TokenStore {
     }
 
     @Override
-    public void storeToken(String token, CurrentUserInfo userInfo) {
+    public void storeToken(String token, TokenInfo userInfo) {
         if (StrUtil.isBlank(token) || userInfo == null) {
             return;
         }

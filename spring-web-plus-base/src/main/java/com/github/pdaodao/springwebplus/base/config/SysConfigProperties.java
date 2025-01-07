@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.AntPathMatcher;
 
-@Configuration
 @Data
+@Configuration
 public class SysConfigProperties {
     // 前端文件根路径
     @Value("${static.path:${user.dir}/webapp}")
@@ -29,10 +29,13 @@ public class SysConfigProperties {
     @Value("${auth.login:}")
     private String loginUrl;
 
-
     // 登录交互有效时长 分钟
-    @Value("${auth.expire:30}")
+    @Value("${auth.expire:24*60}")
     private Long authExpire;
+
+    // token 名称
+    @Value("${auth.token:Token}")
+    private String authTokenName;
 
     // 是否自动更新表结构
     @Value("${dao.ddl.gen.enabled:true}")
