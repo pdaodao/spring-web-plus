@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public abstract class AutoIdEntity implements Entity<Long> {
-    @Schema(description = "主键")
+    @Schema(description = "序号")
     @TableId(type = IdType.AUTO)
     protected Long id;
 
