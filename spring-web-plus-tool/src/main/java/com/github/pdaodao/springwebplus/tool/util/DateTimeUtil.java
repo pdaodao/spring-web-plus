@@ -12,8 +12,11 @@ public class DateTimeUtil {
     public static TimeZone ShangHaiZone = TimeZone.getTimeZone("GMT+8");
     public static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd", ShangHaiZone);
+    public static final FastDateFormat DATE_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd", ShangHaiZone);
+
     public static final FastDateFormat DATE_TIME_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss", ShangHaiZone);
+    public static final FastDateFormat DATE_TIME_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd HH:mm:ss", ShangHaiZone);
 
     public static Date tryParse(final String str, final FastDateFormat... format){
         if(format == null || StrUtil.isBlank(str)){
@@ -45,12 +48,18 @@ public class DateTimeUtil {
             if(str.contains("/")){
                 return tryParse(str, DATE_TIME_FORMATTER_SLASH);
             }
+            if(str.contains(".")){
+                return tryParse(str, DATE_TIME_FORMATTER_DOT);
+            }
         }
         if(str.contains("-")){
             return tryParse(str, DATE_FORMATTER);
         }
         if(str.contains("/")){
             return tryParse(str, DATE_FORMATTER_SLASH);
+        }
+        if(str.contains(".")){
+            return tryParse(str, DATE_FORMATTER_DOT);
         }
         return null;
     }

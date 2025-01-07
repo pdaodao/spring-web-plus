@@ -42,8 +42,8 @@ public class ExcelUtil {
 
     public static <T> void write(final String fileName, final List<T> entityList, final TableInfo tableInfo) {
         final List<Map<String, ?>> mapList = BeanUtils.toMapList(entityList);
-        tableInfo.toCamelCase();
-        writeMapData(fileName, mapList, tableInfo);
+        final TableInfo info = tableInfo.toCamelCase();
+        writeMapData(fileName, mapList, info);
     }
 
 
@@ -186,8 +186,8 @@ public class ExcelUtil {
             final List<Object> row = new ArrayList<>();
             for (final String ff : fields) {
                 final Object v = map.get(ff);
-                // final String vv = DataValueUtil.convertToString(v);
-                row.add(v);
+                final String vv = DataValueUtil.toString(v, null);
+                row.add(vv);
             }
             result.add(row);
         }

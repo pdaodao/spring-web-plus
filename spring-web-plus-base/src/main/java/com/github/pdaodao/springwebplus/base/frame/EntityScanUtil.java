@@ -205,7 +205,7 @@ public class EntityScanUtil {
             ff.setDataType(DataType.STRING);
             ff.setTypeName("varchar");
             ff.setLength(50);
-            if (propDesc.getFieldName().endsWith("id")) {
+            if (propDesc.getFieldName().equals("id")) {
                 ff.setLength(36);
             } else if (maxLength != null && maxLength > 0) {
                 ff.setLength(maxLength);
