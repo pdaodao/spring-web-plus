@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_dict", autoResultMap = true)
 @Schema(description = "字典数据")
-public class SysDict extends AutoIdEntity implements WithPid<Long>, WithChildren<SysDict> {
+public class SysDict extends AutoIdEntity implements WithPid, WithChildren<SysDict> {
     @Schema(description = "编码")
     private String name;
 
