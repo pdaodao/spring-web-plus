@@ -1,11 +1,11 @@
 package com.github.pdaodao.springwebplus.base.entity;
 
-public interface WithPid<T> {
-    T getId();
+public interface WithPid {
+    Long getId();
 
-    void setId(T id);
+    void setId(Long id);
 
-    T getPid();
+    Long getPid();
 
-    void setPid(T pid);
+    void setPid(Long pid);
 }
