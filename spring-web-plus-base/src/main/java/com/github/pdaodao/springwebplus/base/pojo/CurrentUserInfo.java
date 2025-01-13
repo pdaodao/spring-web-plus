@@ -21,7 +21,7 @@ public class CurrentUserInfo {
     private Object tokenInfo;
 
     // 昵称
-    private String nickname;
+    private String name;
 
     // 角色id
     @JsonInclude(JsonInclude.Include.NON_NULL)

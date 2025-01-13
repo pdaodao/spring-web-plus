@@ -77,9 +77,6 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             if (r.getCode() == null) {
                 r.setCode(RestCode.SUCCESS.code);
             }
-            if (r.getCode() != null && r.getCode() < 600) {
-                response.setStatusCode(HttpStatus.resolve(r.getCode()));
-            }
         }
         //因为handler处理类的返回类型是String，为了保证一致性，这里需要将ResponseResult转回去
         if (selectedConverterType.getName().equals(StringHttpMessageConverter.class.getName())) {

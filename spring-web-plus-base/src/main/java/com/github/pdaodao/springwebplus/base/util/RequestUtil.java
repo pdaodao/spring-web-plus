@@ -39,7 +39,7 @@ public class RequestUtil {
             return null;
         }
         Preconditions.checkNotNull(userInfo, "current-user-info is null.");
-        return userInfo.getNickname();
+        return userInfo.getName();
     }
 
 

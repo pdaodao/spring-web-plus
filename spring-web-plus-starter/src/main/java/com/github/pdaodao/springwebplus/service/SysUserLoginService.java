@@ -30,7 +30,7 @@ public class SysUserLoginService implements LoginService {
         final CurrentUserInfo result = new CurrentUserInfo();
         result.setId(sysUser.getId());
         result.setUsername(sysUser.getUsername());
-        result.setNickname(sysUser.getNickname());
+        result.setName(sysUser.getNickname());
         if (CollUtil.isNotEmpty(sysUser.getRoleList())) {
            // result.setRoles(sysUser.getRoleList().stream().map(t -> t.getIdCode()).collect(Collectors.toSet()));
         }

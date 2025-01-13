@@ -43,22 +43,14 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(RestException.class)
     public RestResponse restCodeException(RestException e, HttpServletRequest request, HttpServletResponse response) {
         final RestCode restCode = e != null ? e.getCode() : RestCode.INTERNAL_SERVER_ERROR;
-        if (restCode.getCode() >= 700) {
-            // 局部内容
-            response.setStatus(206);
-        } else if (restCode.getCode() > 600) {
-            // 未授权
-            response.setStatus(401);
-        } else {
-            response.setStatus(restCode.getCode());
-        }
         if(ObjectUtil.equals(401, restCode.getCode())){
             e.setData(configProperties.getLoginUrl());
         }
+        response.setStatus(200);
         return error(restCode, e.getData(), request, e);
     }
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+
     @ExceptionHandler(ConstraintViolationException.class)
     public RestResponse handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         String message = e.getConstraintViolations().iterator().next().getMessage();
@@ -66,26 +58,23 @@ public class GlobalExceptionAdvice {
     }
 
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public RestResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
 
         return error(RestCode.NOT_ACCEPTABLE, null, request, RestException.invalidParam(processBindingResult(e.getBindingResult())));
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public RestResponse handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         return error(RestCode.INTERNAL_SERVER_ERROR, null, request, e);
     }
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler(ServletRequestBindingException.class)
     public RestResponse handleServletRequestBindingException(ServletRequestBindingException e, HttpServletRequest request){
         return error(RestCode.NOT_ACCEPTABLE, null, request, e);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+
     @ExceptionHandler(IllegalArgumentException.class)
     public RestResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         return error(RestCode.INTERNAL_SERVER_ERROR, null, request, e);
