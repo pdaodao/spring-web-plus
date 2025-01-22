@@ -1,10 +1,12 @@
 package com.github.pdaodao.springwebplus.base.config;
 
+import com.github.pdaodao.springwebplus.base.frame.FrameGlobalConfig;
 import com.github.pdaodao.springwebplus.base.pojo.IResponse;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * 接口返回值封装
  */
 @RestControllerAdvice
 @ConditionalOnProperty(value = "global.restResponse", havingValue = "true", matchIfMissing = true)
+@AllArgsConstructor
 public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
+    private final Optional<FrameGlobalConfig> config;
 
     private static boolean isCollectionReturnType(MethodParameter methodParameter) {
         final Type returnType = methodParameter.getGenericParameterType();
@@ -76,6 +81,11 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             RestResponse r = (RestResponse) restResponse;
             if (r.getCode() == null) {
                 r.setCode(RestCode.SUCCESS.code);
+            }
+            if(!config.isPresent() || config.get().isUseResponseStatus()){
+                if (r.getCode() != null && r.getCode() < 600) {
+                    response.setStatusCode(HttpStatus.resolve(r.getCode()));
+                }
             }
         }
         //因为handler处理类的返回类型是String，为了保证一致性，这里需要将ResponseResult转回去
