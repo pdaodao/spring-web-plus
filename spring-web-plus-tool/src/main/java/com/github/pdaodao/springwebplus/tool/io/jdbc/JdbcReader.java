@@ -31,8 +31,9 @@ public class JdbcReader implements Reader {
     private transient ResultSet rs;
     private transient List<TableColumn> fields;
 
-    public JdbcReader(DbInfo dbInfo, String sql) {
+    public JdbcReader(DbInfo dbInfo, final String tableName, String sql) {
         this.dbInfo = dbInfo;
+        this.tableName = tableName;
         this.sql = sql;
     }
 

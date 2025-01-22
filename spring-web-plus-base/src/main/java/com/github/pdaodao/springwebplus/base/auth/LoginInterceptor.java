@@ -37,7 +37,20 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (sysConfig.authExcludeMatch(path)
                 || handlerMethod.hasMethodAnnotation(IgnoreLogin.class)
                 || handlerMethod.getMethod().getDeclaringClass().isAnnotationPresent(IgnoreLogin.class)) {
-            RequestUtil.setCurrentUser(CurrentUserInfo.ofNoUser());
+            if(StpUtil.isLogin()){
+                try{
+                    final SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+                    if(tokenInfo != null){
+                        final CurrentUserInfo currentUserInfo = tokenStoreService.byToken(tokenInfo.tokenValue);
+                        RequestUtil.setCurrentUser(currentUserInfo);
+                    }
+                }catch (Exception e){
+
+                }
+            }
+            if(RequestUtil.getCurrentUser() == null){
+                RequestUtil.setCurrentUser(CurrentUserInfo.ofNoUser());
+            }
             return true;
         }
         try{

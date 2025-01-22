@@ -19,7 +19,7 @@ public class JdbcFactory implements ReaderWriterFactory {
     @Override
     public Reader createReader(final ReaderInfo readerInfo) {
         final String sql = readerInfo.getSql();
-        final JdbcReader jdbcReader = new JdbcReader(readerInfo.getDbInfo(), sql);
+        final JdbcReader jdbcReader = new JdbcReader(readerInfo.getDbInfo(), readerInfo.getTableName(), sql);
         return jdbcReader;
     }
 

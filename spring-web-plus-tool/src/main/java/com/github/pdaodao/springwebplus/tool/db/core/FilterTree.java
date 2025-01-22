@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.core;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
@@ -20,6 +21,26 @@ public class FilterTree extends FilterItem {
 
 
     private List<FilterTree> children;
+
+    public static FilterTree create(){
+        return new FilterTree();
+    }
+
+    public static FilterTree of(final String name, final WhereOperator op, Object... params) {
+        final FilterTree f = new FilterTree();
+        f.setName(name.trim());
+        f.setOp(op);
+        f.setParams(Convert.toList(Object.class, params));
+        return f;
+    }
+
+    public static FilterTree ofListParams(final String name, final WhereOperator op, List<Object> params) {
+        final FilterTree f = new FilterTree();
+        f.setName(name.trim());
+        f.setOp(op);
+        f.setParams(params);
+        return f;
+    }
 
     public FilterTree addChild(final FilterTree ch) {
         if (ch == null) {

@@ -45,7 +45,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
             ret.append(fieldAutoSuffix);
         }
         // 默认值
-        if (StrUtil.isNotBlank(fieldTypeName.getColumnDef()) &&
+        if (!BooleanUtil.isTrue(columnInfo.getIsAuto()) && StrUtil.isNotBlank(fieldTypeName.getColumnDef()) &&
                 (from == null || !StrUtil.equals(from.getDefaultValue(), columnInfo.getDefaultValue()))) {
             ret.append(" DEFAULT ").append(fieldTypeName.getColumnDef());
         }
@@ -287,6 +287,9 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         }
         if (dbType.contains("json")) {
             return DataType.MAP;
+        }
+        if(dbType.startsWith("geo")){
+            return DataType.STRING;
         }
         log.warn("unknown data type {} for {}", columnInfo.getTypeName(), columnInfo.getName());
         return DataType.UNKNOWN;

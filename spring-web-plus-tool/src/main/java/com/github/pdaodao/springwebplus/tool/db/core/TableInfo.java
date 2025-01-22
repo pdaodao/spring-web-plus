@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.data.LinkedCaseInsensitiveMap;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +42,9 @@ public class TableInfo implements Serializable, Cloneable {
      */
     private String title;
     private TableType tableType;
+    // 数据表行数
+    protected Long dataRows;
+
     /**
      * 索引信息
      */
@@ -183,4 +188,28 @@ public class TableInfo implements Serializable, Cloneable {
         }
         return info;
     }
+
+    public Map<String, TableColumn> fieldMap(){
+        final Map<String, TableColumn> map = new LinkedCaseInsensitiveMap<>();
+        if(CollUtil.isEmpty(columns)){
+            return map;
+        }
+        for(final TableColumn f: columns){
+            map.put(f.getName(), f);
+        }
+        return map;
+    }
+
+    public TableColumn autoIdColumn(){
+        if(CollUtil.isEmpty(columns)){
+            return null;
+        }
+        for(final TableColumn f:columns){
+            if(BooleanUtil.isTrue(f.getIsAuto())){
+                return f;
+            }
+        }
+        return null;
+    }
+
 }

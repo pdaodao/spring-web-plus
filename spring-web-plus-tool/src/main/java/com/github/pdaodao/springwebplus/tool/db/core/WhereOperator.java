@@ -30,10 +30,13 @@ public enum WhereOperator {
 
     // 包含，这个要求传入是个数组 txt[in][]=x1&txt[in][]=x2
     in("in"),
+    notin("not in"),
     // is null
     isn("IS NULL"),
     // is not null
-    isnn("IS NOT NULL");
+    isnn("IS NOT NULL"),
+    exist("exist"),
+    nexist("not exist");
 
     public final String sql;
 

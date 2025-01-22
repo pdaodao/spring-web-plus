@@ -125,6 +125,14 @@ public class BeanUtils {
                         .setIgnoreProperties(ignoreProperties));
     }
 
+    public static void copyPropertiesIgnoreNull(Object source, Object target, String... ignoreProperties) {
+        BeanUtil.copyProperties(source, target,
+                CopyOptions.create().setTransientSupport(false)
+                        .setIgnoreNullValue(true)
+                        .setIgnoreProperties(ignoreProperties));
+    }
+
+
     public static <T> List<T> copyToList(final List<?> list, final Class<T> targetType, String... ignoreProperties) {
         return BeanUtil.copyToList(list, targetType, CopyOptions.create().setTransientSupport(false)
                 .setIgnoreProperties(ignoreProperties));

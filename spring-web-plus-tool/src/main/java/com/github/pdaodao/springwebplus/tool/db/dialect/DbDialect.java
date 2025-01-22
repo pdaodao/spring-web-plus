@@ -169,4 +169,8 @@ public interface DbDialect {
      * @return
      */
     DbDDLGen ddlGen();
+
+    default String setAutoIdStartSql(final String dbSchema, final String tableName, final String field){
+        return null;
+    }
 }

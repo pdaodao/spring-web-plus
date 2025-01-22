@@ -1,11 +1,19 @@
 package com.github.pdaodao.springwebplus.tool.db;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.sql.NamedSql;
 import cn.hutool.db.sql.SqlExecutor;
 import com.github.pdaodao.springwebplus.tool.data.PageInfo;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
+import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
+import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.handler.DbRowRsHandler;
 import com.github.pdaodao.springwebplus.tool.db.handler.DbRsTableDataConsumer;
@@ -14,11 +22,15 @@ import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.lang.ConnectionProviderFactory;
 import com.github.pdaodao.springwebplus.tool.lang.JdbcConnectionProvider;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import jdk.jshell.spi.SPIResolutionException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * jdbc sql 语句执行器
@@ -58,6 +70,75 @@ public class JdbcSqlExecutor implements AutoCloseable {
 
     public DbDialect getDialect() {
         return provider.getDialect();
+    }
+
+
+    /**
+     * 查询得到单条数据
+     * @param sql
+     * @param args
+     * @return
+     * @throws SQLException
+     */
+    public TableDataRow getOne(final String sql, @Nullable Object... args) throws SQLException{
+        final TableData rr = list(sql, null, args);
+        if(rr == null || CollUtil.isEmpty(rr.getList())){
+            return null;
+        }
+        Preconditions.assertTrue(CollUtil.size(rr.getList()) > 1, "expected one data but get {}", CollUtil.size(rr.getList()));
+        return rr.getList().iterator().next();
+    }
+
+    /**
+     * 查询单条数据
+     * @param tableName
+     * @param filterFieldMap
+     * @return
+     * @throws SQLException
+     */
+    public TableDataRow getOne(final String tableName, final Map<String, Object> filterFieldMap) throws SQLException{
+        Preconditions.checkNotBlank(tableName, "tableName is empty.");
+        Preconditions.assertTrue(MapUtil.isEmpty(filterFieldMap), "get one condition is empty");
+        final SqlWithMapParams sqlWithMapParams = new SqlWithMapParams();
+        final List<String> fs = new ArrayList<>();
+        for(final Map.Entry<String, Object> entry: filterFieldMap.entrySet()){
+            final String f = StrUtil.toUnderlineCase(entry.getKey().trim());
+            final String ff = sqlWithMapParams.addParam(f, entry.getValue());
+            fs.add(f+" = :"+ff);
+        }
+        final String sql = StrUtil.format("SELECT * FROM {} WHERE {}",
+                getDialect().quoteIdentifier(tableName),
+                StrUtil.join(" and ", fs));
+        sqlWithMapParams.setSql(sql);
+        return getOne(sqlWithMapParams);
+    }
+
+    /**
+     * 查询单条数据
+     * @param sqlWithMapParams
+     * @return
+     * @throws SQLException
+     */
+    public TableDataRow getOne(final SqlWithMapParams sqlWithMapParams) throws SQLException{
+        final TableData rr = list(sqlWithMapParams, null);
+        if(rr == null || CollUtil.isEmpty(rr.getList())){
+            return null;
+        }
+        Preconditions.assertTrue(CollUtil.size(rr.getList()) > 1, "expected one data but get {}", CollUtil.size(rr.getList()));
+        return rr.getList().iterator().next();
+    }
+
+    /**
+     * 查询得到列表数据
+     * @param sqlWithMapParams
+     * @param pageInfo
+     * @return
+     * @throws SQLException
+     */
+    public TableData list(final SqlWithMapParams sqlWithMapParams, @Nullable PageInfo pageInfo) throws SQLException {
+        Preconditions.checkNotNull(sqlWithMapParams, "sql语句为空");
+        final NamedSql namedSql = sqlWithMapParams.toNamedSql();
+        return list(namedSql.getSql(), pageInfo, namedSql.getParams());
     }
 
     /**
@@ -157,6 +238,79 @@ public class JdbcSqlExecutor implements AutoCloseable {
             currentPs.set(null);
         }
     }
+
+    public Long insert(final String tableName, final Map<String, Object> fieldValues) throws SQLException {
+        Preconditions.checkNotBlank(tableName, "tableName is empty.");
+        Preconditions.assertTrue(MapUtil.isEmpty(fieldValues), "insert values is empty.");
+        final SqlWithMapParams sqlParam = new SqlWithMapParams();
+        final List<String> fs = new ArrayList<>();
+        final List<String> vs = new ArrayList<>();
+        for(final Map.Entry<String, Object> entry: fieldValues.entrySet()){
+            final String f = StrUtil.toUnderlineCase(entry.getKey().trim());
+            final String ff = sqlParam.addParam(f, entry.getValue());
+            fs.add(f);
+            vs.add(":"+ff);
+        }
+        final String sql = StrUtil.format("INSERT INTO {} ({}) values ({})",
+                getDialect().quoteIdentifier(tableName),
+                SqlUtil.joinFields(getDialect(), fs),
+                StrUtil.join(",", vs));
+        sqlParam.setSql(sql);
+        Preconditions.checkNotBlank(sql, "insert sql is empty.");
+        try (final Connection connection = provider.getConnection()) {
+            final PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setQueryTimeout(3 * 60);
+            final boolean execute = SqlExecutor.execute(ps, sqlParam.toNamedSql().getParams());
+            try (final ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getLong(1);
+                }
+            }
+            return null;
+        } finally {
+            currentPs.set(null);
+        }
+    }
+
+    public int update(final String tableName, final Map<String, Object> fieldValues, final Map<String, Object> filterValues) throws SQLException {
+        Preconditions.checkNotBlank(tableName, "tableName is empty.");
+        Preconditions.assertTrue(MapUtil.isEmpty(fieldValues), "update values is empty.");
+        Preconditions.assertTrue(MapUtil.isEmpty(filterValues), "update values condition is empty.");
+
+        final SqlWithMapParams sqlParam = new SqlWithMapParams();
+        final List<String> updateFields = new ArrayList<>();
+        final List<String> whereFields = new ArrayList<>();
+        for(final Map.Entry<String, Object> entry: fieldValues.entrySet()){
+            final String f = StrUtil.toUnderlineCase(entry.getKey().trim());
+            final String ff = sqlParam.addParam(f, entry.getValue());
+            updateFields.add(getDialect().quoteIdentifier(f) +" = :"+ff);
+        }
+        for(final Map.Entry<String, Object> entry: filterValues.entrySet()){
+            final String f = StrUtil.toUnderlineCase(entry.getKey().trim());
+            final String ff = sqlParam.addParam(f, entry.getValue());
+            whereFields.add(getDialect().quoteIdentifier(f) +" = :"+ff);
+        }
+        final String sql = StrUtil.format("UPDATE {} SET {} WHERE {}",
+                getDialect().quoteIdentifier(tableName),
+                StrUtil.join(",", updateFields),
+                StrUtil.join(" and ", whereFields));
+        sqlParam.setSql(sql);
+        return update(sqlParam);
+    }
+
+
+    /**
+     * update
+     * @param params
+     * @return
+     * @throws SQLException
+     */
+    public int update(final SqlWithMapParams params) throws SQLException{
+        Preconditions.checkNotNull(params, "update sql is null.");
+        final NamedSql namedSql = params.toNamedSql();
+        return update(namedSql.getSql(), namedSql.getParams());
+    }
+
 
     /**
      * update

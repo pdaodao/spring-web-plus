@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.base.auth;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.useragent.UserAgent;
@@ -288,7 +289,7 @@ public class SysLogAop {
                 }
                 if (arg instanceof PageRequestParam) {
                     sysLog.setLogType(LogType.QUERY);
-                    BeanUtils.copyProperties(arg, params, "pwd", "password");
+                    BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
                     continue;
                 }
                 if (arg instanceof MultipartFile) {
@@ -308,7 +309,11 @@ public class SysLogAop {
                             sysLog.setLogType(LogType.CREATE);
                         }
                     }
-                    BeanUtils.copyProperties(arg, params, "pwd", "password");
+                    BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
+                    continue;
+                }
+                if(BeanUtil.isBean(arg.getClass())){
+                    BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
                     continue;
                 }
                 params.put(argNames[index], arg);

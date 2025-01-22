@@ -30,7 +30,7 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean isAuto;
     /**
-     * 字段名称(英文)
+     * 字段-变量名称(英文)
      */
     protected String name;
 

@@ -34,7 +34,7 @@ public class RestResponse<T> implements IResponse {
      *  其他信息
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Map<String, Object> meta;
+    private Map<String, Object> ext;
 
 
     @Schema(description = "提示信息")
@@ -72,11 +72,11 @@ public class RestResponse<T> implements IResponse {
         return r;
     }
 
-    public static RestResponse success(final PageResult pageResult) {
+    public static RestResponse pageResult(final PageResult pageResult) {
         final RestResponse r = new RestResponse(RestCode.SUCCESS, pageResult.getList());
         r.setPageInfo(pageResult.getPageInfo());
         r.setColumns(pageResult.getColumns());
-        r.setMeta(pageResult.getMeta());
+        r.setExt(pageResult.getExt());
         return r;
     }
 

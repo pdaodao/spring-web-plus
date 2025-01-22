@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.pg;
 
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
@@ -14,6 +15,7 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     @Override
     protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
         typeWithDefault.setTypeName("SERIAL");
+        tableColumn.setDefaultValue(null);
         return null;
     }
 
@@ -42,12 +44,19 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     @Override
     public FieldTypeNameWrap fieldDDLBool(TableColumn columnInfo) {
         final FieldTypeNameWrap ff = super.fieldDDLBool(columnInfo);
+        if(StrUtil.equalsIgnoreCase(columnInfo.getTypeName(), "bool")){
+            ff.setTypeName("bool");
+            return ff;
+        }
         ff.setTypeName("smallint");
         return ff;
     }
 
     @Override
     public FieldTypeNameWrap fieldDDLDate(TableColumn columnInfo) {
+        if(DataType.DATE == columnInfo.getDataType()){
+            return FieldTypeNameWrap.of("date", columnInfo.getDefaultValue());
+        }
         final FieldTypeNameWrap ret = FieldTypeNameWrap.of("timestamp", columnInfo.getDefaultValue());
         return ret;
     }
