@@ -8,8 +8,18 @@ public class CurrentUserInfo {
     private Long id;
     // 登录用户名
     private String username;
-    // 用户昵称
-    private String nickname;
+
+    // 头像
+    private String avatar;
+
+    // token
+    private String token;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Object tokenInfo;
+
+    // 昵称
+    private String name;
 
     // 无用户时 伪造一个
     public static CurrentUserInfo ofNoUser() {

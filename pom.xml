@@ -12,7 +12,6 @@
         <module>spring-web-plus-tool</module>
         <module>spring-web-plus-base</module>
         <module>spring-web-plus-starter</module>
-        <module>spring-web-plus-flow</module>
     </modules>
 
     <properties>
@@ -80,11 +79,6 @@
             <dependency>
                 <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-starter</artifactId>
-                <version>3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.pdaodao</groupId>
-                <artifactId>spring-web-plus-flow</artifactId>
                 <version>3.0</version>
             </dependency>
             <dependency>

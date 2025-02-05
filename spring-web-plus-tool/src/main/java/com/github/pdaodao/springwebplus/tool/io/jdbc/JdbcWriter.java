@@ -1,10 +1,14 @@
 package com.github.pdaodao.springwebplus.tool.io.jdbc;
 
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.dialect.DialectFactory;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
 import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
@@ -111,9 +115,28 @@ public class JdbcWriter implements Writer {
     public void close() throws Exception {
         try {
             commit(true);
+            processAutoIdRestart();
         } finally {
             ps.close();
             connection.close();
+        }
+    }
+
+    private synchronized void processAutoIdRestart() throws Exception{
+        TableColumn pk = null;
+        for(final TableColumn f: fields){
+            if(BooleanUtil.isTrue(f.getIsAuto())){
+                pk = f;
+                break;
+            }
+        }
+        if(pk == null){
+            return;
+        }
+        final DbDialect dialect = DbFactory.of(dbInfo.getDbType());
+        final String restartSql = dialect.setAutoIdStartSql(dbInfo.getDbSchema(), tableName, pk.getName());
+        if(StrUtil.isNotBlank(restartSql)){
+            connection.prepareStatement(restartSql).execute();
         }
     }
 

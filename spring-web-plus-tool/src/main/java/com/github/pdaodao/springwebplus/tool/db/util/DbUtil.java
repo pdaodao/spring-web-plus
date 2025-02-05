@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.SqlExecutor;
 import com.github.pdaodao.springwebplus.tool.data.RowKind;
@@ -12,21 +13,22 @@ import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
-import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
-import com.github.pdaodao.springwebplus.tool.io.excel.ExcelReader;
 import com.github.pdaodao.springwebplus.tool.io.lang.ReaderWriterLoader;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
+import com.github.pdaodao.springwebplus.tool.lang.PluginClassLoaderFactory;
+import com.github.pdaodao.springwebplus.tool.lang.ThreadContextClassLoader;
+import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -186,5 +188,38 @@ public class DbUtil {
              }
              return writer.total();
          }
+    }
+
+    /**
+     * 不使用连接池 直接获取数据库连接
+     * @return
+     * @throws SQLException
+     */
+    public static Connection directConnection(final DbInfo dbInfo) throws SQLException {
+        try(final ThreadContextClassLoader contextClassLoader = PluginClassLoaderFactory.threadContextOf(dbInfo.getDbType().name())){
+            DriverManager.setLoginTimeout(90);
+//        dialect.auth(dbInfo);
+            final String username = StrUtil.isBlank(dbInfo.getUsername()) ? null : dbInfo.getUsername();
+            final String password = StrUtil.isBlank(dbInfo.getPassword()) ? null : dbInfo.getPassword();
+            final Properties pp = new Properties();
+            if(StrUtil.isNotBlank(username)){
+                pp.setProperty("user", username);
+            }
+            if(StrUtil.isNotBlank(password)){
+                pp.setProperty("password", password);
+            }
+            if (StrUtil.isNotBlank(dbInfo.getDriver())) {
+                if(!BeanUtils.hasClass(dbInfo.getDriver())){
+                    try{
+                        final Class clazz = contextClassLoader.forName(dbInfo.getDriver());
+                        final Driver driver = (Driver) ReflectUtil.newInstance(clazz);
+                        return driver.connect(dbInfo.getUrl(), pp);
+                    }catch (ClassNotFoundException e){
+                        Preconditions.assertTrue(true, "数据库{}驱动{}不存在", dbInfo.getDbType(), dbInfo.getDriver());
+                    }
+                }
+            }
+            return DriverManager.getConnection(dbInfo.getUrl(), username, password);
+        }
     }
 }

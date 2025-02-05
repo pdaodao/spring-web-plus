@@ -2,7 +2,6 @@ package com.github.pdaodao.springwebplus.tool.db.dialect;
 
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.TableType;
-
 import java.util.List;
 
 public interface DbMetaLoader {
@@ -24,4 +23,11 @@ public interface DbMetaLoader {
      * @throws Exception
      */
     TableInfo tableInfo(final String tableName, final String schema) throws Exception;
+
+    /**
+     * 测试数据库连接
+     * @return
+     * @throws Exception
+     */
+    String test( ) throws Exception;
 }

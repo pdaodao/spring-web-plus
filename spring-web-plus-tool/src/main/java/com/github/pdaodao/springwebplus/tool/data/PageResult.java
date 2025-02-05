@@ -29,7 +29,7 @@ public class PageResult<T> {
      *  其他信息
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Map<String, Object> meta;
+    private Map<String, Object> ext;
 
     public static <T> PageResult<T> build(Long pageNum, Long pageSize, Long total, List<T> data) {
         final PageResult pageR = new PageResult();
@@ -61,13 +61,13 @@ public class PageResult<T> {
         return this;
     }
 
-    public void putMeta(final String key, Object val){
+    public void putExt(final String key, Object val){
         if(StrUtil.isBlank(key)){
             return;
         }
-        if(meta == null){
-            meta = new LinkedHashMap<>();
+        if(ext == null){
+            ext = new LinkedHashMap<>();
         }
-        meta.put(key, val);
+        ext.put(key, val);
     }
 }

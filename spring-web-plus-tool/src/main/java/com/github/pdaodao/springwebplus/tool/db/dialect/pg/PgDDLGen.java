@@ -32,19 +32,23 @@ public class PgDDLGen extends BaseDDLGen {
         return d > 0.7;
     }
 
-    public static String genIndexName(String indexName, String tableName) {
+    public static String genIndexName(String indexName, String tableName, final String dbSchema) {
         Preconditions.checkNotEmpty(indexName, "indexName cannot empty");
-        if (hasPartName(indexName, tableName)) {
-            return indexName;
+        String prefix = "";
+        if(StrUtil.isNotBlank(dbSchema) && !StrUtil.equalsIgnoreCase("public", dbSchema)){
+            prefix = dbSchema.toLowerCase().trim()+"_";
         }
-        return tableName + indexName;
+        if (hasPartName(indexName, tableName)) {
+            return prefix+indexName;
+        }
+        return prefix+ tableName + indexName;
     }
 
     @Override
     public String genDDLOfCreateIndex(TableInfo tableInfo, TableIndex indexInfo) {
         return StrUtil.format("CREATE {} INDEX {} ON {} ({})",
                 BooleanUtil.isTrue(indexInfo.getIsUnique()) ? "UNIQUE" : "",
-                genIndexName(indexInfo.getName(), tableInfo.getName()),
+                genIndexName(indexInfo.getName(), tableInfo.getName(), tableInfo.getDbSchema()),
                 getFullTableName(tableInfo),
                 indexInfoColumns(indexInfo));
     }

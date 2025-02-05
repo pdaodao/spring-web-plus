@@ -61,7 +61,11 @@ public class EntityTableAutoInitCmd implements CommandLineRunner, Ordered {
         }
         final List<TableInfo> tableInfoList = EntityScanUtil.entityList();
         for (final TableInfo tableInfo : tableInfoList) {
+            tableInfo.setDbSchema(dbSchema);
             final TableInfo old = DbMetaUtil.tableInfo(dataSource, tableInfo.getName(), dbSchema, dbDialect);
+            if(old != null){
+                old.setDbSchema(dbSchema);
+            }
             DBDdLUtil.tableCheck(dbDialect, configProperties.getDdlGenDeleteField(), dataSource, tableInfo, old);
         }
     }

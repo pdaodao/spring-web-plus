@@ -15,7 +15,6 @@ public abstract class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity impl
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private String creatorTitle;
 
-
     @Schema(description = "更新者id")
     private Long updatorId;
 

@@ -20,7 +20,7 @@ public class KingbaseDialect extends PgDialect {
         if (dbInfo.getPort() == null) {
             dbInfo.setPort(5432);
         }
-        final String fmt = "jdbc:kingbase8://{}:{}/{}?currentSchema={}";
+        final String fmt = "jdbc:kingbase8://{}:{}/{}?currentSchema={}&reWriteBatchedInserts=true&prepareThreshold=0";
         final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName(), dbInfo.getDbSchema());
         return url;
     }

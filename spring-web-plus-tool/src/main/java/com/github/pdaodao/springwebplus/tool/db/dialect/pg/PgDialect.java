@@ -39,7 +39,7 @@ public class PgDialect extends BaseDbDialect {
         if (dbInfo.getPort() == null) {
             dbInfo.setPort(5432);
         }
-        final String fmt = "jdbc:postgresql://{}:{}/{}?currentSchema={}";
+        final String fmt = "jdbc:postgresql://{}:{}/{}?currentSchema={}&reWriteBatchedInserts=true&prepareThreshold=0";
         final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName(), dbInfo.getDbSchema());
         return url;
     }
@@ -70,5 +70,18 @@ public class PgDialect extends BaseDbDialect {
     @Override
     public DbDDLGen ddlGen() {
         return new PgDDLGen(this);
+    }
+
+    @Override
+    public String setAutoIdStartSql(String dbSchema, String tableName, String field) {
+        final StringBuilder seqName = new StringBuilder();
+        if(StrUtil.isNotBlank(dbSchema) && !"public".equalsIgnoreCase(dbSchema)){
+            seqName.append(dbSchema.trim()).append(".");
+        }
+        seqName.append(tableName.trim()).append("_");
+        seqName.append(field.trim()).append("_seq");
+        final String sql = "select max("+field+") from "+tableName;
+        final String restart = StrUtil.format("SELECT setval('{}', ({}), true)", seqName.toString(), sql);
+        return restart;
     }
 }

@@ -3,10 +3,12 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 import cn.hutool.core.map.CaseInsensitiveLinkedMap;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
+import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -34,6 +36,25 @@ public class DBDdLUtil {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        autoIdRestart(dbDialect, ds, tableInfo);
+    }
+
+    public static String autoIdRestart(final DbDialect dbDialect, final DataSource ds, final TableInfo tableInfo) {
+        final TableColumn autoIdColumn = tableInfo.autoIdColumn();
+        if(autoIdColumn != null){
+            final String restartSql = dbDialect.setAutoIdStartSql(tableInfo.getDbSchema(), tableInfo.getName(), autoIdColumn.getName());
+            try{
+                final SqlCmd cmd = new SqlCmd();
+                cmd.setSqlType(SqlType.SELECT);
+                cmd.setSql(restartSql);
+                DbUtil.executeSqlBlock(ds, cmd);
+                return restartSql;
+            }catch (Exception e){
+                log.error(restartSql);
+                log.error(e.getMessage(), e);
+            }
+        }
+        return null;
     }
 
     /**
@@ -79,7 +100,7 @@ public class DBDdLUtil {
             }
             // 字段结构发生变化 更新
             final TableColumn toUpdated = fieldMap.get(f.getName());
-            if (toUpdated.diff(f, false)) {
+            if (f.diff(toUpdated, false)) {
                 final List<String> alterSqls = dbDialect.ddlGen().alterColumnSql(f, toUpdated, ddlBuildContext);
                 ddlBuildContext.addSql(alterSqls);
             }
