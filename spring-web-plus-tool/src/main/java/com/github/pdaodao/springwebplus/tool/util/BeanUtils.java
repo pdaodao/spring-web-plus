@@ -177,4 +177,18 @@ public class BeanUtils {
                         .setOverride(false)
                         .setIgnoreProperties(ignoreProperties));
     }
+
+    /**
+     * 是否含有类
+     * @param className
+     * @return
+     */
+    public static boolean hasClass(final String className){
+        try{
+            Class.forName(className);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }

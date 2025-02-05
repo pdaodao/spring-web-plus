@@ -15,22 +15,18 @@ public class DbFieldFillHandler implements MetaObjectHandler {
         final Date now = new Date();
         this.setFieldValByName("createTime", now, metaObject);
         this.setFieldValByName("updateTime", now, metaObject);
-        if (metaObject.hasSetter("creatorId")) {
-            this.setFieldValByName("creatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("creatorTitle", RequestUtil.getUserNickname(), metaObject);
-            this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("updatorTitle", RequestUtil.getUserNickname(), metaObject);
-        }
+        this.setFieldValByName("creatorId", RequestUtil.getUserId(), metaObject);
+        this.setFieldValByName("creatorTitle", RequestUtil.getUserNickname(), metaObject);
+        this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
+        this.setFieldValByName("updatorTitle", RequestUtil.getUserNickname(), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        Date now = new Date();
+        final Date now = new Date();
         this.setFieldValByName("updateTime", now, metaObject);
-        if (metaObject.hasSetter("updatorId")) {
-            this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-            this.setFieldValByName("updatorTitle", RequestUtil.getUserId(), metaObject);
-        }
+        this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
+        this.setFieldValByName("updatorTitle", RequestUtil.getUserNickname(), metaObject);
     }
 }
 

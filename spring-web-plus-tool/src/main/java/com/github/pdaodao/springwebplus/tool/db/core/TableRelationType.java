@@ -1,6 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.db.core;
 
-public enum TableRelation {
+/**
+ * 数据表关联类型
+ */
+public enum TableRelationType {
     OneToOne,
     OneToMany,
     ManyToOne,

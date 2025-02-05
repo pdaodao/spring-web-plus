@@ -77,7 +77,7 @@ public enum DataType {
      * @return
      */
     public boolean lengthNotRequired() {
-        return BOOLEAN == this || INT == this || BIGINT == this || TEXT == this || DATETIME == this;
+        return BOOLEAN == this || INT == this || BIGINT == this || TEXT == this || DATETIME == this || DATE == this;
     }
 
     /**

@@ -7,6 +7,8 @@ import com.github.pdaodao.springwebplus.tool.db.core.FilterTree;
 import com.github.pdaodao.springwebplus.tool.db.core.LogicOperator;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
 import com.github.pdaodao.springwebplus.tool.db.core.WhereOperator;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
+
 import java.util.List;
 
 /**
@@ -139,11 +141,13 @@ public class Where {
         return this;
     }
 
-    public SqlWithMapParams toSql(SqlWithMapParams p){
+    public SqlWithMapParams toSql(final DbDialect dialect, SqlWithMapParams p){
         final SqlWithMapParams sql = new SqlWithMapParams();
         if(p != null){
             sql.setParams(p.getParams());
         }
+        final String filter = filterTree.toSql(dialect, p);
+        sql.setSql(filter);
         return sql;
     }
 }

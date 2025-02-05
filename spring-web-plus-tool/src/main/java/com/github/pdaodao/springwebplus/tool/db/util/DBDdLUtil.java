@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.map.CaseInsensitiveLinkedMap;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
@@ -101,7 +100,7 @@ public class DBDdLUtil {
             }
             // 字段结构发生变化 更新
             final TableColumn toUpdated = fieldMap.get(f.getName());
-            if (toUpdated.diff(f, false)) {
+            if (f.diff(toUpdated, false)) {
                 final List<String> alterSqls = dbDialect.ddlGen().alterColumnSql(f, toUpdated, ddlBuildContext);
                 ddlBuildContext.addSql(alterSqls);
             }

@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.tool.db.core;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.comparator.CompareUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
@@ -125,7 +126,7 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
     /**
      * 是否相同
      *
-     * @param info
+     * @param info 新的字段信息
      * @return
      */
     public boolean diff(final TableColumn info, boolean ignoreName) {
@@ -135,18 +136,21 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
         }
         // 默认值不同
         if (!ObjectUtil.equals(getDefaultValue(), info.getDefaultValue())) {
+            if(BooleanUtil.isTrue(info.getIsAuto())){
+                return false;
+            }
             return true;
         }
         // 标准字段类型不同
         if (ObjectUtil.notEqual(dataType, info.getDataType())) {
-            if (dataType == DataType.STRING && info.getDataType() == DataType.TEXT) {
+            if (dataType == DataType.TEXT && info.getDataType() == DataType.STRING) {
                 // 字符串类型 和 text 类型比较
                 return false;
             }
-            if (dataType == DataType.DATETIME && info.getDataType() == DataType.TIMESTAMP) {
+            if (dataType == DataType.TIMESTAMP && info.getDataType() == DataType.DATETIME) {
                 return false;
             }
-            if (dataType == DataType.BOOLEAN && info.getDataType() == DataType.INT) {
+            if (dataType == DataType.INT && info.getDataType() == DataType.BOOLEAN) {
                 return false;
             }
             if (dataType != info.dataType) {
@@ -157,9 +161,9 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
             }
         }
         // 长度不同
-        if (dataType != null && !dataType.lengthNotRequired()
-                && dataType.isDoubleFamily()
-                && !ObjectUtil.equals(getLength(), info.getLength())) {
+        if (dataType != null && !ObjectUtil.equals(getLength(), info.getLength())
+                && !dataType.lengthNotRequired()
+                && dataType.isStringFamily()) {
             return true;
         }
         // 精度不同
@@ -170,7 +174,7 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
             if (info.getScale() != null && info.getScale() == 0) {
                 info.setScale(0);
             }
-            if (info.getScale() != null && getScale() != null && info.getScale() > getScale()) {
+            if (info.getScale() != null && getScale() != null &&  getScale() >= info.getScale()) {
                 return false;
             }
             if (!ObjectUtil.equals(getScale(), info.getScale())) {
