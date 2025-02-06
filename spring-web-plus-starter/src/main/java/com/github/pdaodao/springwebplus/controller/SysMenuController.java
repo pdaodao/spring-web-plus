@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.dao.SysMenuDao;
 import com.github.pdaodao.springwebplus.entity.SysMenu;
@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Slf4j
@@ -25,7 +24,7 @@ public class SysMenuController {
 
     @PostMapping("/add")
     @Operation(summary = "添加系统菜单")
-    @SaCheckPermission("sys:menu:add")
+    @Permission("sys:menu:add")
     public Boolean addSysMenu(@Valid @RequestBody SysMenu menu) {
         return sysMenuDao.save(menu);
 
@@ -33,28 +32,28 @@ public class SysMenuController {
 
     @PostMapping("/update")
     @Operation(summary = "修改系统菜单")
-    @SaCheckPermission("sys:menu:update")
+    @Permission("sys:menu:update")
     public Boolean updateSysMenu(@Valid @RequestBody SysMenu menu) {
         return sysMenuDao.save(menu);
     }
 
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统菜单")
-    @SaCheckPermission("sys:menu:delete")
+    @Permission("sys:menu:delete")
     public Boolean deleteSysMenu(@PathVariable(name = "id") Long id) {
         return sysMenuDao.deleteById(id);
     }
 
     @GetMapping("/info/{id}")
     @Operation(summary = "系统菜单详情")
-    @SaCheckPermission("sys:menu:info")
+    @Permission("sys:menu:info")
     public SysMenu getSysMenu(@PathVariable(name = "id") Long id) {
         return sysMenuDao.getById(id);
     }
 
     @GetMapping("/tree")
     @Operation(summary = "树形列表")
-    @SaCheckPermission("sys:menu:all-tree-list")
+    @Permission("sys:menu:all-tree-list")
     public List<SysMenu> getAllSysMenuTreeList(final SysMenuQuery query) {
         final List<SysMenu> list = sysMenuDao.allList(query);
         return IdUtil.toTree(list, SysMenu::getId, SysMenu::getPid);
@@ -62,7 +61,7 @@ public class SysMenuController {
 
     @GetMapping("/tree/enabled")
     @Operation(summary = "启用的菜单树")
-    @SaCheckPermission("sys:menu:tree-list")
+    @Permission("sys:menu:tree-list")
     public List<SysMenu> getSysMenuTreeList() {
         final SysMenuQuery query = new SysMenuQuery();
         query.setEnabled(true);

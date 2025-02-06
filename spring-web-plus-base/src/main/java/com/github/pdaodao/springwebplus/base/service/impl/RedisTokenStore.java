@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.base.service.impl;
 
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
-import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
+import com.github.pdaodao.springwebplus.base.pojo.TokenInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -15,15 +15,7 @@ public class RedisTokenStore implements TokenStore {
     }
 
     @Override
-    public String buildToken(CurrentUserInfo userInfo) {
-        // 用户信息
-//        String loginTokenRedisKey = getLoginRedisKey(token);
-//        redisTemplate.opsForValue().set(loginTokenRedisKey, loginVo, tokenExpireMinutes, TOKEN_TIME_UNIT);
-        return null;
-    }
-
-    @Override
-    public CurrentUserInfo byToken(String token) {
+    public TokenInfo byToken(String token) {
         return null;
     }
 
@@ -33,7 +25,7 @@ public class RedisTokenStore implements TokenStore {
     }
 
     @Override
-    public void storeToken(String token, CurrentUserInfo userInfo) {
+    public void storeToken(String token, TokenInfo tokenInfo) {
 
     }
 }

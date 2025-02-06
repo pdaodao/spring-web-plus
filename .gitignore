@@ -3,7 +3,8 @@
 
 # Log file
 *.log
-
+token
+.token
 # BlueJ files
 *.ctxt
 # Mobile Tools for Java (J2ME)

@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.dao.SysRoleDao;
@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,35 +28,35 @@ public class SysRoleController {
 
     @PostMapping("/add")
     @Operation(summary = "添加系统角色")
-    @SaCheckPermission("sys:role:add")
+    @Permission("sys:role:add")
     public Boolean addSysRole(@Valid @RequestBody SysRole role) {
         return roleDao.save(role);
     }
 
     @PostMapping("/update")
     @Operation(summary = "修改系统角色")
-    @SaCheckPermission("sys:role:update")
+    @Permission("sys:role:update")
     public Boolean updateSysRole(@Valid @RequestBody SysRole role) {
         return roleDao.save(role);
     }
 
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统角色")
-    @SaCheckPermission("sys:role:delete")
+    @Permission("sys:role:delete")
     public Boolean deleteSysRole(@PathVariable(name = "id") Long id) {
         return roleDao.removeById(id);
     }
 
     @GetMapping("/info/{id}")
     @Operation(summary = "系统角色详情")
-    @SaCheckPermission("sys:role:info")
+    @Permission("sys:role:info")
     public SysRole getSysRole(@PathVariable(name = "id") Long id) {
         return roleDao.getById(id);
     }
 
     @GetMapping("/page")
     @Operation(summary = "系统角色分页列表")
-    @SaCheckPermission("sys:role:page")
+    @Permission("sys:role:page")
     public PageResult<SysRole> getSysRolePage(SysRoleQuery query,
                                               final PageRequestParam pageRequestParam) {
         try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
@@ -68,7 +67,7 @@ public class SysRoleController {
 
     @GetMapping("/list")
     @Operation(summary = "系统所有角色列表")
-    @SaCheckPermission("sys:role:page")
+    @Permission("sys:role:page")
     public List<SysRole> getSysRoleAllList() {
         return roleDao.list();
     }
@@ -76,7 +75,7 @@ public class SysRoleController {
 
     @PostMapping("/set/menu")
     @Operation(summary = "设置角色权限")
-    @SaCheckPermission("sys:role:set-role-menus")
+    @Permission("sys:role:set-role-menus")
     public Boolean setRoleMenus(@Valid @RequestBody SysRoleMenu roleMenu) {
 //        boolean flag = sysRoleService.setRoleMenus(roleMenusDto);
 //        return ApiResult.success(flag);
@@ -91,6 +90,4 @@ public class SysRoleController {
 //        return ApiResult.success(list);
         return new ArrayList<>();
     }
-
-
 }

@@ -159,6 +159,10 @@ public class DateTimeUtil {
         return cal.getTime();
     }
 
+    public static final Date addMinutes(Date aDate, int minutes) {
+        return DateUtil.offsetMinute(aDate, minutes).toJdkDate();
+    }
+
     public static final Date beginOfDay(final Date aDate) {
         if (aDate == null) {
             return null;

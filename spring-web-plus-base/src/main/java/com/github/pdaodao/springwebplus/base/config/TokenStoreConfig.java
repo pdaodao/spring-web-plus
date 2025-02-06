@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.base.config;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
 import com.github.pdaodao.springwebplus.base.service.impl.LocalTokenStore;
 import com.github.pdaodao.springwebplus.base.service.impl.RedisTokenStore;
+import com.github.pdaodao.springwebplus.base.service.impl.RocksTokenStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -15,8 +16,9 @@ public class TokenStoreConfig {
 
     @Bean
     @ConditionalOnMissingBean(RedisTemplate.class)
-    public TokenStore localTokenStore(SysConfigProperties configProperties) {
-        return new LocalTokenStore(configProperties);
+    public TokenStore localTokenStore(SysConfigProperties configProperties) throws Exception{
+//        return new LocalTokenStore(configProperties);
+        return new RocksTokenStore();
     }
 
     @Bean

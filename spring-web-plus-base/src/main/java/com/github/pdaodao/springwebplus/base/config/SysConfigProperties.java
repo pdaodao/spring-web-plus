@@ -29,9 +29,13 @@ public class SysConfigProperties {
     @Value("${auth.login:}")
     private String loginUrl;
 
-    // 登录交互有效时长 分钟
-    @Value("${auth.expire:24*60}")
-    private Long authExpire;
+    // 登录过期有效时长 分钟 7天
+    @Value("${auth.expire:10080}")
+    private Integer authExpire;
+
+    // 登陆活跃时长 分钟
+    @Value("${auth.active:1}")
+    private Integer authActive;
 
     // token 名称
     @Value("${auth.token:Token}")
@@ -75,6 +79,20 @@ public class SysConfigProperties {
             }
         }
         return false;
+    }
+
+    public Integer authExpireSeconds(){
+        if(authExpire < 3){
+            return authExpire;
+        }
+        return authExpire * 60;
+    }
+
+    public Integer authActiveSeconds(){
+        if(authActive < 3){
+            return authActive;
+        }
+        return authActive * 60;
     }
 
     public String getLoginUrl() {

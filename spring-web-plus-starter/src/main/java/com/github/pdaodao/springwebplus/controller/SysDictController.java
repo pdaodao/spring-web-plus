@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.dao.SysDicDao;
 import com.github.pdaodao.springwebplus.entity.SysDict;
@@ -62,7 +62,7 @@ public class SysDictController {
 
     @PostMapping("/save")
     @Operation(summary = "保存字典项")
-    @SaCheckPermission("sys:dict:save")
+    @Permission("sys:dict:save")
     public Boolean saveDic(@Valid @RequestBody SysDict dic) {
         dic.setPid(0L);
         return dicDao.save(dic);
@@ -70,7 +70,7 @@ public class SysDictController {
 
     @PostMapping("/save-value")
     @Operation(summary = "保存字典值")
-    @SaCheckPermission("sys:dict:save")
+    @Permission("sys:dict:save")
     public Boolean saveDicValue(@Valid @RequestBody SysDict dic) {
         Preconditions.checkNotNull(dic.getPid(), "请指定字典.");
         return dicDao.save(dic);
@@ -78,28 +78,28 @@ public class SysDictController {
 
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除字典")
-    @SaCheckPermission("sys:dict:delete")
+    @Permission("sys:dict:delete")
     public Boolean deleteSysDictType(@PathVariable("id") String id) {
         return dicDao.removeById(id);
     }
 
     @GetMapping("/info/{id}")
     @Operation(summary = "字典详情")
-    @SaCheckPermission("sys:dict:info")
+    @Permission("sys:dict:info")
     public SysDict getSysDictType(@PathVariable("id") String id) {
         return dicDao.getById(id);
     }
 
     @GetMapping("/list")
     @Operation(summary = "字典列表")
-    @SaCheckPermission("sys:dict:list")
+    @Permission("sys:dict:list")
     public List<SysDict> getSysDictTypeList() {
         return dicDao.listOrderBySeq(0L);
     }
 
     @GetMapping("value/list")
     @Operation(summary = "字典值列表")
-    @SaCheckPermission("sys:dict-value:list")
+    @Permission("sys:dict-value:list")
     public List<SysDict> valueList(@Parameter(name = "name", description = "字典编码") final String name) {
         final SysDict dic = dicDao.dicByName(name);
         Preconditions.checkNotNull(dic, "字典{}不存在.", name);
@@ -108,7 +108,7 @@ public class SysDictController {
 
     @GetMapping("value/map")
     @Operation(summary = "字典值map")
-    @SaCheckPermission("sys:dict-value:list")
+    @Permission("sys:dict-value:list")
     public Map<String, SysDict> valueMap(@Parameter(name = "name", description = "字典编码") final String name) {
         final SysDict dic = dicDao.dicByName(name);
         Preconditions.checkNotNull(dic, "字典{}不存在.", name);

@@ -8,9 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.github.pdaodao.springwebplus.base.auth.LoginInterceptor;
 import com.github.pdaodao.springwebplus.base.config.support.*;
-import com.github.pdaodao.springwebplus.base.frame.SysDateTimeFormat;
+import com.github.pdaodao.springwebplus.base.frame.AppCustomConfig;
 import com.github.pdaodao.springwebplus.base.support.ProxyServlet;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
@@ -41,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class WebMvcConfig implements WebMvcConfigurer {
     private final SysConfigProperties configProperties;
     private final ProxyServlet proxyServlet;
-    private final Optional<SysDateTimeFormat> sysDateTimeFormatOption;
+    private final Optional<AppCustomConfig> sysDateTimeFormatOption;
     private final List<InterceptorRegistryListener> interceptorRegistryListeners;
 
 
@@ -107,12 +106,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(new HolderClearInterceptor());
         if (CollUtil.isNotEmpty(interceptorRegistryListeners)) {
             for (InterceptorRegistryListener listener : interceptorRegistryListeners) {
                 listener.addInterceptors(registry);
             }
         }
-        registry.addInterceptor(new HolderClearInterceptor());
     }
 
     @Override

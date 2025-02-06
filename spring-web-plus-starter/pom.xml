@@ -26,12 +26,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-oauth2</artifactId>
-            <version>1.39.0</version>
-        </dependency>
     </dependencies>
 
 </project>

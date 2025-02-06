@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.base.config;
 
-import com.github.pdaodao.springwebplus.base.frame.FrameGlobalConfig;
+import com.github.pdaodao.springwebplus.base.frame.AppCustomConfig;
 import com.github.pdaodao.springwebplus.base.pojo.IResponse;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -31,7 +32,7 @@ import java.util.Optional;
 @ConditionalOnProperty(value = "global.restResponse", havingValue = "true", matchIfMissing = true)
 @AllArgsConstructor
 public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
-    private final Optional<FrameGlobalConfig> config;
+    private final Optional<AppCustomConfig> config;
 
     private static boolean isCollectionReturnType(MethodParameter methodParameter) {
         final Type returnType = methodParameter.getGenericParameterType();
@@ -62,13 +63,10 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
     @Nullable
     @Override
     public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (body == null && returnType.getGenericParameterType().getTypeName().equals("void")) {
-            return RestResponse.success(body);
-        }
         IResponse restResponse;
-        if (body == null) {
+        if(body == null){
             restResponse = RestResponse.success(null);
-        } else {
+        }else {
             if (body instanceof IResponse) {
                 restResponse = (IResponse) body;
             } else if (body instanceof PageResult<?>) {
@@ -85,6 +83,15 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             if(!config.isPresent() || config.get().isUseResponseStatus()){
                 if (r.getCode() != null && r.getCode() < 600) {
                     response.setStatusCode(HttpStatus.resolve(r.getCode()));
+                }
+            }
+            if(config.isPresent()){
+                final Map<Integer, Integer> mapping = config.get().responseCodeMap();
+                if(mapping != null){
+                    final Integer code = mapping.get(r.getCode());
+                    if(code != null){
+                        r.setCode(code);
+                    }
                 }
             }
         }

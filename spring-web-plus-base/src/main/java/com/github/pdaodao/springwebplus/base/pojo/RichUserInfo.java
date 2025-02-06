@@ -1,25 +1,10 @@
 package com.github.pdaodao.springwebplus.base.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 
-public class RichUserInfo {
-    // 主键
-    private Long id;
-    // 登录用户名
-    private String username;
-
-    // 头像
-    private String avatar;
-
-    // token
-    private String token;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object tokenInfo;
-
-    // 昵称
-    private String nickname;
-
+@Data
+public class RichUserInfo extends CurrentUserInfo{
     // 角色id
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long roleId;

@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.base.pojo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
@@ -16,7 +17,7 @@ public class CurrentUserInfo {
     private String token;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object tokenInfo;
+    private TokenInfo tokenInfo;
 
     // 昵称
     private String name;

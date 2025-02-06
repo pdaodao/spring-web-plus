@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.entity.SysUser;
@@ -29,14 +29,14 @@ public class SysUserController {
 
     @PostMapping("/add")
     @Operation(summary = "添加用户")
-    @SaCheckPermission("sys:user:add")
+    @Permission("sys:user:add")
     public Boolean addSysUser(@Valid @RequestBody SysUser sysUser) {
         return sysUserService.saveUser(sysUser);
     }
 
     @PostMapping("/update")
     @Operation(summary = "修改系统用户")
-    @SaCheckPermission("sys:user:update")
+    @Permission("sys:user:update")
     public Boolean updateSysUser(@Valid @RequestBody SysUser user) {
         return sysUserService.saveUser(user);
     }
@@ -44,21 +44,21 @@ public class SysUserController {
 
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统用户")
-    @SaCheckPermission("sys:user:delete")
+    @Permission("sys:user:delete")
     public Boolean deleteSysUser(@PathVariable("id") Long id) {
         return sysUserService.deleteById(id);
     }
 
     @Operation(summary = "系统用户详情")
     @GetMapping("/info/{id}")
-    @SaCheckPermission("sys:user:info")
+    @Permission("sys:user:info")
     public SysUser getSysUser(@PathVariable("id") String id) {
         return sysUserService.infoWithRole(id, null);
     }
 
     @Operation(summary = "系统用户分页列表")
     @GetMapping("/page")
-    @SaCheckPermission("sys:user:page")
+    @Permission("sys:user:page")
     public PageResult<SysUser> listPage(SysUserQuery userQuery, PageRequestParam pageRequestParam) {
         try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
             final List<SysUser> users = sysUserService.list(userQuery);
@@ -68,7 +68,7 @@ public class SysUserController {
 
     @Operation(summary = "重置用户密码")
     @PostMapping("/reset-password")
-    @SaCheckPermission("sys:user:reset-password")
+    @Permission("sys:user:reset-password")
     public Boolean resetSysUserPassword(@Valid @RequestBody SysUser sysUser) {
         return sysUserService.updatePassword(sysUser);
     }

@@ -4,10 +4,8 @@ import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
-import com.github.pdaodao.springwebplus.base.service.TokenStore;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
-import com.github.pdaodao.springwebplus.base.util.TokenUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +19,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @AllArgsConstructor
 public class LoginInterceptor implements HandlerInterceptor {
     private final SysConfigProperties sysConfig;
-    private final TokenStore tokenStoreService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -57,7 +54,5 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        TokenUtil.clearHolder();
-        RequestUtil.clearHolder();
     }
 }
