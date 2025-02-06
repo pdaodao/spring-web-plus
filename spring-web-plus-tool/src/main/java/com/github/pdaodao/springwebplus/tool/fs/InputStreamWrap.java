@@ -10,6 +10,9 @@ public class InputStreamWrap implements AutoCloseable {
     public final InputStream inputStream;
     public final Closeable client;
 
+    // 文件名称
+    public String name;
+
     public InputStreamWrap(InputStream inputStream, Closeable client) {
         this.inputStream = inputStream;
         this.client = client;
