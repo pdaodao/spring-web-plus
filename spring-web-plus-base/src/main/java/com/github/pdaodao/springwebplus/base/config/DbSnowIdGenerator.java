@@ -13,6 +13,6 @@ public class DbSnowIdGenerator implements IdentifierGenerator {
 
     @Override
     public String nextUUID(Object entity) {
-        return IdUtil.snowId();
+        return IdUtil.snowIdString();
     }
 }

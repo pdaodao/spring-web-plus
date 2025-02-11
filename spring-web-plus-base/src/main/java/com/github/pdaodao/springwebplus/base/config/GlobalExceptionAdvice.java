@@ -18,14 +18,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Date;
@@ -113,7 +110,7 @@ public class GlobalExceptionAdvice {
                 rest.setMsg("内部服务器错误");
             }
         }
-        rest.setRequestId(IdUtil.snowId());
+        rest.setRequestId(IdUtil.snowIdString());
         final String msg = StrUtil.format("[{}]:{}:{}[{}]", rest.getRequestId(),
                 rest.getPath(), rest.getMsg(), rest.getTrace());
         if (RestCode.INTERNAL_SERVER_ERROR.getCode() == rest.getCode()) {

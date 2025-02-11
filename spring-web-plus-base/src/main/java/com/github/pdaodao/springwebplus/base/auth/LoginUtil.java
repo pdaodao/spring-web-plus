@@ -142,7 +142,11 @@ public class LoginUtil {
 
 
     public static UserAuthService userAuthService(){
-        return SpringUtil.getBean(UserAuthService.class);
+        try{
+            return SpringUtil.getBean(UserAuthService.class);
+        }catch (Exception e){
+            return null;
+        }
     }
 
 

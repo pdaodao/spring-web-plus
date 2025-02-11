@@ -54,7 +54,7 @@ public class BaseDDLGen implements DbDDLGen {
         // 索引
         if (CollUtil.isNotEmpty(tableInfo.getIndexList())) {
             for (final TableIndex indexInfo : tableInfo.getIndexList()) {
-                if ("PRIMARY".equalsIgnoreCase(indexInfo.getName())) {
+                if ("PRIMARY".equalsIgnoreCase(indexInfo.getName()) || indexInfo.getName().endsWith("_pkey")) {
                     continue;
                 }
                 final String indexSql = genDDLOfCreateIndex(tableInfo, indexInfo);

@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.function.Function;
 
 public class IdUtil {
+    public static long workerId = 1l;
+
     public static final String BaseChar = "123456789abcdefghjkmnpqrstvwxyz";
     public static final int Size = BaseChar.length();
 
@@ -28,10 +30,21 @@ public class IdUtil {
      *
      * @return
      */
-    public static String snowId() {
-        final Long timeMillis = cn.hutool.core.util.IdUtil.getSnowflake().nextId();
+    public static String snowIdString() {
+        final Long timeMillis = cn.hutool.core.util.IdUtil.getSnowflake(workerId).nextId();
         final String identifier = convertToAlphanumeric(timeMillis);
         return identifier;
+    }
+
+    public static Long snowId() {
+        final Long timeMillis = cn.hutool.core.util.IdUtil.getSnowflake(workerId).nextId();
+        return timeMillis;
+    }
+
+    public static void main(String[] args) {
+        for(int i = 0; i < 30; i++){
+            System.out.println(snowId());
+        }
     }
 
     /**

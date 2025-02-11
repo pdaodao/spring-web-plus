@@ -122,6 +122,7 @@ public class BeanUtils {
     public static void copyProperties(Object source, Object target, String... ignoreProperties) {
         BeanUtil.copyProperties(source, target,
                 CopyOptions.create().setTransientSupport(false)
+                        .setIgnoreCase(true)
                         .setIgnoreProperties(ignoreProperties));
     }
 
