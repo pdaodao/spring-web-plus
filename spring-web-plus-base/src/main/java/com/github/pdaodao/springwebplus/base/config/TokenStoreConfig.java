@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.config;
 
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
+import com.github.pdaodao.springwebplus.base.service.impl.ChronicleMapTokenStore;
 import com.github.pdaodao.springwebplus.base.service.impl.LocalTokenStore;
 import com.github.pdaodao.springwebplus.base.service.impl.RedisTokenStore;
 import com.github.pdaodao.springwebplus.base.service.impl.RocksTokenStore;
@@ -19,6 +20,7 @@ public class TokenStoreConfig {
     public TokenStore localTokenStore(SysConfigProperties configProperties) throws Exception{
 //        return new LocalTokenStore(configProperties);
         return new RocksTokenStore();
+//        return new ChronicleMapTokenStore();
     }
 
     @Bean

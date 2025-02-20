@@ -77,6 +77,9 @@ public class DataValueUtil {
         if (obj == null) {
             return null;
         }
+        if(obj instanceof Double){
+            return (Double) obj;
+        }
         if (obj instanceof Number) {
             return NumberUtil.toDouble((Number) obj);
         }

@@ -42,6 +42,15 @@ public class OptionMap extends LinkedCaseInsensitiveMap<Object> implements Seria
         return DataValueUtil.toLong(v);
     }
 
+    public Double getDouble(final String key, final Double defaultValue) {
+        final Object v = get(key);
+        if (ObjectUtil.isNull(v)) {
+            return defaultValue;
+        }
+        return DataValueUtil.toDouble(v);
+    }
+
+
     public Boolean getBoolean(final String key, final Boolean defaultValue) {
         final Object v = get(key);
         if(ObjectUtil.isNull(v)){
