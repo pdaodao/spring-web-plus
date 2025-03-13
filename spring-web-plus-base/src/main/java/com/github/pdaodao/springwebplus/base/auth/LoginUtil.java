@@ -137,6 +137,7 @@ public class LoginUtil {
                 currentUserInfo.setName(u.getName());
             }
         }
+        currentUserInfo.setTeamId(getTeam());
         return currentUserInfo;
     }
 
@@ -169,6 +170,19 @@ public class LoginUtil {
             token = RequestUtil.getFromCookie(sysConfig.getAuthTokenName());
         }
         return token;
+    }
+
+    /**
+     * 获取团队id
+     * @return
+     */
+    public static String getTeam(){
+        final SysConfigProperties sysConfig = sysConfig();
+        String team = RequestUtil.getFromHead(sysConfig.getAuthTeam());
+        if(StrUtil.isBlank(team)){
+            team = RequestUtil.getFromCookie(sysConfig.getAuthTeam());
+        }
+        return team;
     }
 
     public static SysConfigProperties sysConfig(){

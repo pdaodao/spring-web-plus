@@ -77,7 +77,7 @@ public class JdbcReader implements Reader {
 
     @Override
     public StreamRow read() throws Exception {
-        if (!rs.next()) {
+        if (rs == null || !rs.next()) {
             return null;
         }
         final StreamRow row = StreamRow.of(fields.size());

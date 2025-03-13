@@ -15,6 +15,9 @@ public class SysLog {
     @Schema(description = "用户显示名称")
     private String username;
 
+    @Schema(description = "团队")
+    private String team;
+
     @Schema(description = "用户角色")
     private String userType;
 

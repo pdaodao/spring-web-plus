@@ -41,6 +41,9 @@ public class SysConfigProperties {
     @Value("${auth.token:Token}")
     private String authTokenName;
 
+    @Value("${auth.team:Team}")
+    private String authTeam;
+
     // 是否自动更新表结构
     @Value("${dao.ddl.gen.enabled:true}")
     private Boolean ddlGenEnabled;

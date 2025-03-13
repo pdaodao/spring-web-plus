@@ -246,6 +246,7 @@ public class SysLogAop {
         }
         sysLog.setUserId(RequestUtil.getUserId());
         sysLog.setUsername(RequestUtil.getUserNickname());
+        sysLog.setTeam(RequestUtil.getTeamOrDefault());
     }
 
     /**
@@ -289,6 +290,7 @@ public class SysLogAop {
                 }
                 if (arg instanceof PageRequestParam) {
                     sysLog.setLogType(LogType.QUERY);
+
                     BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
                     continue;
                 }

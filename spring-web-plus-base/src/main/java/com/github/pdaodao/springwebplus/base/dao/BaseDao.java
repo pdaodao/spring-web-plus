@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdEntity;
 import com.github.pdaodao.springwebplus.base.entity.Entity;
+import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
@@ -43,6 +44,9 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         }
         if (ObjectUtil.isNull(entity.getId())) {
             saveCheck(entity, true);
+            if(entity instanceof WithTeam){
+
+            }
             return super.save(entity);
         }
         final T old = getById(entity.getId());

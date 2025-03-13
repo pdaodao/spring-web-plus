@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.pdaodao.springwebplus.base.auth.LoginUtil;
 import lombok.Data;
 
 @Data
@@ -22,11 +23,17 @@ public class CurrentUserInfo {
     // 昵称
     private String name;
 
+    /**
+     * 团队id
+     */
+    private String teamId;
+
     // 无用户时 伪造一个
     public static CurrentUserInfo ofNoUser() {
         final CurrentUserInfo currentUserInfo = new CurrentUserInfo();
         currentUserInfo.setId(null);
         currentUserInfo.setUsername("");
+        currentUserInfo.setTeamId(LoginUtil.getTeam());
         return currentUserInfo;
     }
 }

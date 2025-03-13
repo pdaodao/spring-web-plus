@@ -32,6 +32,22 @@ public class RequestUtil {
         return userInfo.getId();
     }
 
+    public static String getTeam(){
+        final CurrentUserInfo userInfo = getCurrentUser();
+        if (userInfo == null) {
+            return null;
+        }
+        return userInfo.getTeamId();
+    }
+
+    public static String getTeamOrDefault(){
+        final String team = getTeam();
+        if(StrUtil.isBlank(team)){
+            return "0";
+        }
+        return team;
+    }
+
     public static String getUserNickname() {
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {

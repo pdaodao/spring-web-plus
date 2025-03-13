@@ -45,6 +45,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             final CurrentUserInfo currentUserInfo = LoginUtil.userInfo();
             RequestUtil.setCurrentUser(currentUserInfo);
             Preconditions.checkNotNull(currentUserInfo, "请重新登录后再操作.");
+
         }catch (Exception e){
             throw new RestException(RestCode.NO_USER_INFO, ExceptionUtil.getSimpleMsg(e))
                     .setData(sysConfig.getLoginUrl());
