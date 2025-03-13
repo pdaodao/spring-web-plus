@@ -9,11 +9,10 @@ import java.util.Date;
 public class SysLog {
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "日志链路ID")
-    private Long userId;
+    private String userId;
 
     @Schema(description = "用户显示名称")
-    private String username;
+    private String userNickname;
 
     @Schema(description = "团队")
     private String team;
@@ -66,5 +65,6 @@ public class SysLog {
     @Schema(description = "请求origin")
     private String origin;
 
+    @Schema(description = "日志链路ID")
     private String traceId;
 }

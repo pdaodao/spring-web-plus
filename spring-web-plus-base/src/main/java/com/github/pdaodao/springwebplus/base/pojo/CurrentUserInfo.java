@@ -7,9 +7,11 @@ import lombok.Data;
 @Data
 public class CurrentUserInfo {
     // 主键
-    private Long id;
+    private String id;
     // 登录用户名
     private String username;
+
+    private String userNickname;
 
     // 头像
     private String avatar;
@@ -19,9 +21,6 @@ public class CurrentUserInfo {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TokenInfo tokenInfo;
-
-    // 昵称
-    private String name;
 
     /**
      * 团队id

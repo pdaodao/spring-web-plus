@@ -24,7 +24,7 @@ public class SysFile extends SnowIdWithTimeUserEntity {
     private String namespace;
 
     @Schema(description = "对象id")
-    private String pid;
+    private String objId;
 
     @Schema(description = "存储路径")
     @Length(max = 800, message = "存储路径长度超过800限制")

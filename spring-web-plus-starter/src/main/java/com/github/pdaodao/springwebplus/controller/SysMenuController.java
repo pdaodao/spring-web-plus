@@ -40,7 +40,7 @@ public class SysMenuController {
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统菜单")
     @Permission("sys:menu:delete")
-    public Boolean deleteSysMenu(@PathVariable(name = "id") Long id) {
+    public Boolean deleteSysMenu(@PathVariable(name = "id") String id) {
         return sysMenuDao.deleteById(id);
     }
 

@@ -9,15 +9,9 @@ import lombok.Data;
 public abstract class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity implements WithUser {
     @Schema(description = "创建者id")
     @TableField(updateStrategy = FieldStrategy.NEVER)
-    private Long creatorId;
+    private String creatorId;
 
     @Schema(description = "创建者姓名")
     @TableField(updateStrategy = FieldStrategy.NEVER)
-    private String creatorTitle;
-
-    @Schema(description = "更新者id")
-    private Long updatorId;
-
-    @Schema(description = "更新者姓名")
-    private String updatorTitle;
+    private String creatorNickname;
 }

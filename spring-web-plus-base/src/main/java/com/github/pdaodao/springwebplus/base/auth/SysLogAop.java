@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.base.auth;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
@@ -241,11 +242,11 @@ public class SysLogAop {
     }
 
     private void handleLoginUser(SysLog sysLog){
-        if(sysLog.getUserId() != null && sysLog.getUserId() > 0){
+        if(ObjectUtil.isNotNull(sysLog.getUserId())){
             return;
         }
         sysLog.setUserId(RequestUtil.getUserId());
-        sysLog.setUsername(RequestUtil.getUserNickname());
+        sysLog.setUserNickname(RequestUtil.getUserNickname());
         sysLog.setTeam(RequestUtil.getTeamOrDefault());
     }
 

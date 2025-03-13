@@ -72,7 +72,7 @@ public class RocksTokenStore implements TokenStore {
     public static void main(String[] args) throws Exception{
         RocksTokenStore store = new RocksTokenStore();
         final TokenInfo tokenInfo = new TokenInfo();
-        tokenInfo.setUserId(2l);
+        tokenInfo.setUserId("2");
         tokenInfo.setUsername("admin");
 //        store.storeToken("u1-123", tokenInfo);
 //        ThreadUtil.sleep(100);

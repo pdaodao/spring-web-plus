@@ -48,7 +48,7 @@ public class SysUserService {
      * @param id
      * @return
      */
-    public boolean deleteById(final Long id) {
+    public boolean deleteById(final String id) {
 
         return sysUserDao.removeById(id);
     }
@@ -59,7 +59,7 @@ public class SysUserService {
      * @param id
      * @return
      */
-    public SysUser getById(final Long id) {
+    public SysUser getById(final String id) {
         return sysUserDao.getById(id);
     }
 

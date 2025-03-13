@@ -134,10 +134,16 @@ public class LoginUtil {
         if(userAuthService != null){
             final CurrentUserInfo u = userAuthService.userInfo(info.getUserId());
             if(u != null){
-                currentUserInfo.setName(u.getName());
+                if(u.getUsername() != null){
+                    currentUserInfo.setUsername(u.getUsername());
+                }
+                currentUserInfo.setUserNickname(u.getUserNickname());
+                u.setTeamId(u.getTeamId());
             }
         }
-        currentUserInfo.setTeamId(getTeam());
+        if(StrUtil.isBlank(currentUserInfo.getTeamId())){
+            currentUserInfo.setTeamId(getTeam());
+        }
         return currentUserInfo;
     }
 

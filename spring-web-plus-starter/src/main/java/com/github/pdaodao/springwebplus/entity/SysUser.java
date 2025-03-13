@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_user", autoResultMap = true)
 @Schema(description = "系统用户")
-public class SysUser extends AutoIdWithTimeUserEntity {
+public class SysUser extends SnowIdWithTimeUserEntity {
 
     @Schema(description = "用户名")
     @NotBlank(message = "用户名不能为空")
@@ -47,8 +47,8 @@ public class SysUser extends AutoIdWithTimeUserEntity {
     private String email;
 
     @Schema(description = "头像")
-    @Length(max = 16, message = "密码长度超过限制")
-    private String head;
+    @Length(max = 300, message = "头像长度超过限制")
+    private String avatar;
 
     @Schema(description = "状态，0：禁用，1：启用")
     private Boolean enabled;

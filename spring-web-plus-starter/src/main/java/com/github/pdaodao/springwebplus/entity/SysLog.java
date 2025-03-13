@@ -2,127 +2,68 @@ package com.github.pdaodao.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
+import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.Date;
 
 @Data
 @TableName(value = "sys_log", autoResultMap = true)
 @Schema(description = "系统日志")
-public class SysLog extends AutoIdWithTimeUserEntity {
-    @Schema(description = "日志链路ID")
-    private String traceId;
+public class SysLog extends SnowIdWithTimeUserEntity {
+    @Schema(description = "用户id")
+    private String userId;
 
-    @Schema(description = "请求时间")
-    private String requestTime;
+    @Schema(description = "用户显示名称")
+    private String userNickname;
+
+    @Schema(description = "操作时间")
+    private Date operationTime;
+
+    @Schema(description = "操作类型")
+    private String operationType;
+
+    @Schema(description = "模块")
+    @Length(max = 200, message = "模块长度超过200限制")
+    private String module;
+
+    @Schema(description = "操作")
+    @Length(max = 200, message = "操作长度超过200限制")
+    private String description;
+
+    @Schema(description = "ip地址")
+    @Length(max = 100, message = "ip地址长度超过200限制")
+    private String ip;
+
+    @Schema(description = "ip地址描述")
+    @Length(max = 200, message = "地址描述长度超过200限制")
+    private String ipInfo;
 
     @Schema(description = "请求路径")
-    private String requestUrl;
-
-    @Schema(description = "权限编码")
-    private String permissionCode;
-
-    @Schema(description = "日志名称")
-    private String logName;
-
-    @Schema(description = "请求方式，GET/POST")
-    private String requestMethod;
-
-    @Schema(description = "内容类型")
-    private String contentType;
-
-    @Schema(description = "是否是JSON请求映射参数")
-    private Boolean isRequestBody;
-
-    @Schema(description = "token")
-    private String token;
-
-    @Schema(description = "模块名称")
-    private String moduleName;
-
-    @Schema(description = "controller类名称")
-    private String className;
-
-    @Schema(description = "controller方法名称")
-    private String methodName;
+    @Length(max = 100, message = "请求路径长度超过100限制")
+    private String path;
 
     @Schema(description = "请求参数")
-    private String requestParam;
+    @Length(max = 500, message = "请求参数长度超过500限制")
+    @TableFieldSize(500)
+    private String params;
 
-    @Schema(description = "系统类型 1：Admin管理后台，2：APP移动端端")
-    private Integer systemType;
-
-    @Schema(description = "用户ID")
-    private Long userId;
-
-    @Schema(description = "请求ip")
-    private String requestIp;
-
-    @Schema(description = "IP国家")
-    private String ipCountry;
-
-    @Schema(description = "IP省份")
-    private String ipProvince;
-
-    @Schema(description = "IP城市")
-    private String ipCity;
-
-    @Schema(description = "IP区域描述")
-    private String ipAreaDesc;
-
-    @Schema(description = "IP运营商")
-    private String ipIsp;
-
-    @Schema(description = "0:访问日志,1:新增,2:修改,3:删除,4:详情,5:所有列表,6:分页列表,7:其它查询,8:上传文件,9:登录,10:退出")
-    private Integer logType;
-
-    @Schema(description = "响应时间")
-    private String responseTime;
-
-    @Schema(description = "0:失败,1:成功")
-    private Boolean responseSuccess;
-
-    @Schema(description = "响应结果状态码")
-    private Integer responseCode;
-
-    @Schema(description = "响应结果消息")
-    private String responseMessage;
-
-    @Schema(description = "响应数据")
-    private String responseData;
-
-    @Schema(description = "异常类名称")
-    private String exceptionName;
-
-    @Schema(description = "异常信息")
-    private String exceptionMessage;
+    @Schema(description = "是否成功")
+    @TableFieldSize(value = 1, defaultValue = "0")
+    private Boolean success;
 
     @Schema(description = "耗时，单位：毫秒")
-    private Long diffTime;
-
-    @Schema(description = "耗时描述")
-    private String diffTimeDesc;
+    private Integer cost;
 
     @Schema(description = "请求来源地址")
+    @Length(max = 500, message = "请求来源地址长度超过500限制")
     private String referer;
 
-    @Schema(description = "请求来源服务名")
-    private String origin;
-
-    @Schema(description = "请求来源类型")
-    private String sourceType;
-
-    @Schema(description = "是否手机 0：否，1：是")
-    private Boolean isMobile;
-
-    @Schema(description = "平台名称")
-    private String platformName;
-
-    @Schema(description = "浏览器名称")
-    private String browserName;
-
-    @Schema(description = "用户环境")
-    private String userAgent;
-
-    @Schema(description = "备注")
-    private String remark;
+    public void setParams(String params) {
+        this.params = StrUtils.cut(params, 400);
+    }
 }

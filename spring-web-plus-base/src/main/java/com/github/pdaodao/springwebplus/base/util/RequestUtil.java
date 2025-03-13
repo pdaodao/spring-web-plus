@@ -23,7 +23,7 @@ public class RequestUtil {
     private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();
     private static ThreadLocal<PageRequestParam> pageHolder = new ThreadLocal<>();
 
-    public static Long getUserId() {
+    public static String getUserId() {
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -54,7 +54,7 @@ public class RequestUtil {
             return null;
         }
         Preconditions.checkNotNull(userInfo, "current-user-info is null.");
-        return userInfo.getName();
+        return userInfo.getUserNickname();
     }
 
 

@@ -64,7 +64,7 @@ public class SysDictController {
     @Operation(summary = "保存字典项")
     @Permission("sys:dict:save")
     public Boolean saveDic(@Valid @RequestBody SysDict dic) {
-        dic.setPid(0L);
+        dic.setPid("0");
         return dicDao.save(dic);
     }
 
@@ -94,7 +94,7 @@ public class SysDictController {
     @Operation(summary = "字典列表")
     @Permission("sys:dict:list")
     public List<SysDict> getSysDictTypeList() {
-        return dicDao.listOrderBySeq(0L);
+        return dicDao.listOrderBySeq("0");
     }
 
     @GetMapping("value/list")

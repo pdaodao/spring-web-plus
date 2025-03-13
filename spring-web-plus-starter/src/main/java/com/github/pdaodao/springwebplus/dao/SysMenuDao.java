@@ -57,13 +57,13 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteById(final Long id) {
+    public Boolean deleteById(final String id) {
         final SysMenu sysMenu = getById(id);
         if (sysMenu == null) {
             return true;
         }
         // 查询到子项
-        final Set<Long> subs = subDeepIds(id);
+        final Set<String> subs = subDeepIds(id);
         subs.add(id);
         roleMenuDao.deleteByMenuId(subs);
         return remove(QueryBuilder.lambda(SysMenu.class)
@@ -76,8 +76,8 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
      * @param id
      * @return
      */
-    private Set<Long> subDeepIds(final Long id) {
-        final Set<Long> ids = getIdByPids(ListUtil.list(false, id));
+    private Set<String> subDeepIds(final String id) {
+        final Set<String> ids = getIdByPids(ListUtil.list(false, id));
         int size = ids.size();
         for (int i = 0; i < 5; i++) {
             ids.addAll(getIdByPids(ids));
@@ -89,13 +89,13 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
         return ids;
     }
 
-    private Set<Long> getIdByPids(final Collection<Long> pids) {
+    private Set<String> getIdByPids(final Collection<String> pids) {
         final List<SysMenu> list = byPids(pids);
         return list.stream().map(t -> t.getId()).collect(Collectors.toSet());
     }
 
 
-    private List<SysMenu> byPids(final Collection<Long> pids) {
+    private List<SysMenu> byPids(final Collection<String> pids) {
         if (CollUtil.isEmpty(pids)) {
             return ListUtil.empty();
         }

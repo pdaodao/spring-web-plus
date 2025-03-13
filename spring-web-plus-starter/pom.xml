@@ -5,11 +5,11 @@
     <parent>
         <artifactId>spring-web-plus</artifactId>
         <groupId>com.github.pdaodao</groupId>
-        <version>3.0</version>
+        <version>3.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>3.0</version>
+    <version>3.1</version>
 
     <artifactId>spring-web-plus-starter</artifactId>
 

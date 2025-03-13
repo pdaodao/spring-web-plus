@@ -13,10 +13,10 @@ import lombok.Data;
 @Schema(description = "角色菜单关系表")
 public class SysRoleMenu extends SnowIdWithTimeEntity {
     @Schema(description = "角色id")
-    private Long roleId;
+    private String roleId;
 
     @Schema(description = "菜单id")
-    private Long menuId;
+    private String menuId;
 
     @Schema(description = "是否用户选中 0：否，1：是")
     private transient Boolean isChoice;
