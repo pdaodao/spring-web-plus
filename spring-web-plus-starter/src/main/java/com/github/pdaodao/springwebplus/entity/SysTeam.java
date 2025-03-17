@@ -11,6 +11,4 @@ import lombok.Data;
 public class SysTeam extends SnowIdWithTimeUserEntity {
     @Schema(description = "团队名称")
     private String title;
-
-
 }

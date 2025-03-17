@@ -2,7 +2,6 @@ package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
@@ -32,7 +31,7 @@ public class RequestUtil {
         return userInfo.getId();
     }
 
-    public static String getTeam(){
+    public static String getTeamId(){
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -40,8 +39,20 @@ public class RequestUtil {
         return userInfo.getTeamId();
     }
 
+    public static String getProjectId(){
+        return getFromHead("Project-Id");
+    }
+
+    public static String getProjectIdOrDefault(){
+        final String id = getProjectId();
+        if(StrUtil.isBlank(id)){
+            return "0";
+        }
+        return id;
+    }
+
     public static String getTeamOrDefault(){
-        final String team = getTeam();
+        final String team = getTeamId();
         if(StrUtil.isBlank(team)){
             return "0";
         }

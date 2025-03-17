@@ -8,16 +8,16 @@ import java.util.Objects;
 
 @Data
 public class FileInfo {
-    protected Date createTime;
     private String id;
+    private String namespace;
     private String name;
     private String path;
+
     private String contentType;
     private Long size;
     private transient String readableSize;
-    private String namespace;
-
-    private Object pid;
+    private String objId;
+    protected Date createTime;
 
     public String getReadableSize() {
         if (Objects.isNull(size)) {

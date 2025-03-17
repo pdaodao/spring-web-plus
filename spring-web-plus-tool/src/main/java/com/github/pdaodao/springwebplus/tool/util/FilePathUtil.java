@@ -8,9 +8,6 @@ import java.io.File;
  * 文件路径工具
  */
 public class FilePathUtil {
-
-    public static final String PathSeparator = "/";
-
     /**
      * 获取父路径
      */
@@ -39,7 +36,7 @@ public class FilePathUtil {
      * @return
      */
     public static String pathJoin(String... paths) {
-        return join(PathSeparator, paths);
+        return join(File.separator, paths);
     }
 
     /**
@@ -53,7 +50,7 @@ public class FilePathUtil {
                 continue;
             }
             path = path.trim();
-            if (path.endsWith("/")) {
+            if (path.endsWith("/") || path.endsWith("\\")) {
                 path = path.substring(0, path.length() - 1);
             }
             if (index++ > 0) {

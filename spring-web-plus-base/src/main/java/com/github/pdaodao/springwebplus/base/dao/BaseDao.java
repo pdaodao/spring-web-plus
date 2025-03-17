@@ -3,11 +3,13 @@ package com.github.pdaodao.springwebplus.base.dao;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdEntity;
 import com.github.pdaodao.springwebplus.base.entity.Entity;
+import com.github.pdaodao.springwebplus.base.entity.WithProject;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
@@ -44,18 +46,33 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         }
         if (ObjectUtil.isNull(entity.getId())) {
             saveCheck(entity, true);
-            if(entity instanceof WithTeam){
-
-            }
+            processTeamProject(entity);
             return super.save(entity);
         }
         final T old = getById(entity.getId());
         if (ObjectUtil.isNull(old)) {
             saveCheck(entity, true);
+            processTeamProject(entity);
             return super.save(entity);
         }
         saveCheck(entity, false);
         return updateById(entity);
+    }
+
+    private void processTeamProject(final T entity){
+        if(entity == null){
+            return;
+        }
+        if(entity instanceof WithTeam){
+            final WithTeam withTeam = (WithTeam) entity;
+            if(StrUtil.isBlank(withTeam.getTeamId())){
+                withTeam.setTeamId(RequestUtil.getTeamOrDefault());
+            }
+        }
+        if(entity instanceof WithProject){
+            final WithProject p = (WithProject) entity;
+            p.setProjectId(RequestUtil.getProjectIdOrDefault());
+        }
     }
 
     /**
