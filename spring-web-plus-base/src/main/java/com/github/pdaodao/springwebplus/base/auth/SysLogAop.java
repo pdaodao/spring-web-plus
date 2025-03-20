@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.base.auth;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.useragent.UserAgent;
@@ -49,10 +50,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.print.DocFlavor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
@@ -291,7 +289,6 @@ public class SysLogAop {
                 }
                 if (arg instanceof PageRequestParam) {
                     sysLog.setLogType(LogType.QUERY);
-
                     BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
                     continue;
                 }
@@ -315,7 +312,11 @@ public class SysLogAop {
                     BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
                     continue;
                 }
-                if(BeanUtil.isBean(arg.getClass())){
+                if(arg instanceof Map<?,?>){
+                    BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
+                    continue;
+                }
+                if(BeanUtil.isReadableBean(arg.getClass()) && !arg.getClass().getName().startsWith("java.")){
                     BeanUtils.copyPropertiesIgnoreNull(arg, params, "pwd", "password");
                     continue;
                 }
