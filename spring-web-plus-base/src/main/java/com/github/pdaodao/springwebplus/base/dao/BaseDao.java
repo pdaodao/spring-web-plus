@@ -7,10 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pdaodao.springwebplus.base.entity.AutoIdEntity;
-import com.github.pdaodao.springwebplus.base.entity.Entity;
-import com.github.pdaodao.springwebplus.base.entity.WithProject;
-import com.github.pdaodao.springwebplus.base.entity.WithTeam;
+import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
@@ -62,6 +59,9 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
     private void processTeamProject(final T entity){
         if(entity == null){
             return;
+        }
+        if(entity instanceof WithDelete){
+            ((WithDelete) entity).setIsDeleted(false);
         }
         if(entity instanceof WithTeam){
             final WithTeam withTeam = (WithTeam) entity;

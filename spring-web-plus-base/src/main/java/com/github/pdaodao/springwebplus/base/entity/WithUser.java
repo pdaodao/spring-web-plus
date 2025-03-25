@@ -5,7 +5,7 @@ public interface WithUser {
 
     void setCreatorId(String creatorId);
 
-    String getCreatorNickname();
+    String getCreatorUsername();
 
-    void setCreatorNickname(String creatorNick);
+    void setCreatorUsername(String creatorNick);
 }

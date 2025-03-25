@@ -68,6 +68,15 @@ public class RequestUtil {
         return userInfo.getUserNickname();
     }
 
+    public static String getUsername() {
+        final CurrentUserInfo userInfo = getCurrentUser();
+        if (userInfo == null) {
+            return null;
+        }
+        Preconditions.checkNotNull(userInfo, "current-user-info is null.");
+        return userInfo.getUsername();
+    }
+
 
     public static CurrentUserInfo getCurrentUser() {
         return userHolder.get();

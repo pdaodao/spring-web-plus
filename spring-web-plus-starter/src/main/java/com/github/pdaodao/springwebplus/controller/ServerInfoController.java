@@ -1,10 +1,12 @@
 package com.github.pdaodao.springwebplus.controller;
 
 import cn.hutool.system.SystemUtil;
+import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.ext.ServerInfoUtil;
 import com.github.pdaodao.springwebplus.base.ext.pojo.ProjectInfo;
 import com.github.pdaodao.springwebplus.base.ext.pojo.ServerInfo;
+import com.github.pdaodao.springwebplus.pojo.VersionInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class ServerInfoController {
     private final Environment environment;
+
+    @IgnoreLogin
+    @Operation(summary = "版本")
+    @GetMapping("version")
+    public VersionInfo version(){
+        final VersionInfo versionInfo = new VersionInfo();
+        versionInfo.setVersion("1.0");
+        return versionInfo;
+    }
 
     @Operation(summary = "服务器信息详情")
     @GetMapping("info")

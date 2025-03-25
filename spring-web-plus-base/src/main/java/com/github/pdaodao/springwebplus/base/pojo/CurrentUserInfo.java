@@ -2,9 +2,11 @@ package com.github.pdaodao.springwebplus.base.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.base.auth.LoginUtil;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
+@Schema(hidden = true)
 public class CurrentUserInfo {
     // 主键
     private String id;

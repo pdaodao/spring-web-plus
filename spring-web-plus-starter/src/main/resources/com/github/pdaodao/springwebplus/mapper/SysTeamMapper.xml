@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.pdaodao.springwebplus.mapper.SysTeamMapper">
+
+
+<!--    <select id="userMenu" resultType="com.github.pdaodao.springwebplus.entity.SysMenu">-->
+<!--        select a.*-->
+<!--        from (-->
+<!--        select m.id-->
+<!--        from sys_menu m-->
+<!--        inner join sys_role_menu rm on m.id = rm.menu_id-->
+<!--        inner join sys_user su on rm.user_id = su.id-->
+<!--        where su.id = #{userId}-->
+<!--        ) a-->
+<!--    </select>-->
+
+    <select id="userTeams" resultType="com.github.pdaodao.springwebplus.entity.SysTeam">
+        select t.*, u.nickname as creator_nickname
+        from sys_team t
+        inner join sys_team_user  tu on t.id = tu.team_id
+        left join sys_user u on tu.user_id = u.id
+        <where>
+            t.is_deleted = 0 and tu.user_id = #{userId}
+            <if test="permissionNamespace != null and permissionNamespace !=''">
+                and EXISTS (select 1 from sys_team_user_permission p where p.team_user_id = tu.id and namespace=#{permissionNamespace} )
+            </if>
+        </where>
+    </select>
+</mapper>

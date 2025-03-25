@@ -16,9 +16,11 @@ public class DbFieldFillHandler implements MetaObjectHandler {
         this.setFieldValByName("createTime", now, metaObject);
         this.setFieldValByName("updateTime", now, metaObject);
         this.setFieldValByName("creatorId", RequestUtil.getUserId(), metaObject);
-        this.setFieldValByName("creatorTitle", RequestUtil.getUserNickname(), metaObject);
+        this.setFieldValByName("creatorUsername", RequestUtil.getUsername(), metaObject);
+        this.setFieldValByName("creatorNickname", RequestUtil.getUserNickname(), metaObject);
         this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-        this.setFieldValByName("updatorTitle", RequestUtil.getUserNickname(), metaObject);
+        this.setFieldValByName("updatorUsername", RequestUtil.getUsername(), metaObject);
+        this.setFieldValByName("updatorNickname", RequestUtil.getUserNickname(), metaObject);
     }
 
     @Override
@@ -26,7 +28,8 @@ public class DbFieldFillHandler implements MetaObjectHandler {
         final Date now = new Date();
         this.setFieldValByName("updateTime", now, metaObject);
         this.setFieldValByName("updatorId", RequestUtil.getUserId(), metaObject);
-        this.setFieldValByName("updatorTitle", RequestUtil.getUserNickname(), metaObject);
+        this.setFieldValByName("updatorUsername", RequestUtil.getUsername(), metaObject);
+        this.setFieldValByName("updatorNickname", RequestUtil.getUserNickname(), metaObject);
     }
 }
 

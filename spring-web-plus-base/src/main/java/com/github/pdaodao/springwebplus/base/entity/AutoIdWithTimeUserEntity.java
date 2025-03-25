@@ -13,5 +13,5 @@ public abstract class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity impl
 
     @Schema(description = "创建者姓名")
     @TableField(updateStrategy = FieldStrategy.NEVER)
-    private String creatorNickname;
+    private String creatorUsername;
 }
