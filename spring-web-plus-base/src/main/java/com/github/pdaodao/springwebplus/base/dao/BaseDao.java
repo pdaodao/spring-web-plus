@@ -2,17 +2,23 @@ package com.github.pdaodao.springwebplus.base.dao;
 
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.pojo.EntityDiffWrap;
+import org.apache.ibatis.ognl.OgnlOps;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -46,12 +52,20 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
             processTeamProject(entity);
             return super.save(entity);
         }
-        final T old = getById(entity.getId());
+        final TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
+        T old = getOne(new QueryWrapper<T>().eq(tableInfo.getKeyColumn(), entity.getId()));
+        if(old != null && tableInfo.isWithLogicDelete() && old instanceof WithDelete){
+            if(BooleanUtil.isTrue(((WithDelete) old).getIsDeleted())){
+                remove(new QueryWrapper<T>().eq(tableInfo.getKeyColumn(), entity.getId()));
+                old = null;
+            }
+        }
         if (ObjectUtil.isNull(old)) {
             saveCheck(entity, true);
             processTeamProject(entity);
             return super.save(entity);
         }
+
         saveCheck(entity, false);
         return updateById(entity);
     }
