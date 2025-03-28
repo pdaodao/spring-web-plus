@@ -12,6 +12,7 @@ import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.Constant;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
+@Hidden
 @RestController
 @Tag(name = "项目管理")
 @RequestMapping(Constant.ApiPrefix + "/project")

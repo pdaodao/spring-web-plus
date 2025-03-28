@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
-import com.github.pdaodao.springwebplus.base.pojo.PermissionOperate;
-import com.github.pdaodao.springwebplus.base.pojo.handler.PermissionOperateListTypeHandler;
+import com.github.pdaodao.springwebplus.base.pojo.MemberType;
+import com.github.pdaodao.springwebplus.base.pojo.handler.MemberTypeListTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -28,8 +28,8 @@ public class SysTeamUserPermission extends SnowIdWithTimeUserEntity {
     private String objId;
 
     @Schema(description = "授权操作")
-    @TableField(typeHandler = PermissionOperateListTypeHandler.class)
-    private List<PermissionOperate> operate;
+    @TableField(typeHandler = MemberTypeListTypeHandler.class)
+    private List<MemberType> memberTypes;
 
     @Schema(description = "团队id")
     private transient String teamId;

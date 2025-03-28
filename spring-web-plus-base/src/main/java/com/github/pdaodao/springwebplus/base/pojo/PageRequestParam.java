@@ -16,6 +16,9 @@ import java.util.Objects;
 @Data
 @Schema(description = "分页查询请求参数")
 public class PageRequestParam {
+    @Schema(description = "关键词检索")
+    private String q;
+
     @Schema(description = "页码 从1开始", example = "1")
     private Integer pageNum;
     @Schema(description = "每页大小 默认为10", example = "10")

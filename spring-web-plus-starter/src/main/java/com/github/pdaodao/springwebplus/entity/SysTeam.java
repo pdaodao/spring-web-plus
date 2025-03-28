@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithDelete;
+import com.github.pdaodao.springwebplus.base.pojo.MemberType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
 
 @Data
 @TableName(value = "sys_team", autoResultMap = true)
@@ -19,4 +21,7 @@ public class SysTeam extends SnowIdWithTimeUserEntity implements WithDelete {
 
     @TableLogic
     private Boolean isDeleted;
+
+    @Schema(description = "成员类型")
+    private transient MemberType permissionOperate;
 }
