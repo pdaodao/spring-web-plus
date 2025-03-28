@@ -2,9 +2,13 @@ package com.github.pdaodao.springwebplus.base.service;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
 import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
+import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,9 +46,17 @@ public class FileStorageService {
      */
     public String upload(final String basePath, final Long fileSize, final String fileName,
                          final InputStream inputStream) throws IOException {
-        return fileStorage.upload(basePath, fileSize, fileName, inputStream);
+        return fileStorage.upload(processBasePath(basePath), fileSize, fileName, inputStream);
     }
 
+    protected String processBasePath(String basePath){
+        if(StrUtil.isBlank(basePath)){
+            basePath = "";
+        }else{
+            basePath = FileNameUtil.cleanInvalid(basePath);
+        }
+        return fileStorage.pathJoin(basePath, DateTimeUtil.formatYearMonth(DateTimeUtil.now()));
+    }
 
     /**
      * 上传文件
@@ -56,7 +68,7 @@ public class FileStorageService {
      * @throws IOException
      */
     public String upload(final String basePath, final String fileName, final InputStream inputStream) throws IOException {
-        return fileStorage.upload(basePath, fileName, inputStream);
+        return fileStorage.upload(processBasePath(basePath), fileName, inputStream);
     }
 
     /**

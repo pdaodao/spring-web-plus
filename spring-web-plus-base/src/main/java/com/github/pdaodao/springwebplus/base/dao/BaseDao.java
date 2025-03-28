@@ -50,7 +50,9 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         if (ObjectUtil.isNull(entity.getId())) {
             saveCheck(entity, true);
             processTeamProject(entity);
-            return super.save(entity);
+            boolean ret = super.save(entity);
+            afterInsert(entity);
+            return ret;
         }
         final TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
         T old = getOne(new QueryWrapper<T>().eq(tableInfo.getKeyColumn(), entity.getId()));
@@ -63,11 +65,17 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         if (ObjectUtil.isNull(old)) {
             saveCheck(entity, true);
             processTeamProject(entity);
-            return super.save(entity);
+            final boolean ret = super.save(entity);
+            afterInsert(entity);
+            return ret;
         }
 
         saveCheck(entity, false);
         return updateById(entity);
+    }
+
+    protected void afterInsert(T entity){
+
     }
 
     private void processTeamProject(final T entity){

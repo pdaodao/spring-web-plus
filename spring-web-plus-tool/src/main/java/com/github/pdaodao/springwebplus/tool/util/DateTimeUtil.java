@@ -10,6 +10,7 @@ import java.util.TimeZone;
 
 public class DateTimeUtil {
     public static TimeZone ShangHaiZone = TimeZone.getTimeZone("GMT+8");
+    public static final FastDateFormat Year_Month_FORMATTER = FastDateFormat.getInstance("yyyyMM", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd", ShangHaiZone);
@@ -64,8 +65,20 @@ public class DateTimeUtil {
         return null;
     }
 
+    public static Date now(){
+        return new Date();
+    }
+
+    public static Long currentTimeMillis(){
+        return System.currentTimeMillis();
+    }
+
     public static String formatDate(Long date) {
         return DATE_FORMATTER.format(date);
+    }
+
+    public static String formatYearMonth(Date date) {
+        return Year_Month_FORMATTER.format(date);
     }
 
     public static String formatDate(Date date) {

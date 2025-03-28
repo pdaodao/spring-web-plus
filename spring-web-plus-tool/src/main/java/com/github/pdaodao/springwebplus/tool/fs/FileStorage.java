@@ -11,6 +11,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public interface FileStorage {
+
+    default String pathJoin(String... paths){
+        return FilePathUtil.join(fileSep(), paths);
+    }
+
+    default String fileSep(){
+        return "/";
+    }
+
     /**
      * 文件保存时拼装全路径
      *
@@ -22,8 +31,7 @@ public interface FileStorage {
     default String concatPathForSave(final String baseRootPath, final String relativePath, String fileName) {
         Preconditions.checkNotEmpty(fileName, "文件名称不能为空");
         fileName = FileNameUtil.cleanInvalid(fileName);
-
-        String fullPath = FilePathUtil.pathJoin(baseRootPath, relativePath, fileName);
+        String fullPath = FilePathUtil.join(fileSep(), baseRootPath, relativePath, fileName);
         fullPath = processPathForSave(fullPath);
         if (exist(fullPath)) {
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");

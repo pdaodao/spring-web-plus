@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,6 +31,11 @@ public class LocalFileStorage implements FileStorage {
     @Override
     public Boolean exist(String fullPath) {
         return FileUtil.exist(pathAddRoot(config.getRootPath(), fullPath));
+    }
+
+    @Override
+    public String fileSep() {
+        return File.separator;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.util;
 
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -42,7 +44,7 @@ public class FilePathUtil {
     /**
      * 合并路径
      */
-    private static String join(final String separator, String... paths) {
+    public static String join(final String separator, String... paths) {
         final StringBuilder sb = new StringBuilder();
         int index = 0;
         for (String path : paths) {

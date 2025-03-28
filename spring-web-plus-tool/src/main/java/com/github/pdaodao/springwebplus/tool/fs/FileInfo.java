@@ -25,4 +25,10 @@ public class FileInfo {
         }
         return FileUtil.readableFileSize(size);
     }
+
+    public static FileInfo of(final String path){
+        final FileInfo f = new FileInfo();
+        f.setPath(path);
+        return f;
+    }
 }

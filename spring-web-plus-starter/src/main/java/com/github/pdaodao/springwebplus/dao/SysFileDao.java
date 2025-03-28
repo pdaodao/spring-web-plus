@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
+import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.entity.SysFile;
 import com.github.pdaodao.springwebplus.mapper.SysFileMapper;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
@@ -20,6 +21,7 @@ public class SysFileDao extends BaseDao<SysFileMapper, SysFile> {
     public List<SysFile> byNamespace(final String namespace, final String objId) {
         return list(QueryBuilder.lambda(SysFile.class)
                 .eq(SysFile::getNamespace, namespace)
+                .eq(SysFile::getTeamId, RequestUtil.getTeamOrDefault())
                 .eq(SysFile::getObjId, objId).build());
     }
 
