@@ -36,6 +36,7 @@ public class PageRequestParamResolver implements HandlerMethodArgumentResolver {
         final PageRequestParam pagerParams = new PageRequestParam();
         final HttpServletRequest httpRequest = (HttpServletRequest) nativeWebRequest
                 .getNativeRequest();
+        pagerParams.setQ(httpRequest.getParameter("q"));
         final String pageNum = httpRequest.getParameter("pageNum");
         if (StrUtil.isNotBlank(pageNum)) {
             pagerParams.setPageNum(validateNum(pageNum, "pageNum", 1, 1000000));
