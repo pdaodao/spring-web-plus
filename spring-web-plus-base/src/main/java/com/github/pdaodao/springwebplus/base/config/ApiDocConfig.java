@@ -41,7 +41,8 @@ public class ApiDocConfig implements InitializingBean {
         return GroupedOpenApi.builder()
                 .group("sys")
                 .pathsToMatch("/**")
-                .addOpenApiCustomizer(openApi -> openApi.info(new Info().title("System API")))
+                .addOpenApiCustomizer(openApi -> openApi
+                        .info(new Info().title("System API")))
                 .packagesToScan(packagedToMatch)
                 .build();
     }

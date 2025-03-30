@@ -26,6 +26,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
 
 import java.io.File;
+import java.sql.Struct;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -159,15 +160,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     private void fileResourceMap(final ResourceHandlerRegistry registry, final String app, final String filePath) {
         registry.addResourceHandler(app + "/index.html")
-                .addResourceLocations(filePath + "index.html")
+                .addResourceLocations(filePath)
                 .setCacheControl(CacheControl.noStore());
 
-        registry.addResourceHandler(app)
-                .addResourceLocations(filePath + "index.html")
+        registry.addResourceHandler(app + "/*.html")
+                .addResourceLocations(filePath)
                 .setCacheControl(CacheControl.noStore());
 
         registry.addResourceHandler(app + "/favicon.ico")
-                .addResourceLocations(filePath + "favicon.ico")
+                .addResourceLocations(filePath)
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
 
         registry.addResourceHandler(app + "/assets/**")

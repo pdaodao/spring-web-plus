@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.base.config;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.base.config.support.WebappFile;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
@@ -18,13 +19,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -75,6 +78,39 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(IllegalArgumentException.class)
     public RestResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         return error(RestCode.INTERNAL_SERVER_ERROR, null, request, e);
+    }
+
+    @ExceptionHandler(value = {NoResourceFoundException.class}, produces = {"text/html"})
+    public Object handleNoHandlerFoundException(final NoResourceFoundException ex, final HttpServletRequest request,
+                                                final HttpServletResponse response) {
+        final ModelAndView modelAndView = new ModelAndView();
+        final String url = request.getServletPath();
+        if(url.endsWith(".css") || url.endsWith(".js")){
+            modelAndView.setStatus(HttpStatus.NOT_FOUND);
+            return modelAndView;
+        }
+        modelAndView.setStatus(HttpStatus.OK);
+        if(url.contains("/api")){
+            response.setStatus(404);
+            response.setContentType("application/json");
+            final RestResponse<String> restResponse = new RestResponse();
+            restResponse.setCode(404);
+            restResponse.setData(url);
+            restResponse.setMsg("not found");
+            return restResponse;
+        }
+        if(url.replaceAll("/", "").length() <= url.length() -2){
+            for(final String app: WebappFile.SubApps){
+                if(url.startsWith("/"+app.trim().toLowerCase())){
+                    final String forward = "forward:/"+app.trim().toLowerCase()+"/index.html";
+                    modelAndView.setViewName(forward);
+                    return modelAndView;
+                }
+            }
+        }
+        final String forward = "forward:/index.html";
+        modelAndView.setViewName(forward);
+        return modelAndView;
     }
 
 

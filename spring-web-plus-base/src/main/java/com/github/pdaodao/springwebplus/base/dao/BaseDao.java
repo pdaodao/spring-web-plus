@@ -71,6 +71,9 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         }
 
         saveCheck(entity, false);
+        if(entity instanceof WithDelete){
+            ((WithDelete) entity).setIsDeleted(null);
+        }
         return updateById(entity);
     }
 

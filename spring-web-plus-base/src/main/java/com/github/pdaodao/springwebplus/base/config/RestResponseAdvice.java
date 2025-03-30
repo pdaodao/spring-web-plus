@@ -45,6 +45,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
         return false;
     }
 
+
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         final String typename = returnType.getGenericParameterType().getTypeName();

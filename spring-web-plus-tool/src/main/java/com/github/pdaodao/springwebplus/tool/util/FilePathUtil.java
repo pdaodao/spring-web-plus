@@ -76,6 +76,6 @@ public class FilePathUtil {
         if (StrUtil.isBlank(rootPath)) {
             return fullpath;
         }
-        return fullpath.replaceFirst(rootPath, "");
+        return fullpath.replace(rootPath, "");
     }
 }

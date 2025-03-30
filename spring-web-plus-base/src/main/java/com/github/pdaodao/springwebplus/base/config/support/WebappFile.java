@@ -6,6 +6,8 @@ import java.util.Set;
 public class WebappFile {
     public static final Set<String> FileNames = new HashSet<>();
     public static final Set<String> SubApps = new HashSet<>();
+    public static final String[] StaticPrefix = {"/assets", "/public", "/static"};
+
 
     static {
         FileNames.add("static");
