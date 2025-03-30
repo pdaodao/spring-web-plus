@@ -163,12 +163,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations(filePath)
                 .setCacheControl(CacheControl.noStore());
 
-        registry.addResourceHandler(app + "/*.html")
-                .addResourceLocations(filePath)
-                .setCacheControl(CacheControl.noStore());
-
         registry.addResourceHandler(app + "/favicon.ico")
                 .addResourceLocations(filePath)
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
+
+        registry.addResourceHandler(app + "/images/**")
+                .addResourceLocations(filePath + "images/")
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
 
         registry.addResourceHandler(app + "/assets/**")

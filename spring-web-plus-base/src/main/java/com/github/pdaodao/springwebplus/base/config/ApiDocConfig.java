@@ -1,13 +1,20 @@
 package com.github.pdaodao.springwebplus.base.config;
 
+import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
+import io.swagger.v3.core.converter.AnnotatedType;
+import io.swagger.v3.core.converter.ModelConverter;
+import io.swagger.v3.core.converter.ModelConverterContext;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Schema;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Iterator;
 
 @Configuration
 @ConditionalOnProperty(value = "swagger.enabled", havingValue = "true", matchIfMissing = true)
@@ -21,6 +28,19 @@ public class ApiDocConfig implements InitializingBean {
                         .description("接口文档")
                         .version("v1"));
     }
+
+//    @Bean
+//    public ModelConverter modelConverter(){
+//        return new ModelConverter() {
+//            @Override
+//            public Schema resolve(AnnotatedType annotatedType, ModelConverterContext modelConverterContext, Iterator<ModelConverter> iterator) {
+//                if(annotatedType.getType() instanceof Class<?> && annotatedType.getType() == CurrentUserInfo.class){
+//                    return new Schema();
+//                }
+//                return iterator.hasNext() ? iterator.next().resolve(annotatedType, modelConverterContext, iterator) : null;
+//            }
+//        };
+//    }
 
     @Bean
     public GroupedOpenApi curentAppApi() {
