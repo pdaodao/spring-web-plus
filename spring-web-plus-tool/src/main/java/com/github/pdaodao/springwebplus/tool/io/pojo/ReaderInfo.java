@@ -17,6 +17,7 @@ public class ReaderInfo implements HasDbInfo {
     private List<TableColumn> fields;
     private String sql;
     private ConfigOptions options = new ConfigOptions();
+    private CdcSetting cdcSetting;
 
     public ReaderInfo setDbInfo(DbInfo dbInfo) {
         this.dbInfo = dbInfo;

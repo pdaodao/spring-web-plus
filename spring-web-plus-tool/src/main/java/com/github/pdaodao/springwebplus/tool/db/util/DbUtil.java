@@ -14,7 +14,7 @@ import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
-import com.github.pdaodao.springwebplus.tool.io.lang.ReaderWriterLoader;
+import com.github.pdaodao.springwebplus.tool.io.ReaderWriterLoader;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.lang.PluginClassLoaderFactory;

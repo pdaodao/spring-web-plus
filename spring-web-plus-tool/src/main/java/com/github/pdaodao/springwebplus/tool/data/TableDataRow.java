@@ -1,12 +1,14 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 一行数据
@@ -29,6 +31,7 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
         mapRow.putAll(map);
         return mapRow;
     }
+
 
 //    public TableDataRow toStringValue(){
 //        final TableDataRow r = new TableDataRow();
@@ -60,6 +63,58 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
             f.put(StrUtils.toCamelCase(entry.getKey()), entry.getValue());
         }
         return f;
+    }
+
+    public Set<String> keys() {
+        return keySet();
+    }
+
+    public String getString(final String key, final String defaultValue) {
+        final Object v = get(key);
+        if(ObjectUtil.isNull(v)){
+            return defaultValue;
+        }
+        return DataValueUtil.toString(v, null);
+    }
+
+    public Integer getInt(final String key, final Integer defaultValue) {
+        final Object v = get(key);
+        if (ObjectUtil.isNull(v)) {
+            return defaultValue;
+        }
+        return DataValueUtil.toInt(v);
+    }
+
+    public Long getLong(final String key, final Long defaultValue) {
+        final Object v = get(key);
+        if (ObjectUtil.isNull(v)) {
+            return defaultValue;
+        }
+        return DataValueUtil.toLong(v);
+    }
+
+    public Double getDouble(final String key, final Double defaultValue) {
+        final Object v = get(key);
+        if (ObjectUtil.isNull(v)) {
+            return defaultValue;
+        }
+        return DataValueUtil.toDouble(v);
+    }
+
+    public Date getDate(final String key, final Date defaultValue) {
+        final Object v = get(key);
+        if (ObjectUtil.isNull(v)) {
+            return defaultValue;
+        }
+        return DataValueUtil.toDate(v);
+    }
+
+    public Boolean getBoolean(final String key, final Boolean defaultValue) {
+        final Object v = get(key);
+        if (ObjectUtil.isNull(v)) {
+            return defaultValue;
+        }
+        return DataValueUtil.toBoolean(v);
     }
 }
 

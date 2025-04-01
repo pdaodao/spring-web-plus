@@ -153,6 +153,9 @@ public class DataValueUtil {
             return new Date(datetime.atZone(ZoneId.of("Asia/Shanghai")).toInstant().toEpochMilli());
         }
         if(obj instanceof Long){
+            if((long)obj < 1743479428L){
+                return new Date((Long) obj*1000);
+            }
             return new Date((Long) obj);
         }
         return null;

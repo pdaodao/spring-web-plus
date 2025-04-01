@@ -18,7 +18,7 @@ public class OptionMap extends LinkedCaseInsensitiveMap<Object> implements Seria
     public String getString(final String key, final String defaultValue) {
         final Object v = get(key);
         if(ObjectUtil.isNull(v)){
-            return null;
+            return defaultValue;
         }
         if(v instanceof String){
             return StrUtil.trim((String) v);

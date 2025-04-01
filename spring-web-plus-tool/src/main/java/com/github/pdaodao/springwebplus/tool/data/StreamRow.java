@@ -3,12 +3,8 @@ package com.github.pdaodao.springwebplus.tool.data;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.Data;
-
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class StreamRow implements Serializable, Cloneable {
@@ -77,6 +73,13 @@ public class StreamRow implements Serializable, Cloneable {
         return this;
     }
 
+    public Object get(final String name) {
+        if (data != null) {
+            return data.get(name);
+        }
+        return null;
+    }
+
     public Object getField(final String name) {
         if (data != null) {
             return data.get(name);
@@ -134,5 +137,29 @@ public class StreamRow implements Serializable, Cloneable {
             return new LinkedHashSet<>();
         }
         return data.keySet();
+    }
+
+    public String getString(final String key, final String defaultValue) {
+        return data.getString(key, defaultValue);
+    }
+
+    public Integer getInt(final String key, final Integer defaultValue) {
+        return data.getInt(key, defaultValue);
+    }
+
+    public Long getLong(final String key, final Long defaultValue) {
+        return data.getLong(key, defaultValue);
+    }
+
+    public Double getDouble(final String key, final Double defaultValue) {
+        return data.getDouble(key, defaultValue);
+    }
+
+    public Date getDate(final String key, final Date defaultValue) {
+        return data.getDate(key, defaultValue);
+    }
+
+    public Boolean getBoolean(final String key, final Boolean defaultValue) {
+        return data.getBoolean(key, defaultValue);
     }
 }
