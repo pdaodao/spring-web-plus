@@ -52,7 +52,10 @@ public enum DataType {
      * 二进制
      */
     BINARY,
-
+    /**
+     * 地理位置类型
+     */
+    GEOMETRY,
     /**
      * 文件
      */

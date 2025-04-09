@@ -1,7 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
-import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
@@ -21,6 +22,20 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
     }
 
     public TableDataRow() {
+    }
+
+    public Collection<Object> stringList(final String... fields){
+        final List<Object> ret = new ArrayList<>(fields.length);
+        if(ArrayUtil.isEmpty(fields)){
+            for(final Object v: values()){
+                ret.add(DataValueUtil.toString(v, null));
+            }
+            return ret;
+        }
+        for(final String f: fields){
+            ret.add(getString(f, null));
+        }
+        return ret;
     }
 
     public static <T> TableDataRow from(final Map<String, T> map) {

@@ -204,19 +204,19 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         String df = columnInfo.getDefaultValue();
         if (StrUtil.isNotBlank(df)) {
             if (df.equalsIgnoreCase("b'0'")) {
-                df = "0";
+                df = "false";
             }
             if (df.equalsIgnoreCase("b'1'")) {
-                df = "1";
+                df = "true";
             }
-            if ("false".equalsIgnoreCase(df)) {
-                df = "0";
+            if ("0".equalsIgnoreCase(df)) {
+                df = "false";
             }
-            if ("true".equalsIgnoreCase(df)) {
-                df = "1";
+            if ("1".equalsIgnoreCase(df)) {
+                df = "true";
             }
         }
-        return FieldTypeNameWrap.of("tinyint", df);
+        return FieldTypeNameWrap.of("BOOLEAN", df);
     }
 
 
@@ -276,6 +276,9 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         }
         if (dbType.contains("binary") || dbType.contains("blob")) {
             return DataType.BINARY;
+        }
+        if("GEOMETRY".equalsIgnoreCase(dbType)){
+            return DataType.GEOMETRY;
         }
         if (dbType.contains("bigint") || dbType.contains("long")
                 || dbType.contains("serial")

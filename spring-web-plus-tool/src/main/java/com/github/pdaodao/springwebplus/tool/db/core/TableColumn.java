@@ -135,7 +135,7 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
             return true;
         }
         // 默认值不同
-        if (!ObjectUtil.equals(getDefaultValue(), info.getDefaultValue())) {
+        if (!ObjectUtil.equals(getDefaultValue(), info.getDefaultValue()) && DataType.BOOLEAN != info.getDataType()) {
             if(BooleanUtil.isTrue(info.getIsAuto())){
                 return false;
             }

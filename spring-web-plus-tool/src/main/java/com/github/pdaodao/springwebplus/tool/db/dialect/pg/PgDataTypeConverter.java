@@ -44,11 +44,12 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     @Override
     public FieldTypeNameWrap fieldDDLBool(TableColumn columnInfo) {
         final FieldTypeNameWrap ff = super.fieldDDLBool(columnInfo);
-        if(StrUtil.equalsIgnoreCase(columnInfo.getTypeName(), "bool")){
-            ff.setTypeName("bool");
-            return ff;
+        if("1".equals(ff.getColumnDef())){
+            ff.setColumnDef("true");
+        }else{
+            ff.setColumnDef("false");
         }
-        ff.setTypeName("smallint");
+        ff.setTypeName("bool");
         return ff;
     }
 

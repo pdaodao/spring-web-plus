@@ -5,6 +5,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.SqlExecutor;
+import cn.hutool.json.JSONUtil;
 import com.github.pdaodao.springwebplus.tool.data.RowKind;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
@@ -12,6 +13,7 @@ import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.db.handler.JdbcUtils;
 import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.ReaderWriterLoader;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -220,6 +223,31 @@ public class DbUtil {
                 }
             }
             return DriverManager.getConnection(dbInfo.getUrl(), username, password);
+        }
+    }
+
+    /**
+     * 打印结果集
+     *
+     * @param rs
+     */
+    public static void print(final ResultSet rs) {
+        try {
+            ResultSetMetaData rsMeta = rs.getMetaData();
+            int count = rsMeta.getColumnCount();
+            final String[] names = new String[count];
+            for (int i = 1; i <= count; i++) {
+                names[i - 1] = rs.getMetaData().getColumnLabel(i);
+            }
+            while (rs.next()) {
+                final Map<String, Object> map = new HashMap<>();
+                for (int i = 1; i <= count; i++) {
+                    map.put(names[i-1], JdbcUtils.getResultSetValue(rs, i));
+                }
+                System.out.println(JSONUtil.toJsonStr(map));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

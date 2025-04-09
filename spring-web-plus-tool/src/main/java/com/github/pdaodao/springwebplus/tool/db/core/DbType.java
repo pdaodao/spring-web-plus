@@ -16,7 +16,10 @@ public enum DbType {
     Sqlite,
     Sqlserver,
     Kingbase,
-    Dm;
+    Dm,
+    Odps,
+    Duckdb,
+    Sftp;
 
     /**
      * 通过连接url判断类型
