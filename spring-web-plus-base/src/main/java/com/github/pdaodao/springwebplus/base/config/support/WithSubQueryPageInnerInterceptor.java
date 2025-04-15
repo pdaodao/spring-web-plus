@@ -99,7 +99,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
      */
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.holder.get());
+        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.get(true));
         if (page == null || page.getSize() < 0 || !page.searchCount()) {
             return true;
         }
@@ -126,6 +126,9 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
                 total = Long.parseLong(o.toString());
             }
         }
+        if(total <= 0){
+            PageHelper.get(true);
+        }
         page.setTotal(total);
         return continuePage(page);
     }
@@ -134,7 +137,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         final boolean isSubQueryPage = isSubPage(boundSql.getSql());
         // 1. pdaodao 获取分页信息
-        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.holder.get());
+        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.get(false));
         if (null == page || page.getSize() < 1) {
             // 不需要分页 删除该部分
             if (isSubQueryPage) {

@@ -4,6 +4,7 @@
 # Log file
 *.log
 token
+upload
 .token
 # BlueJ files
 *.ctxt

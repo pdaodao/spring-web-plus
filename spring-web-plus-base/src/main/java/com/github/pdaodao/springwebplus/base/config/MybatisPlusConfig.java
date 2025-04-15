@@ -1,13 +1,23 @@
 package com.github.pdaodao.springwebplus.base.config;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.pdaodao.springwebplus.base.config.support.WithSubQueryPageInnerInterceptor;
+import com.github.pdaodao.springwebplus.base.frame.JsonArrayNodeHandler;
+import com.github.pdaodao.springwebplus.base.frame.JsonObjectNodeHandler;
+import com.github.pdaodao.springwebplus.base.frame.PgBoolToIntTypeHandler;
+import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
+import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -47,6 +57,16 @@ public class MybatisPlusConfig {
     @ConditionalOnMissingBean(MetaObjectHandler.class)
     public DbFieldFillHandler fieldFillHandler() {
         return new DbFieldFillHandler();
+    }
+
+    @Bean(name = "plusConfigurationCustomizer")
+    public ConfigurationCustomizer configurationCustomizer() {
+        final ConfigurationCustomizer customizer = configuration -> {
+            final TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+            typeHandlerRegistry.register(ArrayNode.class, new JsonArrayNodeHandler());
+            typeHandlerRegistry.register(ObjectNode.class, new JsonObjectNodeHandler());
+        };
+        return customizer;
     }
 
     @Bean

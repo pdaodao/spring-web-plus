@@ -2,16 +2,16 @@ package com.github.pdaodao.springwebplus.tool.io.csv;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.text.csv.CsvParser;
+import cn.hutool.core.text.csv.CsvReadConfig;
+import cn.hutool.core.text.csv.CsvRow;
+import cn.hutool.core.text.csv.CsvUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-
 import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -27,9 +27,9 @@ public class CsvReader implements Reader {
     private transient List<TableColumn> fields;
     private transient Map<Integer, String> nameMap;
 
-    private transient java.io.Reader reader;
-    private transient CSVParser csvParser;
-    private transient Iterator<CSVRecord> iterator;
+    private transient cn.hutool.core.text.csv.CsvReader reader;
+
+    private transient Iterator<CsvRow> iterator;
 
 
     private long total = 0;
@@ -40,18 +40,19 @@ public class CsvReader implements Reader {
 
     @Override
     public void open() throws Exception {
-        reader = new InputStreamReader(new BufferedInputStream(wrap.inputStream), StandardCharsets.UTF_8);
-        csvParser = new CSVParser(reader, CSVFormat.DEFAULT.builder().setSkipHeaderRecord(firstHead).build());
-        csvParser.iterator();
+        final CsvReadConfig cf = CsvReadConfig.defaultConfig().setContainsHeader(firstHead);
+        reader = CsvUtil.getReader(cf);
+        iterator = reader.iterator();
+
         if (firstHead) {
             int size = 0;
-            for (final String name : csvParser.getHeaderNames()) {
-                final TableColumn ff = new TableColumn();
-                ff.setName(name.trim());
-                ff.setDataType(DataType.STRING);
-                fields.add(ff);
-                nameMap.put(size++, ff.getName());
-            }
+//            for (final String name : csvParser.getHeaderNames()) {
+//                final TableColumn ff = new TableColumn();
+//                ff.setName(name.trim());
+//                ff.setDataType(DataType.STRING);
+//                fields.add(ff);
+//                nameMap.put(size++, ff.getName());
+//            }
         }
         if (MapUtil.isEmpty(nameMap)) {
             for (int i = 0; i < 500; i++) {
@@ -97,13 +98,13 @@ public class CsvReader implements Reader {
         return toRow(iterator.next());
     }
 
-    private StreamRow toRow(final CSVRecord csvRow) {
+    private StreamRow toRow(final CsvRow csvRow) {
         if (csvRow == null) {
             return null;
         }
         final StreamRow row = StreamRow.of(nameMap.size());
         int index = 0;
-        for (final String t : csvRow.values()) {
+        for (final String t : csvRow) {
             final String name = nameMap.get(index++);
             Preconditions.checkNotBlank(name, "第" + total + "行数据,字段个数不一致.");
             row.setField(name, t);
@@ -113,7 +114,6 @@ public class CsvReader implements Reader {
 
     @Override
     public void close() throws Exception {
-        IoUtil.close(csvParser);
         IoUtil.close(reader);
         IoUtil.close(wrap);
     }

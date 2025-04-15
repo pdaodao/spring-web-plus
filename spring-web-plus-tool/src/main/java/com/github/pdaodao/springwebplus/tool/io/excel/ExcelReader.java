@@ -66,7 +66,7 @@ public class ExcelReader implements Reader {
                     f.setSeq(index);
                     f.setFrom("c" + (index++));
                     f.setName(f.getFrom());
-                    f.setTitle(StrUtils.clean(ObjectUtil.toString(v)));
+                    f.setTitle(ObjectUtil.toString(v));
                     this.fields.add(f);
                 }
             }

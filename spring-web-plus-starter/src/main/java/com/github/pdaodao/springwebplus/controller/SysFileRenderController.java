@@ -20,10 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
@@ -40,27 +37,14 @@ public class SysFileRenderController {
 
     @GetMapping("/image/**")
     @Operation(summary = "图片文件显示")
-    public void imgRender(@Parameter(name = "id", description = "文件id") final String id,
-                          final HttpServletRequest httpServletRequest,
+    public void imgRender(final HttpServletRequest httpServletRequest,
+                          @RequestParam(value = "isDown", required = false, defaultValue = "false") Boolean isDown,
                           final HttpServletResponse response) throws Exception {
         final String reqPath = httpServletRequest.getServletPath();
         final String path = reqPath.replaceFirst("/sys/file/image", "");
         final String fileName = FileNameUtil.getName(path);
         try (final InputStreamWrap wrap = fileStorageService.download(path)) {
-            ResponseUtil.writeFile(fileName, wrap.inputStream, response, false, 500);
-        }
-    }
-
-    @GetMapping("/down/**")
-    @Operation(summary = "文件下载")
-    public void imgDown(@Parameter(name = "id", description = "文件id") final String id,
-                          final HttpServletRequest httpServletRequest,
-                          final HttpServletResponse response) throws Exception {
-        final String reqPath = httpServletRequest.getServletPath();
-        final String path = reqPath.replaceFirst("/sys/file/down", "");
-        final String fileName = FileNameUtil.getName(path);
-        try (final InputStreamWrap wrap = fileStorageService.download(path)) {
-            ResponseUtil.writeFile(fileName, wrap.inputStream, response, true, 500);
+            ResponseUtil.writeFile(fileName, wrap.inputStream, response, isDown, 1500);
         }
     }
 

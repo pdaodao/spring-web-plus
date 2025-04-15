@@ -2,16 +2,20 @@ package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.server.MimeMappings;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 public class ResponseUtil {
     public static final int CacheTimeOneDay = 86400;
@@ -78,9 +82,13 @@ public class ResponseUtil {
             if (cacheTime != null) {
                 response.setHeader("Cache-Control", "max-age=" + cacheTime);
             }
-            final String suffix = FileUtil.getSuffix(fileName);
-            if (StringUtils.isNotEmpty(suffix)) {
-                response.setContentType(MimeMappings.DEFAULT.get(suffix.trim().toLowerCase()));
+            if(StrUtil.isNotBlank(fileName)){
+                final Optional<MediaType> mediaType =  MediaTypeFactory.getMediaType(fileName);
+                if(mediaType.isPresent()){
+                    response.setContentType(mediaType.get().getType()+";charset=UTF-8");
+                }else if(fileName.endsWith(".json") || fileName.endsWith(".geojson")){
+                    response.setContentType("application/json;charset=UTF-8");
+                }
             }
         }
         final StringBuilder contentDisposition = new StringBuilder();

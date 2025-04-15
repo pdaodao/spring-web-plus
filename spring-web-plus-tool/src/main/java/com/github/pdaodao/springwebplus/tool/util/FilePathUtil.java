@@ -1,9 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.util;
 
-import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 
 /**
