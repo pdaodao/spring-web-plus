@@ -1,0 +1,33 @@
+package com.github.pdaodao.springwebplus.tool.task;
+
+import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
+import com.github.pdaodao.springwebplus.tool.task.cron.CronSetting;
+import lombok.Data;
+
+@Data
+public class TaskInfo {
+    /**
+     * 任务id
+     */
+    private String taskId;
+
+    /**
+     * 任务类型
+     */
+    private String taskType;
+
+    /**
+     * 定时信息
+     */
+    private CronSetting cronSetting;
+
+    /**
+     * 下次运行时间
+     */
+    private Long nextTime;
+
+    /**
+     * 运行参数
+     */
+    private ConfigOptions params;
+}

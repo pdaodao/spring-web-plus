@@ -11,14 +11,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.pojo.EntityDiffWrap;
-import org.apache.ibatis.ognl.OgnlOps;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

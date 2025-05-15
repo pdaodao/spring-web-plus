@@ -44,7 +44,7 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     @Override
     public FieldTypeNameWrap fieldDDLBool(TableColumn columnInfo) {
         final FieldTypeNameWrap ff = super.fieldDDLBool(columnInfo);
-        if("1".equals(ff.getColumnDef()) || "true".equalsIgnoreCase(ff.getColumnDef())){
+        if(StrUtil.equals("1", ff.getColumnDef()) || "true".equalsIgnoreCase(ff.getColumnDef())){
             ff.setColumnDef("true");
         }else if(StrUtil.isNotBlank(ff.getColumnDef())){
             ff.setColumnDef("false");

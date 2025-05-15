@@ -55,6 +55,9 @@ public class TableIndex implements Serializable, Cloneable {
         return this;
     }
 
+    public boolean isPk(){
+        return "pk".equals(name) || "primarykey".equalsIgnoreCase(name);
+    }
 
     @Override
     protected TableIndex clone() {

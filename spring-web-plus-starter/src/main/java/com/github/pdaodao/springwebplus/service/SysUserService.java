@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.service;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.dao.SysUserDao;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
@@ -9,7 +8,6 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -74,8 +72,6 @@ public class SysUserService {
      * @return
      */
     public boolean updatePassword(final SysUser sysUser) {
-
-
         return true;
     }
 }

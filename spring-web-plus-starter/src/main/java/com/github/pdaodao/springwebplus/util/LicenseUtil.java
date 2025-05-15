@@ -56,7 +56,7 @@ public class LicenseUtil {
                 Preconditions.checkArgument(StrUtil.equalsIgnoreCase(licenseInfo.getMachineId(), id), "invalid machine-id");
             }
             sb.append("\n");
-            if (DateTimeUtil.addDays(new Date(), 5).getTime() > expired) {
+            if (DateTimeUtil.offsetDay(new Date(), 5).getTime() > expired) {
                 sb.append("license will expired at " + DateTimeUtil.formatDate(expired)).append("\n");
             }
             if (current > expired) {
@@ -130,7 +130,7 @@ public class LicenseUtil {
         final LicenseUtil.LicenseInfo info = new LicenseUtil.LicenseInfo();
         info.setMachineId(machineId);
         info.setName(name);
-        info.setExpire(DateTimeUtil.addDays(new Date(), day));
+        info.setExpire(DateTimeUtil.offsetDay(new Date(), day));
         info.setRemark(RandomUtil.randomString(200));
         String json = JsonUtil.toJsonString(info);
         json = encryptPassword(json);

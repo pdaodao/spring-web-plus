@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.PropDesc;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.ClassScanner;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ClassLoaderUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
@@ -24,11 +25,13 @@ import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class EntityScanUtil {
     static final String PlusTableNameClass = "com.baomidou.mybatisplus.annotation.TableName";
     static final String XpTableClass = "javax.persistence.Table";
-
+    private static final Map<String, TableInfo> tableInfoMap = new ConcurrentHashMap<>();
 
     /**
      * 扫描得到实体列表
@@ -36,7 +39,7 @@ public class EntityScanUtil {
      * @return
      */
     public static List<TableInfo> entityList() {
-        final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.github.pdaodao", DaoEntity.class);
+        final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.zjzhd.hami.boot", DaoEntity.class);
         final Set<Class<?>> apps = ClassScanner.scanAllPackageBySuper(SpringUtil.getBootScanPackage(), DaoEntity.class);
         final Set<Class<?>> all = new HashSet<>();
         all.addAll(cls);
@@ -53,6 +56,28 @@ public class EntityScanUtil {
         return list;
     }
 
+    private static TableInfo tableInfo(final Class clazz){
+        Preconditions.checkNotNull(clazz, "tableInfo class is null.");
+        if (ClassUtil.isAbstractOrInterface(clazz)) {
+            return null;
+        }
+        final String key = clazz.getName();
+        TableInfo info = tableInfoMap.get(key);
+        if(info != null){
+            return info.clone();
+        }
+        synchronized (EntityScanUtil.class){
+            info = tableInfoMap.get(key);
+            if(info != null){
+                return info.clone();
+            }
+            final TableInfo tableInfo = doTableInfo(clazz);
+            tableInfoMap.put(key, tableInfo);
+            return tableInfo.clone();
+        }
+    }
+
+
     /**
      * 从类中提取表结构信息
      *
@@ -61,6 +86,29 @@ public class EntityScanUtil {
      * @return
      */
     public static TableInfo toTableInfo(final Class clazz, final boolean ignoreTransient) {
+        if (ClassUtil.isAbstractOrInterface(clazz)) {
+            return null;
+        }
+        if (clazz.isAnnotationPresent(IgnoreTableGen.class)) {
+            return null;
+        }
+        final TableInfo tableInfo = tableInfo(clazz);
+        if(false == ignoreTransient){
+            return tableInfo;
+        }
+        final List<TableColumn> fs = tableInfo.getColumns().stream().filter(t -> !BooleanUtil.isTrue(t.getIsTransient())).collect(Collectors.toList());
+        tableInfo.setColumns(fs);
+        return tableInfo;
+    }
+
+    /**
+     * 从类中提取表结构信息
+     *
+     * @param clazz
+     * @return
+     */
+    private static TableInfo doTableInfo(final Class clazz) {
+        final boolean ignoreTransient = false;
         if (ClassUtil.isAbstractOrInterface(clazz)) {
             return null;
         }
@@ -129,7 +177,10 @@ public class EntityScanUtil {
         // 字段名称
         if (ClassLoaderUtil.isPresent(PlusTableNameClass)) {
             if (MybatisPlusUtil.isFieldIgnore(propDesc.getField())) {
-                return null;
+                ff.setIsTransient(true);
+                if(ignoreTransient){
+                    return null;
+                }
             }
             final String name = MybatisPlusUtil.tableField(propDesc.getField());
             if (StrUtil.isNotBlank(name)) {
@@ -202,14 +253,16 @@ public class EntityScanUtil {
 
         // 字符串类型
         if (propDesc.getFieldClass().equals(String.class)) {
-            ff.setDataType(DataType.STRING);
-            ff.setTypeName("varchar");
+            if(ff.getDataType() == null){
+                ff.setDataType(DataType.STRING);
+                ff.setTypeName("varchar");
+            }
             ff.setLength(50);
             if (propDesc.getFieldName().equals("id")) {
                 ff.setLength(36);
             } else if (maxLength != null && maxLength > 0) {
                 ff.setLength(maxLength);
-                if (maxLength > 1000) {
+                if (maxLength > 1000 && ff.getDataType() == DataType.STRING) {
                     ff.setDataType(DataType.TEXT);
                 }
             } else {
@@ -303,10 +356,21 @@ public class EntityScanUtil {
      * @return
      */
     private static Integer getFieldSize(final PropDesc p, final TableColumn ff) {
+        final ExcelIgnore excelIgnore = p.getField().getAnnotation(ExcelIgnore.class);
+        if(excelIgnore != null && BooleanUtil.isTrue(excelIgnore.value())){
+            ff.setExcelIgnore(true);
+        }
         final TableFieldSize tableFieldSize = p.getField().getAnnotation(TableFieldSize.class);
         if (tableFieldSize != null) {
             if (StrUtil.isNotBlank(tableFieldSize.defaultValue())) {
                 ff.setDefaultValue(tableFieldSize.defaultValue());
+            }
+            if(tableFieldSize.type() != null && tableFieldSize.type() != DataType.UNKNOWN){
+                ff.setDataType(tableFieldSize.type());
+                ff.setTypeName(tableFieldSize.type().name());
+            }
+            if(StrUtil.isNotBlank(tableFieldSize.dic())){
+                ff.setDic(tableFieldSize.dic());
             }
             if (tableFieldSize.value() > 1) {
                 return tableFieldSize.value();

@@ -1,7 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.fs.local;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
 import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
@@ -10,6 +12,8 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 本地文件存储
@@ -30,12 +34,17 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public Boolean exist(String fullPath) {
-        return FileUtil.exist(pathAddRoot(config.getRootPath(), fullPath));
+        return FileUtil.exist(fullPath);
     }
 
     @Override
     public String fileSep() {
         return File.separator;
+    }
+
+    @Override
+    public String fullPath(String path) {
+        return pathAddRoot(config.getRootPath(), path);
     }
 
     @Override
@@ -61,5 +70,23 @@ public class LocalFileStorage implements FileStorage {
     public boolean delete(String fullPath) throws IOException, UnsupportedOperationException {
         final String path = pathAddRoot(config.getRootPath(), fullPath);
         return FileUtil.del(path);
+    }
+
+    @Override
+    public List<FileInfo> listFiles(String path) {
+        final String fullPath = pathAddRoot(config.getRootPath(), path);
+        final List<File> files = FileUtil.loopFiles(FileUtil.file(fullPath), 1, null);
+        if(CollUtil.isEmpty(files)){
+            return null;
+        }
+        final List<FileInfo> ret = new ArrayList<>();
+        for(final File f: files){
+            final FileInfo fileInfo = new FileInfo();
+            fileInfo.setName(f.getName());
+            fileInfo.setPath(FilePathUtil.pathJoin(path, f.getName()));
+            fileInfo.setIsDir(f.isDirectory());
+            ret.add(fileInfo);
+        }
+        return ret;
     }
 }

@@ -37,6 +37,11 @@ public class MinioFileStorage implements FileStorage {
     }
 
     @Override
+    public String fullPath(String path) {
+        return pathAddRoot(config.getRootPath(), path);
+    }
+
+    @Override
     public Boolean exist(String fullPath) {
         try {
             final String path = pathAddRoot(config.getRootPath(), fullPath);

@@ -33,12 +33,20 @@ public class PageHelper implements AutoCloseable {
         return startPage(RequestUtil.getPageParam());
     }
 
+    public static ThreadLocal<Page> getHolder(){
+        return holder;
+    }
+
     public <T> PageResult<T> toPageResult(final List<T> list) {
         final Page page = holder.get();
         if (page == null) {
             return PageResult.of(list);
         }
         return PageResult.build(page.getCurrent(), page.getSize(), page.getTotal(), list);
+    }
+
+    public static void clearHolder(){
+        holder.remove();
     }
 
     @Override

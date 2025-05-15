@@ -104,6 +104,17 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private DataType dataType;
 
+
+    /**
+     * 字典编码
+     */
+    private String dic;
+
+    /**
+     * excel 忽略
+     */
+    private Boolean excelIgnore;
+
     public static TableColumn of(final Column column) {
         final TableColumn r = new TableColumn();
         BeanUtil.copyProperties(column, r);

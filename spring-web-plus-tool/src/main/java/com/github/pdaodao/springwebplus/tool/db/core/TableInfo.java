@@ -11,9 +11,7 @@ import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -114,8 +112,23 @@ public class TableInfo implements Serializable, Cloneable {
                 .map(t -> t.getName()).collect(Collectors.toList());
     }
 
+    public Set<String> pkFieldsOrByIndex(){
+        final Set<String> pkFields = new LinkedHashSet<>();
+        pkFields.addAll(pkColumns());
+        if(CollUtil.isEmpty(pkFields) && CollUtil.isNotEmpty(getIndexList())){
+            for(final TableIndex i: getIndexList()){
+                if(i.isPk() && CollUtil.isNotEmpty(i.getFields())){
+                    pkFields.addAll(i.getFields());
+                }
+            }
+        }
+        return pkFields;
+    }
+
+
+
     @Override
-    protected TableInfo clone() {
+    public TableInfo clone() {
         final TableInfo t = new TableInfo();
         BeanUtil.copyProperties(this, t, "columns", "indexList");
         if (CollUtil.isNotEmpty(columns)) {

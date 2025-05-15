@@ -9,7 +9,7 @@ import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDbDialect;
 public class SqliteDialect extends BaseDbDialect {
     @Override
     public DbType dbType() {
-        return null;
+        return DbType.Sqlite;
     }
 
     @Override

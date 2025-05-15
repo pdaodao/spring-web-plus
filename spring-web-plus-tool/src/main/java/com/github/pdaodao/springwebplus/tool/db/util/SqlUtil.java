@@ -15,10 +15,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -245,6 +242,12 @@ public class SqlUtil {
                 dialect.quoteIdentifier(tableName));
     }
 
+    public static String genTruncateTableSql(final DbDialect dialect, final String tableName) {
+        Preconditions.checkNotBlank(tableName, "table-name is null.");
+        return StrUtil.format("truncate table {}", dialect.quoteIdentifier(tableName));
+    }
+
+
     /**
      * insert into 插入语句
      *
@@ -271,6 +274,39 @@ public class SqlUtil {
                 joinTableColumns(dialect, fs),
                 StrUtil.repeatAndJoin("?", fs.size(), ","));
     }
+
+    public static String genDeleteSql(final DbDialect dialect, final String tableName, final List<TableColumn> fs) {
+        Preconditions.checkNotBlank(tableName, "table name is null.");
+        Preconditions.checkArgument(CollectionUtil.isNotEmpty(fs), "fields info is empty for table {}.", tableName);
+        return StrUtil.format("DELETE FROM {} WHERE {}",
+                dialect.quoteIdentifier(tableName),
+                whereEqualSql(dialect, fs));
+    }
+
+    public static String genDeleteSql(final DbDialect dialect, final String tableName, final Collection<String> fs) {
+        Preconditions.checkNotBlank(tableName, "table name is null.");
+        Preconditions.checkArgument(CollectionUtil.isNotEmpty(fs), "fields info is empty for table {}.", tableName);
+        return StrUtil.format("DELETE FROM {} WHERE {}",
+                dialect.quoteIdentifier(tableName),
+                whereEqualSql(dialect, fs));
+    }
+
+    public static String whereEqualSql(final DbDialect dialect, final List<TableColumn> fs){
+        final List<String> list = new ArrayList<>();
+        for(final TableColumn t: fs){
+            list.add(dialect.quoteIdentifier(t.getName()) + " = ? ");
+        }
+        return StrUtil.join(" AND ", list);
+    }
+
+    public static String whereEqualSql(final DbDialect dialect, final Collection<String> fs){
+        final List<String> list = new ArrayList<>();
+        for(final String t: fs){
+            list.add(dialect.quoteIdentifier(t) + " = ? ");
+        }
+        return StrUtil.join(" AND ", list);
+    }
+
 
     /**
      * 根据主键更新数据

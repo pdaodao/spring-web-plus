@@ -12,16 +12,22 @@ import com.github.pdaodao.springwebplus.tool.data.TableData;
 import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
+import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
+import com.github.pdaodao.springwebplus.tool.db.handler.ConnectionProcessor;
 import com.github.pdaodao.springwebplus.tool.db.handler.JdbcUtils;
 import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.ReaderWriterLoader;
+import com.github.pdaodao.springwebplus.tool.io.lang.CdcBatchData;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
+import com.github.pdaodao.springwebplus.tool.lang.JdbcConnectionProvider;
 import com.github.pdaodao.springwebplus.tool.lang.PluginClassLoaderFactory;
 import com.github.pdaodao.springwebplus.tool.lang.ThreadContextClassLoader;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
+import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -104,7 +110,22 @@ public class DbUtil {
         if (sqlCmd == null || sqlCmd.empty()) {
             return;
         }
-        final Connection connection = dataSource.getConnection();
+        try(final Connection connection = dataSource.getConnection()){
+            executeSqlBlock(connection, sqlCmd);
+        }
+    }
+
+    /**
+     * 在一个事务中执行多条sql语句
+     *
+     * @param connection
+     * @param sqlCmd
+     * @throws Exception
+     */
+    public static void executeSqlBlock(final Connection connection, final SqlCmd sqlCmd) throws Exception {
+        if (sqlCmd == null || sqlCmd.empty()) {
+            return;
+        }
         final boolean auto = connection.getAutoCommit();
         try {
             connection.setAutoCommit(false);
@@ -137,6 +158,8 @@ public class DbUtil {
             connection.close();
         }
     }
+
+
 
     /**
      * 分页语句包装器
@@ -248,6 +271,60 @@ public class DbUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static boolean execute(final JdbcConnectionProvider connectionProvider, final String sql) throws SQLException{
+        try(final Connection connection = connectionProvider.getConnection()){
+            return connection.prepareStatement(sql).execute();
+        }
+    }
+
+    public static void executeBatch(final JdbcConnectionProvider connectionProvider,
+                                    final CdcBatchData batchData, final TableInfo tableInfo) throws SQLException{
+        try(final Connection connection = connectionProvider.getConnection()){
+            executeBatch(connection, connectionProvider.getDialect(), batchData, tableInfo);
+        }
+    }
+
+    public static void executeBatch(final Connection connection, final DbDialect dbDialect, final CdcBatchData batchData,
+                              final TableInfo tableInfo) throws SQLException{
+        if(batchData == null){
+            return;
+        }
+        Preconditions.checkNotNull(tableInfo, "table info is null.");
+        if(CollUtil.isNotEmpty(batchData.getInserts())){
+            final String sql = SqlUtil.genInsertIntoSql(dbDialect, tableInfo.getName(), tableInfo.getColumns());
+            final PreparedStatement insertPs = connection.prepareStatement(sql);
+            for(final StreamRow row: batchData.getInserts()){
+                int i = 1;
+                for (final TableColumn t : tableInfo.getColumns()) {
+                    Object value = row.getFieldAs(t.getFrom());
+                    value = DataValueUtil.toAs(value, t.getDataType());
+                    insertPs.setObject(i++, value);
+                }
+                insertPs.addBatch();
+            }
+            insertPs.executeBatch();
+            insertPs.close();
+        }
+        if(CollUtil.isNotEmpty(batchData.getUpdates())){
+
+        }
+        if(CollUtil.isNotEmpty(batchData.getDeletes())){
+            final String sql = SqlUtil.genDeleteSql(dbDialect, tableInfo.getName(), tableInfo.getColumns());
+            final PreparedStatement ps = connection.prepareStatement(sql);
+            for(final StreamRow row: batchData.getInserts()){
+                int i = 1;
+                for (final TableColumn t : tableInfo.getColumns()) {
+                    Object value = row.getFieldAs(t.getFrom());
+                    value = DataValueUtil.toAs(value, t.getDataType());
+                    ps.setObject(i++, value);
+                }
+                ps.addBatch();
+            }
+            ps.executeBatch();
+            ps.close();
         }
     }
 }

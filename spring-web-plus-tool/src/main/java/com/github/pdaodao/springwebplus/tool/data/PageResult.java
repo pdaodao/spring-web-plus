@@ -31,7 +31,7 @@ public class PageResult<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Map<String, Object> ext;
 
-    public static <T> PageResult<T> build(Long pageNum, Long pageSize, Long total, List<T> data) {
+    public static <T> PageResult<T> build(Long pageNum, Long pageSize, Long total, Collection<T> data) {
         final PageResult pageR = new PageResult();
         pageR.setList(data);
         if(pageSize != null && pageSize >= 0){
@@ -44,7 +44,7 @@ public class PageResult<T> {
         return pageR;
     }
 
-    public static <T> PageResult<T> of(List<T> data) {
+    public static <T> PageResult<T> of(Collection<T> data) {
         final PageResult pageR = new PageResult();
         pageR.setList(data);
         return pageR;

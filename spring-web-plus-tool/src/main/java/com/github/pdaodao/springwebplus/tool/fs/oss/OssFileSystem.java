@@ -44,6 +44,11 @@ public class OssFileSystem implements FileStorage {
     }
 
     @Override
+    public String fullPath(String path) {
+        return pathAddRoot(ossConfig.getRootPath(), path);
+    }
+
+    @Override
     public Boolean exist(final String fullPath) {
         final String path = pathAddRoot(ossConfig.getRootPath(), fullPath);
         return oss.doesObjectExist(ossConfig.getBucketName(), path);

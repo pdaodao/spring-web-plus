@@ -1,0 +1,88 @@
+package com.github.pdaodao.springwebplus.tool.task;
+
+import cn.hutool.core.collection.CollUtil;
+import com.github.pdaodao.springwebplus.tool.task.core.TaskRingThread;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 任务定时调度器
+ */
+@Slf4j
+public class TaskTimer extends Thread{
+    private final TaskInfoLoader loader;
+    private final TaskRingThread ringThread;
+    private volatile boolean isRunning = true;
+    public static final int tick = 1 * 1000;
+
+    public TaskTimer(final TaskExecutorFactory executorFactory, final TaskInfoLoader loader) {
+        this.loader = loader;
+        Preconditions.checkNotNull(executorFactory, "TaskExecutorFactory is null.");
+        Preconditions.checkNotNull(loader, "TaskInfoLoader is null.");
+        ringThread = new TaskRingThread(executorFactory);
+        setName("PlusTaskTimer");
+    }
+
+    @Override
+    public void run() {
+        ringThread.start();
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000 - System.currentTimeMillis() % 1000);
+        } catch (Exception e) {
+        }
+        while (isRunning){
+            try{
+                scan();
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * 扫描任务并调度
+     * @throws Exception
+     */
+    private void scan() throws Exception{
+        final long nowTime = DateTimeUtil.currentTimeMillis();
+        final long upTime = nowTime + 60000 - 200;
+        try{
+            final List<TaskInfo> taskList = loader.load();
+            final List<TaskInfo> toUpdateList = new ArrayList<>();
+            if(CollUtil.isNotEmpty(taskList)){
+                for(final TaskInfo t: taskList){
+                    if(t.getNextTime() == null){
+                        continue;
+                    }
+                    if(t.getNextTime() <= upTime){
+                        ringThread.addToRing(t, t.getNextTime());
+                        toUpdateList.add(t);
+                    }
+                }
+            }
+            for(final TaskInfo t: toUpdateList){
+                if(t.getNextTime() == null){
+                    continue;
+                }
+                final Date next = CronUtil.nextTime(t.getCronSetting(), new Date(t.getNextTime()));
+                if(next == null){
+                    t.setNextTime(null);
+                }else{
+                    t.setNextTime(next.getTime());
+                }
+                loader.updateCronInfo(t);
+            }
+        }finally {
+            final long t2 = DateTimeUtil.currentTimeMillis();
+            if(t2 - nowTime < tick ){
+                TimeUnit.MILLISECONDS.sleep(tick - System.currentTimeMillis() % tick);
+            }
+        }
+    }
+}

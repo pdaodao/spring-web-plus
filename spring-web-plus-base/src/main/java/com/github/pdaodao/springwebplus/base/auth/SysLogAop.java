@@ -60,7 +60,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @EnableConfigurationProperties(LogAopProperties.class)
 @ConditionalOnProperty(name = "log-aop.enable", havingValue = "true", matchIfMissing = true)
-
 public class SysLogAop {
     public static ThreadLocal<SysLog> LOG = new ThreadLocal<>();
     private static Map<String, LogType> methodLogType = new ConcurrentHashMap<>();
@@ -70,6 +69,19 @@ public class SysLogAop {
 
     @Autowired(required = false)
     private SysLogListener sysLogListener;
+
+    /**
+     * 获取当前日志
+     * @return
+     */
+    public static SysLog getLog(){
+        SysLog sysLog = LOG.get();
+        if(sysLog == null){
+            sysLog = new SysLog();
+            LOG.set(sysLog);
+        }
+        return sysLog;
+    }
 
     @Around("@annotation(operation)")
     public Object apiLogAround(final ProceedingJoinPoint point, final Operation operation) throws Throwable {
@@ -114,6 +126,7 @@ public class SysLogAop {
         // 系统日志
         final SysLog sysLog = new SysLog();
         sysLog.setSuccess(true);
+        final String requestMethod = request.getMethod();
         // 将日志保存到当前线程中
         LOG.set(sysLog);
         try {
@@ -129,7 +142,7 @@ public class SysLogAop {
             handleIpArea(sysLog);
 
             // 处理方法上的注解
-            handleAnnotation(joinPoint, sysLog, operation);
+            handleAnnotation(joinPoint, sysLog, operation, requestMethod);
             // 处理请求参数
             final String params = handleRequestParam(joinPoint, method, sysLog);
             sysLog.setParams(StrUtils.cut(params, 300));
@@ -254,14 +267,15 @@ public class SysLogAop {
      * @param point
      * @param sysLog
      */
-    private void handleAnnotation(final ProceedingJoinPoint point, final SysLog sysLog, final Operation operation) {
+    private void handleAnnotation(final ProceedingJoinPoint point, final SysLog sysLog,
+                                  final Operation operation, final String requestMethod) {
         sysLog.setOperation(operation.summary());
         final String className = point.getTarget().getClass().getSimpleName();
         // 获取模块
         final String moduleName = getModuleName(className, point);
         sysLog.setModule(moduleName);
         // 操作类型
-        final LogType logType = parseLogType(className + ":" + moduleName + ":" + getMethodName(point), point, sysLog.getPath());
+        final LogType logType = parseLogType(className + ":" + moduleName + ":" + getMethodName(point), point, sysLog.getPath(), requestMethod);
         sysLog.setLogType(logType);
     }
 
@@ -336,7 +350,7 @@ public class SysLogAop {
      */
     private String handleUserAgent(HttpServletRequest request, SysLog sysLog) {
         // 用户环境
-        String userAgentString = request.getHeader("USER_AGENT");
+        final String userAgentString = request.getHeader("USER_AGENT");
         sysLog.setUserAgent(userAgentString);
         UserAgent userAgent;
         try {
@@ -385,7 +399,8 @@ public class SysLogAop {
     /**
      * 日志类型
      */
-    private LogType parseLogType(final String key, final ProceedingJoinPoint point, final String url) {
+    private LogType parseLogType(final String key, final ProceedingJoinPoint point,
+                                 final String url, final String requestMethod) {
         LogType logType = methodLogType.get(key);
         if (logType != null) {
             return logType;
@@ -404,6 +419,19 @@ public class SysLogAop {
             logType = LogType.EXCELDOWN;
         }else if(lowerCase.contains("detail") || lowerCase.contains("info") || lowerCase.contains("getById")){
             logType = LogType.DETAIL;
+        }else if(lowerCase.contains("/login")){
+            logType = LogType.LOGIN;
+        }else if(lowerCase.contains("/logout")){
+            logType = LogType.LOGOUT;
+        }else if(lowerCase.contains("excel")){
+            if(StrUtil.equalsIgnoreCase(requestMethod, "get")){
+                logType = LogType.EXCELDOWN;
+            }else{
+                logType = LogType.EXCELUPLOAD;
+            }
+        }
+        if(logType == null){
+            logType = LogType.QUERY;
         }
         if (logType != null) {
             methodLogType.put(key, logType);

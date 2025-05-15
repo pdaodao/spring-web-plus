@@ -9,8 +9,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public interface FileStorage {
+    ThreadLocal<Boolean> isOverwrite = new ThreadLocal<>();
+
+    static void setOverwrite(){
+        isOverwrite.set(true);
+    }
+
+    static void clearHolder(){
+        isOverwrite.remove();
+    }
+
+    /**
+     * 全路径
+     * @param path
+     * @return
+     */
+    String fullPath(final String path);
 
     default String pathJoin(String... paths){
         return FilePathUtil.join(fileSep(), paths);
@@ -114,4 +131,14 @@ public interface FileStorage {
      * @throws UnsupportedOperationException 当目标文件系统不支持删除文件操作时抛出
      */
     boolean delete(String fullPath) throws IOException, UnsupportedOperationException;
+
+    /**
+     * 列出路径下的目录和文件
+     *
+     * @param path 文件相对路径
+     * @return 目录和文件列表
+     */
+    default List<FileInfo> listFiles(String path){
+        return null;
+    }
 }

@@ -1,7 +1,10 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.json.JSONUtil;
+import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.*;
@@ -62,6 +65,21 @@ public class StreamRow implements Serializable, Cloneable {
     public StreamRow setKind(RowKind kind) {
         this.kind = kind;
         return this;
+    }
+
+    public String pkValueString(final Set<String> pks){
+        if(CollUtil.isEmpty(pks)){
+            return null;
+        }
+        final TableDataRow r = before != null ? before : data;
+        final StringBuilder sb = new StringBuilder();
+        for(final String t: pks){
+            if(!sb.isEmpty()){
+                sb.append("-");
+            }
+            sb.append(r.getString(t, null));
+        }
+        return sb.toString();
     }
 
     public String getTag() {

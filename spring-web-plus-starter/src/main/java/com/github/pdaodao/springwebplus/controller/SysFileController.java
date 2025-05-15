@@ -12,10 +12,14 @@ import com.github.pdaodao.springwebplus.dao.SysFileDao;
 import com.github.pdaodao.springwebplus.entity.SysFile;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
+import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
+import com.github.pdaodao.springwebplus.tool.fs.local.LocalFileStorage;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.Constant;
+import com.github.pdaodao.springwebplus.util.FileUploadUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -28,6 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -41,57 +49,85 @@ public class SysFileController {
 
     @PostMapping("upload")
     @Operation(summary = "文件上传")
-    @Parameters({
-            @Parameter(name = "file", description = "文件", in = ParameterIn.DEFAULT, required = true,
-                    schema = @Schema(name = "file", format = "binary")),
-            @Parameter(name = "namespace", description = "用途编码"),
-            @Parameter(name = "objId", description = "objId", required = false)
-    })
+    @Parameters({@Parameter(name = "file", description = "文件", in = ParameterIn.DEFAULT, required = true,
+                    schema = @Schema(name = "file", format = "binary"))})
     public FileInfo upload(@RequestParam("file") final MultipartFile file,
-                           @RequestParam("namespace") String namespace,
-                           @RequestParam(required = false) String objId) throws Exception {
+                           @Parameter(name = "namespace", description = "用途编码") @RequestParam("namespace") String namespace,
+                           @Parameter(name = "objId", description = "objId", required = false) @RequestParam(required = false) String objId) throws Exception {
         UploadCheckUtil.checkSize(file, 500);
-        namespace = FileNameUtil.cleanInvalid(namespace);
-        final FileInfo fileInfo = fileStorageService.upload(namespace, file);
-        fileInfo.setNamespace(namespace);
-        fileInfo.setObjId(objId);
-        sysFileDao.saveInfo(fileInfo);
-        fileInfo.setPath(buildFileHttpPath(fileInfo.getPath()));
+        final FileInfo fileInfo = FileUploadUtil.uploadSaveInfo(file, namespace, null);
+        fileInfo.setPath(FileUploadUtil.buildFileHttpPath(fileInfo.getPath()));
         return fileInfo;
+    }
+
+    @Operation(summary = "分片上传")
+    @PostMapping(value = "upload-sharding")
+    @Parameters({@Parameter(name = "file", description = "文件", in = ParameterIn.DEFAULT, required = true,
+            schema = @Schema(name = "file", format = "binary"))})
+    public FileInfo uploadSharding(final MultipartFile file,
+                                   @Parameter(description = "总分片数") final Integer totalChunks,
+                                   @Parameter(description = "当前分片序号从1开始") final Integer chunkNumber,
+                                   @Parameter(description = "文件md5") final String fileSumMd5,
+                                   @Parameter(description = "namespace") String namespace) throws Exception {
+        final String fileName = FileNameUtil.cleanInvalid(file.getOriginalFilename());
+        final String basePath = DateTimeUtil.formatDate(DateTimeUtil.now())+"/"+fileSumMd5;
+        FileStorage.setOverwrite();
+        final LocalFileStorage tempFs = FileUploadUtil.tempFileStorage();
+        try(final InputStream inputStream = file.getInputStream()){
+            final String path = tempFs.upload(basePath, fileName + "."+chunkNumber, inputStream);
+            if(chunkNumber < totalChunks){
+                final FileInfo fileInfo = new FileInfo();
+                fileInfo.setName(namespace);
+                fileInfo.setPath(path);
+                fileInfo.setSize(file.getSize());
+                return fileInfo;
+            }
+        }
+        // 合并
+        if(chunkNumber == totalChunks){
+            final String resultFilePath = FilePathUtil.pathJoin(basePath, fileName);
+            final String resultFileFullPath = tempFs.fullPath(resultFilePath);
+            final File outputFile = new File(resultFileFullPath);
+            final long fileSize = outputFile.length();
+            try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFile))) {
+                for (int i = 1; i <= totalChunks; i++) {
+                    final Path tempFile = Paths.get(tempFs.fullPath(FilePathUtil.pathJoin(basePath, fileName+"."+i)));
+                    Files.copy(tempFile, out);
+                }
+            }
+            FileStorage.clearHolder();
+            // 保存到目标
+            namespace = cn.hutool.core.io.FileUtil.cleanInvalid(namespace).trim();
+            try(final InputStreamWrap wrap = tempFs.download(resultFilePath)){
+                final String path = fileStorageService.upload(namespace, fileName, wrap.inputStream);
+                final FileInfo fileInfo = new FileInfo();
+                fileInfo.setName(namespace);
+                fileInfo.setPath(FileUploadUtil.buildFileHttpPath(path));
+                fileInfo.setSize(fileSize);
+                tempFs.delete(basePath);
+                return fileInfo;
+            }
+        }
+        return new FileInfo();
     }
 
     @PostMapping("img")
     @Operation(summary = "图片上传")
-    @Parameters({
-            @Parameter(name = "file", description = "文件", in = ParameterIn.DEFAULT, required = true,
-                    schema = @Schema(name = "file", format = "binary")),
-            @Parameter(name = "namespace", description = "用途编码", required = false),
-            @Parameter(name = "objId", description = "objId")
-    })
+    @Parameters({@Parameter(name = "file", description = "文件", in = ParameterIn.DEFAULT, required = true,
+                    schema = @Schema(name = "file", format = "binary"))})
     public FileInfo uploadImg(@RequestParam("file") final MultipartFile file,
-                              @RequestParam("namespace") String namespace,
-                              @RequestParam(required = false) String objId) throws Exception {
+                              @Parameter(name = "namespace", description = "用途编码") @RequestParam(value = "namespace") String namespace,
+                              @Parameter(name = "objId", description = "objId") @RequestParam(required = false) String objId) throws Exception {
         UploadCheckUtil.checkIsImage(file);
-        UploadCheckUtil.checkSize(file, 30);
-        namespace = FileNameUtil.cleanInvalid(namespace);
-        final FileInfo fileInfo = fileStorageService.upload(namespace, file);
-        fileInfo.setNamespace(namespace);
-        fileInfo.setObjId(objId);
-        sysFileDao.saveInfo(fileInfo);
-        fileInfo.setPath(buildFileHttpPath(fileInfo.getPath()));
+        final FileInfo fileInfo = FileUploadUtil.uploadSaveInfo(file, namespace, 50);
+        fileInfo.setPath(FileUploadUtil.buildFileHttpPath(fileInfo.getPath()));
         return fileInfo;
     }
 
     @GetMapping("list")
     @Operation(summary = "文件列表")
     public PageResult<SysFile> list(@RequestParam("namespace") String namespace, final PageRequestParam pageRequestParam) throws Exception {
-        try(final PageHelper ph = PageHelper.startPage(pageRequestParam)){
-            final List<SysFile> list = sysFileDao.byNamespace(namespace, null);
-            for(final SysFile f: list){
-                f.setPath(buildFileHttpPath(f.getPath()));
-            }
-            return ph.toPageResult(list);
-        }
+        return FileUploadUtil.sysFileList(namespace, pageRequestParam);
     }
 
     @GetMapping("download")
@@ -114,22 +150,5 @@ public class SysFileController {
         try (final InputStreamWrap wrap = fileStorageService.download(sysFile.getPath())) {
             ResponseUtil.writeFile(sysFile.getName(), wrap.inputStream, response, false, 500);
         }
-    }
-
-    /**
-     * 构建前端文件请求路径
-     *
-     * @param path
-     * @return
-     */
-    private static String buildFileHttpPath(final String path) {
-        if(path == null){
-            return null;
-        }
-        String type = "image";
-        if(StrUtil.equals(FileNameUtil.getSuffix(path), "mp4")){
-            type = "video";
-        }
-        return FilePathUtil.join("/", SpringUtil.getContextPath(), "/sys/file/"+type, path);
     }
 }

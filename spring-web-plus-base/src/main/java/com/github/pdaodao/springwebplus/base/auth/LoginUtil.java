@@ -208,12 +208,12 @@ public class LoginUtil {
         final Long now = System.currentTimeMillis();
         final SysConfigProperties sysConfig = sysConfig();
         if(sysConfig.getAuthExpire() > 3){
-            if(DateTimeUtil.addMinutes(tokenInfo.getLoginTime(), sysConfig.getAuthExpire()).getTime() < now){
+            if(DateTimeUtil.offsetMinute(tokenInfo.getLoginTime(), sysConfig.getAuthExpire()).getTime() < now){
                 return true;
             }
         }
         if(tokenInfo.getLastAccessTime() != null && sysConfig.getAuthActive() > 3){
-            if(DateTimeUtil.addMinutes(tokenInfo.getLastAccessTime(), sysConfig.getAuthActive()).getTime() < now){
+            if(DateTimeUtil.offsetMinute(tokenInfo.getLastAccessTime(), sysConfig.getAuthActive()).getTime() < now){
                 return true;
             }
         }

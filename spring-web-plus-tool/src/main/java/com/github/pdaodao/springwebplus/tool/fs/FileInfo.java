@@ -15,6 +15,7 @@ public class FileInfo {
 
     private String contentType;
     private Long size;
+    private Boolean isDir;
     private transient String readableSize;
     private String objId;
     protected Date createTime;

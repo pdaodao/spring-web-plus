@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.format.FastDateFormat;
 import cn.hutool.core.util.StrUtil;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -89,19 +88,31 @@ public class DateTimeUtil {
         return DATE_FORMATTER_SLASH.format(date);
     }
 
-    public static String formatDateTime(Date date) {
+    public static String formatDateTime(final Date date) {
+        if(date == null){
+            return StrUtil.EMPTY;
+        }
         return DATE_TIME_FORMATTER.format(date);
     }
 
-    public static String formatDateTimeSlash(Date date) {
+    public static String formatDateTimeSlash(final Date date) {
+        if(date == null){
+            return StrUtil.EMPTY;
+        }
         return DATE_TIME_FORMATTER_SLASH.format(date);
     }
 
     public static String formatDateTime(Long date) {
+        if(date == null){
+            return StrUtil.EMPTY;
+        }
         return DATE_TIME_FORMATTER.format(date);
     }
 
     public static String formatDateTimeSlash(Long date) {
+        if(date == null){
+            return StrUtil.EMPTY;
+        }
         return DATE_TIME_FORMATTER_SLASH.format(date);
     }
 
@@ -164,16 +175,20 @@ public class DateTimeUtil {
         return sb.toString();
     }
 
-    public static final Date addDays(Date aDate, int days) {
-        Calendar cal = Calendar.getInstance();
-
-        cal.setTime(aDate);
-        cal.add(Calendar.DATE, days);
-        return cal.getTime();
+    public static final Date offsetSecond(Date aDate, int seconds) {
+        return DateUtil.offsetSecond(aDate, seconds).toJdkDate();
     }
 
-    public static final Date addMinutes(Date aDate, int minutes) {
+    public static final Date offsetMinute(Date aDate, int minutes) {
         return DateUtil.offsetMinute(aDate, minutes).toJdkDate();
+    }
+
+    public static final Date offsetHour(Date aDate, int hour) {
+        return DateUtil.offsetHour(aDate, hour).toJdkDate();
+    }
+
+    public static final Date offsetDay(Date aDate, int days) {
+        return DateUtil.offsetDay(aDate, days).toJdkDate();
     }
 
     public static final Date beginOfDay(final Date aDate) {

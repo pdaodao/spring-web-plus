@@ -1,9 +1,11 @@
 package com.github.pdaodao.springwebplus.base.config;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pdaodao.springwebplus.base.frame.AppCustomConfig;
 import com.github.pdaodao.springwebplus.base.pojo.IResponse;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
+import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -73,7 +76,14 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
             } else if (body instanceof PageResult<?>) {
                 restResponse = RestResponse.pageResult((PageResult) body);
             } else {
-                restResponse = RestResponse.success(body);
+                final ThreadLocal<Page> pageThreadLocal = PageHelper.getHolder();
+                final Page p = pageThreadLocal.get();
+                if(p != null && body instanceof Collection<?>){
+                    final PageResult pageResult = PageResult.build(p.getCurrent(), p.getSize(), p.getTotal(), (Collection)body);
+                    restResponse = RestResponse.pageResult(pageResult);
+                }else{
+                    restResponse = RestResponse.success(body);
+                }
             }
         }
         if (restResponse instanceof RestResponse) {
