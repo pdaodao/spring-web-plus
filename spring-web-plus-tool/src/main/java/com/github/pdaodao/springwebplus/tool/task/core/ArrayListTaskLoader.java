@@ -4,14 +4,14 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
 import com.github.pdaodao.springwebplus.tool.task.TaskInfo;
-import com.github.pdaodao.springwebplus.tool.task.TaskInfoLoader;
+import com.github.pdaodao.springwebplus.tool.task.TaskLoader;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ArrayListTaskInfoLoader implements TaskInfoLoader {
+public class ArrayListTaskLoader implements TaskLoader {
     private final List<TaskInfo> list = new ArrayList<>();
 
 

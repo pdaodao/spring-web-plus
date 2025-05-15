@@ -1,13 +1,11 @@
 package com.github.pdaodao.springwebplus.tool.task.core;
 
 import cn.hutool.core.collection.CollUtil;
-import com.github.pdaodao.springwebplus.tool.task.TaskExecutor;
-import com.github.pdaodao.springwebplus.tool.task.TaskExecutorFactory;
+import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
 import com.github.pdaodao.springwebplus.tool.task.TaskInfo;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +21,9 @@ public class TaskRingThread extends Thread{
     // 精确到100毫秒 调度任务
     private Map<Integer, List<TaskInfo>> ringData = new ConcurrentHashMap<>();
 
-    private final TaskExecutorFactory executorFactory;
+    private final TaskFactory executorFactory;
 
-    public TaskRingThread(final TaskExecutorFactory factory){
+    public TaskRingThread(final TaskFactory factory){
         executorFactory = factory;
         setName("PlusTaskRingThread");
     }
@@ -110,18 +108,22 @@ public class TaskRingThread extends Thread{
 
     public static class TriggerTaskRunnable implements TaskRunnable {
         private final TaskInfo taskInfo;
-        private final TaskExecutorFactory executorFactory;
+        private final TaskFactory executorFactory;
 
-        public TriggerTaskRunnable(TaskInfo taskInfo, TaskExecutorFactory executorFactory) {
+        public TriggerTaskRunnable(TaskInfo taskInfo, TaskFactory executorFactory) {
             this.taskInfo = taskInfo;
             this.executorFactory = executorFactory;
         }
 
         @Override
+        public String getId() {
+            return "Trigger-"+taskInfo.getTaskId();
+        }
+
+        @Override
         public void execute() throws Exception {
             try{
-                final TaskExecutor taskExecutor = executorFactory.executor(taskInfo);
-                taskExecutor.setId(executorFactory.getClass().getSimpleName()+"-"+taskExecutor.getId());
+                final TaskRunnable taskExecutor = executorFactory.executor(taskInfo);
                 Preconditions.checkNotNull(taskExecutor, "TaskExecutor is null by task-info");
                 TaskThreadPoolFactory.ofBig().execute(taskExecutor);
             }catch (Exception e){

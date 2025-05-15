@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class TaskTimer extends Thread{
-    private final TaskInfoLoader loader;
+    private final TaskLoader loader;
     private final TaskRingThread ringThread;
     private volatile boolean isRunning = true;
     public static final int tick = 1 * 1000;
 
-    public TaskTimer(final TaskExecutorFactory executorFactory, final TaskInfoLoader loader) {
+    public TaskTimer(final TaskFactory executorFactory, final TaskLoader loader) {
         this.loader = loader;
         Preconditions.checkNotNull(executorFactory, "TaskExecutorFactory is null.");
         Preconditions.checkNotNull(loader, "TaskInfoLoader is null.");

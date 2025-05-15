@@ -1,6 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.task.core;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class TaskThreadPoolFactory {
@@ -11,6 +14,8 @@ public class TaskThreadPoolFactory {
 
     private static TaskThreadPool big;
     private static TaskThreadPool small;
+
+    public static final Map<String, TaskFuture> taskFutureMap = new ConcurrentHashMap<>();
 
     public static synchronized TaskThreadPool ofBig(){
         if(big == null){
@@ -36,6 +41,21 @@ public class TaskThreadPoolFactory {
         }
         if(big != null){
             big.shutdown();
+        }
+    }
+
+
+    public static void put(final String id, final TaskFuture taskExecutor){
+        if(StrUtil.isBlank(id) || taskExecutor == null){
+            return;
+        }
+       // Preconditions.assertTrue(taskMap.containsKey(id), "duplicated task to run.");
+        taskFutureMap.put(id, taskExecutor);
+    }
+
+    public static void remove(final String id){
+        if(StrUtil.isNotBlank(id)){
+            taskFutureMap.remove(id);
         }
     }
 }

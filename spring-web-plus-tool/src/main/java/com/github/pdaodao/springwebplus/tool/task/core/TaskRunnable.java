@@ -2,6 +2,12 @@ package com.github.pdaodao.springwebplus.tool.task.core;
 
 public interface TaskRunnable {
     /**
+     * 获取任务id
+     * @return
+     */
+    String getId();
+
+    /**
      * 任务运行开始 通知
      */
     default void start(){}

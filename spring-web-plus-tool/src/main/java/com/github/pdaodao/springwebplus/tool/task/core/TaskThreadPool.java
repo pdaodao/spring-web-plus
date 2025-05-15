@@ -1,21 +1,15 @@
 package com.github.pdaodao.springwebplus.tool.task.core;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.task.TaskExecutor;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 /**
  * 任务执行线程池 所有的任务线程由这里提供
  */
 public class TaskThreadPool {
-    public final Map<String, TaskExecutor> taskMap = new ConcurrentHashMap<>();
-
     public ExecutorService taskExecutor;
 
     public TaskThreadPool(int corePoolSize, int maxPoolSize) {
@@ -30,18 +24,26 @@ public class TaskThreadPool {
      * @param taskRunnable
      * @return
      */
-    public Future execute(final TaskRunnable taskRunnable){
+    public TaskFuture execute(final TaskRunnable taskRunnable){
         Preconditions.checkNotNull(taskRunnable, "TaskExecutorCenter Runnable task is null.");
-        return taskExecutor.submit(() -> {
-            final long t1 = DateTimeUtil.currentTimeMillis();
+        final TaskFuture taskFuture = TaskFuture.of(taskRunnable);
+        TaskThreadPoolFactory.put(taskRunnable.getId(), taskFuture);
+        final Future future = taskExecutor.submit(() -> {
             try{
                 taskRunnable.start();
                 taskRunnable.execute();
-                taskRunnable.end(null, DateTimeUtil.currentTimeMillis() - t1);
+                taskFuture.setEndExecuteTime(DateTimeUtil.currentTimeMillis());
+                taskRunnable.end(null, taskFuture.getEndExecuteTime() - taskFuture.getStartExecuteTime());
             }catch (Exception e){
-                taskRunnable.end(e, DateTimeUtil.currentTimeMillis() - t1);
+                taskFuture.setEndExecuteTime(DateTimeUtil.currentTimeMillis());
+                taskFuture.setException(e);
+                taskRunnable.end(null, taskFuture.getEndExecuteTime() - taskFuture.getStartExecuteTime());
+            }finally {
+                TaskThreadPoolFactory.remove(taskRunnable.getId());
             }
         });
+        taskFuture.setFuture(future);
+        return  taskFuture;
     }
 
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException{
@@ -54,17 +56,5 @@ public class TaskThreadPool {
 
     public List<Runnable> shutdownNow(){
         return taskExecutor.shutdownNow();
-    }
-
-    public void put(final String id, final TaskExecutor taskExecutor){
-        if(StrUtil.isBlank(id) || taskExecutor == null){
-            return;
-        }
-        Preconditions.assertTrue(taskMap.containsKey(id), "duplicated task to run.");
-        taskMap.put(id, taskExecutor);
-    }
-
-    public void remove(final String id){
-        taskMap.remove(id);
     }
 }
