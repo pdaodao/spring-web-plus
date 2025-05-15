@@ -53,6 +53,13 @@ public class TaskThreadPoolFactory {
         taskFutureMap.put(id, taskExecutor);
     }
 
+    public static TaskFuture get(final String id){
+        if(StrUtil.isBlank(id)){
+            return null;
+        }
+        return taskFutureMap.get(id);
+    }
+
     public static void remove(final String id){
         if(StrUtil.isNotBlank(id)){
             taskFutureMap.remove(id);
