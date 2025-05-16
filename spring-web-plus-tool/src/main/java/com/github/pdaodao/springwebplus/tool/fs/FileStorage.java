@@ -82,10 +82,10 @@ public interface FileStorage {
     /**
      * 文件是否存在
      *
-     * @param fullPath 文件全路径
+     * @param relativePath 文件相对路径
      * @return
      */
-    Boolean exist(String fullPath);
+    Boolean exist(final String relativePath);
 
 
     /**
@@ -116,29 +116,29 @@ public interface FileStorage {
     /**
      * 下载文件
      *
-     * @param fullPath 文件唯一标识(全路径)
+     * @param relativePath  文件相对路径
      * @return 输出流
      * @throws IOException 发生IO异常时抛出
      */
-    InputStreamWrap download(final String fullPath) throws IOException;
+    InputStreamWrap download(final String relativePath) throws IOException;
 
     /**
      * 删除文件
      *
-     * @param fullPath 文件唯一标识(全路径)
+     * @param relativePath    文件相对路径
      * @return 是否删除成功
      * @throws IOException                   发生IO异常时抛出
      * @throws UnsupportedOperationException 当目标文件系统不支持删除文件操作时抛出
      */
-    boolean delete(String fullPath) throws IOException, UnsupportedOperationException;
+    boolean delete(final String relativePath) throws IOException, UnsupportedOperationException;
 
     /**
      * 列出路径下的目录和文件
      *
-     * @param path 文件相对路径
+     * @param relativePath 文件相对路径
      * @return 目录和文件列表
      */
-    default List<FileInfo> listFiles(String path){
+    default List<FileInfo> listFiles(String relativePath){
         return null;
     }
 }

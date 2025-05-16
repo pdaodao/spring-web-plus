@@ -33,8 +33,8 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
-    public Boolean exist(String fullPath) {
-        return FileUtil.exist(fullPath);
+    public Boolean exist(String relativePath) {
+        return FileUtil.exist(fullPath(relativePath));
     }
 
     @Override
@@ -61,14 +61,14 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
-    public InputStreamWrap download(String fullPath) throws IOException {
-        final String path = pathAddRoot(config.getRootPath(), fullPath);
+    public InputStreamWrap download(final String relativePath) throws IOException {
+        final String path = pathAddRoot(config.getRootPath(), relativePath);
         return InputStreamWrap.of(FileUtil.getInputStream(path));
     }
 
     @Override
-    public boolean delete(String fullPath) throws IOException, UnsupportedOperationException {
-        final String path = pathAddRoot(config.getRootPath(), fullPath);
+    public boolean delete(final String relativePath) throws IOException, UnsupportedOperationException {
+        final String path = pathAddRoot(config.getRootPath(), relativePath);
         return FileUtil.del(path);
     }
 
