@@ -223,5 +223,6 @@ public class RequestUtil {
 
     public static void clearHolder() {
         userHolder.remove();
+        pageHolder.remove();
     }
 }

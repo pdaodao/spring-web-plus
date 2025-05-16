@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.controller;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.BooleanUtil;
 import com.github.pdaodao.springwebplus.base.service.FileStorageService;
 import com.github.pdaodao.springwebplus.base.util.ResponseUtil;
 import com.github.pdaodao.springwebplus.entity.SysFile;
@@ -48,9 +49,18 @@ public class SysFileRenderController {
         }
     }
 
+    @GetMapping("/down/**")
+    @Operation(summary = "文件下载")
+    public void fileRender(final HttpServletRequest httpServletRequest,
+                          @RequestParam(value = "isDown", required = false, defaultValue = "true") Boolean isDown,
+                          final HttpServletResponse response) throws Exception {
+        imgRender(httpServletRequest, isDown, response);
+    }
+
     @GetMapping("/video/**")
     public ResponseEntity<StreamingResponseBody> streamVideo(final HttpServletRequest httpServletRequest,
-            @RequestHeader(value = "Range", required = false) String rangeHeader) throws Exception{
+                                                             @RequestParam(value = "isDown", required = false, defaultValue = "false") Boolean isDown,
+                                                             @RequestHeader(value = "Range", required = false) String rangeHeader) throws Exception{
         final String reqPath = httpServletRequest.getServletPath();
         final String path = reqPath.replaceFirst("/sys/file/video", "");
         final String fileName = FileNameUtil.getName(path);

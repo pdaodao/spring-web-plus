@@ -47,11 +47,11 @@ public class PageHelper implements AutoCloseable {
 
     public static void clearHolder(){
         holder.remove();
+        used.remove();
     }
 
     @Override
     public void close() {
-        holder.remove();
-        used.remove();
+       clearHolder();
     }
 }

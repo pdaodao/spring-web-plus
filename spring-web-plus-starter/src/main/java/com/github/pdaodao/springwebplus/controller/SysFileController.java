@@ -1,13 +1,9 @@
 package com.github.pdaodao.springwebplus.controller;
 
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.base.service.FileStorageService;
-import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.ResponseUtil;
-import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import com.github.pdaodao.springwebplus.base.util.UploadCheckUtil;
 import com.github.pdaodao.springwebplus.dao.SysFileDao;
 import com.github.pdaodao.springwebplus.entity.SysFile;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
@@ -54,7 +50,7 @@ public class SysFileController {
     public FileInfo upload(@RequestParam("file") final MultipartFile file,
                            @Parameter(name = "namespace", description = "用途编码") @RequestParam("namespace") String namespace,
                            @Parameter(name = "objId", description = "objId", required = false) @RequestParam(required = false) String objId) throws Exception {
-        UploadCheckUtil.checkSize(file, 500);
+        FileUploadUtil.checkSize(file, 500);
         final FileInfo fileInfo = FileUploadUtil.uploadSaveInfo(file, namespace, null);
         fileInfo.setPath(FileUploadUtil.buildFileHttpPath(fileInfo.getPath()));
         return fileInfo;
@@ -118,7 +114,7 @@ public class SysFileController {
     public FileInfo uploadImg(@RequestParam("file") final MultipartFile file,
                               @Parameter(name = "namespace", description = "用途编码") @RequestParam(value = "namespace") String namespace,
                               @Parameter(name = "objId", description = "objId") @RequestParam(required = false) String objId) throws Exception {
-        UploadCheckUtil.checkIsImage(file);
+        FileUploadUtil.checkIsImage(file);
         final FileInfo fileInfo = FileUploadUtil.uploadSaveInfo(file, namespace, 50);
         fileInfo.setPath(FileUploadUtil.buildFileHttpPath(fileInfo.getPath()));
         return fileInfo;

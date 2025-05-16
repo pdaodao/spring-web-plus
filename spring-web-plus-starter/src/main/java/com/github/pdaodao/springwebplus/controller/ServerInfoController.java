@@ -33,9 +33,10 @@ public class ServerInfoController {
         return versionInfo;
     }
 
-    @Operation(summary = "服务器信息详情")
+    @IgnoreLogin
     @GetMapping("info")
     @Permission("server:info")
+    @Operation(summary = "服务器信息详情")
     public ServerInfo getServerInfo() {
         ServerInfo serverInfo = ServerInfoUtil.getServerInfo();
         // 获取项目信息
