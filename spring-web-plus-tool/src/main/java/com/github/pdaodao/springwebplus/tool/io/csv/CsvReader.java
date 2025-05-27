@@ -1,69 +1,94 @@
 package com.github.pdaodao.springwebplus.tool.io.csv;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.text.csv.CsvParser;
-import cn.hutool.core.text.csv.CsvReadConfig;
-import cn.hutool.core.text.csv.CsvRow;
-import cn.hutool.core.text.csv.CsvUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+import com.github.pdaodao.springwebplus.tool.data.RowKind;
 import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.converter.StreamRowSetter;
+import com.github.pdaodao.springwebplus.tool.data.converter.ValueConverterRowSetter;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
+import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import java.io.BufferedInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CsvReader implements Reader {
-    private final InputStreamWrap wrap;
-    // 首行是否为字段名称
-    private boolean firstHead = true;
+    private final InputStreamWrap inputStreamWrap;
+    private final CsvFormat csvFormat;
     private transient List<TableColumn> fields;
-    private transient Map<Integer, String> nameMap;
+    private transient CSVParser csvParser;
+    private transient Iterator<CSVRecord> it;
+    private transient StreamRowSetter[] streamRowSetters;
 
-    private transient cn.hutool.core.text.csv.CsvReader reader;
-
-    private transient Iterator<CsvRow> iterator;
-
-
-    private long total = 0;
-
-    public CsvReader(InputStreamWrap wrap) {
-        this.wrap = wrap;
+    public CsvReader(InputStreamWrap inputStreamWrap, CsvFormat csvFormat, List<TableColumn> fields) {
+        this.inputStreamWrap = inputStreamWrap;
+        this.csvFormat = csvFormat;
+        this.fields = fields;
     }
 
     @Override
     public void open() throws Exception {
-        final CsvReadConfig cf = CsvReadConfig.defaultConfig().setContainsHeader(firstHead);
-        reader = CsvUtil.getReader(cf);
-        iterator = reader.iterator();
-
-        if (firstHead) {
-            int size = 0;
-//            for (final String name : csvParser.getHeaderNames()) {
-//                final TableColumn ff = new TableColumn();
-//                ff.setName(name.trim());
-//                ff.setDataType(DataType.STRING);
-//                fields.add(ff);
-//                nameMap.put(size++, ff.getName());
-//            }
-        }
-        if (MapUtil.isEmpty(nameMap)) {
-            for (int i = 0; i < 500; i++) {
-                nameMap.put(i, "c" + (i + 1));
+        csvParser = CSVParser.builder()
+                .setInputStream(inputStreamWrap.inputStream)
+                .setFormat(csvFormat.toFormat()).get();
+        it = csvParser.iterator();
+        if(BooleanUtil.isTrue(csvFormat.isSkipHeaderRecord())){
+            final Map<String, TableColumn> fsMap = new LinkedHashMap<>();
+            for(final TableColumn f: fields){
+                fsMap.put(f.getName(), f);
             }
+            List<String> names = csvParser.getHeaderNames();
+            if(CollUtil.isEmpty(names) && it.hasNext()){
+                names = Arrays.stream(it.next().values()).collect(Collectors.toList());
+            }
+            final List<TableColumn> fsFiltered = new ArrayList<>();
+            for(final String f: names){
+                final TableColumn old = fsMap.get(f);
+                if(old != null){
+                    fsFiltered.add(old);
+                    continue;
+                }
+                if(StrUtil.equals(csvFormat.getOpName(),f)){
+                    fsFiltered.add(TableColumn.of(f, DataType.INT));
+                    continue;
+                }
+                Preconditions.assertTrue(true, "unknown field:{}", f);
+            }
+            fields = fsFiltered;
+        }
+        streamRowSetters = new StreamRowSetter[fields.size()];
+        int i = 0;
+        for(final TableColumn f: fields){
+            if(StrUtil.equals(csvFormat.getOpName(), f.getName())){
+                streamRowSetters[i++] = new KingStreamRowSetter();
+                continue;
+            }
+            streamRowSetters[i++] = new ValueConverterRowSetter<>(f);
         }
     }
 
     @Override
-    public Long total() {
-        return total;
+    public StreamRow read() throws Exception {
+        if(it.hasNext()){
+            return toRow(it.next());
+        }
+        return null;
+    }
+
+    private StreamRow toRow(final CSVRecord record){
+        final StreamRow row = new StreamRow();
+        int i = 0;
+        for(final String v: record.values()){
+            streamRowSetters[i++].set(row, v);
+        }
+        return row;
     }
 
     @Override
@@ -71,50 +96,28 @@ public class CsvReader implements Reader {
         return fields;
     }
 
-    public List<StreamRow> topN(final int topN) throws Exception {
-        final List<StreamRow> list = new ArrayList<>();
-        if (topN < 1) {
-            return list;
-        }
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            final StreamRow row = read();
-            if (row == null) {
-                return list;
-            }
-            list.add(row);
-            if (total >= topN) {
-                return list;
-            }
-        }
-        return list;
-    }
-
     @Override
-    public StreamRow read() throws Exception {
-        if (!iterator.hasNext()) {
-            return null;
-        }
-        total++;
-        return toRow(iterator.next());
-    }
-
-    private StreamRow toRow(final CsvRow csvRow) {
-        if (csvRow == null) {
-            return null;
-        }
-        final StreamRow row = StreamRow.of(nameMap.size());
-        int index = 0;
-        for (final String t : csvRow) {
-            final String name = nameMap.get(index++);
-            Preconditions.checkNotBlank(name, "第" + total + "行数据,字段个数不一致.");
-            row.setField(name, t);
-        }
-        return row;
+    public Long total() {
+        return -1l;
     }
 
     @Override
     public void close() throws Exception {
-        IoUtil.close(reader);
-        IoUtil.close(wrap);
+        if(csvParser != null){
+            csvParser.close();
+        }
+        inputStreamWrap.close();
+    }
+
+    public static class KingStreamRowSetter implements StreamRowSetter{
+        @Override
+        public void set(StreamRow row, Object object) {
+            final Integer kind = DataValueUtil.toInt(object);
+            if(ObjectUtil.equals(1, kind)){
+                row.setKind(RowKind.DELETE);
+            }else{
+                row.setKind(RowKind.INSERT);
+            }
+        }
     }
 }

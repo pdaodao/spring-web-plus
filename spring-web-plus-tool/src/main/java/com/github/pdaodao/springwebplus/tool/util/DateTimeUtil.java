@@ -14,8 +14,8 @@ public class DateTimeUtil {
     public static final FastDateFormat DATE_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMdd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd", ShangHaiZone);
-
     public static final FastDateFormat DATE_TIME_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", ShangHaiZone);
+    public static final FastDateFormat DATE_TIME_FORMATTER3 = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMddHHmmss", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd HH:mm:ss", ShangHaiZone);
@@ -93,9 +93,16 @@ public class DateTimeUtil {
 
     public static String formatDateTime(final Date date) {
         if(date == null){
-            return StrUtil.EMPTY;
+            return null;
         }
         return DATE_TIME_FORMATTER.format(date);
+    }
+
+    public static String formatDateTime3(final Date date) {
+        if(date == null){
+            return null;
+        }
+        return DATE_TIME_FORMATTER3.format(date);
     }
 
     public static String formatDateTimeSlash(final Date date) {

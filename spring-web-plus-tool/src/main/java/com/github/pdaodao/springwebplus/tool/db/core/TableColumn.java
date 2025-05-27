@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
+import cn.hutool.db.meta.Table;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
@@ -210,6 +211,13 @@ public class TableColumn implements Serializable, Cloneable, Comparable<TableCol
             return 1;
         }
         return CompareUtil.compare(seq, o.seq);
+    }
+
+    public static TableColumn of(final String name, final DataType dataType){
+        final TableColumn f = new TableColumn();
+        f.setName(name);
+        f.setDataType(dataType);
+        return f;
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.json.JSONUtil;
-import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.*;

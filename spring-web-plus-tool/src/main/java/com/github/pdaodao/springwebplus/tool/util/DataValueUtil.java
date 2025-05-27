@@ -60,7 +60,7 @@ public class DataValueUtil {
             if(DataType.DATE == dataType){
                 return DateTimeUtil.formatDate((Date) obj);
             }
-            return DateTimeUtil.formatDateTime((Date) obj);
+            return DateTimeUtil.formatDateTime3((Date) obj);
         }
         if(obj instanceof LocalDateTime){
             final String str = ((LocalDateTime)obj).toString().replace("T", " ");
@@ -174,7 +174,7 @@ public class DataValueUtil {
         if (StrUtil.isBlank(str)) {
             return null;
         }
-        if ("false".equalsIgnoreCase(str) || "假".equalsIgnoreCase(str) || "0".equalsIgnoreCase(str)) {
+        if ("false".equalsIgnoreCase(str) || "f".equals(str) || "假".equalsIgnoreCase(str) || "0".equalsIgnoreCase(str)) {
             return false;
         }
         return true;
