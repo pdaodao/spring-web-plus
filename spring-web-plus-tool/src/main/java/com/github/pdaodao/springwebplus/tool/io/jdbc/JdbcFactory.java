@@ -26,8 +26,8 @@ public class JdbcFactory implements ReaderWriterFactory {
     @Override
     public Writer createWriter(final WriterInfo writerInfo) {
         Preconditions.checkNotNull(writerInfo, "写数据连接器信息为空");
-        final JdbcWriter writer = new JdbcWriter(writerInfo.getWriteModeEnum(),
-                writerInfo.getDbInfo(), writerInfo.getTableName(), writerInfo.getFields());
+        writerInfo.check();
+        final JdbcTableWriter writer = new JdbcTableWriter(writerInfo);
         return writer;
     }
 }

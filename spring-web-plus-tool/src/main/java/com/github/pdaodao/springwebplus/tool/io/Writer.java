@@ -7,5 +7,6 @@ public interface Writer extends StreamIO {
 
     void write(StreamRow row) throws Exception;
 
+    void flush() throws Exception;
     // void checkpoint();
 }

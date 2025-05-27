@@ -11,10 +11,12 @@ public class DateTimeUtil {
     public static TimeZone ShangHaiZone = TimeZone.getTimeZone("GMT+8");
     public static final FastDateFormat Year_Month_FORMATTER = FastDateFormat.getInstance("yyyyMM", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd", ShangHaiZone);
+    public static final FastDateFormat DATE_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMdd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd", ShangHaiZone);
     public static final FastDateFormat DATE_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd", ShangHaiZone);
 
     public static final FastDateFormat DATE_TIME_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", ShangHaiZone);
+    public static final FastDateFormat DATE_TIME_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMddHHmmss", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd HH:mm:ss", ShangHaiZone);
 
@@ -41,7 +43,7 @@ public class DateTimeUtil {
         str = str.replace("+08:00", "");
         Date d = null;
         // 有时间
-        if(StrUtil.contains(str, ":")){
+        if(StrUtil.contains(str, ":") || str.length() > 10){
             if(str.contains("-")){
                 return tryParse(str, DATE_TIME_FORMATTER);
             }
@@ -51,6 +53,7 @@ public class DateTimeUtil {
             if(str.contains(".")){
                 return tryParse(str, DATE_TIME_FORMATTER_DOT);
             }
+            return tryParse(str, DATE_TIME_FORMATTER_COMPACT);
         }
         if(str.contains("-")){
             return tryParse(str, DATE_FORMATTER);
@@ -61,7 +64,7 @@ public class DateTimeUtil {
         if(str.contains(".")){
             return tryParse(str, DATE_FORMATTER_DOT);
         }
-        return null;
+        return tryParse(str, DATE_FORMATTER_COMPACT);
     }
 
     public static Date now(){

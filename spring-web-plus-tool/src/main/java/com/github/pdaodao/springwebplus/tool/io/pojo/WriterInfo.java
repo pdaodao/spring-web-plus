@@ -6,6 +6,7 @@ import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.HasDbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
 
 import java.util.List;
@@ -14,8 +15,12 @@ import java.util.List;
 public class WriterInfo implements HasDbInfo {
     private DbInfo dbInfo;
     private String tableName;
-    private WriteModeEnum writeModeEnum;
+    private WriteModeEnum writeMode;
     private List<TableColumn> fields;
+    private int batchSize = 3000;
+    // 是否自动创建表
+    private Boolean autoCreateTable = true;
+    // 参数项
     private ConfigOptions options = new ConfigOptions();
 
     public WriterInfo setDbInfo(DbInfo dbInfo) {
@@ -28,9 +33,8 @@ public class WriterInfo implements HasDbInfo {
         return this;
     }
 
-    public WriterInfo setWriteModeEnum(WriteModeEnum writeModeEnum) {
-        this.writeModeEnum = writeModeEnum;
-        return this;
+    public void setWriteMode(WriteModeEnum writeMode) {
+        this.writeMode = writeMode;
     }
 
     public WriterInfo setFields(List<TableColumn> fields) {
@@ -58,10 +62,8 @@ public class WriterInfo implements HasDbInfo {
             sb.append("数据表名称为空.");
         }
         if (CollUtil.isEmpty(fields)) {
-            sb.append("字段信息为空.");
+            sb.append(tableName+"字段为空.");
         }
-        if (sb.length() > 1) {
-            throw new IllegalArgumentException(sb.toString());
-        }
+        Preconditions.assertTrue(sb.length() > 1, sb.toString());
     }
 }

@@ -12,26 +12,20 @@ import com.github.pdaodao.springwebplus.tool.data.TableData;
 import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
-import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
-import com.github.pdaodao.springwebplus.tool.db.handler.ConnectionProcessor;
 import com.github.pdaodao.springwebplus.tool.db.handler.JdbcUtils;
 import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.ReaderWriterLoader;
-import com.github.pdaodao.springwebplus.tool.io.lang.CdcBatchData;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriteModeEnum;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.lang.JdbcConnectionProvider;
 import com.github.pdaodao.springwebplus.tool.lang.PluginClassLoaderFactory;
 import com.github.pdaodao.springwebplus.tool.lang.ThreadContextClassLoader;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
-import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.HashMap;
@@ -41,7 +35,6 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
@@ -205,7 +198,7 @@ public class DbUtil {
         final WriterInfo writerInfo = new WriterInfo();
         writerInfo.setDbInfo(dbInfo);
         writerInfo.setTableName(tableInfo.getName());
-        writerInfo.setWriteModeEnum(WriteModeEnum.APPEND);
+        writerInfo.setWriteMode(WriteModeEnum.APPEND);
         writerInfo.setFields(tableInfo.getColumns().stream().filter(t -> StrUtil.isNotBlank(t.getFrom())).collect(Collectors.toList()));
         try (final Writer writer = ReaderWriterLoader.createWriter(writerInfo)) {
              writer.open();
@@ -280,51 +273,9 @@ public class DbUtil {
         }
     }
 
-    public static void executeBatch(final JdbcConnectionProvider connectionProvider,
-                                    final CdcBatchData batchData, final TableInfo tableInfo) throws SQLException{
-        try(final Connection connection = connectionProvider.getConnection()){
-            executeBatch(connection, connectionProvider.getDialect(), batchData, tableInfo);
-        }
-    }
-
-    public static void executeBatch(final Connection connection, final DbDialect dbDialect, final CdcBatchData batchData,
-                              final TableInfo tableInfo) throws SQLException{
-        if(batchData == null){
-            return;
-        }
-        Preconditions.checkNotNull(tableInfo, "table info is null.");
-        if(CollUtil.isNotEmpty(batchData.getInserts())){
-            final String sql = SqlUtil.genInsertIntoSql(dbDialect, tableInfo.getName(), tableInfo.getColumns());
-            final PreparedStatement insertPs = connection.prepareStatement(sql);
-            for(final StreamRow row: batchData.getInserts()){
-                int i = 1;
-                for (final TableColumn t : tableInfo.getColumns()) {
-                    Object value = row.getFieldAs(t.getFrom());
-                    value = DataValueUtil.toAs(value, t.getDataType());
-                    insertPs.setObject(i++, value);
-                }
-                insertPs.addBatch();
-            }
-            insertPs.executeBatch();
-            insertPs.close();
-        }
-        if(CollUtil.isNotEmpty(batchData.getUpdates())){
-
-        }
-        if(CollUtil.isNotEmpty(batchData.getDeletes())){
-            final String sql = SqlUtil.genDeleteSql(dbDialect, tableInfo.getName(), tableInfo.getColumns());
-            final PreparedStatement ps = connection.prepareStatement(sql);
-            for(final StreamRow row: batchData.getInserts()){
-                int i = 1;
-                for (final TableColumn t : tableInfo.getColumns()) {
-                    Object value = row.getFieldAs(t.getFrom());
-                    value = DataValueUtil.toAs(value, t.getDataType());
-                    ps.setObject(i++, value);
-                }
-                ps.addBatch();
-            }
-            ps.executeBatch();
-            ps.close();
+    public static boolean execute(final DataSource dataSource, final String sql) throws SQLException{
+        try(final Connection connection = dataSource.getConnection()){
+            return connection.prepareStatement(sql).execute();
         }
     }
 }

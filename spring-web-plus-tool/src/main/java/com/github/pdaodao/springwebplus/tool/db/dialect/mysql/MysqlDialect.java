@@ -5,12 +5,13 @@ import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbFunction;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDbDialect;
 import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 public class MysqlDialect extends BaseDbDialect {
-
+    public static final String UrlSuffix = "useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useServerPrepStmts=true&useCompression=true";
     @Override
     public DbType dbType() {
         return DbType.Mysql;
@@ -19,6 +20,11 @@ public class MysqlDialect extends BaseDbDialect {
     @Override
     public String driverName() {
         return "com.mysql.jdbc.Driver";
+    }
+
+    @Override
+    public DbFunction dbFunction() {
+        return new MySqlDbFunction();
     }
 
     @Override
@@ -38,9 +44,23 @@ public class MysqlDialect extends BaseDbDialect {
         if (dbInfo.getPort() == null) {
             dbInfo.setPort(3306);
         }
-        final String fmt = "jdbc:mysql://{}:{}/{}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useServerPrepStmts=true&useCompression=true";
-        final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName());
-        return url;
+        if(StrUtil.isBlank(dbInfo.getUrl())){
+            final String fmt = "jdbc:mysql://{}:{}/{}?"+UrlSuffix;
+            final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName());
+            dbInfo.setUrl(url);
+            return url;
+        }
+        if (!dbInfo.getUrl().contains("rewriteBatchedStatements")) {
+            String url = dbInfo.getUrl();
+            if (url.contains("?")) {
+                url = url.substring(0, url.indexOf("?") + 1);
+                url += UrlSuffix;
+            } else {
+                url = url + "?" + UrlSuffix;
+            }
+            dbInfo.setUrl(url);
+        }
+        return dbInfo.getUrl();
     }
 
     @Override

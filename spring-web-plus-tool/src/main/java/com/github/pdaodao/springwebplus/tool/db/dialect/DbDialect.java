@@ -24,6 +24,8 @@ public interface DbDialect {
 
     DbMetaLoader metaLoader(final DbInfo dbInfo);
 
+    DbFunction dbFunction();
+
     /**
      * 是否支持事物
      *

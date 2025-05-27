@@ -123,7 +123,7 @@ public class BaseDDLGen implements DbDDLGen {
         if (CollUtil.isEmpty(tableInfo.pkColumns())) {
             return null;
         }
-        final String names = tableInfo.pkColumns().stream()
+        final String names = tableInfo.pkColumnNames().stream()
                 .map(t -> quoteIdentifier(t))
                 .collect(Collectors.joining(","));
         if (StrUtil.isEmpty(names)) {

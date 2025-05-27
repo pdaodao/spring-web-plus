@@ -99,6 +99,21 @@
                 <artifactId>duckdb_jdbc</artifactId>
                 <version>1.2.2.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.mymonstercat</groupId>
+                <artifactId>rapidocr</artifactId>
+                <version>0.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.mymonstercat</groupId>
+                <artifactId>rapidocr-onnx-platform</artifactId>
+                <version>0.0.7</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

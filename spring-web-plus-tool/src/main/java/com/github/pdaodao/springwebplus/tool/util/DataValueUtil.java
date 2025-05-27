@@ -1,12 +1,15 @@
 package com.github.pdaodao.springwebplus.tool.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 public class DataValueUtil {
 
@@ -62,6 +65,9 @@ public class DataValueUtil {
         if(obj instanceof LocalDateTime){
             final String str = ((LocalDateTime)obj).toString().replace("T", " ");
             return str;
+        }
+        if(obj instanceof Collection<?> || obj instanceof Map<?,?>){
+            return JsonUtil.toJsonString(obj);
         }
         return ObjectUtil.toString(obj);
     }

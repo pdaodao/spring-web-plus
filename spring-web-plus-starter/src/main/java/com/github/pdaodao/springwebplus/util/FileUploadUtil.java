@@ -22,8 +22,11 @@ import java.util.List;
  * 文件上传工具类
  */
 public class FileUploadUtil {
-    public static final String[] ImageExtensions = {"jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"};
-    public static final String[] DocExtensions = {"doc", "docx", "txt", "pdf", "csv", "ppt", "pptx"};
+    public static final String[] ImageExtensions = {"jpg", "jpeg", "png", "gif", "bmp", "tiff", "svg", "webp"};
+
+    public static final String[] VideoExtensions = {"mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"};
+
+    public static final String[] DocExtensions = {"doc", "docx","xls","xlsx", "txt", "pdf", "csv", "ppt", "pptx"};
     public static final String[] ExcelExtensions = {"xlsx", "xls"};
 
     private static LocalFileStorage tempFileStorage;
@@ -106,7 +109,7 @@ public class FileUploadUtil {
             return null;
         }
         String type = "down";
-        if(StrUtil.equals(FileNameUtil.getSuffix(path), "mp4")){
+        if(isVideo(path)){
             type = "video";
         }else if(isImage(path)){
             type = "image";
@@ -168,6 +171,19 @@ public class FileUploadUtil {
         }
         final String name = FileNameUtil.getName(path);
         return StrUtil.containsAnyIgnoreCase(FileNameUtil.extName(name), ImageExtensions);
+    }
+
+    /**
+     * 是否是视频
+     * @param path
+     * @return
+     */
+    public static boolean isVideo(final String path){
+        if(StrUtil.isBlank(path)){
+            return false;
+        }
+        final String name = FileNameUtil.getName(path);
+        return StrUtil.containsAnyIgnoreCase(FileNameUtil.extName(name), VideoExtensions);
     }
 
     public static void checkIsImage(final MultipartFile file) {

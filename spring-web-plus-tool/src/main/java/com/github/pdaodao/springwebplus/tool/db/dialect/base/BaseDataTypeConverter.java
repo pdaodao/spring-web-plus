@@ -26,7 +26,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         final FieldTypeNameWrap fieldTypeName = fieldTypeDDL(columnInfo);
         String fieldAutoSuffix = null;
         // 自增
-        if (ObjectUtil.equals(true, columnInfo.getIsAuto())) {
+        if (BooleanUtil.isTrue(columnInfo.getIsAuto())) {
             final String autoStr = genDDLFieldAutoIncrement(columnInfo, fieldTypeName, context);
             if (StrUtil.isNotBlank(autoStr)) {
                 fieldAutoSuffix = " " + autoStr;

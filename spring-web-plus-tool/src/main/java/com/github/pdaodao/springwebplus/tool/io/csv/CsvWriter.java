@@ -29,6 +29,11 @@ public class CsvWriter implements Writer {
     }
 
     @Override
+    public void flush() throws Exception {
+
+    }
+
+    @Override
     public void close() throws Exception {
 
     }

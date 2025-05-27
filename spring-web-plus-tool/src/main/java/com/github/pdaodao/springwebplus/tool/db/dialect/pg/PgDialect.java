@@ -41,6 +41,7 @@ public class PgDialect extends BaseDbDialect {
         }
         final String fmt = "jdbc:postgresql://{}:{}/{}?currentSchema={}&reWriteBatchedInserts=true&prepareThreshold=0";
         final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName(), dbInfo.getDbSchema());
+        dbInfo.setUrl(url);
         return url;
     }
 

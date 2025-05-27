@@ -101,31 +101,31 @@ public class TableInfo implements Serializable, Cloneable {
 
     /**
      * 主键字段列表
-     *
      * @return
      */
-    public List<String> pkColumns() {
+    public List<TableColumn> pkColumns() {
         if (CollUtil.isEmpty(columns)) {
             return ListUtil.empty();
         }
-        return columns.stream().filter(t -> BooleanUtil.isTrue(t.isPk) || BooleanUtil.isTrue(t.isAuto))
-                .map(t -> t.getName()).collect(Collectors.toList());
-    }
-
-    public Set<String> pkFieldsOrByIndex(){
-        final Set<String> pkFields = new LinkedHashSet<>();
-        pkFields.addAll(pkColumns());
-        if(CollUtil.isEmpty(pkFields) && CollUtil.isNotEmpty(getIndexList())){
-            for(final TableIndex i: getIndexList()){
-                if(i.isPk() && CollUtil.isNotEmpty(i.getFields())){
-                    pkFields.addAll(i.getFields());
-                }
+        final List<TableColumn> pkFields = new ArrayList<>();
+        for(final TableColumn f: columns){
+            if(BooleanUtil.isTrue(f.getIsAuto())){
+                return ListUtil.of(f);
+            }
+            if(BooleanUtil.isTrue(f.getIsPk())){
+                pkFields.add(f);
             }
         }
         return pkFields;
     }
 
-
+    /**
+     * 主键字段名称
+     * @return
+     */
+    public List<String> pkColumnNames() {
+        return pkColumns().stream().map(t -> t.getName()).collect(Collectors.toList());
+    }
 
     @Override
     public TableInfo clone() {

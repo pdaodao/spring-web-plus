@@ -3,11 +3,13 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.db.core.FilterItem;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
+import com.github.pdaodao.springwebplus.tool.db.dialect.DbFunction;
 import com.github.pdaodao.springwebplus.tool.db.util.support.MybatisHelper;
 import com.github.pdaodao.springwebplus.tool.db.util.visitor.DynamicWhereVisitor;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -268,11 +270,19 @@ public class SqlUtil {
     public static String genInsertIntoSql(final DbDialect dialect, final String tableName, final List<TableColumn> fs) {
         Preconditions.checkNotBlank(tableName, "table name is null.");
         Preconditions.checkArgument(CollectionUtil.isNotEmpty(fs), "fields info is empty for table {}.", tableName);
-
+        final List<String> values = new ArrayList<>();
+        final DbFunction dbFunction = dialect.dbFunction();
+        for(final TableColumn t: fs){
+            if(DataType.GEOMETRY == t.getDataType() && dbFunction != null && StrUtil.isNotBlank(dbFunction.textToGeoFn())){
+                values.add(dbFunction.textToGeoFn()+"(?)");
+            }else{
+                values.add("?");
+            }
+        }
         return StrUtil.format("INSERT INTO {} ({}) values ({})",
                 dialect.quoteIdentifier(tableName),
                 joinTableColumns(dialect, fs),
-                StrUtil.repeatAndJoin("?", fs.size(), ","));
+                StrUtil.join(",", values));
     }
 
     public static String genDeleteSql(final DbDialect dialect, final String tableName, final List<TableColumn> fs) {

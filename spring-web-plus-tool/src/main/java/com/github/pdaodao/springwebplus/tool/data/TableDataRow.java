@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
@@ -47,6 +48,12 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
         return mapRow;
     }
 
+    public void mergeFrom(final TableDataRow row){
+        if(row == null){
+            return;
+        }
+        BeanUtils.copyPropertiesIgnoreNull(row, this);
+    }
 
 //    public TableDataRow toStringValue(){
 //        final TableDataRow r = new TableDataRow();
