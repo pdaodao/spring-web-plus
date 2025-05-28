@@ -1,9 +1,9 @@
-package com.github.pdaodao.springwebplus.tool.db.sql.table;
+package com.github.pdaodao.springwebplus.tool.sql.table;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.github.pdaodao.springwebplus.tool.db.pojo.JoinType;
-import com.github.pdaodao.springwebplus.tool.db.sql.frame.SafeAppendable;
+import com.github.pdaodao.springwebplus.tool.sql.frame.SafeAppendable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

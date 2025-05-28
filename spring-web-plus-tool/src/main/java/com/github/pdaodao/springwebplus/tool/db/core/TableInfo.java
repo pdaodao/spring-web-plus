@@ -20,26 +20,33 @@ import java.util.stream.Collectors;
 @Data
 public class TableInfo implements Serializable, Cloneable {
     /**
-     * 备注
-     */
-    protected String remark;
-    /**
-     * 字段列表
-     */
-    protected List<TableColumn> columns;
-    /**
      * 表名
      */
     private String name;
+
     /**
-     * table所在的schema
+     * 备注
      */
-    private String dbSchema;
+    protected String remark;
+
     /**
      * 中文名称
      */
     private String title;
+
+    /**
+     * 字段列表
+     */
+    protected List<TableColumn> columns;
+
+    /**
+     * table所在的schema
+     */
+    private String dbSchema;
+
+
     private TableType tableType;
+
     // 数据表行数
     protected Long dataRows;
 
@@ -47,6 +54,21 @@ public class TableInfo implements Serializable, Cloneable {
      * 索引信息
      */
     private List<TableIndex> indexList;
+
+    /**
+     * 分区
+     */
+    private TablePartition tablePartition;
+
+    /**
+     * 副本数 >= 1
+     */
+    private Integer replicationNum;
+
+    /**
+     * 分桶数 >= 1
+     */
+    private Integer bucketNum;
 
     public static TableInfo of(final String name) {
         final TableInfo info = new TableInfo();

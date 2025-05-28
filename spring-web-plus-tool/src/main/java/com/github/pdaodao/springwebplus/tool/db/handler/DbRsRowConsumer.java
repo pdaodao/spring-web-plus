@@ -1,12 +1,12 @@
 package com.github.pdaodao.springwebplus.tool.db.handler;
 
-import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 
 import java.util.List;
 
 public class DbRsRowConsumer implements DbRsConsumer {
-    private TableDataRow row;
+    private TableRowData row;
 
     @Override
     public void fields(List<TableColumn> fields) {
@@ -14,11 +14,11 @@ public class DbRsRowConsumer implements DbRsConsumer {
     }
 
     @Override
-    public void row(TableDataRow row) {
+    public void row(TableRowData row) {
         this.row = row;
     }
 
-    public TableDataRow getData() {
+    public TableRowData getData() {
         return row;
     }
 

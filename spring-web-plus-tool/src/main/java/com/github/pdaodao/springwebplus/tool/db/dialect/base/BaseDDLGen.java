@@ -40,7 +40,7 @@ public class BaseDDLGen implements DbDDLGen {
             index++;
             // 生成字段定义
             final String fieldDdl = dbDialect.dataTypeConverter().fieldDDL(null, field, ddlBuildContext);
-            sql.append(fieldDdl);
+            sql.append("  ").append(fieldDdl);
             if (index < size) {
                 sql.append(",");
                 sql.append("\n");
@@ -64,7 +64,7 @@ public class BaseDDLGen implements DbDDLGen {
             }
         }
         // 字段描述部分结束 右括号
-        sql.append(") ");
+        sql.append("\n)\n");
 
         // 有些数据库如 Doris 主键信息写在后面的表信息中
         final String pkTable = genDDLOfPkTable(tableInfo, ddlBuildContext);
@@ -84,7 +84,7 @@ public class BaseDDLGen implements DbDDLGen {
         // 数据表格式 引擎信息
         final String engine = genDDLTableEngineInfo(tableInfo, ddlBuildContext);
         if (StrUtil.isNotBlank(engine)) {
-            sql.append(" ").append(engine);
+            sql.append("\n").append(engine);
         }
         final List<String> result = new ArrayList<>();
         result.add(sql.toString());

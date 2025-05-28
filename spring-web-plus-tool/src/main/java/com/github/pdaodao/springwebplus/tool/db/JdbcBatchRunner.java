@@ -3,8 +3,8 @@ package com.github.pdaodao.springwebplus.tool.db;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.data.CdcBatchListData;
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.BatchRowList;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
@@ -114,7 +114,7 @@ public class JdbcBatchRunner {
      * @param listData
      * @throws Exception
      */
-    public void execute(final CdcBatchListData listData) throws Exception{
+    public void execute(final BatchRowList listData) throws Exception{
         if(CollUtil.isEmpty(listData.getDeletes()) && CollUtil.isEmpty(listData.getUpserts())){
             return;
         }
@@ -135,14 +135,14 @@ public class JdbcBatchRunner {
      * @param setters
      * @throws Exception
      */
-    public static void executeBatch(final Connection connection, final List<StreamRow> rows,
+    public static void executeBatch(final Connection connection, final List<TableRow> rows,
                              final String sql, final PsSetter[] setters) throws Exception{
         if(CollUtil.isEmpty(rows)){
             return;
         }
         Preconditions.checkNotBlank(sql, "batch-execute sql is null.");
         try(final PreparedStatement ps = connection.prepareStatement(sql)){
-            for(final StreamRow row: rows){
+            for(final TableRow row: rows){
                 int i = 1;
                 for(final PsSetter p: setters){
                     final Object value = row.getField(p.getFrom());

@@ -25,7 +25,7 @@ public class NodeExecutionData {
     /**
      * 数据项列表
      */
-    private List<TableDataRow> list;
+    private List<TableRowData> list;
 
     /**
      * 分页信息

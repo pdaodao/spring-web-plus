@@ -7,9 +7,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.SqlExecutor;
 import cn.hutool.json.JSONUtil;
 import com.github.pdaodao.springwebplus.tool.data.RowKind;
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
-import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
@@ -202,8 +202,8 @@ public class DbUtil {
         writerInfo.setFields(tableInfo.getColumns().stream().filter(t -> StrUtil.isNotBlank(t.getFrom())).collect(Collectors.toList()));
         try (final Writer writer = ReaderWriterLoader.createWriter(writerInfo)) {
              writer.open();
-             for(final TableDataRow row : data.getList()){
-                 writer.write(StreamRow.ofKind(RowKind.INSERT, row));
+             for(final TableRowData row : data.getList()){
+                 writer.write(TableRow.ofKind(RowKind.INSERT, row));
              }
              return writer.total();
          }

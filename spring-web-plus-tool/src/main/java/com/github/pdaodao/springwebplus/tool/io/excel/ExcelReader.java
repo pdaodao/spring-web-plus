@@ -4,14 +4,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.sax.handler.RowHandler;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.util.DataValueTypeUtil;
-import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +37,12 @@ public class ExcelReader implements Reader {
     }
 
     @Override
-    public StreamRow read() throws Exception {
+    public TableRow read() throws Exception {
         if (currentIndex > total || fields == null) {
             return null;
         }
         final List<Object> current = rows.get(currentIndex++);
-        final StreamRow row = StreamRow.of(current.size());
+        final TableRow row = TableRow.of(current.size());
         int index = 0;
         for (final Object v : current) {
             row.setField(fields.get(index++).getName(), v);

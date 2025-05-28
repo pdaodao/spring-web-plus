@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.db.sql.table;
+package com.github.pdaodao.springwebplus.tool.sql.table;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -9,8 +9,8 @@ import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONUtil;
 import com.github.pdaodao.springwebplus.tool.db.pojo.NameAlias;
 import com.github.pdaodao.springwebplus.tool.db.pojo.StatementType;
-import com.github.pdaodao.springwebplus.tool.db.sql.frame.SafeAppendable;
-import com.github.pdaodao.springwebplus.tool.db.sql.TableAlias;
+import com.github.pdaodao.springwebplus.tool.sql.frame.SafeAppendable;
+import com.github.pdaodao.springwebplus.tool.sql.TableAlias;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
 

@@ -5,7 +5,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.*;
-import com.github.pdaodao.springwebplus.tool.data.converter.StreamRowStringGetter;
+import com.github.pdaodao.springwebplus.tool.data.converter.TableRowStringGetter;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import org.apache.commons.csv.CSVFormat;
@@ -21,7 +21,7 @@ public class CsvWriter implements Writer {
     private transient CSVPrinter printer;
     private transient long total = 0;
 
-    private StreamRowStringGetter[] valueGetters;
+    private TableRowStringGetter[] valueGetters;
 
     public CsvWriter(String filePath, CsvFormat csvFormat, List<TableColumn> fields) {
         this.filePath = filePath;
@@ -38,10 +38,10 @@ public class CsvWriter implements Writer {
     public void open() throws Exception {
         final CSVFormat format = csvFormat.toFormat();
         printer = format.print(FileUtil.newFile(filePath), CharsetUtil.CHARSET_UTF_8);
-        valueGetters = StrUtil.isBlank(csvFormat.getOpName()) ? new StreamRowStringGetter[fields.size()] : new StreamRowStringGetter[fields.size() + 1];
+        valueGetters = StrUtil.isBlank(csvFormat.getOpName()) ? new TableRowStringGetter[fields.size()] : new TableRowStringGetter[fields.size() + 1];
         int i = 0;
         for(final TableColumn f: fields){
-            valueGetters[i++] = new StreamRowStringGetter(StrUtil.isBlank(f.getFrom()) ? f.getName(): f.getFrom(), f.getDataType());
+            valueGetters[i++] = new TableRowStringGetter(StrUtil.isBlank(f.getFrom()) ? f.getName(): f.getFrom(), f.getDataType());
         }
         if(StrUtil.isNotBlank(csvFormat.getOpName())){
             valueGetters[i] = new KindStringGetter();
@@ -61,13 +61,13 @@ public class CsvWriter implements Writer {
     }
 
     @Override
-    public void write(StreamRow row) throws Exception{
+    public void write(TableRow row) throws Exception{
         if(row == null || row.getData() == null || row.isEnd()){
             return;
         }
         final String[] list = new String[valueGetters.length];
         int i = 0;
-        for(final StreamRowStringGetter g: valueGetters){
+        for(final TableRowStringGetter g: valueGetters){
             list[i++] = g.get(row);
         }
         printer.printRecord(list);
@@ -83,13 +83,13 @@ public class CsvWriter implements Writer {
         printer.close();
     }
 
-    public static class KindStringGetter extends StreamRowStringGetter{
+    public static class KindStringGetter extends TableRowStringGetter {
         public KindStringGetter() {
             super(null, null);
         }
 
         @Override
-        public String get(StreamRow row) {
+        public String get(TableRow row) {
             return RowKind.DELETE == row.getKind() ? "1" : "0";
         }
     }

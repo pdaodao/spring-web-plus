@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.io;
 
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.io.pojo.ReaderInfo;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -28,7 +28,7 @@ public class TableSyncUtil {
                 reader.open();
                 final Long readTotal = reader.total();
                 while (true) {
-                    final StreamRow row = reader.read();
+                    final TableRow row = reader.read();
                     if (row == null || row.isEnd()) {
                         break;
                     }

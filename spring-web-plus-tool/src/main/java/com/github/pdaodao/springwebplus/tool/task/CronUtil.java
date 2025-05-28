@@ -11,12 +11,10 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 import java.util.Date;
 
+/**
+ * cron表达式工具类
+ */
 public class CronUtil {
-    public static final long OneDay = 24 * 60 * 60 * 1000L;
-    public static final long OneHour = 60 * 60 * 1000L;
-    public static final long OneMinute = 60 * 1000L;
-    public static final long OneSecond = 1000L;
-
     /**
      * 下次执行时间
      * @param cronSetting    调度配置信息

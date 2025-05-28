@@ -1,12 +1,15 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
 import com.github.pdaodao.springwebplus.tool.db.core.DbType;
+import com.github.pdaodao.springwebplus.tool.db.dialect.clickhouse.ClickhouseDialect;
+import com.github.pdaodao.springwebplus.tool.db.dialect.doris.DorisDialect;
+import com.github.pdaodao.springwebplus.tool.db.dialect.gbase.GbaseDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.kingbase.KingbaseDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.mysql.MysqlDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.pg.PgDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.sqlite.SqliteDialect;
+import com.github.pdaodao.springwebplus.tool.db.dialect.starrocks.StarRocksDialect;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +22,10 @@ public class DbFactory {
         map.put(DbType.Sqlite, new SqliteDialect());
         map.put(DbType.Postgresql, new PgDialect());
         map.put(DbType.Kingbase, new KingbaseDialect());
+        map.put(DbType.StarRocks, new StarRocksDialect());
+        map.put(DbType.Doris, new DorisDialect());
+        map.put(DbType.Gbase, new GbaseDialect());
+        map.put(DbType.Clickhouse, new ClickhouseDialect());
     }
 
     public static DbDialect of(final DbType dbType) {

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.JdbcSqlExecutor;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
@@ -76,11 +76,11 @@ public class JdbcReader implements Reader {
     }
 
     @Override
-    public StreamRow read() throws Exception {
+    public TableRow read() throws Exception {
         if (rs == null || !rs.next()) {
             return null;
         }
-        final StreamRow row = StreamRow.of(fields.size());
+        final TableRow row = TableRow.of(fields.size());
         for (int i = 1; i <= fields.size(); i++) {
             row.setField(fields.get(i - 1).getName(), JdbcUtils.getResultSetValue(rs, i));
         }

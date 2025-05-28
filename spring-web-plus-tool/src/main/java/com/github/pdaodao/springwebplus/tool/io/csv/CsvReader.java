@@ -6,8 +6,8 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.data.RowKind;
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
-import com.github.pdaodao.springwebplus.tool.data.converter.StreamRowSetter;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
+import com.github.pdaodao.springwebplus.tool.data.converter.TableRowSetter;
 import com.github.pdaodao.springwebplus.tool.data.converter.ValueConverterRowSetter;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
@@ -25,7 +25,7 @@ public class CsvReader implements Reader {
     private transient List<TableColumn> fields;
     private transient CSVParser csvParser;
     private transient Iterator<CSVRecord> it;
-    private transient StreamRowSetter[] streamRowSetters;
+    private transient TableRowSetter[] streamRowSetters;
 
     public CsvReader(InputStreamWrap inputStreamWrap, CsvFormat csvFormat, List<TableColumn> fields) {
         this.inputStreamWrap = inputStreamWrap;
@@ -63,7 +63,7 @@ public class CsvReader implements Reader {
             }
             fields = fsFiltered;
         }
-        streamRowSetters = new StreamRowSetter[fields.size()];
+        streamRowSetters = new TableRowSetter[fields.size()];
         int i = 0;
         for(final TableColumn f: fields){
             if(StrUtil.equals(csvFormat.getOpName(), f.getName())){
@@ -75,15 +75,15 @@ public class CsvReader implements Reader {
     }
 
     @Override
-    public StreamRow read() throws Exception {
+    public TableRow read() throws Exception {
         if(it.hasNext()){
             return toRow(it.next());
         }
         return null;
     }
 
-    private StreamRow toRow(final CSVRecord record){
-        final StreamRow row = new StreamRow();
+    private TableRow toRow(final CSVRecord record){
+        final TableRow row = new TableRow();
         int i = 0;
         for(final String v: record.values()){
             streamRowSetters[i++].set(row, v);
@@ -109,9 +109,9 @@ public class CsvReader implements Reader {
         inputStreamWrap.close();
     }
 
-    public static class KingStreamRowSetter implements StreamRowSetter{
+    public static class KingStreamRowSetter implements TableRowSetter {
         @Override
-        public void set(StreamRow row, Object object) {
+        public void set(TableRow row, Object object) {
             final Integer kind = DataValueUtil.toInt(object);
             if(ObjectUtil.equals(1, kind)){
                 row.setKind(RowKind.DELETE);

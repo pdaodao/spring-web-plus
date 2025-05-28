@@ -6,18 +6,18 @@ import lombok.Data;
 import java.util.*;
 
 @Data
-public class CdcBatchData {
+public class BatchRowMap {
     private final List<String> pks;
-    private final Map<String, StreamRow> upsertMap = new LinkedHashMap<>(4096);
-    private final Map<String, StreamRow> deleteMap = new LinkedHashMap<>(4096);
+    private final Map<String, TableRow> upsertMap = new LinkedHashMap<>(4096);
+    private final Map<String, TableRow> deleteMap = new LinkedHashMap<>(4096);
     private int size = 0;
 
-    public CdcBatchData(final List<String> pks) {
+    public BatchRowMap(final List<String> pks) {
         this.pks = pks;
     }
 
-    public synchronized CdcBatchListData toList(){
-        final CdcBatchListData r = new CdcBatchListData(upsertMap.values(), deleteMap.values());
+    public synchronized BatchRowList toList(){
+        final BatchRowList r = new BatchRowList(upsertMap.values(), deleteMap.values());
         upsertMap.clear();
         deleteMap.clear();
         size = 0;
@@ -28,7 +28,7 @@ public class CdcBatchData {
         return size;
     }
 
-    public synchronized void add(final StreamRow row){
+    public synchronized void add(final TableRow row){
         if(row == null){
             return;
         }
@@ -48,7 +48,7 @@ public class CdcBatchData {
         }
         if(RowKind.UPDATE_AFTER == row.getKind() || RowKind.UPDATE_AFTER == row.getKind() ){
             deleteMap.remove(pkValue);
-            final StreamRow old = upsertMap.get(pkValue);
+            final TableRow old = upsertMap.get(pkValue);
             if(old == null){
                 upsertMap.put(pkValue, row);
                 return;
@@ -63,7 +63,7 @@ public class CdcBatchData {
     }
 
 
-    private String pkValue(final StreamRow row){
+    private String pkValue(final TableRow row){
         final StringBuilder sb = new StringBuilder();
         for(final String p: pks){
             sb.append(row.getData().getString(p, "-"));

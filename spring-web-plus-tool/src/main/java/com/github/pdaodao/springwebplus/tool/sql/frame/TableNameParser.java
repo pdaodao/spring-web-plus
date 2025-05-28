@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.db.sql.frame;
+package com.github.pdaodao.springwebplus.tool.sql.frame;
 
 import java.util.*;
 import java.util.regex.Matcher;

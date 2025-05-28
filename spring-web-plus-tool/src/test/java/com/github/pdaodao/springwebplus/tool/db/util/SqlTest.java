@@ -2,10 +2,8 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 
 import com.github.pdaodao.springwebplus.tool.db.core.FilterTree;
 import com.github.pdaodao.springwebplus.tool.db.pojo.JoinType;
-import com.github.pdaodao.springwebplus.tool.db.sql.SQL;
-import com.github.pdaodao.springwebplus.tool.db.sql.TableAliasCounter;
-import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
-import lombok.val;
+import com.github.pdaodao.springwebplus.tool.sql.SQL;
+import com.github.pdaodao.springwebplus.tool.sql.TableAliasCounter;
 import org.junit.Assert;
 import org.junit.Test;
 

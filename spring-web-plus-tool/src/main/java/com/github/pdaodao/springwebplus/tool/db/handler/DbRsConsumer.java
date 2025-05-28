@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.handler;
 
-import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ public interface DbRsConsumer {
      *
      * @param row
      */
-    void row(TableDataRow row) throws SQLException;
+    void row(TableRowData row) throws SQLException;
 
     /**
      * 设置总数据行数

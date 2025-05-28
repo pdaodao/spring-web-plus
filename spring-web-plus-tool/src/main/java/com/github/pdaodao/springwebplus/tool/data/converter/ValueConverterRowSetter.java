@@ -1,9 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.data.converter;
 
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 
-public class ValueConverterRowSetter<T> implements StreamRowSetter{
+public class ValueConverterRowSetter<T> implements TableRowSetter {
     private final String name;
     private final ValueConverter<T> converter;
 
@@ -18,7 +18,7 @@ public class ValueConverterRowSetter<T> implements StreamRowSetter{
     }
 
     @Override
-    public void set(StreamRow row, Object object) {
+    public void set(TableRow row, Object object) {
         row.setField(name, converter.get(object));
     }
 }

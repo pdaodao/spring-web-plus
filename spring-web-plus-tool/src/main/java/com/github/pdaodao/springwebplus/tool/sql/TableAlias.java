@@ -1,7 +1,7 @@
-package com.github.pdaodao.springwebplus.tool.db.sql;
+package com.github.pdaodao.springwebplus.tool.sql;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.sql.frame.SqlTokenizer;
+import com.github.pdaodao.springwebplus.tool.sql.frame.SqlTokenizer;
 
 import java.util.HashSet;
 import java.util.Set;

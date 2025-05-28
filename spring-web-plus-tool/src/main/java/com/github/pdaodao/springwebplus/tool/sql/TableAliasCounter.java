@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.db.sql;
+package com.github.pdaodao.springwebplus.tool.sql;
 
 import lombok.Data;
 

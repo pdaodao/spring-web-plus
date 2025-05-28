@@ -2,9 +2,9 @@ package com.github.pdaodao.springwebplus.tool.io.jdbc;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.data.CdcBatchData;
-import com.github.pdaodao.springwebplus.tool.data.CdcBatchListData;
-import com.github.pdaodao.springwebplus.tool.data.StreamRow;
+import com.github.pdaodao.springwebplus.tool.data.BatchRowMap;
+import com.github.pdaodao.springwebplus.tool.data.BatchRowList;
+import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.JdbcBatchRunner;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
@@ -28,7 +28,7 @@ public class JdbcTableWriter implements Writer {
     private final WriterInfo writerInfo;
     private transient long total = 0;
     private transient DbDialect dbDialect;
-    private transient CdcBatchData cdcBatchData;
+    private transient BatchRowMap cdcBatchData;
     private transient JdbcBatchRunner batchRunner;
     private long lastCommitTime = 0l;
 
@@ -70,7 +70,7 @@ public class JdbcTableWriter implements Writer {
                 f.setFrom(f.getName());
             }
         }
-        cdcBatchData = new CdcBatchData(tableInfo.pkColumnNames());
+        cdcBatchData = new BatchRowMap(tableInfo.pkColumnNames());
         batchRunner = new JdbcBatchRunner(writerInfo.getDbInfo(),dbDialect, tableInfo, cdcBatchData.getPks());
     }
 
@@ -80,7 +80,7 @@ public class JdbcTableWriter implements Writer {
     }
 
     @Override
-    public void write(final StreamRow row) throws Exception {
+    public void write(final TableRow row) throws Exception {
         if(row == null || row.isEnd() || row.getData() == null){
             return;
         }
@@ -96,7 +96,7 @@ public class JdbcTableWriter implements Writer {
         if(cdcBatchData.getSize() < 1){
             return;
         }
-        final CdcBatchListData list = cdcBatchData.toList();
+        final BatchRowList list = cdcBatchData.toList();
         batchRunner.execute(list);
     }
 

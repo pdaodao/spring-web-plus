@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.db.sql;
+package com.github.pdaodao.springwebplus.tool.sql;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -6,11 +6,11 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.db.pojo.JoinType;
 import com.github.pdaodao.springwebplus.tool.db.pojo.NameAlias;
 import com.github.pdaodao.springwebplus.tool.db.pojo.StatementType;
-import com.github.pdaodao.springwebplus.tool.db.sql.frame.SafeAppendable;
-import com.github.pdaodao.springwebplus.tool.db.sql.table.SqlJoinTable;
-import com.github.pdaodao.springwebplus.tool.db.sql.table.SqlProjectTable;
-import com.github.pdaodao.springwebplus.tool.db.sql.table.SqlTable;
-import com.github.pdaodao.springwebplus.tool.db.sql.table.SqlUnionTable;
+import com.github.pdaodao.springwebplus.tool.sql.frame.SafeAppendable;
+import com.github.pdaodao.springwebplus.tool.sql.table.SqlJoinTable;
+import com.github.pdaodao.springwebplus.tool.sql.table.SqlProjectTable;
+import com.github.pdaodao.springwebplus.tool.sql.table.SqlTable;
+import com.github.pdaodao.springwebplus.tool.sql.table.SqlUnionTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

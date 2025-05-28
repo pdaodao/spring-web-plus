@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -16,13 +15,13 @@ import java.util.*;
  * 一行数据
  */
 @Data
-public class TableDataRow extends LinkedHashMap<String, Object> implements Serializable {
+public class TableRowData extends LinkedHashMap<String, Object> implements Serializable {
 
-    public TableDataRow(int initialCapacity) {
+    public TableRowData(int initialCapacity) {
         super(initialCapacity);
     }
 
-    public TableDataRow() {
+    public TableRowData() {
     }
 
     public Collection<Object> stringList(final String... fields){
@@ -39,16 +38,16 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
         return ret;
     }
 
-    public static <T> TableDataRow from(final Map<String, T> map) {
+    public static <T> TableRowData from(final Map<String, T> map) {
         if (map == null) {
             return null;
         }
-        final TableDataRow mapRow = new TableDataRow();
+        final TableRowData mapRow = new TableRowData();
         mapRow.putAll(map);
         return mapRow;
     }
 
-    public void mergeFrom(final TableDataRow row){
+    public void mergeFrom(final TableRowData row){
         if(row == null){
             return;
         }
@@ -63,11 +62,11 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
 //        return r;
 //    }
 
-    public static TableDataRow mapToCamelCase(final Map<String, Object> map) {
+    public static TableRowData mapToCamelCase(final Map<String, Object> map) {
         if (map == null) {
             return null;
         }
-        final TableDataRow f = new TableDataRow();
+        final TableRowData f = new TableRowData();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             f.put(CharSequenceUtil.toCamelCase(entry.getKey()), entry.getValue());
         }
@@ -79,8 +78,8 @@ public class TableDataRow extends LinkedHashMap<String, Object> implements Seria
      *
      * @return
      */
-    public TableDataRow toCamelCase() {
-        final TableDataRow f = new TableDataRow();
+    public TableRowData toCamelCase() {
+        final TableRowData f = new TableRowData();
         for (Map.Entry<String, Object> entry : entrySet()) {
             f.put(StrUtils.toCamelCase(entry.getKey()), entry.getValue());
         }

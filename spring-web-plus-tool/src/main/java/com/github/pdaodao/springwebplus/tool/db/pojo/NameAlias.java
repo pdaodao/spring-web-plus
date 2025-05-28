@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.pojo;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.sql.TableAlias;
+import com.github.pdaodao.springwebplus.tool.sql.TableAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

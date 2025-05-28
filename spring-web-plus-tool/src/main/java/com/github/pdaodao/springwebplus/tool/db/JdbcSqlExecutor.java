@@ -1,19 +1,16 @@
 package com.github.pdaodao.springwebplus.tool.db;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.NamedSql;
 import cn.hutool.db.sql.SqlExecutor;
 import com.github.pdaodao.springwebplus.tool.data.PageInfo;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
-import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.handler.DbRowRsHandler;
 import com.github.pdaodao.springwebplus.tool.db.handler.DbRsTableDataConsumer;
@@ -22,7 +19,6 @@ import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.lang.ConnectionProviderFactory;
 import com.github.pdaodao.springwebplus.tool.lang.JdbcConnectionProvider;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import jdk.jshell.spi.SPIResolutionException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
@@ -80,7 +76,7 @@ public class JdbcSqlExecutor implements AutoCloseable {
      * @return
      * @throws SQLException
      */
-    public TableDataRow getOne(final String sql, @Nullable Object... args) throws SQLException{
+    public TableRowData getOne(final String sql, @Nullable Object... args) throws SQLException{
         final TableData rr = list(sql, null, args);
         if(rr == null || CollUtil.isEmpty(rr.getList())){
             return null;
@@ -96,7 +92,7 @@ public class JdbcSqlExecutor implements AutoCloseable {
      * @return
      * @throws SQLException
      */
-    public TableDataRow getOne(final String tableName, final Map<String, Object> filterFieldMap) throws SQLException{
+    public TableRowData getOne(final String tableName, final Map<String, Object> filterFieldMap) throws SQLException{
         Preconditions.checkNotBlank(tableName, "tableName is empty.");
         Preconditions.assertTrue(MapUtil.isEmpty(filterFieldMap), "get one condition is empty");
         final SqlWithMapParams sqlWithMapParams = new SqlWithMapParams();
@@ -119,7 +115,7 @@ public class JdbcSqlExecutor implements AutoCloseable {
      * @return
      * @throws SQLException
      */
-    public TableDataRow getOne(final SqlWithMapParams sqlWithMapParams) throws SQLException{
+    public TableRowData getOne(final SqlWithMapParams sqlWithMapParams) throws SQLException{
         final TableData rr = list(sqlWithMapParams, null);
         if(rr == null || CollUtil.isEmpty(rr.getList())){
             return null;

@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.handler;
 
 import cn.hutool.db.handler.RsHandler;
-import com.github.pdaodao.springwebplus.tool.data.TableDataRow;
+import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.util.DbMetaUtil;
@@ -56,7 +56,7 @@ public class DbRowRsHandler implements RsHandler<Long> {
             if (bound != null && total > bound) {
                 continue;
             }
-            final TableDataRow row = new TableDataRow();
+            final TableRowData row = new TableRowData();
             for (int i = 1; i <= columnCount; i++) {
                 row.put(meta.getColumnLabel(i), getColumnValue(rs, i, meta.getColumnType(i)));
             }

@@ -11,7 +11,7 @@ import java.util.List;
  * 数据表数据
  */
 @Data
-public class TableData extends PageResult<TableDataRow> {
+public class TableData extends PageResult<TableRowData> {
 
     /**
      * 转为驼峰
@@ -27,8 +27,8 @@ public class TableData extends PageResult<TableDataRow> {
         if(CollUtil.isEmpty(getList())){
             return;
         }
-        final List<TableDataRow> rows = new ArrayList();
-        for(final TableDataRow r: getList()){
+        final List<TableRowData> rows = new ArrayList();
+        for(final TableRowData r: getList()){
             rows.add(r.toCamelCase());
         }
         setList(rows);

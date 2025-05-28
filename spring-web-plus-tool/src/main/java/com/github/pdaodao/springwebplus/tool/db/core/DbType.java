@@ -18,6 +18,10 @@ public enum DbType {
     Kingbase,
     Dm,
     Odps,
+    StarRocks,
+    Doris,
+    Clickhouse,
+    Gbase,
     Duckdb,
     Sftp;
 
