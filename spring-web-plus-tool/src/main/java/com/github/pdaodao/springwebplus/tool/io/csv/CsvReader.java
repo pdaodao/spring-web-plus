@@ -9,7 +9,7 @@ import com.github.pdaodao.springwebplus.tool.data.RowKind;
 import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.data.converter.TableRowSetter;
 import com.github.pdaodao.springwebplus.tool.data.converter.ValueConverterRowSetter;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 public class CsvReader implements Reader {
     private final InputStreamWrap inputStreamWrap;
     private final CsvFormat csvFormat;
-    private transient List<TableColumn> fields;
+    private transient List<TableField> fields;
     private transient CSVParser csvParser;
     private transient Iterator<CSVRecord> it;
     private transient TableRowSetter[] streamRowSetters;
 
-    public CsvReader(InputStreamWrap inputStreamWrap, CsvFormat csvFormat, List<TableColumn> fields) {
+    public CsvReader(InputStreamWrap inputStreamWrap, CsvFormat csvFormat, List<TableField> fields) {
         this.inputStreamWrap = inputStreamWrap;
         this.csvFormat = csvFormat;
         this.fields = fields;
@@ -40,23 +40,23 @@ public class CsvReader implements Reader {
                 .setFormat(csvFormat.toFormat()).get();
         it = csvParser.iterator();
         if(BooleanUtil.isTrue(csvFormat.isSkipHeaderRecord())){
-            final Map<String, TableColumn> fsMap = new LinkedHashMap<>();
-            for(final TableColumn f: fields){
+            final Map<String, TableField> fsMap = new LinkedHashMap<>();
+            for(final TableField f: fields){
                 fsMap.put(f.getName(), f);
             }
             List<String> names = csvParser.getHeaderNames();
             if(CollUtil.isEmpty(names) && it.hasNext()){
                 names = Arrays.stream(it.next().values()).collect(Collectors.toList());
             }
-            final List<TableColumn> fsFiltered = new ArrayList<>();
+            final List<TableField> fsFiltered = new ArrayList<>();
             for(final String f: names){
-                final TableColumn old = fsMap.get(f);
+                final TableField old = fsMap.get(f);
                 if(old != null){
                     fsFiltered.add(old);
                     continue;
                 }
                 if(StrUtil.equals(csvFormat.getOpName(),f)){
-                    fsFiltered.add(TableColumn.of(f, DataType.INT));
+                    fsFiltered.add(TableField.of(f, DataType.INT));
                     continue;
                 }
                 Preconditions.assertTrue(true, "unknown field:{}", f);
@@ -65,7 +65,7 @@ public class CsvReader implements Reader {
         }
         streamRowSetters = new TableRowSetter[fields.size()];
         int i = 0;
-        for(final TableColumn f: fields){
+        for(final TableField f: fields){
             if(StrUtil.equals(csvFormat.getOpName(), f.getName())){
                 streamRowSetters[i++] = new KingStreamRowSetter();
                 continue;
@@ -92,7 +92,7 @@ public class CsvReader implements Reader {
     }
 
     @Override
-    public List<TableColumn> fields() {
+    public List<TableField> fields() {
         return fields;
     }
 

@@ -2,9 +2,9 @@ package com.github.pdaodao.springwebplus.tool.db.handler;
 
 import cn.hutool.db.handler.RsHandler;
 import com.github.pdaodao.springwebplus.tool.data.TableRowData;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
-import com.github.pdaodao.springwebplus.tool.db.util.DbMetaUtil;
+import com.github.pdaodao.springwebplus.tool.db.DbMetaUtil;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -48,7 +48,7 @@ public class DbRowRsHandler implements RsHandler<Long> {
     public Long handle(ResultSet rs) throws SQLException {
         final ResultSetMetaData meta = rs.getMetaData();
         final int columnCount = meta.getColumnCount();
-        final List<TableColumn> fields = DbMetaUtil.parseFieldsByData(rs, dbDialect);
+        final List<TableField> fields = DbMetaUtil.parseFieldsByData(rs, dbDialect);
         dbRsConsumer.fields(fields);
         long total = 0;
         while (rs.next()) {

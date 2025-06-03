@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
-import com.github.pdaodao.springwebplus.tool.db.core.FilterTree;
-import com.github.pdaodao.springwebplus.tool.db.pojo.JoinType;
+import com.github.pdaodao.springwebplus.tool.table.FilterTree;
+import com.github.pdaodao.springwebplus.tool.table.pojo.JoinType;
 import com.github.pdaodao.springwebplus.tool.sql.SQL;
 import com.github.pdaodao.springwebplus.tool.sql.TableAliasCounter;
 import org.junit.Assert;

@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.tool.data;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import lombok.Data;
 
 import java.util.*;
@@ -23,7 +23,7 @@ public class PageResult<T> {
      * 字段列表
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<TableColumn> columns;
+    private List<TableField> fields;
 
     /**
      *  其他信息

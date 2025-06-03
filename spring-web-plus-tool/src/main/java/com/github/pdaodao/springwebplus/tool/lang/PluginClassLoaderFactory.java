@@ -8,7 +8,7 @@ import cn.hutool.core.util.ServiceLoaderUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 
 import java.io.File;

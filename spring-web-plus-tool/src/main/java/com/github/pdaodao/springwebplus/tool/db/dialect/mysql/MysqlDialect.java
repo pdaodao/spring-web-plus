@@ -1,13 +1,13 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.mysql;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFunction;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDbDialect;
-import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
+import com.github.pdaodao.springwebplus.tool.db.DbUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 public class MysqlDialect extends BaseDbDialect {

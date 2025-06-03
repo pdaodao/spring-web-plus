@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.data.converter;
 
 import com.github.pdaodao.springwebplus.tool.data.TableRow;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 
 public class ValueConverterRowSetter<T> implements TableRowSetter {
     private final String name;
@@ -12,7 +12,7 @@ public class ValueConverterRowSetter<T> implements TableRowSetter {
         this.converter = converter;
     }
 
-    public ValueConverterRowSetter(final TableColumn tableColumn) {
+    public ValueConverterRowSetter(final TableField tableColumn) {
         this.name = tableColumn.getName();
         this.converter = ValueConverter.of(tableColumn);
     }

@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.tool.db.handler;
 import com.github.pdaodao.springwebplus.tool.data.PageInfo;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
 import com.github.pdaodao.springwebplus.tool.data.TableRowData;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public class DbRsTableDataConsumer implements DbRsConsumer {
     private final TableData tableData = new TableData();
 
     @Override
-    public void fields(List<TableColumn> fields) {
-        tableData.setColumns(fields);
+    public void fields(List<TableField> fields) {
+        tableData.setFields(fields);
     }
 
     @Override

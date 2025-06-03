@@ -4,8 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
 
 import java.net.URL;
 import java.util.HashSet;

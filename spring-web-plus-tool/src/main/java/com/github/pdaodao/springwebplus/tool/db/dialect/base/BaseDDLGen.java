@@ -3,9 +3,9 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
-import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
+import com.github.pdaodao.springwebplus.tool.table.TableIndex;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
@@ -33,10 +33,10 @@ public class BaseDDLGen implements DbDDLGen {
         final StringBuilder sql = new StringBuilder();
         sql.append(createTableSqlPrefix()).append(" ").append(tableName).append(" (\n");
 
-        final int size = tableInfo.getColumns().size();
+        final int size = tableInfo.getFields().size();
         int index = 0;
         // 普通字段
-        for (final TableColumn field : tableInfo.getColumns()) {
+        for (final TableField field : tableInfo.getFields()) {
             index++;
             // 生成字段定义
             final String fieldDdl = dbDialect.dataTypeConverter().fieldDDL(null, field, ddlBuildContext);
@@ -194,7 +194,7 @@ public class BaseDDLGen implements DbDDLGen {
 
 
     @Override
-    public List<String> addColumnSql(final TableColumn tableColumn, final DDLBuildContext ddlBuildContext) {
+    public List<String> addColumnSql(final TableField tableColumn, final DDLBuildContext ddlBuildContext) {
         final List<String> last = new ArrayList<>();
         final List<String> list = new ArrayList<>();
         final String sql = String.format(
@@ -227,7 +227,7 @@ public class BaseDDLGen implements DbDDLGen {
     }
 
     @Override
-    public List<String> alterColumnSql(final TableColumn from, final TableColumn to, final DDLBuildContext ddlBuildContext) {
+    public List<String> alterColumnSql(final TableField from, final TableField to, final DDLBuildContext ddlBuildContext) {
         Preconditions.checkNotNull(from.getDataType(), "{} alterColumnSql from dataType is null of table:{}", from.getName(), ddlBuildContext.tableName);
         Preconditions.checkNotNull(to.getDataType(), "{} alterColumnSql to dataType is null of table:{}", to.getName(), ddlBuildContext.tableName);
         final List<String> list = new ArrayList<>();

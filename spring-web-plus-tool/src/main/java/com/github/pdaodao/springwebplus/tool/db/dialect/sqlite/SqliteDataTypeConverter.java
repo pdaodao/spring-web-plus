@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.sqlite;
 
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
 import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeNameWrap;
@@ -9,12 +9,12 @@ import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeNameWrap;
 public class SqliteDataTypeConverter extends BaseDataTypeConverter {
 
     @Override
-    protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
+    protected String genDDLFieldAutoIncrement(TableField tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
         return "PRIMARY KEY AUTOINCREMENT";
     }
 
     @Override
-    public FieldTypeNameWrap fieldDDLInt(TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLInt(TableField columnInfo) {
         if (columnInfo.getIsAuto()) {
             return FieldTypeNameWrap.of("INTEGER", columnInfo.getDefaultValue());
         }
@@ -22,7 +22,7 @@ public class SqliteDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
-    public DataType toUniType(TableColumn columnInfo) {
+    public DataType toUniType(TableField columnInfo) {
         final String dbType = columnInfo.getTypeName().trim().toLowerCase();
         if (dbType.equals("varchar") && columnInfo.getLength() == 0) {
             return DataType.TEXT;
@@ -31,7 +31,7 @@ public class SqliteDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
-    protected String genDDLFieldComment(final TableColumn from, TableColumn field, DDLBuildContext context) {
+    protected String genDDLFieldComment(final TableField from, TableField field, DDLBuildContext context) {
         return null;
     }
 }

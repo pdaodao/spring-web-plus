@@ -1,8 +1,8 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.sqlite;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
@@ -23,7 +23,7 @@ public class SqliteDDLGen extends BaseDDLGen {
     }
 
     @Override
-    public List<String> alterColumnSql(TableColumn from, TableColumn to, DDLBuildContext ddlBuildContext) {
+    public List<String> alterColumnSql(TableField from, TableField to, DDLBuildContext ddlBuildContext) {
         final List<String> sqls = super.alterColumnSql(from, to, ddlBuildContext);
         log.error("unsupport alter column[{}]", StrUtil.join(";", sqls));
         return null;

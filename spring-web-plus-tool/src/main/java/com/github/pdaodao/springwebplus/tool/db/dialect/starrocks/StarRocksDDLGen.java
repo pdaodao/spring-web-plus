@@ -2,8 +2,8 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.starrocks;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableIndex;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.mysql.MysqlDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
@@ -49,7 +49,7 @@ public class StarRocksDDLGen extends MysqlDDLGen {
             return StrUtil.format("PRIMARY KEY ({}) \nDISTRIBUTED BY HASH ({}) BUCKETS {} ", f, f, tableInfo.getBucketNum());
         }
         return StrUtil.format("DISTRIBUTED BY HASH ({}) BUCKETS {} ",
-                dbDialect.quoteIdentifier(tableInfo.getColumns().get(0).getName()), tableInfo.getBucketNum());
+                dbDialect.quoteIdentifier(tableInfo.getFields().get(0).getName()), tableInfo.getBucketNum());
     }
 
     @Override

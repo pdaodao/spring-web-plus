@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.io.jdbc.support;
 
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -14,16 +14,16 @@ public interface PsSetter<T> {
 
     String getFrom();
 
-    static PsSetter[] of(final List<TableColumn> fs){
+    static PsSetter[] of(final List<TableField> fs){
         final PsSetter[] ret = new PsSetter[fs.size()];
         int index = 0;
-        for(final TableColumn f: fs){
+        for(final TableField f: fs){
             ret[index++] = of(f);
         }
         return ret;
     }
 
-    static PsSetter of(TableColumn f){
+    static PsSetter of(TableField f){
         if(f == null){
             return null;
         }

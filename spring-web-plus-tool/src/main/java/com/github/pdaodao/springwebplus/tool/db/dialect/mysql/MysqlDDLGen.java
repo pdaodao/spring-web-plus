@@ -2,8 +2,8 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.mysql;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableIndex;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;

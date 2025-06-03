@@ -6,12 +6,12 @@ import com.github.pdaodao.springwebplus.tool.data.BatchRowMap;
 import com.github.pdaodao.springwebplus.tool.data.BatchRowList;
 import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.JdbcBatchRunner;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbMetaLoader;
-import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
+import com.github.pdaodao.springwebplus.tool.db.DbUtil;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
@@ -52,15 +52,15 @@ public class JdbcTableWriter implements Writer {
         if(tableInfo == null){
             tableInfo = new TableInfo();
             tableInfo.setName(writerInfo.getTableName());
-            tableInfo.setColumns(writerInfo.getFields());
+            tableInfo.setFields(writerInfo.getFields());
             tableInfo.setDbSchema(writerInfo.getDbInfo().getDbSchema());
             final List<String> sqls = dbDialect.ddlGen().createTable(tableInfo);
             log.info(StrUtil.join(";", sqls));
             DbUtil.executeSqlBlock(DbUtil.getDatasource(writerInfo.getDbInfo()), sqls);
         }
-        final Map<String, TableColumn> fieldMap = tableInfo.fieldMap();
-        for(final TableColumn f: writerInfo.getFields()){
-            final TableColumn old = fieldMap.get(f.getName());
+        final Map<String, TableField> fieldMap = tableInfo.fieldMap();
+        for(final TableField f: writerInfo.getFields()){
+            final TableField old = fieldMap.get(f.getName());
             Preconditions.checkNotNull(old, "field {} not exist.", f.getName());
             f.setDataType(old.getDataType());
             f.setIsAuto(old.getIsAuto());
@@ -115,8 +115,8 @@ public class JdbcTableWriter implements Writer {
     }
 
     private synchronized void processAutoIdRestart() throws Exception{
-        TableColumn pk = null;
-        for(final TableColumn f: writerInfo.getFields()){
+        TableField pk = null;
+        for(final TableField f: writerInfo.getFields()){
             if(BooleanUtil.isTrue(f.getIsAuto())){
                 pk = f;
                 break;
@@ -132,7 +132,7 @@ public class JdbcTableWriter implements Writer {
     }
 
     @Override
-    public List<TableColumn> fields() {
+    public List<TableField> fields() {
         return writerInfo.getFields();
     }
 }

@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.TableType;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableType;
 import java.util.List;
 
 public interface DbMetaLoader {

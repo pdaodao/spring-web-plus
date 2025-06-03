@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.handler;
 
 import com.github.pdaodao.springwebplus.tool.data.TableRowData;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,7 +14,7 @@ public interface DbRsConsumer {
      *
      * @param fields
      */
-    void fields(List<TableColumn> fields);
+    void fields(List<TableField> fields);
 
     /**
      * 来了一行数据

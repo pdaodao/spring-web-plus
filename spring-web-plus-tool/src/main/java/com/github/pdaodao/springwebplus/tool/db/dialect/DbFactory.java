@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.clickhouse.ClickhouseDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.doris.DorisDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.gbase.GbaseDialect;

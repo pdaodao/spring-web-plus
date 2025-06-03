@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.lang;
 
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 
 import java.sql.Connection;

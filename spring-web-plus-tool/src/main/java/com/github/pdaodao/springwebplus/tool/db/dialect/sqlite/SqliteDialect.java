@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.sqlite;
 
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDbDialect;

@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.io.lang;
 
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface StreamIO extends AutoCloseable {
      *
      * @return
      */
-    List<TableColumn> fields();
+    List<TableField> fields();
 
     /**
      * 初始化

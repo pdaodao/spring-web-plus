@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.base.frame;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
+import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 
 import java.lang.reflect.Field;
 

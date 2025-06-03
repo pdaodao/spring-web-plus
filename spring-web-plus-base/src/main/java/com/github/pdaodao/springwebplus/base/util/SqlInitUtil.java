@@ -2,10 +2,10 @@ package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.SqlType;
-import com.github.pdaodao.springwebplus.tool.db.pojo.SqlCmd;
-import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
-import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
+import com.github.pdaodao.springwebplus.tool.table.SqlType;
+import com.github.pdaodao.springwebplus.tool.table.pojo.SqlCmd;
+import com.github.pdaodao.springwebplus.tool.db.DbUtil;
+import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;

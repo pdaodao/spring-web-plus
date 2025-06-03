@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.data.TableRow;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.util.DataValueTypeUtil;
@@ -19,7 +19,7 @@ public class ExcelReader implements Reader {
     private final InputStreamWrap inputStreamWrap;
     protected transient long total = 0;
     protected transient int sheetId = 0;
-    protected transient List<TableColumn> fields;
+    protected transient List<TableField> fields;
     protected transient int currentIndex = 0;
 
     public ExcelReader(InputStreamWrap inputStreamWrap) {
@@ -32,7 +32,7 @@ public class ExcelReader implements Reader {
     }
 
     @Override
-    public List<TableColumn> fields() {
+    public List<TableField> fields() {
         return fields;
     }
 
@@ -60,7 +60,7 @@ public class ExcelReader implements Reader {
             if (head != null) {
                 int index = 1;
                 for (final Object v : head) {
-                    final TableColumn f = new TableColumn();
+                    final TableField f = new TableField();
                     f.setSeq(index);
                     f.setFrom("c" + (index++));
                     f.setName(f.getFrom());
@@ -69,10 +69,10 @@ public class ExcelReader implements Reader {
                 }
             }
             if (total > 0) {
-                final List<TableColumn> types = DataValueTypeUtil.guessFieldType(rows.subList(1, rows.size()));
+                final List<TableField> types = DataValueTypeUtil.guessFieldType(rows.subList(1, rows.size()));
                 int index = 0;
-                for (final TableColumn f : fields) {
-                    final TableColumn dataType = types.get(index++);
+                for (final TableField f : fields) {
+                    final TableField dataType = types.get(index++);
                     if(dataType.getDataType() != null && dataType.getDataType().isIntFamily()
                             && ( StrUtil.contains(f.getTitle(), "码") || StrUtil.contains(f.getTitle(), "级") || StrUtil.contains(f.getTitle(), "标识"))){
                         dataType.setDataType(DataType.STRING);

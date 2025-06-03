@@ -6,11 +6,11 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.JdbcSqlExecutor;
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.db.handler.JdbcUtils;
-import com.github.pdaodao.springwebplus.tool.db.util.DbMetaUtil;
-import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
+import com.github.pdaodao.springwebplus.tool.db.DbMetaUtil;
+import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
@@ -29,7 +29,7 @@ public class JdbcReader implements Reader {
     private transient Connection connection;
     private transient PreparedStatement ps;
     private transient ResultSet rs;
-    private transient List<TableColumn> fields;
+    private transient List<TableField> fields;
 
     public JdbcReader(DbInfo dbInfo, final String tableName, String sql) {
         this.dbInfo = dbInfo;
@@ -71,7 +71,7 @@ public class JdbcReader implements Reader {
     }
 
     @Override
-    public List<TableColumn> fields() {
+    public List<TableField> fields() {
         return fields;
     }
 

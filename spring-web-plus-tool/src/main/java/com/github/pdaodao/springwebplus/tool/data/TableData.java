@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
 import cn.hutool.core.collection.CollUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
 import java.util.ArrayList;
@@ -19,8 +19,8 @@ public class TableData extends PageResult<TableRowData> {
      * @return
      */
     public void toCamelCase() {
-        if(CollUtil.isNotEmpty(getColumns())){
-            for(final TableColumn f: getColumns()){
+        if(CollUtil.isNotEmpty(getFields())){
+            for(final TableField f: getFields()){
                 f.setName(StrUtils.toCamelCase(f.getName()));
             }
         }

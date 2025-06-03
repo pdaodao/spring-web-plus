@@ -1,23 +1,23 @@
 package com.github.pdaodao.springwebplus.tool.data.converter;
 
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 
 import java.util.List;
 
 public interface ValueConverter<T> {
     T get(final Object obj);
 
-    static ValueConverter[] of(final List<TableColumn> fs){
+    static ValueConverter[] of(final List<TableField> fs){
         final ValueConverter[] ret = new ValueConverter[fs.size()];
         int index = 0;
-        for(final TableColumn f: fs){
+        for(final TableField f: fs){
             ret[index++] = of(f);
         }
         return ret;
     }
 
-    static ValueConverter of(TableColumn f){
+    static ValueConverter of(TableField f){
         if(f == null){
             return null;
         }

@@ -5,14 +5,13 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.BatchRowList;
 import com.github.pdaodao.springwebplus.tool.data.TableRow;
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
-import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
-import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
+import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.io.jdbc.support.PsSetter;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import java.sql.Connection;
@@ -66,22 +65,22 @@ public class JdbcBatchRunner {
             psDeleteSetters = new PsSetter[CollUtil.size(pks)];
             int i = 0;
             final Set<String> pkSets = pks.stream().collect(Collectors.toSet());
-            for(final TableColumn f: tableInfo.getColumns()){
+            for(final TableField f: tableInfo.getFields()){
                 if(pkSets.contains(f.getName())){
                     psDeleteSetters[i] = PsSetter.of(f);
                 }
             }
         }
-        final String insert = SqlUtil.genInsertIntoSql(dbDialect, tableInfo.getName(), tableInfo.getColumns());
+        final String insert = SqlUtil.genInsertIntoSql(dbDialect, tableInfo.getName(), tableInfo.getFields());
         upsertSql = insert;
-        psUpsertSetters = PsSetter.of(tableInfo.getColumns());
+        psUpsertSetters = PsSetter.of(tableInfo.getFields());
         if(CollUtil.isEmpty(pks)){
             return;
         }
         // upsert语句
         if(DbType.Mysql == dbDialect.dbType()){
             final List<String> upFields = new ArrayList<>();
-            for(final TableColumn f: tableInfo.getColumns()){
+            for(final TableField f: tableInfo.getFields()){
                 if(BooleanUtil.isTrue(f.getIsAuto()) || BooleanUtil.isTrue(f.getIsPk())){
                     continue;
                 }
@@ -94,7 +93,7 @@ public class JdbcBatchRunner {
         }
         if(DbType.Postgresql == dbDialect.dbType() || DbType.Kingbase == dbDialect.dbType()){
             final List<String> upFields = new ArrayList<>();
-            for(final TableColumn f: tableInfo.getColumns()){
+            for(final TableField f: tableInfo.getFields()){
                 if(BooleanUtil.isTrue(f.getIsAuto()) || BooleanUtil.isTrue(f.getIsPk())){
                     continue;
                 }

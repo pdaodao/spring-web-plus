@@ -2,8 +2,8 @@ package com.github.pdaodao.springwebplus.tool.db.dialect.pg;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.core.DbType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.DbType;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFactory;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
@@ -13,14 +13,14 @@ import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 public class PgDataTypeConverter extends BaseDataTypeConverter {
 
     @Override
-    protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
+    protected String genDDLFieldAutoIncrement(TableField tableColumn, FieldTypeNameWrap typeWithDefault, DDLBuildContext context) {
         typeWithDefault.setTypeName("SERIAL");
         tableColumn.setDefaultValue(null);
         return null;
     }
 
     @Override
-    protected String genDDLFieldComment(final TableColumn from, TableColumn field, DDLBuildContext context) {
+    protected String genDDLFieldComment(final TableField from, TableField field, DDLBuildContext context) {
         if (from != null && StrUtil.equals(from.getRemark(), StrUtils.clean(field.getRemark()))) {
             return null;
         }
@@ -37,12 +37,12 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
-    public FieldTypeNameWrap fieldDDLDouble(TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLDouble(TableField columnInfo) {
         return FieldTypeNameWrap.of("float8", columnInfo.getDefaultValue());
     }
 
     @Override
-    public FieldTypeNameWrap fieldDDLBool(TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLBool(TableField columnInfo) {
         final FieldTypeNameWrap ff = super.fieldDDLBool(columnInfo);
         if(StrUtil.equals("1", ff.getColumnDef()) || "true".equalsIgnoreCase(ff.getColumnDef())){
             ff.setColumnDef("true");
@@ -54,7 +54,7 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
-    public FieldTypeNameWrap fieldDDLDate(TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLDate(TableField columnInfo) {
         if(DataType.DATE == columnInfo.getDataType()){
             return FieldTypeNameWrap.of("date", columnInfo.getDefaultValue());
         }
@@ -63,7 +63,7 @@ public class PgDataTypeConverter extends BaseDataTypeConverter {
     }
 
     @Override
-    public FieldTypeNameWrap fieldDDLBinary(TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLBinary(TableField columnInfo) {
         return FieldTypeNameWrap.of("blob", null);
     }
 }

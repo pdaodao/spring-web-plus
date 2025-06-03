@@ -1,13 +1,13 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.base;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.TableType;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbMetaLoader;
-import com.github.pdaodao.springwebplus.tool.db.util.DbMetaUtil;
-import com.github.pdaodao.springwebplus.tool.db.util.DbUtil;
+import com.github.pdaodao.springwebplus.tool.db.DbMetaUtil;
+import com.github.pdaodao.springwebplus.tool.db.DbUtil;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

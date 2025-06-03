@@ -5,9 +5,9 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.TableType;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableType;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -27,12 +27,12 @@ public class DataValueTypeUtil {
      * @param rows
      * @return
      */
-    public static List<TableColumn> guessFieldType(final List<List<Object>> rows) {
+    public static List<TableField> guessFieldType(final List<List<Object>> rows) {
         if (CollUtil.isEmpty(rows)) {
             return ListUtil.empty();
         }
         int maxSize = 0;
-        final Map<Integer, TableColumn> typeMap = new LinkedHashMap<>();
+        final Map<Integer, TableField> typeMap = new LinkedHashMap<>();
         int rowIndex = 0;
         for (final List<Object> row : rows) {
             if (rowIndex > 10) {
@@ -41,11 +41,11 @@ public class DataValueTypeUtil {
             int index = 0;
             for (final Object v : row) {
                 if (!typeMap.containsKey(index)) {
-                    final TableColumn f = new TableColumn();
+                    final TableField f = new TableField();
                     f.setLength(0);
                     typeMap.put(index, f);
                 }
-                final TableColumn f = typeMap.get(index);
+                final TableField f = typeMap.get(index);
                 final String type = guessType(v, f.getTypeName());
                 f.setTypeName(type);
                 index++;
@@ -60,11 +60,11 @@ public class DataValueTypeUtil {
                 }
             }
         }
-        final List<TableColumn> list = new ArrayList<>();
+        final List<TableField> list = new ArrayList<>();
         for (int i = 0; i < maxSize; i++) {
-            TableColumn f = typeMap.get(i);
+            TableField f = typeMap.get(i);
             if (f == null) {
-                f = new TableColumn();
+                f = new TableField();
             }
             if (StrUtil.isBlank(f.getTypeName())) {
                 f.setTypeName("STRING");
@@ -92,7 +92,7 @@ public class DataValueTypeUtil {
         final TableInfo tableInfo = new TableInfo();
         tableInfo.setName(topic);
         tableInfo.setTableType(TableType.TABLE);
-        final Map<String, TableColumn> map = new LinkedHashMap<>();
+        final Map<String, TableField> map = new LinkedHashMap<>();
         for (String record : records) {
             if (StrUtil.isBlank(record)) {
                 continue;
@@ -100,19 +100,19 @@ public class DataValueTypeUtil {
             if (record.startsWith("{")) {
                 final Map<String, Object> row = JSONUtil.toBean(record, LinkedHashMap.class);
                 for (Map.Entry<String, Object> entry : row.entrySet()) {
-                    TableColumn old = map.get(entry.getKey());
+                    TableField old = map.get(entry.getKey());
                     String oldType = old != null ? old.getTypeName() : null;
                     String typeName = guessType(entry.getValue(), oldType);
-                    final TableColumn tableColumn = new TableColumn();
+                    final TableField tableColumn = new TableField();
                     tableColumn.setName(entry.getKey());
                     tableColumn.setTypeName(typeName);
                     map.put(entry.getKey(), tableColumn);
                 }
             }
         }
-        for (Map.Entry<String, TableColumn> entry : map.entrySet()) {
+        for (Map.Entry<String, TableField> entry : map.entrySet()) {
             if (StrUtil.isEmpty(entry.getValue().getTypeName())) {
-                final TableColumn tableColumn = new TableColumn();
+                final TableField tableColumn = new TableField();
                 tableColumn.setName(entry.getValue().getName());
                 tableColumn.setTypeName("STRING");
                 tableInfo.addColumn(tableColumn);

@@ -4,7 +4,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
 import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeNameWrap;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BaseDataTypeConverter implements DataTypeConverter {
 
     @Override
-    public String fieldDDL(final TableColumn from, final TableColumn columnInfo, final DDLBuildContext context) {
+    public String fieldDDL(final TableField from, final TableField columnInfo, final DDLBuildContext context) {
         Preconditions.checkNotNull(columnInfo.getDataType(), "field {} data-type is null.", columnInfo.getName());
 
         final StringBuilder ret = new StringBuilder();
@@ -69,7 +69,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      *
      * @return
      */
-    protected String genDDLFieldAutoIncrement(TableColumn tableColumn, FieldTypeNameWrap typeWithDefault, final DDLBuildContext context) {
+    protected String genDDLFieldAutoIncrement(TableField tableColumn, FieldTypeNameWrap typeWithDefault, final DDLBuildContext context) {
         return null;
     }
 
@@ -81,12 +81,12 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param context
      * @return
      */
-    protected String genDDLFieldComment(final TableColumn from, TableColumn field, DDLBuildContext context) {
+    protected String genDDLFieldComment(final TableField from, TableField field, DDLBuildContext context) {
         return StrUtil.format(" COMMENT '{}' ", StrUtils.clean(field.getRemark(), 60));
     }
 
 
-    public FieldTypeNameWrap fieldTypeDDL(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldTypeDDL(final TableField columnInfo) {
         Preconditions.checkNotNull(columnInfo.getDataType(), "colunm [{}] data-type is null.", columnInfo.getName());
         final DataType dataType = columnInfo.getDataType();
         // 布尔
@@ -120,7 +120,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         return null;
     }
 
-    public FieldTypeNameWrap fieldDDLDate(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLDate(final TableField columnInfo) {
         final FieldTypeNameWrap ret = FieldTypeNameWrap.of("datetime", columnInfo.getDefaultValue());
         if (DataType.TIMESTAMP == columnInfo.getDataType()) {
             ret.setTypeName("timestamp");
@@ -143,7 +143,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeNameWrap fieldDDLDouble(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLDouble(final TableField columnInfo) {
         if (DataType.DECIMAL == columnInfo.getDataType()) {
             if (columnInfo.getScale() != null && columnInfo.getScale() > 0) {
                 long length = columnInfo.getLength() > 0 ? columnInfo.getLength() : 20;
@@ -163,7 +163,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeNameWrap fieldDDLInt(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLInt(final TableField columnInfo) {
         if (DataType.BIGINT == columnInfo.getDataType()) {
             return FieldTypeNameWrap.of("bigint", columnInfo.getDefaultValue());
         }
@@ -179,7 +179,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeNameWrap fieldDDLBinary(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLBinary(final TableField columnInfo) {
         return FieldTypeNameWrap.of("LONGBLOB", null);
     }
 
@@ -190,7 +190,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeNameWrap fieldDDLJson(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLJson(final TableField columnInfo) {
         return FieldTypeNameWrap.of("text", columnInfo.getDefaultValue());
     }
 
@@ -200,7 +200,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeNameWrap fieldDDLBool(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLBool(final TableField columnInfo) {
         String df = columnInfo.getDefaultValue();
         if (StrUtil.isNotBlank(df)) {
             if (df.equalsIgnoreCase("b'0'")) {
@@ -226,7 +226,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @param columnInfo
      * @return
      */
-    public FieldTypeNameWrap fieldDDLStr(final TableColumn columnInfo) {
+    public FieldTypeNameWrap fieldDDLStr(final TableField columnInfo) {
         if (columnInfo.getLength() == 0 || columnInfo.getLength() > 500) {
             return FieldTypeNameWrap.of("text", columnInfo.getDefaultValue());
         }
@@ -235,7 +235,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
     }
 
     @Override
-    public DataType toUniType(TableColumn columnInfo) {
+    public DataType toUniType(TableField columnInfo) {
         if (StrUtil.isBlank(columnInfo.getTypeName())) {
             return null;
         }

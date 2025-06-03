@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.io.lang;
 
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.pojo.ReaderInfo;

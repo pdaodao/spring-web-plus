@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.base.pojo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.PageInfo;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -28,7 +28,7 @@ public class RestResponse<T> implements IResponse {
      * 字段列表
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<TableColumn> columns;
+    private List<TableField> columns;
 
     /**
      *  其他信息
@@ -75,7 +75,7 @@ public class RestResponse<T> implements IResponse {
     public static RestResponse pageResult(final PageResult pageResult) {
         final RestResponse r = new RestResponse(RestCode.SUCCESS, pageResult.getList());
         r.setPageInfo(pageResult.getPageInfo());
-        r.setColumns(pageResult.getColumns());
+        r.setColumns(pageResult.getFields());
         r.setExt(pageResult.getExt());
         return r;
     }

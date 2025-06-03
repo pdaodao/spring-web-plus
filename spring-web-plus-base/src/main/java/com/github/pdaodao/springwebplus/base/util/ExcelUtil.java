@@ -7,7 +7,7 @@ import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.sax.handler.RowHandler;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -62,10 +62,10 @@ public class ExcelUtil {
 
     public static void writeMapData(final String fileName, final List<Map<String, ?>> mapList, final TableInfo tableInfo) {
         Preconditions.checkNotNull(tableInfo, "下载字段信息为空");
-        Preconditions.assertTrue(CollUtil.isEmpty(tableInfo.getColumns()), "无下载字段");
-        final List<String> fs = tableInfo.getColumns().stream().map(t -> t.getName()).collect(Collectors.toList());
+        Preconditions.assertTrue(CollUtil.isEmpty(tableInfo.getFields()), "无下载字段");
+        final List<String> fs = tableInfo.getFields().stream().map(t -> t.getName()).collect(Collectors.toList());
         final List<List<?>> datas = toListRowWithMap(mapList, fs.toArray(new String[0]));
-        final List<String> head = tableInfo.getColumns().stream().map(t -> t.getTitle()).collect(Collectors.toList());
+        final List<String> head = tableInfo.getFields().stream().map(t -> t.getTitle()).collect(Collectors.toList());
         write(fileName, datas, head, RequestUtil.getResponse());
     }
 

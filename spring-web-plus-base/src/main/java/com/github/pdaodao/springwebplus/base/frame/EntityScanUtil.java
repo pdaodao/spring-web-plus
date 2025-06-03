@@ -13,10 +13,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.github.pdaodao.springwebplus.base.entity.DaoEntity;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
-import com.github.pdaodao.springwebplus.tool.db.core.TableIndex;
-import com.github.pdaodao.springwebplus.tool.db.core.TableInfo;
-import com.github.pdaodao.springwebplus.tool.db.util.SqlUtil;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
+import com.github.pdaodao.springwebplus.tool.table.TableIndex;
+import com.github.pdaodao.springwebplus.tool.table.TableInfo;
+import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -96,8 +96,8 @@ public class EntityScanUtil {
         if(false == ignoreTransient){
             return tableInfo;
         }
-        final List<TableColumn> fs = tableInfo.getColumns().stream().filter(t -> !BooleanUtil.isTrue(t.getIsTransient())).collect(Collectors.toList());
-        tableInfo.setColumns(fs);
+        final List<TableField> fs = tableInfo.getFields().stream().filter(t -> !BooleanUtil.isTrue(t.getIsTransient())).collect(Collectors.toList());
+        tableInfo.setFields(fs);
         return tableInfo;
     }
 
@@ -144,7 +144,7 @@ public class EntityScanUtil {
         // 属性
         final BeanDesc beanDesc = BeanUtil.getBeanDesc(clazz);
         for (final PropDesc propDesc : beanDesc.getProps()) {
-            final TableColumn columnInfo = toColumnInfo(propDesc, tableInfo.getIndexList(), ignoreTransient);
+            final TableField columnInfo = toColumnInfo(propDesc, tableInfo.getIndexList(), ignoreTransient);
             if (columnInfo == null) {
                 continue;
             }
@@ -162,8 +162,8 @@ public class EntityScanUtil {
      * @param indexList
      * @return
      */
-    private static TableColumn toColumnInfo(final PropDesc propDesc, final List<TableIndex> indexList, final boolean ignoreTransient) {
-        final TableColumn ff = new TableColumn();
+    private static TableField toColumnInfo(final PropDesc propDesc, final List<TableIndex> indexList, final boolean ignoreTransient) {
+        final TableField ff = new TableField();
         ff.setIsTransient(false);
         if(java.lang.reflect.Modifier.isTransient(propDesc.getField().getModifiers())){
             if(ignoreTransient){
@@ -355,7 +355,7 @@ public class EntityScanUtil {
      * @param ff
      * @return
      */
-    private static Integer getFieldSize(final PropDesc p, final TableColumn ff) {
+    private static Integer getFieldSize(final PropDesc p, final TableField ff) {
         final ExcelIgnore excelIgnore = p.getField().getAnnotation(ExcelIgnore.class);
         if(excelIgnore != null && BooleanUtil.isTrue(excelIgnore.value())){
             ff.setExcelIgnore(true);
@@ -394,13 +394,13 @@ public class EntityScanUtil {
      * @param tableInfo
      */
     private static void sortFieldSeq(final TableInfo tableInfo) {
-        if (tableInfo == null || CollUtil.isEmpty(tableInfo.getColumns())) {
+        if (tableInfo == null || CollUtil.isEmpty(tableInfo.getFields())) {
             return;
         }
         // 对这里的字段顺序重新排列一下
-        CollUtil.sort(tableInfo.getColumns(), new Comparator<TableColumn>() {
+        CollUtil.sort(tableInfo.getFields(), new Comparator<TableField>() {
             @Override
-            public int compare(TableColumn o1, TableColumn o2) {
+            public int compare(TableField o1, TableField o2) {
                 if (o1.getName().equalsIgnoreCase("id")) {
                     return -1;
                 }

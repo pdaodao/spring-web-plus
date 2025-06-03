@@ -3,10 +3,10 @@ package com.github.pdaodao.springwebplus.tool.sql;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.FilterTree;
-import com.github.pdaodao.springwebplus.tool.db.core.LogicOperator;
-import com.github.pdaodao.springwebplus.tool.db.core.SqlWithMapParams;
-import com.github.pdaodao.springwebplus.tool.db.core.WhereOperator;
+import com.github.pdaodao.springwebplus.tool.table.FilterTree;
+import com.github.pdaodao.springwebplus.tool.table.LogicOperator;
+import com.github.pdaodao.springwebplus.tool.table.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.table.WhereOperator;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 
 import java.util.List;

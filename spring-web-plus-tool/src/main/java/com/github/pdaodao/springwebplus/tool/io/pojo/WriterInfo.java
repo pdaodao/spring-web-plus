@@ -2,9 +2,9 @@ package com.github.pdaodao.springwebplus.tool.io.pojo;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.db.core.DbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.HasDbInfo;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
+import com.github.pdaodao.springwebplus.tool.table.HasDbInfo;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class WriterInfo implements HasDbInfo {
     private DbInfo dbInfo;
     private String tableName;
     private WriteModeEnum writeMode;
-    private List<TableColumn> fields;
+    private List<TableField> fields;
     private int batchSize = 3000;
     // 是否自动创建表
     private Boolean autoCreateTable = true;
@@ -37,7 +37,7 @@ public class WriterInfo implements HasDbInfo {
         this.writeMode = writeMode;
     }
 
-    public WriterInfo setFields(List<TableColumn> fields) {
+    public WriterInfo setFields(List<TableField> fields) {
         this.fields = fields;
         return this;
     }

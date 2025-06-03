@@ -6,7 +6,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.*;
 import com.github.pdaodao.springwebplus.tool.data.converter.TableRowStringGetter;
-import com.github.pdaodao.springwebplus.tool.db.core.TableColumn;
+import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -16,21 +16,21 @@ import java.util.stream.Collectors;
 public class CsvWriter implements Writer {
     private final String filePath;
     private final CsvFormat csvFormat;
-    private final List<TableColumn> fields;
+    private final List<TableField> fields;
 
     private transient CSVPrinter printer;
     private transient long total = 0;
 
     private TableRowStringGetter[] valueGetters;
 
-    public CsvWriter(String filePath, CsvFormat csvFormat, List<TableColumn> fields) {
+    public CsvWriter(String filePath, CsvFormat csvFormat, List<TableField> fields) {
         this.filePath = filePath;
         this.csvFormat = csvFormat;
         this.fields = fields;
     }
 
     @Override
-    public List<TableColumn> fields() {
+    public List<TableField> fields() {
         return fields;
     }
 
@@ -40,7 +40,7 @@ public class CsvWriter implements Writer {
         printer = format.print(FileUtil.newFile(filePath), CharsetUtil.CHARSET_UTF_8);
         valueGetters = StrUtil.isBlank(csvFormat.getOpName()) ? new TableRowStringGetter[fields.size()] : new TableRowStringGetter[fields.size() + 1];
         int i = 0;
-        for(final TableColumn f: fields){
+        for(final TableField f: fields){
             valueGetters[i++] = new TableRowStringGetter(StrUtil.isBlank(f.getFrom()) ? f.getName(): f.getFrom(), f.getDataType());
         }
         if(StrUtil.isNotBlank(csvFormat.getOpName())){
