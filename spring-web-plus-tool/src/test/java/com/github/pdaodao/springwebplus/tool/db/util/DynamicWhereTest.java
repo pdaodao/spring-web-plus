@@ -1,9 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
 import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
-import com.github.pdaodao.springwebplus.tool.table.FilterItem;
-import com.github.pdaodao.springwebplus.tool.table.SqlWithMapParams;
-import com.github.pdaodao.springwebplus.tool.table.WhereOperator;
+import com.github.pdaodao.springwebplus.tool.sql.core.FilterItem;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.sql.core.WhereOperator;
 
 import java.util.ArrayList;
 import java.util.List;

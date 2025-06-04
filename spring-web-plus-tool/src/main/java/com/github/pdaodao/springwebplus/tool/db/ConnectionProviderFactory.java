@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.lang;
+package com.github.pdaodao.springwebplus.tool.db;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;

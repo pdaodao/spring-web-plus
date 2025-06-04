@@ -1,8 +1,7 @@
-package com.github.pdaodao.springwebplus.tool.table.pojo;
+package com.github.pdaodao.springwebplus.tool.sql.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.table.SqlType;
 import lombok.Data;
 
 import java.util.ArrayList;

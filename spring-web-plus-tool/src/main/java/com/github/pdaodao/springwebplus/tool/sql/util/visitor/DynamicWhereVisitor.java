@@ -3,8 +3,8 @@ package com.github.pdaodao.springwebplus.tool.sql.util.visitor;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.LinkedCaseInsensitiveMap;
-import com.github.pdaodao.springwebplus.tool.table.FilterItem;
-import com.github.pdaodao.springwebplus.tool.table.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.sql.core.FilterItem;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlWithMapParams;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -86,37 +86,37 @@ public class DynamicWhereVisitor {
             if (column.toString().startsWith("#")) {
                 final String field = column.getColumnName().replaceFirst("#", "");
                 final FilterItem filterItem = filterMap.get(field);
-                if (filterItem == null || filterItem.paramSize() == 0) {
+                if (filterItem == null || filterItem.paramValueSize() == 0) {
                     return null;
                 }
-                if (filterItem.paramSize() == 1) {
+                if (filterItem.paramValueSize() == 1) {
                     if (parentExp != null) {
                         if (parentExp instanceof LikeExpression) {
-                            final String v = StrUtil.toString(filterItem.getParam());
+                            final String v = StrUtil.toString(filterItem.paramValue());
                             if (!v.contains("%")) {
-                                filterItem.setParam(v);
+                                filterItem.setParamValue(v);
                             }
                         }
                         if (parentExp instanceof InExpression) {
-                            final String v = StrUtil.toString(filterItem.getParam());
+                            final String v = StrUtil.toString(filterItem.paramValue());
                             if (v.contains(",")) {
                                 final List<String> vs = StrUtil.split(v, ",");
                                 // todo
                             }
                         }
                     }
-                    final String newField = sql.addParam(field, filterItem.getParam());
+                    final String newField = sql.addParam(field, filterItem.paramValue());
                     return new Column(":" + newField);
                 }
             }
             if (column.toString().startsWith("$")) {
                 final String field = column.getColumnName().replaceFirst("$", "");
                 final FilterItem filterItem = filterMap.get(field);
-                if (filterItem == null || filterItem.paramSize() == 0) {
+                if (filterItem == null || filterItem.paramValueSize() == 0) {
                     return null;
                 }
-                if (filterItem.paramSize() == 1) {
-                    return new Column(StrUtil.toString(filterItem.getParam()));
+                if (filterItem.paramValueSize() == 1) {
+                    return new Column(StrUtil.toString(filterItem.paramValue()));
                 }
             }
             return column;

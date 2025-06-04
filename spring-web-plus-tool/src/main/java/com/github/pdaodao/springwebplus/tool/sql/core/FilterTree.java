@@ -1,11 +1,10 @@
-package com.github.pdaodao.springwebplus.tool.table;
+package com.github.pdaodao.springwebplus.tool.sql.core;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.data.RichValue;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class FilterTree extends FilterItem {
         f.setLogic(LogicOperator.and);
         f.setName(name.trim());
         f.setOp(op);
-        f.setParams(Convert.toList(Object.class, params));
+        f.setParamValue(RichValue.ofLiteral(params));
         return f;
     }
 
@@ -41,7 +40,9 @@ public class FilterTree extends FilterItem {
         f.setName(name.trim());
         f.setLogic(LogicOperator.and);
         f.setOp(op);
-        f.setParams(params);
+        if(params != null){
+            f.setParamValue(RichValue.ofLiteral(params.toArray()));
+        }
         return f;
     }
 
@@ -74,10 +75,16 @@ public class FilterTree extends FilterItem {
      */
     public boolean empty() {
         if (StrUtil.isNotBlank(getName())) {
-            if (getOp() != null && (CollUtil.isNotEmpty(getParams()) || getOp().name().contains("IS"))) {
+            if(getOp() == null){
+                return true;
+            }
+            if(getOp().name().contains("IS")){
                 return false;
             }
-            return true;
+            if(param == null || param.empty()){
+                return true;
+            }
+            return false;
         }
         if (CollUtil.isEmpty(getChildren())) {
             return true;
@@ -91,14 +98,14 @@ public class FilterTree extends FilterItem {
         return true;
     }
 
-    public String toSql(final DbDialect dialect, final SqlWithMapParams params){
+    public String toSql(final DbDialect dialect, final SqlWithMapParams ps){
         if(StrUtil.isNotBlank(getName())){
             final StringBuilder sb = new StringBuilder();
             sb.append(super.toSql(dialect));
             if(op != null){
                 if(StrUtil.isNotBlank(getDicId())
                         && WhereOperator.eq == getOp()
-                        && CollUtil.size(params) > 1){
+                        && param != null && param.size() > 1){
                     op = WhereOperator.in;
                 }
                 sb.append(" ").append(op.sql).append(" ");
@@ -116,7 +123,7 @@ public class FilterTree extends FilterItem {
         sb.append(" (");
         boolean isFirst = true;
         for(final FilterTree sub: getChildren()){
-            final String subStr = sub.toSql(dialect, params);
+            final String subStr = sub.toSql(dialect, ps);
             if(!isFirst){
                 sb.append(" ").append(sub.getLogic().name()).append(" ");
             }

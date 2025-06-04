@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.table.pojo;
+package com.github.pdaodao.springwebplus.tool.sql.core;
 
 public enum StatementType {
 

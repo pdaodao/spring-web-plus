@@ -3,12 +3,12 @@ package com.github.pdaodao.springwebplus.tool.db;
 import cn.hutool.core.map.CaseInsensitiveLinkedMap;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.table.SqlType;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
-import com.github.pdaodao.springwebplus.tool.table.pojo.SqlCmd;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlCmd;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;

@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.tool.sql.util.support;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.github.pdaodao.springwebplus.tool.table.FilterItem;
+import com.github.pdaodao.springwebplus.tool.sql.core.FilterItem;
 import org.apache.ibatis.scripting.xmltags.OgnlCache;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class MybatisHelper {
         if (CollUtil.isEmpty(filterItems)) {
             return sql;
         }
-        return processIf(sql, FilterItem.toParamMap(filterItems));
+        return processIf(sql, FilterItem.toParamValueMap(filterItems));
     }
 
 

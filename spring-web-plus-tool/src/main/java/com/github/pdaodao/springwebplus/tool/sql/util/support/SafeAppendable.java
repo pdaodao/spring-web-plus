@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.sql.frame;
+package com.github.pdaodao.springwebplus.tool.sql.util.support;
 
 import java.io.IOException;
 

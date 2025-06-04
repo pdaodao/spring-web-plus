@@ -1,9 +1,9 @@
 package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.collection.ListUtil;
-import com.github.pdaodao.springwebplus.tool.table.SqlWithMapParams;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlWithMapParams;
 import com.github.pdaodao.springwebplus.tool.db.dialect.mysql.MysqlDialect;
-import com.github.pdaodao.springwebplus.tool.sql.Where;
+import com.github.pdaodao.springwebplus.tool.sql.core.Where;
 import org.junit.Test;
 
 public class WhereTest {

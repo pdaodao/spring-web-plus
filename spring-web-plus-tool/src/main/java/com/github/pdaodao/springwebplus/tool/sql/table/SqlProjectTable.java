@@ -1,6 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.sql.table;
 
-import com.github.pdaodao.springwebplus.tool.sql.frame.SafeAppendable;
+import com.github.pdaodao.springwebplus.tool.sql.util.support.SafeAppendable;
 import lombok.Data;
 
 @Data

@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.table.pojo;
+package com.github.pdaodao.springwebplus.tool.sql.core;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.sql.TableAlias;

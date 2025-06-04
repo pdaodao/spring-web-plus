@@ -1,16 +1,15 @@
-package com.github.pdaodao.springwebplus.tool.table;
+package com.github.pdaodao.springwebplus.tool.sql.core;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+import com.github.pdaodao.springwebplus.tool.data.RichValue;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,7 +43,7 @@ public class FilterItem {
     /**
      * 参数值
      */
-    protected List<Object> params;
+    protected RichValue param;
 
     /**
      * 字典id
@@ -56,7 +55,7 @@ public class FilterItem {
         final FilterItem f = new FilterItem();
         f.setName(name);
         f.setOp(op);
-        f.setParams(Convert.toList(Object.class, params));
+        f.setParamValue(RichValue.ofLiteral(params));
         return f;
     }
 
@@ -66,40 +65,51 @@ public class FilterItem {
      * @param filterItems
      * @return
      */
-    public static Map<String, Object> toParamMap(final List<FilterItem> filterItems) {
+    public static Map<String, Object> toParamValueMap(final List<FilterItem> filterItems) {
         final Map<String, Object> params = new LinkedHashMap<>();
         if (CollUtil.isEmpty(filterItems)) {
             return params;
         }
         for (final FilterItem f : filterItems) {
-            if (f.paramSize() < 1) {
+            if(f.getParam() == null || f.getParam().empty()){
                 params.put(f.getName(), null);
-            } else if (f.paramSize() > 1) {
-                params.put(f.getName(), f.getParams());
-            } else {
-                params.put(f.getName(), f.getParam());
+            }else if(f.getParam().size() == 1){
+                params.put(f.getName(), f.paramValue());
+            }else{
+                final List<Object> list = new ArrayList<>();
+                for(final RichValue v: f.getParam().getValues()){
+                    list.add(v.getValue());
+                }
+                params.put(f.getName(), list);
             }
         }
         return params;
     }
 
     @JsonIgnore
-    public Object getParam() {
-        if (CollUtil.isEmpty(params)) {
+    public Object paramValue() {
+        if(param == null || param.empty()){
             return null;
         }
-        return params.get(0);
+        return param.getValue();
     }
 
     @JsonIgnore
-    public void setParam(final Object p) {
-        if (ObjectUtil.isNull(p)) {
+    public void setParamValue(final Object pValue) {
+        if (ObjectUtil.isNull(pValue)) {
             return;
         }
-        if (params == null) {
-            params = new ArrayList<>();
+        if (param == null) {
+            param = new RichValue();
+            param.setType(RichValue.ValueType.lr);
         }
-        params.add(p);
+        if(param.getValues() == null){
+            param.setValue(pValue);
+        }else{
+            param.addToValues(RichValue.ValueType.lr, param.getValue());
+            param.addToValues(RichValue.ValueType.lr, pValue);
+            param.setValue(null);
+        }
     }
 
     /**
@@ -107,11 +117,14 @@ public class FilterItem {
      *
      * @return
      */
-    public int paramSize() {
-        if (CollUtil.isEmpty(params)) {
-            return 0;
+    public int paramValueSize() {
+        if(CollUtil.isNotEmpty(param.getValues())){
+            return CollUtil.size(param.getValue());
         }
-        return params.size();
+        if(ObjectUtil.isNotNull(param.getValue())){
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -124,8 +137,8 @@ public class FilterItem {
             sb.append("?");
         }
         sb.append(" ");
-        if (CollUtil.isNotEmpty(params)) {
-            sb.append(StrUtil.join(",", params));
+        if (ObjectUtil.isNotEmpty(param)) {
+            sb.append(param.toString());
         }
         return sb.toString();
     }
@@ -155,8 +168,8 @@ public class FilterItem {
         if(op.sql.startsWith("IS ")){
             return null;
         }
-        Preconditions.assertTrue(CollUtil.isEmpty(params), getName()+"("+getTitle()+")比较值为空");
-        final String vv = StrUtil.toString(getParam());
+        Preconditions.assertTrue(param == null || param.empty(), getName()+"("+getTitle()+")比较值为空");
+        final String vv = StrUtil.toString(paramValue());
         // like in between 比较特殊
         if(op.sql.equalsIgnoreCase("like")){
             if(WhereOperator.sw == op){
@@ -168,21 +181,21 @@ public class FilterItem {
             return  "'%"+ vv +"%'";
         }
         if(WhereOperator.bt == op){
-            Preconditions.checkArgument(params.size() == 2, "between的值为两个例如 a,b");
-            final String prefix = isValueNeedQuote(params.get(0)) ? "'" : "";
-            final String left = prefix + params.get(0) + prefix;
-            final String right = prefix + params.get(1) + prefix;
+            Preconditions.checkArgument(param.size() == 2, "between的值为两个例如 a,b");
+            final String prefix = isValueNeedQuote(param.get(0)) ? "'" : "";
+            final String left = prefix + param.get(0) + prefix;
+            final String right = prefix + param.get(1) + prefix;
             return left + " AND " + right;
         }
         if(WhereOperator.in == op){
             final List<String> list = new ArrayList<>();
-            for(final Object v: params){
-                final String prefix = isValueNeedQuote(params.get(0)) ? "'" : "";
+            for(final Object v: param.getValues()){
+                final String prefix = isValueNeedQuote(param.get(0)) ? "'" : "";
                 list.add(prefix + v +prefix);
             }
             return "("+StrUtil.join(",", list)+")";
         }
-        final String prefix = isValueNeedQuote(params.get(0)) ? "'" :"";
+        final String prefix = isValueNeedQuote(param.get(0)) ? "'" :"";
         return  prefix + vv + prefix;
     }
 

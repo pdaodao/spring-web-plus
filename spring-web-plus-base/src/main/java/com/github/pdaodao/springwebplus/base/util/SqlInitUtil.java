@@ -2,8 +2,8 @@ package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.table.SqlType;
-import com.github.pdaodao.springwebplus.tool.table.pojo.SqlCmd;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlType;
+import com.github.pdaodao.springwebplus.tool.sql.core.SqlCmd;
 import com.github.pdaodao.springwebplus.tool.db.DbUtil;
 import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import lombok.extern.slf4j.Slf4j;

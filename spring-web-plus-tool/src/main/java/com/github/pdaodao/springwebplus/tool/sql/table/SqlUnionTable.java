@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.sql.table;
 
 import cn.hutool.core.collection.CollUtil;
-import com.github.pdaodao.springwebplus.tool.sql.frame.SafeAppendable;
+import com.github.pdaodao.springwebplus.tool.sql.util.support.SafeAppendable;
 
 import java.util.ArrayList;
 import java.util.List;
