@@ -8,7 +8,7 @@ import com.github.pdaodao.springwebplus.tool.data.TableRow;
 import com.github.pdaodao.springwebplus.tool.db.JdbcSqlExecutor;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.table.TableField;
-import com.github.pdaodao.springwebplus.tool.db.handler.JdbcUtils;
+import com.github.pdaodao.springwebplus.tool.db.JdbcUtils;
 import com.github.pdaodao.springwebplus.tool.db.DbMetaUtil;
 import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import com.github.pdaodao.springwebplus.tool.io.Reader;

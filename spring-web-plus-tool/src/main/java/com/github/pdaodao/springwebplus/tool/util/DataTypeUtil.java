@@ -58,7 +58,7 @@ public class DataTypeUtil {
             return DataType.INT;
         }
         if (dbType.contains("json")) {
-            return DataType.MAP;
+            return DataType.Object;
         }
         log.warn("unknown data type {}", dbTypeName);
         return DataType.UNKNOWN;

@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.base.auth;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
@@ -141,7 +142,7 @@ public class LoginUtil {
                 u.setTeamId(u.getTeamId());
             }
         }
-        if(StrUtil.isBlank(currentUserInfo.getTeamId())){
+        if(currentUserInfo.getTeamId() != null){
             currentUserInfo.setTeamId(getTeam());
         }
         return currentUserInfo;
@@ -182,13 +183,16 @@ public class LoginUtil {
      * 获取团队id
      * @return
      */
-    public static String getTeam(){
+    public static Long getTeam(){
         final SysConfigProperties sysConfig = sysConfig();
         String team = RequestUtil.getFromHead(sysConfig.getAuthTeam());
         if(StrUtil.isBlank(team)){
             team = RequestUtil.getFromCookie(sysConfig.getAuthTeam());
         }
-        return team;
+        if(!NumberUtil.isLong(team)){
+            return null;
+        }
+        return Long.parseLong(team);
     }
 
     public static SysConfigProperties sysConfig(){

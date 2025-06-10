@@ -2,7 +2,6 @@ package com.github.pdaodao.springwebplus.tool.sql.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.data.RichValue;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import lombok.Data;
 import java.util.ArrayList;

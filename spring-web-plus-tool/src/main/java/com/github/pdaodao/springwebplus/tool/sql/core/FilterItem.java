@@ -6,7 +6,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.data.RichValue;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;

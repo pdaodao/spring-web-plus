@@ -13,7 +13,6 @@ import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.sql.core.SqlType;
 import com.github.pdaodao.springwebplus.tool.table.TableInfo;
-import com.github.pdaodao.springwebplus.tool.db.handler.JdbcUtils;
 import com.github.pdaodao.springwebplus.tool.sql.core.SqlCmd;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
 import com.github.pdaodao.springwebplus.tool.io.ReaderWriterLoader;

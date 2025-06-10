@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
@@ -22,7 +23,7 @@ public class RequestUtil {
     private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();
     private static ThreadLocal<PageRequestParam> pageHolder = new ThreadLocal<>();
 
-    public static String getUserId() {
+    public static Long getUserId() {
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -31,7 +32,7 @@ public class RequestUtil {
         return userInfo.getId();
     }
 
-    public static String getTeamId(){
+    public static Long getTeamId(){
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -39,22 +40,26 @@ public class RequestUtil {
         return userInfo.getTeamId();
     }
 
-    public static String getProjectId(){
-        return getFromHead("Project-Id");
+    public static Long getProjectId(){
+        final String pid = getFromHead("Project-Id");
+        if(NumberUtil.isLong(pid)){
+            return Long.parseLong(pid);
+        }
+        return null;
     }
 
-    public static String getProjectIdOrDefault(){
-        final String id = getProjectId();
-        if(StrUtil.isBlank(id)){
-            return "0";
+    public static Long getProjectIdOrDefault(){
+        final Long id = getProjectId();
+        if(id == null){
+            return 0L;
         }
         return id;
     }
 
-    public static String getTeamOrDefault(){
-        final String team = getTeamId();
-        if(StrUtil.isBlank(team)){
-            return "0";
+    public static Long getTeamOrDefault(){
+        final Long team = getTeamId();
+        if(team == null){
+            return 0l;
         }
         return team;
     }

@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
 
-    public SysUser infoWithRole(final String id, final String username) {
+    public SysUser infoWithRole(final Long id, final String username) {
         return baseMapper.infoWithRole(id, username);
     }
 

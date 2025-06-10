@@ -10,7 +10,7 @@ import lombok.Data;
 @Schema(hidden = true)
 public class CurrentUserInfo {
     // 主键
-    private String id;
+    private Long id;
     // 登录用户名
     private String username;
 
@@ -28,7 +28,7 @@ public class CurrentUserInfo {
     /**
      * 团队id
      */
-    private String teamId;
+    private Long teamId;
 
     // 无用户时 伪造一个
     public static CurrentUserInfo ofNoUser() {

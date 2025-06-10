@@ -1,12 +1,11 @@
-package com.github.pdaodao.springwebplus.tool.db.handler;
+package com.github.pdaodao.springwebplus.tool.db;
 
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class JdbcUtils {
 
@@ -40,4 +39,27 @@ public class JdbcUtils {
         }
         return obj;
     }
+
+    public static Long getGeneratedId(ResultSet resultSet) throws SQLException {
+        if (resultSet.getObject("id") != null) {
+            return Long.valueOf(resultSet.getObject("id").toString());
+        } else if (resultSet.getObject("ID") != null) {
+            return Long.valueOf(resultSet.getObject("ID").toString());
+        } else if (resultSet.getObject("GENERATED_KEY") != null) {
+            return Long.valueOf(resultSet.getObject("GENERATED_KEY").toString());
+        }
+        return null;
+    }
+
+    public static List<Long> getGeneratedKeys(final PreparedStatement ps) throws SQLException{
+        final List<Long> list = new ArrayList<>();
+        try (ResultSet resultSet = ps.getGeneratedKeys()) {
+            while (resultSet.next()) {
+                final Long id = getGeneratedId(resultSet);
+                list.add(id);
+            }
+        }
+        return list;
+    }
+
 }

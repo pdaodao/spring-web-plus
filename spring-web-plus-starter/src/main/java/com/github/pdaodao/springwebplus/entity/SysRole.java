@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @TableName(value = "sys_role", autoResultMap = true)
 @Schema(description = "系统角色")
-public class SysRole extends SnowIdWithTimeUserEntity {
+public class SysRole extends AutoIdWithTimeUserEntity {
     @Schema(description = "角色唯一编码")
     private String name;
 

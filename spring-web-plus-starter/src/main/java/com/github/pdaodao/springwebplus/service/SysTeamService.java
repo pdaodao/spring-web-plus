@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.dao.SysTeamDao;
 import com.github.pdaodao.springwebplus.entity.SysTeam;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class SysTeamService {
     private SysTeamDao sysTeamDao;
 
-    public List<SysTeam> userTeams(final String userId){
+    public List<SysTeam> userTeams(final Long userId){
         List<SysTeam> list = sysTeamDao.userTeams(userId);
         if(CollUtil.isEmpty(list)){
             final SysTeam sysTeam = new SysTeam();
@@ -35,17 +36,17 @@ public class SysTeamService {
         return sysTeam;
     }
 
-    public List<SysTeamUser> teamUsers(final String teamId, final String q){
+    public List<SysTeamUser> teamUsers(final Long teamId, final String q){
         return sysTeamDao.teamUsers(teamId, q);
     }
 
-    public Boolean deleteById(final String id){
+    public Boolean deleteById(final Long id){
         return sysTeamDao.removeById(id);
     }
 
     public SysTeamUser addTeamUser(final SysTeamUser sysTeamUser){
         final List<SysTeam> teams = sysTeamDao.userTeams(sysTeamUser.getUserId());
-        final Optional<SysTeam> optionalSysTeam = teams.stream().filter(t -> StrUtil.equals(t.getId(), sysTeamUser.getTeamId())).findFirst();
+        final Optional<SysTeam> optionalSysTeam = teams.stream().filter(t -> ObjectUtil.equals(t.getId(), sysTeamUser.getTeamId())).findFirst();
         if(optionalSysTeam.isPresent()){
             sysTeamUser.setId(optionalSysTeam.get().getId());
         }
@@ -54,7 +55,7 @@ public class SysTeamService {
         return sysTeamUser;
     }
 
-    public Boolean removeTeamUser(final String id){
+    public Boolean removeTeamUser(final Long id){
         return sysTeamDao.teamUserDao().removeById(id);
     }
 }

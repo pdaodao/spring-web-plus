@@ -79,7 +79,7 @@ public class DBDdLUtil {
 
         final DDLBuildContext ddlBuildContext = new DDLBuildContext(tableInfo.getName());
         for (final TableField f : tableInfo.getFields()) {
-            if(f.getDataType() == DataType.ARRAY || f.getDataType() == DataType.MAP){
+            if(f.getDataType() == DataType.ARRAY || f.getDataType() == DataType.Object){
                 if(f.getLength() >= 3000){
                     f.setDataType(DataType.TEXT);
                 }else{

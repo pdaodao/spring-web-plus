@@ -329,7 +329,7 @@ public class EntityScanUtil {
         // pojo 类型
         if (!propDesc.getFieldClass().isPrimitive()) {
             ff.setIsAuto(false);
-            ff.updateDataTypeIfNull(DataType.MAP);
+            ff.updateDataTypeIfNull(DataType.Object);
             ff.setLength(maxLength);
             if (propDesc.getField().getType().getName().contains(".List")) {
                 ff.setDataType(DataType.ARRAY);

@@ -94,7 +94,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
             return fieldDDLBool(columnInfo);
         }
         // json 类型
-        if (DataType.MAP == dataType || DataType.ARRAY == dataType) {
+        if (DataType.Object == dataType || DataType.ARRAY == dataType) {
             return fieldDDLJson(columnInfo);
         }
         // 二进制类型
@@ -289,7 +289,7 @@ public class BaseDataTypeConverter implements DataTypeConverter {
             return DataType.INT;
         }
         if (dbType.contains("json")) {
-            return DataType.MAP;
+            return DataType.Object;
         }
         if(dbType.startsWith("geo")){
             return DataType.STRING;

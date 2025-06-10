@@ -88,13 +88,15 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         }
         if(entity instanceof WithTeam){
             final WithTeam withTeam = (WithTeam) entity;
-            if(StrUtil.isBlank(withTeam.getTeamId())){
+            if(withTeam.getTeamId() == null){
                 withTeam.setTeamId(RequestUtil.getTeamOrDefault());
             }
         }
         if(entity instanceof WithProject){
             final WithProject p = (WithProject) entity;
-            p.setProjectId(RequestUtil.getProjectIdOrDefault());
+            if(p.getProjectId() == null){
+                p.setProjectId(RequestUtil.getProjectIdOrDefault());
+            }
         }
     }
 

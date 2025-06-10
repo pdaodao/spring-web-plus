@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Slf4j
@@ -41,18 +40,17 @@ public class SysUserController {
         return sysUserService.saveUser(user);
     }
 
-
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统用户")
     @Permission("sys:user:delete")
-    public Boolean deleteSysUser(@PathVariable("id") String id) {
+    public Boolean deleteSysUser(@PathVariable("id") Long id) {
         return sysUserService.deleteById(id);
     }
 
     @Operation(summary = "系统用户详情")
     @GetMapping("/info/{id}")
     @Permission("sys:user:info")
-    public SysUser getSysUser(@PathVariable("id") String id) {
+    public SysUser getSysUser(@PathVariable("id") Long id) {
         return sysUserService.infoWithRole(id, null);
     }
 

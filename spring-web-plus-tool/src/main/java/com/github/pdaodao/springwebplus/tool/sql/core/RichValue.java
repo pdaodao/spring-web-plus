@@ -1,8 +1,6 @@
-package com.github.pdaodao.springwebplus.tool.data;
+package com.github.pdaodao.springwebplus.tool.sql.core;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;

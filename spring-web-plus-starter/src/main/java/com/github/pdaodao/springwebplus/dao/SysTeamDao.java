@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.dao;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import com.github.pdaodao.springwebplus.base.pojo.MemberType;
 import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
@@ -22,7 +21,7 @@ public class SysTeamDao extends BaseDao<SysTeamMapper, SysTeam> {
     private SysTeamUserDao teamUserDao;
 
     @Cacheable(key = "#p0", condition = "#p0 != null")
-    public List<SysTeam> userTeams(final String userId){
+    public List<SysTeam> userTeams(final Long userId){
         final List<SysTeam> list = baseMapper.userTeams(userId);
         return list;
     }
@@ -32,14 +31,14 @@ public class SysTeamDao extends BaseDao<SysTeamMapper, SysTeam> {
     }
 
     @CacheEvict(key = "#p0", condition = "#p0 != null")
-    public void userTeamsClear(final String userId){
+    public void userTeamsClear(final Long userId){
 
     }
 
     @Override
     protected void afterInsert(SysTeam entity) {
-        final String userId = RequestUtil.getUserId();
-        if(StrUtil.isBlank(userId)){
+        final Long userId = RequestUtil.getUserId();
+        if(userId == null){
             return;
         }
         final SysTeamUser tu = new SysTeamUser();
@@ -49,7 +48,7 @@ public class SysTeamDao extends BaseDao<SysTeamMapper, SysTeam> {
         teamUserDao.save(tu);
     }
 
-    public List<SysTeamUser> teamUsers(final String teamId, final String q){
+    public List<SysTeamUser> teamUsers(final Long teamId, final String q){
         return baseMapper.teamUsers(teamId, QueryBuilder.likeValue(q));
     }
 }

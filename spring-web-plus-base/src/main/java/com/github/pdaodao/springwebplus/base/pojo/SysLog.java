@@ -9,13 +9,13 @@ import java.util.Date;
 public class SysLog {
     private static final long serialVersionUID = 1L;
 
-    private String userId;
+    private Long userId;
 
     @Schema(description = "用户显示名称")
     private String userNickname;
 
     @Schema(description = "团队")
-    private String team;
+    private Long team;
 
     @Schema(description = "用户角色")
     private String userType;
@@ -31,7 +31,6 @@ public class SysLog {
 
     @Schema(description = "操作说明")
     private String operation;
-
 
     @Schema(description = "ip地址")
     private String ip;

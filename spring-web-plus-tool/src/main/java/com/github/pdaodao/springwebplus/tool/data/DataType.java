@@ -68,7 +68,7 @@ public enum DataType {
     /**
      * json 对象类型
      */
-    MAP,
+    Object,
 
     // 暂未支持的类型
     UNKNOWN;
@@ -91,7 +91,7 @@ public enum DataType {
     public boolean isStringFamily() {
         return DataType.STRING == this ||
                 DataType.TEXT == this ||
-                DataType.MAP == this ||
+                DataType.Object == this ||
                 DataType.ARRAY == this;
     }
 

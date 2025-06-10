@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeEntity;
+import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,12 +11,12 @@ import lombok.Data;
 @Data
 @TableName(value = "sys_role_menu", autoResultMap = true)
 @Schema(description = "角色菜单关系表")
-public class SysRoleMenu extends SnowIdWithTimeEntity {
+public class SysRoleMenu extends AutoIdWithTimeEntity {
     @Schema(description = "角色id")
-    private String roleId;
+    private Long roleId;
 
     @Schema(description = "菜单id")
-    private String menuId;
+    private Long menuId;
 
     @Schema(description = "是否用户选中 0：否，1：是")
     private transient Boolean isChoice;
