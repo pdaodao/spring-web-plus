@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.tool.db.util;
 
 import cn.hutool.core.thread.ThreadUtil;
 import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
-import com.github.pdaodao.springwebplus.tool.task.TaskInfo;
+import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.TaskTimer;
 import com.github.pdaodao.springwebplus.tool.task.core.ArrayListTaskLoader;
 import com.github.pdaodao.springwebplus.tool.task.core.TaskRingThread;
@@ -17,9 +17,9 @@ public class TaskThreadPoolTest {
         final PrintFactory printFactory = new PrintFactory();
         final TaskRingThread ringThread = new TaskRingThread(printFactory);
         ringThread.start();
-        for(int i = 1; i < 50; i++){
-            final TaskInfo taskInfo = new TaskInfo();
-            taskInfo.setTaskId(i+"");
+        for(long i = 1; i < 50; i++){
+            final CronTaskInfo taskInfo = new CronTaskInfo();
+            taskInfo.setTaskId(i);
             ringThread.addToRing(taskInfo, DateTimeUtil.offsetSecond(DateTimeUtil.now(), 3).getTime());
             ThreadUtil.sleep(2000);
         }
@@ -30,8 +30,8 @@ public class TaskThreadPoolTest {
         final ArrayListTaskLoader loader = new ArrayListTaskLoader();
         final TaskTimer taskTimer = new TaskTimer(printFactory, loader);
         taskTimer.start();
-        final TaskInfo taskInfo = new TaskInfo();
-        taskInfo.setTaskId("a1");
+        final CronTaskInfo taskInfo = new CronTaskInfo();
+        taskInfo.setTaskId(1l);
         taskInfo.setCronSetting(CronSetting.ofSecond(3));
         loader.add(taskInfo);
     }
@@ -39,25 +39,25 @@ public class TaskThreadPoolTest {
     public static class PrintFactory implements TaskFactory {
 
         @Override
-        public TaskRunnable executor(TaskInfo taskInfo) {
+        public TaskRunnable executor(CronTaskInfo taskInfo) {
             return new PrintTask(taskInfo.getTaskId());
         }
 
         @Override
-        public void triggerError(TaskInfo taskInfo, Exception exception) {
+        public void triggerError(CronTaskInfo taskInfo, Exception exception) {
 
         }
     }
 
     public static class PrintTask implements TaskRunnable{
-        private String id;
+        private Long id;
 
         @Override
-        public String getId() {
+        public Long getId() {
             return id;
         }
 
-        public PrintTask(String id) {
+        public PrintTask(Long id) {
             this.id = id;
         }
 

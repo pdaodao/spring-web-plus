@@ -215,6 +215,9 @@ public class SysLogAop {
      * 执行方法结束后处理
      */
     private void handleFinally(final SysLog sysLog) {
+        if(sysLog.isIgnore()){
+            return;
+        }
         if(sysLogListener != null){
             try{
                 if(sysLog.getOperationTime() != null){

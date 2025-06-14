@@ -9,6 +9,7 @@ import java.util.List;
 // 定时调度配置
 @Data
 public class CronSetting {
+    // 调度类型
     private CronSettingType type;
 
     // cron 表达式

@@ -13,6 +13,7 @@
         <module>spring-web-plus-base</module>
         <module>spring-web-plus-starter</module>
         <module>spring-web-plus-ai</module>
+        <module>spring-web-plus-task</module>
     </modules>
 
     <properties>
@@ -66,8 +67,13 @@
                 <version>3.1</version>
             </dependency>
             <dependency>
-                <groupId>com.zjzhd</groupId>
+                <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-ai</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pdaodao</groupId>
+                <artifactId>spring-web-plus-task</artifactId>
                 <version>3.1</version>
             </dependency>
             <dependency>

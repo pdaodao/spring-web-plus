@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.tool.task.core;
 
 import cn.hutool.core.collection.CollUtil;
 import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
-import com.github.pdaodao.springwebplus.tool.task.TaskInfo;
+import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class TaskRingThread extends Thread{
     private volatile boolean isRunning = true;
     // 精确到100毫秒 调度任务
-    private Map<Integer, List<TaskInfo>> ringData = new ConcurrentHashMap<>();
+    private Map<Integer, List<CronTaskInfo>> ringData = new ConcurrentHashMap<>();
 
     private final TaskFactory executorFactory;
 
@@ -42,15 +42,15 @@ public class TaskRingThread extends Thread{
             }
             try {
                 final int tick = (int) ((DateTimeUtil.currentTimeMillis() % 60000) / 100);
-                final List<TaskInfo> toRunList = new ArrayList<>();
+                final List<CronTaskInfo> toRunList = new ArrayList<>();
                 for (int i = 0; i < 3; i++) {
-                    final List<TaskInfo> tmpData = getRing((tick + 600 - i) % 600);
+                    final List<CronTaskInfo> tmpData = getRing((tick + 600 - i) % 600);
                     if (tmpData != null) {
                         toRunList.addAll(tmpData);
                     }
                 }
                 if (CollUtil.isNotEmpty(toRunList)) {
-                    for (final TaskInfo task : toRunList) {
+                    for (final CronTaskInfo task : toRunList) {
                         triggerTaskRun(task);
                     }
                 }
@@ -67,7 +67,7 @@ public class TaskRingThread extends Thread{
      *
      * @param taskInfo
      */
-    private void triggerTaskRun(final TaskInfo taskInfo) {
+    private void triggerTaskRun(final CronTaskInfo taskInfo) {
         if(taskInfo == null){
             return;
         }
@@ -83,14 +83,14 @@ public class TaskRingThread extends Thread{
      * @param taskInfo
      * @param nextTime 一分钟之内的时间
      */
-    public synchronized void addToRing(final TaskInfo taskInfo, long nextTime) {
+    public synchronized void addToRing(final CronTaskInfo taskInfo, long nextTime) {
         if(taskInfo == null || nextTime < 1000){
             return;
         }
         Preconditions.assertTrue(nextTime > DateTimeUtil.offsetMinute(DateTimeUtil.now(), 1).getTime(), "非法的精细时间调度要在一分钟之内");
         nextTime = nextTime % 60000;
         final int tick = (int) nextTime / 100;
-        List<TaskInfo> list = ringData.get(tick);
+        List<CronTaskInfo> list = ringData.get(tick);
         if (list == null) {
             list = new ArrayList<>();
             ringData.put(tick, list);
@@ -102,22 +102,22 @@ public class TaskRingThread extends Thread{
      * @param tick 一个间隔 为 100毫秒的 整数
      * @return
      */
-    private synchronized List<TaskInfo> getRing(int tick) {
+    private synchronized List<CronTaskInfo> getRing(int tick) {
         return ringData.remove(tick);
     }
 
     public static class TriggerTaskRunnable implements TaskRunnable {
-        private final TaskInfo taskInfo;
+        private final CronTaskInfo taskInfo;
         private final TaskFactory executorFactory;
 
-        public TriggerTaskRunnable(TaskInfo taskInfo, TaskFactory executorFactory) {
+        public TriggerTaskRunnable(CronTaskInfo taskInfo, TaskFactory executorFactory) {
             this.taskInfo = taskInfo;
             this.executorFactory = executorFactory;
         }
 
         @Override
-        public String getId() {
-            return "Trigger-"+taskInfo.getTaskId();
+        public Long getId() {
+            return taskInfo.getTaskId();
         }
 
         @Override

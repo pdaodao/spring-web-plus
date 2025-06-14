@@ -5,16 +5,23 @@ import com.github.pdaodao.springwebplus.tool.task.cron.CronSetting;
 import lombok.Data;
 
 @Data
-public class TaskInfo {
+public class CronTaskInfo {
     /**
      * 任务id
      */
-    private String taskId;
+    private Long taskId;
+
+    /**
+     * 任务运行id
+     */
+    private Long logId;
 
     /**
      * 任务类型
      */
     private String taskType;
+
+    private Boolean isCron = true;
 
     /**
      * 定时信息

@@ -16,17 +16,21 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class TaskTimer extends Thread{
-    private final TaskLoader loader;
+    private final CronTaskLoader loader;
     private final TaskRingThread ringThread;
     private volatile boolean isRunning = true;
     public static final int tick = 1 * 1000;
 
-    public TaskTimer(final TaskFactory executorFactory, final TaskLoader loader) {
+    public TaskTimer(final TaskFactory executorFactory, final CronTaskLoader loader) {
         this.loader = loader;
         Preconditions.checkNotNull(executorFactory, "TaskExecutorFactory is null.");
         Preconditions.checkNotNull(loader, "TaskInfoLoader is null.");
         ringThread = new TaskRingThread(executorFactory);
         setName("PlusTaskTimer");
+    }
+
+    public void setIsRunning(final Boolean is){
+        this.isRunning = is;
     }
 
     @Override
@@ -36,9 +40,13 @@ public class TaskTimer extends Thread{
             TimeUnit.MILLISECONDS.sleep(1000 - System.currentTimeMillis() % 1000);
         } catch (Exception e) {
         }
-        while (isRunning){
+        while (true){
             try{
-                scan();
+               if(isRunning){
+                   scan();
+               }else {
+                   TimeUnit.MILLISECONDS.sleep(2000);
+               }
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }
@@ -53,10 +61,10 @@ public class TaskTimer extends Thread{
         final long nowTime = DateTimeUtil.currentTimeMillis();
         final long upTime = nowTime + 60000 - 200;
         try{
-            final List<TaskInfo> taskList = loader.load();
-            final List<TaskInfo> toUpdateList = new ArrayList<>();
+            final List<CronTaskInfo> taskList = loader.load();
+            final List<CronTaskInfo> toUpdateList = new ArrayList<>();
             if(CollUtil.isNotEmpty(taskList)){
-                for(final TaskInfo t: taskList){
+                for(final CronTaskInfo t: taskList){
                     if(t.getNextTime() == null){
                         continue;
                     }
@@ -66,7 +74,7 @@ public class TaskTimer extends Thread{
                     }
                 }
             }
-            for(final TaskInfo t: toUpdateList){
+            for(final CronTaskInfo t: toUpdateList){
                 if(t.getNextTime() == null){
                     continue;
                 }
@@ -76,7 +84,7 @@ public class TaskTimer extends Thread{
                 }else{
                     t.setNextTime(next.getTime());
                 }
-                loader.updateCronInfo(t);
+                loader.setNext(t.getTaskId(), t.getNextTime());
             }
         }finally {
             final long t2 = DateTimeUtil.currentTimeMillis();

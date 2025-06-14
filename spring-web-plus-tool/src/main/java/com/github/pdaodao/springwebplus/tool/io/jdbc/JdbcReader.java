@@ -82,7 +82,7 @@ public class JdbcReader implements Reader {
         }
         final TableRow row = TableRow.of(fields.size());
         for (int i = 1; i <= fields.size(); i++) {
-            row.setField(fields.get(i - 1).getName(), JdbcUtils.getResultSetValue(rs, i));
+            row.setField(fields.get(i - 1).getName().intern(), JdbcUtils.getResultSetValue(rs, i));
         }
         return row;
     }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.pdaodao.springwebplus.task.mapper.ZtTaskInfoMapper">
+    <select id="logList" resultType="com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity">
+        select  log.*,
+            t.title as title, t.namespace as namespace, t.task_type
+        from zt_task_info t
+        inner join zt_task_log log on t.id = log.task_id
+        <where>
+            t.is_deleted = false and t.is_dir = false
+            <if test="q != null and q != null">
+                and t.title like #{qLike}
+            </if>
+            <if test="taskId != null">
+                and t.id = #{taskId}
+            </if>
+            <if test="namespace != null and namespace != null">
+                and t.namespace = #{namespace}
+            </if>
+            <if test="taskType != null and taskType != null">
+                and t.task_type = #{taskType}
+            </if>
+            <if test="taskStatus != null">
+                and log.task_status = #{taskStatus}
+            </if>
+            <if test="teamId != null">
+                and t.team_id = #{teamId}
+            </if>
+        </where>
+    </select>
+</mapper>

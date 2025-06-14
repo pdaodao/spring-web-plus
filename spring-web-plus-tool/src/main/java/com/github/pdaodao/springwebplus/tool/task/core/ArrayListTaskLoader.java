@@ -3,23 +3,21 @@ package com.github.pdaodao.springwebplus.tool.task.core;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
-import com.github.pdaodao.springwebplus.tool.task.TaskInfo;
-import com.github.pdaodao.springwebplus.tool.task.TaskLoader;
+import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
+import com.github.pdaodao.springwebplus.tool.task.CronTaskLoader;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ArrayListTaskLoader implements TaskLoader {
-    private final List<TaskInfo> list = new ArrayList<>();
-
+public class ArrayListTaskLoader implements CronTaskLoader {
+    private final List<CronTaskInfo> list = new ArrayList<>();
 
     public synchronized void clear(){
         list.clear();
     }
 
-    public synchronized void add(final TaskInfo task) throws Exception{
+    public synchronized void add(final CronTaskInfo task) throws Exception{
         if(task == null){
             return;
         }
@@ -31,7 +29,7 @@ public class ArrayListTaskLoader implements TaskLoader {
         list.add(task);
     }
 
-    public synchronized void addAll(final List<TaskInfo> tasks){
+    public synchronized void addAll(final List<CronTaskInfo> tasks){
         if(tasks == null){
             return;
         }
@@ -39,7 +37,7 @@ public class ArrayListTaskLoader implements TaskLoader {
     }
 
     @Override
-    public synchronized List<TaskInfo> load() {
+    public synchronized List<CronTaskInfo> load() {
         if(CollUtil.isEmpty(list)){
             return ListUtil.empty();
         }
@@ -47,7 +45,7 @@ public class ArrayListTaskLoader implements TaskLoader {
     }
 
     @Override
-    public void updateCronInfo(TaskInfo taskInfo) {
-
+    public Boolean setNext(Long taskId, Long nextTime) {
+        return true;
     }
 }

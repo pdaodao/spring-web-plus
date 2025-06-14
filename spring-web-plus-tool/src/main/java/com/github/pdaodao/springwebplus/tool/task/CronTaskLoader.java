@@ -7,10 +7,11 @@ import java.util.List;
 /**
  * 任务信息加载器
  */
-public interface TaskLoader {
-    List<TaskInfo> load();
+public interface CronTaskLoader {
+    List<CronTaskInfo> load();
 
-    void updateCronInfo(final TaskInfo taskInfo);
+    Boolean setNext(final Long taskId, final Long nextTime);
+
 
     static ArrayListTaskLoader ofList(){
         return new ArrayListTaskLoader();

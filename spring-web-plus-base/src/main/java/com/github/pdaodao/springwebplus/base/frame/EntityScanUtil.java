@@ -39,7 +39,7 @@ public class EntityScanUtil {
      * @return
      */
     public static List<TableInfo> entityList() {
-        final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.zjzhd.hami.boot", DaoEntity.class);
+        final Set<Class<?>> cls = ClassScanner.scanAllPackageBySuper("com.github.pdaodao.springwebplus", DaoEntity.class);
         final Set<Class<?>> apps = ClassScanner.scanAllPackageBySuper(SpringUtil.getBootScanPackage(), DaoEntity.class);
         final Set<Class<?>> all = new HashSet<>();
         all.addAll(cls);

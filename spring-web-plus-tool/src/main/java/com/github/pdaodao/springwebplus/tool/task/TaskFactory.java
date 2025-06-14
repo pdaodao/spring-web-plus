@@ -11,12 +11,12 @@ public interface TaskFactory {
      * @param taskInfo
      * @return
      */
-    TaskRunnable executor(final TaskInfo taskInfo);
+    TaskRunnable executor(final CronTaskInfo taskInfo);
 
     /**
      * 任务触发阶段报错 如无法创建任务运行时
      * @param taskInfo
      * @param exception
      */
-    void triggerError(final TaskInfo taskInfo, final Exception exception);
+    void triggerError(final CronTaskInfo taskInfo, final Exception exception);
 }

@@ -66,4 +66,10 @@ public class SysLog {
 
     @Schema(description = "日志链路ID")
     private String traceId;
+
+    private boolean ignore = false;
+
+    public void ignore(){
+        ignore = true;
+    }
 }

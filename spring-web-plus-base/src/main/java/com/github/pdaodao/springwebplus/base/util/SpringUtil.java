@@ -17,20 +17,28 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
         return getProperty("spring.application.name");
     }
 
-    public static String getContextPath() {
-        final String t1 = getProperty("spring.mvc.servlet.path");
-        if (StrUtil.isNotBlank(t1) && t1.length() > 1) {
-            if (t1.startsWith("/")) {
-                return t1;
-            }
-            return "/" + t1;
+    public static Integer getPort(){
+        final String p = getProperty("server.port");
+        if(StrUtil.isBlank(p)){
+            return null;
         }
+        return Integer.parseInt(p);
+    }
+
+    public static String getContextPath() {
         final String t2 = getProperty("server.servlet.context-path");
         if (StrUtil.isNotBlank(t2) && t2.length() > 1) {
             if (t2.startsWith("/")) {
                 return t2;
             }
             return "/" + t2;
+        }
+        final String t1 = getProperty("spring.mvc.servlet.path");
+        if (StrUtil.isNotBlank(t1) && t1.length() > 1) {
+            if (t1.startsWith("/")) {
+                return t1;
+            }
+            return "/" + t1;
         }
         return StrUtil.EMPTY;
     }

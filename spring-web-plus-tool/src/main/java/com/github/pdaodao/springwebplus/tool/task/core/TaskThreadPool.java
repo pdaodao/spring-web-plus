@@ -1,9 +1,13 @@
 package com.github.pdaodao.springwebplus.tool.task.core;
 
 import cn.hutool.core.thread.NamedThreadFactory;
+import com.github.pdaodao.springwebplus.tool.task.TaskContextHolder;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import org.slf4j.MDC;
+
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -28,7 +32,9 @@ public class TaskThreadPool {
         Preconditions.checkNotNull(taskRunnable, "TaskExecutorCenter Runnable task is null.");
         final TaskFuture taskFuture = TaskFuture.of(taskRunnable);
         TaskThreadPoolFactory.put(taskRunnable.getId(), taskFuture);
+
         final Future future = taskExecutor.submit(() -> {
+            TaskContextHolder.trace(taskRunnable.getId());
             try{
                 taskRunnable.start();
                 taskRunnable.execute();
@@ -40,6 +46,7 @@ public class TaskThreadPool {
                 taskRunnable.end(null, taskFuture.getEndExecuteTime() - taskFuture.getStartExecuteTime());
             }finally {
                 TaskThreadPoolFactory.remove(taskRunnable.getId());
+                TaskContextHolder.clear();
             }
         });
         taskFuture.setFuture(future);

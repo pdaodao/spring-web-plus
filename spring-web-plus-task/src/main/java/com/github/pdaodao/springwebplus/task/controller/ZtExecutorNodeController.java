@@ -1,0 +1,29 @@
+package com.github.pdaodao.springwebplus.task.controller;
+
+import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
+import com.github.pdaodao.springwebplus.base.auth.SysLogAop;
+import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * 执行节点
+ */
+@Slf4j
+@Hidden
+@RestController
+@RequestMapping("/node/api/v1/executor")
+@AllArgsConstructor
+public class ZtExecutorNodeController {
+    @IgnoreLogin
+    @PostMapping("submit")
+    @Operation(summary = "提交任务")
+    public Boolean submitTask(@RequestBody CronTaskInfo taskInfo){
+        SysLogAop.getLog().ignore();
+        System.out.println("task "+taskInfo.getTaskId()+" to node.");
+        return true;
+    }
+}

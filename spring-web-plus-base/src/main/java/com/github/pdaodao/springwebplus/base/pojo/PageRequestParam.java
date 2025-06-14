@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -30,6 +32,11 @@ public class PageRequestParam {
 
     @Schema(description = "是否为升序, 默认为true")
     private Boolean orderAsc = true;
+
+    @JsonIgnore
+    public String getQLike(){
+        return QueryBuilder.likeValue(q);
+    }
 
     @JsonIgnoreProperties
     public static PageRequestParam from(final Map<String, Object> params) {
