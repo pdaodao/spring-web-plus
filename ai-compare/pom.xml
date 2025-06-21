@@ -8,10 +8,15 @@
         <artifactId>spring-web-plus</artifactId>
         <version>3.1</version>
     </parent>
-    <artifactId>spring-web-plus-ai</artifactId>
-    <version>3.1</version>
+
+    <groupId>com.zjzhd</groupId>
+    <artifactId>ai-compare</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.pdaodao</groupId>
+            <artifactId>spring-web-plus-starter</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.pdaodao</groupId>
             <artifactId>spring-web-plus-base</artifactId>
@@ -41,10 +46,10 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-tika-document-reader</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.ai</groupId>-->
-<!--            <artifactId>spring-ai-starter-model-openai</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.ai</groupId>-->
+        <!--            <artifactId>spring-ai-starter-model-openai</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-advisors-vector-store</artifactId>
@@ -113,15 +118,75 @@
         </dependency>
 
         <dependency>
-            <groupId>com.deepoove</groupId>
-            <artifactId>poi-tl</artifactId>
-            <version>1.12.0</version>
+            <groupId>com.github.pdaodao</groupId>
+            <artifactId>spring-web-plus-ai</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>co.elastic.clients</groupId>
-            <artifactId>elasticsearch-java</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.deepoove</groupId>
+            <artifactId>poi-tl-plugin-markdown</artifactId>
+            <version>1.0.3</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>aicompare</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>assemble</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
+                    </descriptors>
+                    <outputDirectory>${project.basedir}/target</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.github.pdaodao.aicompare.AiCompareMain</mainClass>
+                        </manifest>
+                    </archive>
+                    <excludes>
+                        <exclude>**/application.properties</exclude>
+                        <exclude>**/application*.properties</exclude>
+                        <exclude>**/bootstrap.properties</exclude>
+                        <exclude>**/*.yaml</exclude>
+                        <exclude>*.xml</exclude>
+                        <exclude>static/**</exclude>
+                        <exclude>public/**</exclude>
+                        <exclude>webapp/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
 
 </project>

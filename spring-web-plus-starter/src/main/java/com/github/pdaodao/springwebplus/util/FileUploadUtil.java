@@ -38,6 +38,7 @@ public class FileUploadUtil {
         return FilePathUtil.pathJoin(System.getProperty("user.dir"), "tmp");
     }
 
+
     /**
      * 临时文件系统
      * @return
@@ -230,5 +231,10 @@ public class FileUploadUtil {
     public static void checkIsDoc(final String fileName) {
         final boolean is = StrUtil.containsAnyIgnoreCase(FileNameUtil.extName(fileName), DocExtensions);
         Preconditions.checkArgument(is, "非法的文件，只允许上传文档");
+    }
+
+    public static void checkIsDocx(final String fileName) {
+        final boolean is = StrUtil.containsAnyIgnoreCase(FileNameUtil.extName(fileName), new String[]{"docx"});
+        Preconditions.checkArgument(is, "非法的文件，只允许上传docx文档");
     }
 }

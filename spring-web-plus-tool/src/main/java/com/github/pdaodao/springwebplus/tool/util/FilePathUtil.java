@@ -7,6 +7,11 @@ import java.io.File;
  * 文件路径工具
  */
 public class FilePathUtil {
+
+    public static String userDir(){
+        return System.getProperty("user.dir");
+    }
+
     /**
      * 获取父路径
      */

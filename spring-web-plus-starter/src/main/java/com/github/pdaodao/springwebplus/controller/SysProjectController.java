@@ -11,7 +11,6 @@ import com.github.pdaodao.springwebplus.entity.SysProject;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.Constant;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -78,7 +77,6 @@ public class SysProjectController {
     @GetMapping("list")
     @Operation(summary = "分页")
     @Permission("sys:project:list")
-    @ApiOperationSupport(order = 2)
     public PageResult<SysProject> list(@Parameter(description = "按名称查询") @RequestParam(required = false) final String title,
                                             final PageRequestParam pageRequestParam) {
         try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {

@@ -20,8 +20,12 @@
         </dependency>
         <dependency>
             <groupId>com.github.pdaodao</groupId>
-            <artifactId>spring-web-plus-task</artifactId>
+            <artifactId>spring-web-plus-ai</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.pdaodao</groupId>-->
+<!--            <artifactId>spring-web-plus-task</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

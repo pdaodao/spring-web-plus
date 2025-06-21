@@ -1,0 +1,46 @@
+<configuration scan="true" scanPeriod=" 5 seconds">
+    <jmxConfigurator/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %date{yyyy-MM-dd HH:mm:ss.SSS} | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger) |
+                line:%L - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <Key>log</Key>
+            <DefaultValue>log</DefaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <File>./logs/log.log</File>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>./logs/log-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+                    <maxFileSize>512MB</maxFileSize>
+                    <maxHistory>180</maxHistory>
+                    <totalSizeCap>60</totalSizeCap>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>
+                        %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{56} - line:%L - %msg%n
+                    </pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <logger name="com.zaxxer.hikari" level="info" additivity="true">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.apache.http" level="info"/>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
