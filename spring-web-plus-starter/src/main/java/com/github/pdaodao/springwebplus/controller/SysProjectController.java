@@ -55,7 +55,7 @@ public class SysProjectController {
 
     @GetMapping("info")
     @Operation(summary = "详情")
-    public SysProject info(@Parameter(name = "id", description = "主键") @RequestParam(required = false) final Long id,
+    public SysProject info(@Parameter(name = "id", description = "主键") @RequestParam(required = false) final String id,
                                 @Parameter(name = "name", description = "编码") @RequestParam(required = false) final String name) {
         Preconditions.assertTrue(id == null && StrUtil.isBlank(name), "请指定主键或编码");
         SysProject info = null;
@@ -69,7 +69,7 @@ public class SysProjectController {
 
     @GetMapping("delete")
     @Operation(summary = "删除")
-    public Boolean delete(@Parameter(name = "id", description = "主键") final Long id) {
+    public Boolean delete(@Parameter(name = "id", description = "主键") final String id) {
         Preconditions.checkNotNull(id, "主键不能为空");
         return dao.removeById(id);
     }

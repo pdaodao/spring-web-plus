@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.pojo.MemberType;
 import com.github.pdaodao.springwebplus.base.pojo.handler.MemberTypeListTypeHandler;
@@ -13,14 +14,14 @@ import java.util.List;
 @Data
 @TableName(value = "sys_user_permission", autoResultMap = true)
 @Schema(description = "系统用户权限表")
-public class SysUserPermission extends AutoIdWithTimeUserEntity {
+public class SysUserPermission extends SnowIdWithTimeUserEntity {
     @TableFieldIndex
     @Schema(description = "用户id")
-    private Long userId;
+    private String userId;
 
     @TableFieldIndex
     @Schema(description = "团队id")
-    private Long teamId;
+    private String teamId;
 
     @Schema(description = "团队名称")
     private transient String teamTitle;

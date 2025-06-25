@@ -128,7 +128,7 @@ public class SysFileController {
 
     @GetMapping("download")
     @Operation(summary = "附件下载")
-    public void download(@Parameter(name = "id", description = "文件id") final Long id,
+    public void download(@Parameter(name = "id", description = "文件id") final String id,
                          HttpServletResponse response) throws Exception {
         final SysFile sysFile = sysFileDao.getById(id);
         Preconditions.checkNotNull(sysFile, "文件信息不存在");
@@ -139,7 +139,7 @@ public class SysFileController {
 
     @GetMapping("image/{id}")
     @Operation(summary = "文件显示")
-    public void fileRender(@PathVariable(name = "id") final Long id,
+    public void fileRender(@PathVariable(name = "id") final String id,
                            HttpServletResponse response) throws Exception {
         final SysFile sysFile = sysFileDao.getById(id);
         Preconditions.checkNotNull(sysFile, "文件信息不存在");

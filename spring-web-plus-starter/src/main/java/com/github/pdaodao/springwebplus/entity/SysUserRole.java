@@ -8,19 +8,19 @@ import lombok.Data;
 
 @Data
 @TableName(value = "sys_user_role", autoResultMap = true)
-public class SysUserRole extends AutoIdWithTimeUserEntity {
+public class SysUserRole extends BaseEntity {
     /**
      * 用户id
      */
     @TableFieldIndex
-    private Long userId;
+    private String userId;
 
     /**
      * 角色id
      */
     @TableFieldIndex
-    private Long roleId;
+    private String roleId;
 
     @Schema(description = "团队id")
-    private Long teamId;
+    private String teamId;
 }

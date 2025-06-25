@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Data
 public class FileInfo {
-    private Long id;
+    private String id;
     private String namespace;
     private String name;
     private String path;

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class SysFileDao extends BaseDao<SysFileMapper, SysFile> {
-    public List<SysFile> byNamespace(final String namespace, final Long objId) {
+    public List<SysFile> byNamespace(final String namespace, final String objId) {
         return list(QueryBuilder.lambda(SysFile.class)
                 .eq(SysFile::getNamespace, namespace)
                 .eq(SysFile::getTeamId, RequestUtil.getTeamOrDefault())
@@ -33,7 +33,7 @@ public class SysFileDao extends BaseDao<SysFileMapper, SysFile> {
      * @param list
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateObjId(final String namespace, final Long objId, final List<SysFile> list) {
+    public void updateObjId(final String namespace, final String objId, final List<SysFile> list) {
         Preconditions.checkNotBlank(namespace, "文件信息命名空间不能为空");
         Preconditions.checkNotNull(objId, "文件信息主体不能为空");
         update(Wrappers.lambdaUpdate(SysFile.class)

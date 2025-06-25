@@ -9,5 +9,5 @@ import lombok.Data;
 public abstract class AutoIdWithTimeUserEntity extends AutoIdWithTimeEntity implements WithUser {
     @Schema(description = "创建者id")
     @TableField(fill = FieldFill.INSERT)
-    private Long creatorId;
+    private String creatorId;
 }

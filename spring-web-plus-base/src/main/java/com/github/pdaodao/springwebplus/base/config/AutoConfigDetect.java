@@ -49,6 +49,11 @@ public class AutoConfigDetect implements AutoConfigurationImportFilter, Environm
                 if (StrUtil.isBlank(host) || !hasClass("org.springframework.data.redis.cache.RedisCacheManager")) {
                     arr[i] = false;
                 }
+            }else if(clazz.contains("ElasticsearchClientAutoConfiguration")){
+                final String uris = env.getProperty("spring.elasticsearch.uris");
+                if(StrUtil.isBlank(uris)){
+                    arr[i] = false;
+                }
             }
         }
         return arr;

@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.pdaodao</groupId>
-            <artifactId>spring-web-plus-ai</artifactId>
+            <artifactId>spring-web-plus-ai-starter</artifactId>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.github.pdaodao</groupId>-->

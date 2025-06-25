@@ -96,6 +96,11 @@
             <groupId>io.github.mymonstercat</groupId>
             <artifactId>rapidocr-onnx-platform</artifactId>
         </dependency>
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

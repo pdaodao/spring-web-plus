@@ -13,9 +13,9 @@ import java.util.Date;
 @Data
 @TableName(value = "sys_login_log", autoResultMap = true)
 @Schema(description = "系统登录日志")
-public class SysLoginLog extends AutoIdWithTimeEntity {
+public class SysLoginLog extends BaseEntity {
     @TableFieldIndex
-    private Long userId;
+    private String userId;
 
     @Schema(description = "用户显示名称")
     private String userNickname;

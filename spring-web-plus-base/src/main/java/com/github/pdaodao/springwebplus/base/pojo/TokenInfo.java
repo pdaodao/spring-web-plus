@@ -25,7 +25,7 @@ public class TokenInfo {
     /**
      * 用户id
      */
-    private Long userId;
+    private String userId;
     /**
      * 用户登陆名
      */

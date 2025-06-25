@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @CacheConfig(cacheNames = "ZtProject")
 public class SysProjectDao extends BaseDao<SysProjectMapper, SysProject> {
     @Cacheable
-    public SysProject byId(final Long id){
+    public SysProject byId(final String id){
         Preconditions.checkNotNull(id, "id不能为空");
         return getById(id);
     }

@@ -21,7 +21,7 @@ public class SysTeamDao extends BaseDao<SysTeamMapper, SysTeam> {
     private SysTeamUserDao teamUserDao;
 
     @Cacheable(key = "#p0", condition = "#p0 != null")
-    public List<SysTeam> userTeams(final Long userId){
+    public List<SysTeam> userTeams(final String userId){
         final List<SysTeam> list = baseMapper.userTeams(userId);
         return list;
     }
@@ -31,13 +31,13 @@ public class SysTeamDao extends BaseDao<SysTeamMapper, SysTeam> {
     }
 
     @CacheEvict(key = "#p0", condition = "#p0 != null")
-    public void userTeamsClear(final Long userId){
+    public void userTeamsClear(final String userId){
 
     }
 
     @Override
     protected void afterInsert(SysTeam entity) {
-        final Long userId = RequestUtil.getUserId();
+        final String userId = RequestUtil.getUserId();
         if(userId == null){
             return;
         }
@@ -48,7 +48,7 @@ public class SysTeamDao extends BaseDao<SysTeamMapper, SysTeam> {
         teamUserDao.save(tu);
     }
 
-    public List<SysTeamUser> teamUsers(final Long teamId, final String q){
+    public List<SysTeamUser> teamUsers(final String teamId, final String q){
         return baseMapper.teamUsers(teamId, QueryBuilder.likeValue(q));
     }
 }

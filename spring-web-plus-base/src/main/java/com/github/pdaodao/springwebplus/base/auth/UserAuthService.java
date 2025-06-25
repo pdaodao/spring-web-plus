@@ -10,19 +10,19 @@ public interface UserAuthService {
      * @param userId
      * @return
      */
-    CurrentUserInfo userInfo(final Long userId);
+    CurrentUserInfo userInfo(final String userId);
 
     /**
      * 用户角色编码
      * @param userId
      * @return
      */
-     String userRole(final Long userId);
+     String userRole(final String userId);
 
     /**
      * 用户权限列表
      * @param userId
      * @return
      */
-     Set<String> userPermission(final Long userId);
+     Set<String> userPermission(final String userId);
 }

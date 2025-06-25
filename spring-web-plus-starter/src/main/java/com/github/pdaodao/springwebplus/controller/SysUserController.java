@@ -43,14 +43,14 @@ public class SysUserController {
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统用户")
     @Permission("sys:user:delete")
-    public Boolean deleteSysUser(@PathVariable("id") Long id) {
+    public Boolean deleteSysUser(@PathVariable("id") String id) {
         return sysUserService.deleteById(id);
     }
 
     @Operation(summary = "系统用户详情")
     @GetMapping("/info/{id}")
     @Permission("sys:user:info")
-    public SysUser getSysUser(@PathVariable("id") Long id) {
+    public SysUser getSysUser(@PathVariable("id") String id) {
         return sysUserService.infoWithRole(id, null);
     }
 

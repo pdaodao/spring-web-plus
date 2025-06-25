@@ -5,7 +5,7 @@ package com.github.pdaodao.springwebplus.base.entity;
  */
 public interface WithProject {
 
-    Long getProjectId();
+    String getProjectId();
 
-    void setProjectId(Long projectId);
+    void setProjectId(String projectId);
 }

@@ -12,9 +12,10 @@
         <module>spring-web-plus-tool</module>
         <module>spring-web-plus-base</module>
         <module>spring-web-plus-starter</module>
-        <module>spring-web-plus-ai</module>
         <module>spring-web-plus-task</module>
         <module>ai-compare</module>
+        <module>spring-web-plus-ai</module>
+        <module>spring-web-plus-ai-starter</module>
     </modules>
 
     <properties>
@@ -85,6 +86,11 @@
             <dependency>
                 <groupId>com.github.pdaodao</groupId>
                 <artifactId>spring-web-plus-ai</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pdaodao</groupId>
+                <artifactId>spring-web-plus-ai-starter</artifactId>
                 <version>3.1</version>
             </dependency>
             <dependency>

@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    SysUser infoWithRole(final @Param("id") Long id, @Param("username") final String username);
+    SysUser infoWithRole(final @Param("id") String id, @Param("username") final String username);
 }

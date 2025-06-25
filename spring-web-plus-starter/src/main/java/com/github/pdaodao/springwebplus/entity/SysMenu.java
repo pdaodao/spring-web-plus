@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_menu", autoResultMap = true)
 @Schema(description = "系统菜单")
-public class SysMenu extends AutoIdWithTimeEntity implements WithChildren<SysMenu>, WithPid {
+public class SysMenu extends BaseEntity implements WithChildren<SysMenu>, WithPidString {
     @Schema(description = "菜单编码")
     private String name;
 
@@ -19,7 +19,7 @@ public class SysMenu extends AutoIdWithTimeEntity implements WithChildren<SysMen
     private String title;
 
     @Schema(description = "父id")
-    private Long pid;
+    private String pid;
 
     @Schema(description = "菜单类型，1：目录，2：菜单，3：权限")
     private Integer type;

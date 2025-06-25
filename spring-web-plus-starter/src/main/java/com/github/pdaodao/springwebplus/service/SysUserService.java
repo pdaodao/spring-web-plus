@@ -15,7 +15,7 @@ import java.util.List;
 public class SysUserService {
     private final SysUserDao sysUserDao;
 
-    public SysUser infoWithRole(final Long id, final String username) {
+    public SysUser infoWithRole(final String id, final String username) {
         return sysUserDao.infoWithRole(id, username);
     }
 
@@ -46,7 +46,7 @@ public class SysUserService {
      * @param id
      * @return
      */
-    public boolean deleteById(final Long id) {
+    public boolean deleteById(final String id) {
         return sysUserDao.removeById(id);
     }
 

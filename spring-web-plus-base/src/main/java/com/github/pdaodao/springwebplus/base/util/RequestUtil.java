@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.base.util;
 
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ public class RequestUtil {
     private static ThreadLocal<CurrentUserInfo> userHolder = new ThreadLocal<>();
     private static ThreadLocal<PageRequestParam> pageHolder = new ThreadLocal<>();
 
-    public static Long getUserId() {
+    public static String getUserId() {
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -32,7 +30,7 @@ public class RequestUtil {
         return userInfo.getId();
     }
 
-    public static Long getTeamId(){
+    public static String getTeamId(){
         final CurrentUserInfo userInfo = getCurrentUser();
         if (userInfo == null) {
             return null;
@@ -40,26 +38,23 @@ public class RequestUtil {
         return userInfo.getTeamId();
     }
 
-    public static Long getProjectId(){
+    public static String getProjectId(){
         final String pid = getFromHead("Project-Id");
-        if(NumberUtil.isLong(pid)){
-            return Long.parseLong(pid);
-        }
-        return null;
+        return pid;
     }
 
-    public static Long getProjectIdOrDefault(){
-        final Long id = getProjectId();
+    public static String getProjectIdOrDefault(){
+        final String id = getProjectId();
         if(id == null){
-            return 0L;
+            return "0";
         }
         return id;
     }
 
-    public static Long getTeamOrDefault(){
-        final Long team = getTeamId();
+    public static String getTeamOrDefault(){
+        final String team = getTeamId();
         if(team == null){
-            return 0l;
+            return "0";
         }
         return team;
     }

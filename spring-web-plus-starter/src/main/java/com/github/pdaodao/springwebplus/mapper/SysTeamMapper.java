@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface SysTeamMapper extends BaseMapper<SysTeam> {
 
-    List<SysTeam> userTeams(@Param("userId") final Long userId);
+    List<SysTeam> userTeams(@Param("userId") final String userId);
 
-    List<SysTeamUser> teamUsers(@Param("teamId") final Long teamId, @Param("q") final String q);
+    List<SysTeamUser> teamUsers(@Param("teamId") final String teamId, @Param("q") final String q);
 }

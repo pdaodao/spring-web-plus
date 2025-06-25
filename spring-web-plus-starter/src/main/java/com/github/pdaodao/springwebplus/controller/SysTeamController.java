@@ -46,13 +46,13 @@ public class SysTeamController {
 
     @PostMapping("delete")
     @Operation(summary = "删除团队")
-    public Boolean delete(@Parameter(name = "id", description = "团队id") final Long id) {
+    public Boolean delete(@Parameter(name = "id", description = "团队id") final String id) {
         return sysTeamService.deleteById(id);
     }
 
     @GetMapping("users")
     @Operation(summary = "团队的用户列表")
-    public PageResult<SysTeamUser> teamUsers(@Parameter(name = "id", description = "团队id") final Long id,
+    public PageResult<SysTeamUser> teamUsers(@Parameter(name = "id", description = "团队id") final String id,
                                              final PageRequestParam pageRequestParam){
         try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
             final List<SysTeamUser> list = sysTeamService.teamUsers(id, pageRequestParam.getQ());
@@ -80,7 +80,7 @@ public class SysTeamController {
 
     @PostMapping("deleteUser")
     @Operation(summary = "删除成员")
-    public Boolean removeTeamUser(@Parameter(name = "id", description = "成员id") final Long id){
+    public Boolean removeTeamUser(@Parameter(name = "id", description = "成员id") final String id){
         return sysTeamService.removeTeamUser(id);
     }
 }

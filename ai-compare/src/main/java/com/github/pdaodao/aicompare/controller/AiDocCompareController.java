@@ -9,20 +9,15 @@ import com.deepoove.poi.plugin.markdown.MarkdownRenderData;
 import com.deepoove.poi.plugin.markdown.MarkdownRenderPolicy;
 import com.deepoove.poi.plugin.markdown.MarkdownStyle;
 import com.deepoove.poi.plugin.table.LoopRowTableRenderPolicy;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pdaodao.aicompare.service.ZtChatService;
-import com.github.pdaodao.springwebplus.ai.core.DocText;
-import com.github.pdaodao.springwebplus.ai.core.DocTextBlock;
-import com.github.pdaodao.springwebplus.ai.core.DocTextQuery;
-import com.github.pdaodao.springwebplus.ai.core.DocxUtil;
-import com.github.pdaodao.springwebplus.ai.service.DocReadService;
-import com.github.pdaodao.springwebplus.ai.service.DocStoreService;
+import com.github.pdaodao.aicompare.core.DocText;
+import com.github.pdaodao.aicompare.core.DocTextBlock;
+import com.github.pdaodao.aicompare.core.DocTextQuery;
+import com.github.pdaodao.aicompare.core.DocxUtil;
+import com.github.pdaodao.aicompare.service.DocStoreService;
 import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
-import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.ResponseUtil;
-import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import com.github.pdaodao.springwebplus.tool.data.Tuple2;
 import com.github.pdaodao.springwebplus.tool.data.Tuple3;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
@@ -35,18 +30,12 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.vectorstore.SimpleVectorStore;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -150,22 +139,28 @@ public class AiDocCompareController {
                 if (b.getItems() == null) {
                     continue;
                 }
-                final DocTextQuery q = new DocTextQuery();
-                q.setContent(b.toString());
-                q.setMinScore(score);
-                q.setTopK(1);
-                batchQueryList.add(q);
-                if(batchQueryList.size() == 20 || i == blocks.size()){
-                    if(CollUtil.isEmpty(batchQueryList)){
+                final List<String> sps = b.split(1000);
+                for(final String sp: sps){
+                    if(StrUtil.length(sp) < 10){
                         continue;
                     }
-                    final List<String> texts = batchQueryList.stream().map(t -> t.getContent()).collect(Collectors.toList());
-                    final List<float[]> vs = embeddingModel.embed(texts);
-                    for(int j = 0; j < batchQueryList.size(); j++){
-                        batchQueryList.get(j).setEmbedding(vs.get(j));
+                    final DocTextQuery q = new DocTextQuery();
+                    q.setContent(sp);
+                    q.setMinScore(score);
+                    q.setTopK(1);
+                    batchQueryList.add(q);
+                    if(batchQueryList.size() == 20 || i == blocks.size()){
+                        if(CollUtil.isEmpty(batchQueryList)){
+                            continue;
+                        }
+                        final List<String> texts = batchQueryList.stream().map(t -> t.getContent()).collect(Collectors.toList());
+                        final List<float[]> vs = embeddingModel.embed(texts);
+                        for(int j = 0; j < batchQueryList.size(); j++){
+                            batchQueryList.get(j).setEmbedding(vs.get(j));
+                        }
+                        queryList.addAll(batchQueryList);
+                        batchQueryList.clear();
                     }
-                    queryList.addAll(batchQueryList);
-                    batchQueryList.clear();
                 }
             }
             int index = 1;

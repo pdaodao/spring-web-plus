@@ -44,7 +44,7 @@ public class ZtTaskInfoEntity extends AutoIdWithTimeEntity implements WithPid, W
     private Boolean isDir;
 
     @TableField(updateStrategy = FieldStrategy.NEVER)
-    private Long teamId;
+    private String teamId;
 
     @TableFieldSize(3000)
     @TableField(typeHandler = JacksonTypeHandler.class)

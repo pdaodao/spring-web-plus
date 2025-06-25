@@ -183,16 +183,13 @@ public class LoginUtil {
      * 获取团队id
      * @return
      */
-    public static Long getTeam(){
+    public static String getTeam(){
         final SysConfigProperties sysConfig = sysConfig();
         String team = RequestUtil.getFromHead(sysConfig.getAuthTeam());
         if(StrUtil.isBlank(team)){
             team = RequestUtil.getFromCookie(sysConfig.getAuthTeam());
         }
-        if(!NumberUtil.isLong(team)){
-            return null;
-        }
-        return Long.parseLong(team);
+        return team;
     }
 
     public static SysConfigProperties sysConfig(){

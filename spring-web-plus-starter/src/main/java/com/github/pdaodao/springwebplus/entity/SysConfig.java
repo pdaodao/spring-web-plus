@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @TableName(value = "sys_config", autoResultMap = true)
 @Schema(description = "系统配置")
-public class SysConfig extends AutoIdEntity {
+public class SysConfig extends BaseEntity {
     @Schema(description = "配置名称")
     private String title;
 

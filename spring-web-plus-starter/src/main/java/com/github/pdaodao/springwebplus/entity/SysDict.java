@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_dict", autoResultMap = true)
 @Schema(description = "字典数据")
-public class SysDict extends AutoIdEntity implements WithPid, WithChildren<SysDict> {
+public class SysDict extends BaseEntity implements WithPidString, WithChildren<SysDict> {
     @Schema(description = "编码")
     private String name;
 
@@ -21,7 +21,7 @@ public class SysDict extends AutoIdEntity implements WithPid, WithChildren<SysDi
     private String title;
 
     @Schema(description = "父id")
-    private Long pid;
+    private String pid;
 
     @Schema(description = "状态 1：启用，0：禁用")
     private Boolean enabled;

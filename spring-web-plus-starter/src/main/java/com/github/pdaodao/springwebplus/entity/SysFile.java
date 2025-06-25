@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.entity;
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -15,13 +16,13 @@ import java.util.Objects;
 @Data
 @TableName(value = "sys_file", autoResultMap = true)
 @Schema(description = "系统文件")
-public class SysFile extends AutoIdWithTimeUserEntity implements WithTeam {
+public class SysFile extends SnowIdWithTimeUserEntity implements WithTeam {
     @Schema(description = "文件名称")
     @Length(max = 500, message = "文件名称长度超过500限制")
     private String name;
 
     @Schema(description = "团队id")
-    private Long teamId;
+    private String teamId;
 
     @Schema(description = "命名空间")
     private String namespace;

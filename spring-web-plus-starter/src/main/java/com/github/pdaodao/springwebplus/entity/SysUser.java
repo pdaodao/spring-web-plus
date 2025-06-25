@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.List;
 @Data
 @TableName(value = "sys_user", autoResultMap = true)
 @Schema(description = "系统用户")
-public class SysUser extends AutoIdWithTimeUserEntity {
+public class SysUser extends SnowIdWithTimeUserEntity {
 
     @Schema(description = "用户名")
     @NotBlank(message = "用户名不能为空")

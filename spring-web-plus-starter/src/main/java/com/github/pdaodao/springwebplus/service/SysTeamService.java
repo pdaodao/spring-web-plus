@@ -18,7 +18,7 @@ import java.util.Optional;
 public class SysTeamService {
     private SysTeamDao sysTeamDao;
 
-    public List<SysTeam> userTeams(final Long userId){
+    public List<SysTeam> userTeams(final String userId){
         List<SysTeam> list = sysTeamDao.userTeams(userId);
         if(CollUtil.isEmpty(list)){
             final SysTeam sysTeam = new SysTeam();
@@ -36,11 +36,11 @@ public class SysTeamService {
         return sysTeam;
     }
 
-    public List<SysTeamUser> teamUsers(final Long teamId, final String q){
+    public List<SysTeamUser> teamUsers(final String teamId, final String q){
         return sysTeamDao.teamUsers(teamId, q);
     }
 
-    public Boolean deleteById(final Long id){
+    public Boolean deleteById(final String id){
         return sysTeamDao.removeById(id);
     }
 
@@ -55,7 +55,7 @@ public class SysTeamService {
         return sysTeamUser;
     }
 
-    public Boolean removeTeamUser(final Long id){
+    public Boolean removeTeamUser(final String id){
         return sysTeamDao.teamUserDao().removeById(id);
     }
 }

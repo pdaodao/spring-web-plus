@@ -17,7 +17,7 @@ import java.util.Map;
 @CacheConfig(cacheNames = "sysDic")
 public class SysDicDao extends BaseDao<SysDicMapper, SysDict> {
 
-    public List<SysDict> listOrderBySeq(final Long pid) {
+    public List<SysDict> listOrderBySeq(final String pid) {
         return list(QueryBuilder.lambda(SysDict.class)
                 .eq(SysDict::getPid, pid)
                 .build().orderByAsc(SysDict::getSeq));

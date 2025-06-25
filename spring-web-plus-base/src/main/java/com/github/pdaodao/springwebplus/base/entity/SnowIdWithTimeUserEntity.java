@@ -10,5 +10,5 @@ import lombok.Data;
 public abstract class SnowIdWithTimeUserEntity extends SnowIdWithTimeEntity implements WithUser {
     @Schema(description = "创建者id")
     @TableField( fill = FieldFill.INSERT)
-    private Long creatorId;
+    private String creatorId;
 }

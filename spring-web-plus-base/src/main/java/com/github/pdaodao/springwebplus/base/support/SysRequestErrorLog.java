@@ -11,7 +11,7 @@ import java.util.Date;
 @TableName(value = "sys_access_error_log", autoResultMap = true)
 public class SysRequestErrorLog extends AutoIdEntity {
     // 用户id
-    private Long userId;
+    private String userId;
 
     private String userNickname;
 
