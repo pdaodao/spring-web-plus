@@ -40,6 +40,8 @@ public class LoginController {
         final TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setUserId(userInfo.getId());
         tokenInfo.setUsername(userInfo.getUsername());
+        tokenInfo.setUserNickname(userInfo.getUserNickname());
+        tokenInfo.setAvatar(userInfo.getAvatar());
         tokenInfo.setDevice("PC");
         LoginUtil.login(tokenInfo);
         userInfo.setToken(tokenInfo.getToken());

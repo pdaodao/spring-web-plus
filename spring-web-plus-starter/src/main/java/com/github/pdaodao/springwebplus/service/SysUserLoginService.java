@@ -31,10 +31,16 @@ public class SysUserLoginService implements LoginService {
         result.setId(sysUser.getId());
         result.setUsername(sysUser.getUsername());
         result.setUserNickname(sysUser.getNickname());
+        result.setAvatar(sysUser.getAvatar());
         if (CollUtil.isNotEmpty(sysUser.getRoleList())) {
            // result.setRoles(sysUser.getRoleList().stream().map(t -> t.getIdCode()).collect(Collectors.toSet()));
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        final String p = PasswordUtil.encrypt("park123456", "123");
+        System.out.println(p);
     }
 
     @Override

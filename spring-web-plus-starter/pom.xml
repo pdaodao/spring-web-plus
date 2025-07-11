@@ -18,10 +18,6 @@
             <groupId>com.github.pdaodao</groupId>
             <artifactId>spring-web-plus-base</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.pdaodao</groupId>
-            <artifactId>spring-web-plus-ai-starter</artifactId>
-        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.github.pdaodao</groupId>-->
 <!--            <artifactId>spring-web-plus-task</artifactId>-->

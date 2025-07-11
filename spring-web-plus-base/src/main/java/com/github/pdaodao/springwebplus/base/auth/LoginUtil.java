@@ -131,6 +131,8 @@ public class LoginUtil {
         currentUserInfo.setToken(info.getToken());
         currentUserInfo.setId(info.getUserId());
         currentUserInfo.setUsername(info.getUsername());
+        currentUserInfo.setUserNickname(info.getUserNickname());
+        currentUserInfo.setAvatar(info.getAvatar());
         final UserAuthService userAuthService = userAuthService();
         if(userAuthService != null){
             final CurrentUserInfo u = userAuthService.userInfo(info.getUserId());

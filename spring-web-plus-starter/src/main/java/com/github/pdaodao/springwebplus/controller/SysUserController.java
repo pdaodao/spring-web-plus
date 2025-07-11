@@ -26,6 +26,15 @@ public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
 
+    @Operation(summary = "系统用户分页列表")
+    @GetMapping("/page")
+    @Permission("sys:user:page")
+    public List<SysUser> listPage(SysUserQuery userQuery) {
+        PageHelper.startPage(userQuery);
+        final List<SysUser> users = sysUserService.list(userQuery);
+        return users;
+    }
+
     @PostMapping("/add")
     @Operation(summary = "添加用户")
     @Permission("sys:user:add")
@@ -52,16 +61,6 @@ public class SysUserController {
     @Permission("sys:user:info")
     public SysUser getSysUser(@PathVariable("id") String id) {
         return sysUserService.infoWithRole(id, null);
-    }
-
-    @Operation(summary = "系统用户分页列表")
-    @GetMapping("/page")
-    @Permission("sys:user:page")
-    public PageResult<SysUser> listPage(SysUserQuery userQuery, PageRequestParam pageRequestParam) {
-        try (final PageHelper pageHelper = PageHelper.startPage(pageRequestParam)) {
-            final List<SysUser> users = sysUserService.list(userQuery);
-            return pageHelper.toPageResult(users);
-        }
     }
 
     @Operation(summary = "重置用户密码")

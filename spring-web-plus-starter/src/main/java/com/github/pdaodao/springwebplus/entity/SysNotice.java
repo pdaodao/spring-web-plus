@@ -9,9 +9,12 @@ import lombok.Data;
 @TableName(value = "sys_notice", autoResultMap = true)
 @Schema(description = "系统公告")
 public class SysNotice extends BaseEntity {
+    @Schema(description = "标题")
     private String title;
 
+    @Schema(description = "描述")
     private String remark;
 
     private String color;
+
 }

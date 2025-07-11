@@ -13,7 +13,6 @@
         <module>spring-web-plus-base</module>
         <module>spring-web-plus-starter</module>
         <module>spring-web-plus-task</module>
-        <module>ai-compare</module>
         <module>spring-web-plus-ai</module>
         <module>spring-web-plus-ai-starter</module>
     </modules>
@@ -21,7 +20,7 @@
     <properties>
         <java.version>17</java.version>
         <spring.boot.version>3.4.3</spring.boot.version>
-        <mybatis.plus.version>3.5.10.1</mybatis.plus.version>
+        <mybatis.plus.version>3.5.12</mybatis.plus.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring-ai.version>1.0.0</spring-ai.version>

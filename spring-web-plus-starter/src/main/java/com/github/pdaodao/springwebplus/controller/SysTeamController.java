@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.controller;
 
-import com.github.pdaodao.springwebplus.base.config.support.CurrentUserInfoParamResolver;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.MemberType;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
@@ -11,14 +10,12 @@ import com.github.pdaodao.springwebplus.entity.SysTeamUser;
 import com.github.pdaodao.springwebplus.service.SysTeamService;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.util.Constant;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

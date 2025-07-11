@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
 import java.util.List;
 
 @Data
@@ -25,7 +24,10 @@ public class SysMenu extends BaseEntity implements WithChildren<SysMenu>, WithPi
     private Integer type;
 
     @Schema(description = "前端路由地址")
-    private String routeUrl;
+    private String path;
+
+    @Schema(description = "权限字符串")
+    private String permissions;
 
     @Schema(description = "重定向")
     private String routeRedirect;
@@ -38,6 +40,9 @@ public class SysMenu extends BaseEntity implements WithChildren<SysMenu>, WithPi
 
     @Schema(description = "排序")
     private Integer seq;
+
+    @Schema(description = "是否为外链")
+    private String isFrame;
 
     @Schema(description = "状态，0：禁用，1：启用")
     private Boolean enabled;

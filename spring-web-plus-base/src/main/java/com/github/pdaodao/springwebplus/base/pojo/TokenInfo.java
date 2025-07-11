@@ -31,6 +31,12 @@ public class TokenInfo {
      */
     private String username;
 
+    private String userNickname;
+
+    // 头像
+    private String avatar;
+
+
     /**
      * 本次登陆的设备类型
      */

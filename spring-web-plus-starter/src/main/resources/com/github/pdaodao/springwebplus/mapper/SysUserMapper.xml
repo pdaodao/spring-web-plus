@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.pdaodao.springwebplus.mapper.SysUserMapper">
-
-
     <resultMap id="SysUserRoles"
                type="com.github.pdaodao.springwebplus.entity.SysUser"
                extends="mybatis-plus_SysUser">
@@ -14,8 +12,11 @@
     </resultMap>
 
     <select id="infoWithRole" resultMap="SysUserRoles">
-        select u.id, u.username, u.nickname, u.password, u.salt, u.create_time, u.phone,
-        r.name as r_name, r.id as r_id, r.title as r_title
+        select u.id, u.username, u.nickname, u.avatar, u.create_time, u.phone,
+        u.pwd_update_time, u.last_login_time, u.login_ip, u.enabled,
+        r.name as r_name,
+        r.id as r_id, r.name as r_name,
+        r.title as r_title
         from sys_user u
         left join sys_user_role ur on ur.user_id = u.id
         left join sys_role r on r.id = ur.role_id
@@ -25,6 +26,12 @@
             </if>
             <if test="username != null">
                 and u.username = #{username}
+            </if>
+            <if test="q != null">
+                and ( u.nickname like  #{q} or u.username like #{q} )
+            </if>
+            <if test="roleId != null">
+                and ur.role_id = #{roleId}
             </if>
         </where>
     </select>

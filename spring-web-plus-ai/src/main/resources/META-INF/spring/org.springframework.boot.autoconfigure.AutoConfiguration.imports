@@ -1,0 +1,2 @@
+com.github.pdaodao.springwebplus.ai.config.AiAutoConfig
+com.github.pdaodao.springwebplus.ai.config.ElasticsearchStoreAutoConfig

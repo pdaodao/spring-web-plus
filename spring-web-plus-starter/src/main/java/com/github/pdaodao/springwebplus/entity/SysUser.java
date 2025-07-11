@@ -4,13 +4,11 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
 import java.util.Date;
 import java.util.List;
 
@@ -51,11 +49,23 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     @Length(max = 300, message = "头像长度超过限制")
     private String avatar;
 
+    @Schema(description = "城市名称如杭州")
+    private String city;
+
+    @Schema(description = "微信的用户id")
+    private String wxid;
+
+    @Schema(description = "支付宝用户id")
+    private String zfbid;
+
     @Schema(description = "密码更新时间")
     private Date pwdUpdateTime;
 
     @Schema(description = "上次登录时间")
     private Date lastLoginTime;
+
+    @Schema(description = "最后登录id")
+    private String loginIp;
 
     @Schema(description = "状态，0：禁用，1：启用")
     private Boolean enabled;

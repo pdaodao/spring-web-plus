@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,9 +14,11 @@ import java.util.Date;
 @Data
 @TableName(value = "sys_log", autoResultMap = true)
 @Schema(description = "系统日志")
-public class SysLog extends BaseEntity {
+public class SysLog extends BaseEntity implements WithTeam {
     @Schema(description = "用户id")
     private String userId;
+
+    private String teamId;
 
     @Schema(description = "用户显示名称")
     private String userNickname;

@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.store.elasticsearch;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.KnnSearch;
@@ -31,6 +30,13 @@ public class ElasticsearchVectorStore implements AiVectorStore {
     public ElasticsearchVectorStore(final ElasticsearchOptions opt) throws Exception{
         this.options = opt;
         this.client = EsUtil.getClient(opt.getUrl(), opt.getUsername(), opt.getPassword());
+        Preconditions.checkNotBlank(opt.getIndexName(), "Elasticsearch indexName is null.");
+        init();
+    }
+
+    public ElasticsearchVectorStore(ElasticsearchClient client, final ElasticsearchOptions opt) throws Exception{
+        this.options = opt;
+        this.client = client;
         Preconditions.checkNotBlank(opt.getIndexName(), "Elasticsearch indexName is null.");
         init();
     }
@@ -102,24 +108,31 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                     .build();
             boolQuery.filter(new Query.Builder().term(namespace).build());
         }
-        if(ObjectUtil.isNotNull(query.getDocId())){
+        if(query.getEnabled() != null){
+            final TermQuery enabled = new TermQuery.Builder()
+                    .field("enabled")
+                    .value(query.getEnabled())
+                    .build();
+            boolQuery.filter(new Query.Builder().term(enabled).build());
+        }
+        if(StrUtil.isNotBlank(query.getDocId())){
             final TermQuery docId = new TermQuery.Builder()
                     .field("docId")
                     .value(query.getDocId())
                     .build();
             boolQuery.filter(new Query.Builder().term(docId).build());
         }else{
-            if(ObjectUtil.isNotNull(query.getTeamId())){
+            if(StrUtil.isNotBlank(query.getTeamId())){
                 final TermQuery teamId = new TermQuery.Builder()
                         .field("teamId")
                         .value(query.getTeamId())
                         .build();
                 boolQuery.filter(new Query.Builder().term(teamId).build());
             }
-            if(ObjectUtil.isNotNull(query.getDatasetId())){
+            if(StrUtil.isNotBlank(query.getDbId())){
                 final TermQuery datasetId = new TermQuery.Builder()
-                        .field("datasetId")
-                        .value(query.getDatasetId())
+                        .field("dbId")
+                        .value(query.getDbId())
                         .build();
                 boolQuery.filter(new Query.Builder().term(datasetId).build());
             }
@@ -162,10 +175,10 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                         .numberOfShards("1"))
                 .mappings(m -> m
                         .properties("namespace", p -> p.keyword(t -> t))
-                        .properties("teamId", p -> p.long_(t -> t))
-                        .properties("datasetId", p -> p.long_(t -> t))
-                        .properties("docId", p -> p.long_(t -> t))
-                        .properties("textId", p -> p.long_(t -> t))
+                        .properties("teamId", p -> p.keyword(t -> t))
+                        .properties("dbId", p -> p.keyword(t -> t))
+                        .properties("docId", p -> p.keyword(t -> t))
+                        .properties("textId", p -> p.keyword(t -> t))
                         .properties("name", p -> p.keyword(t -> t))
                         .properties("content", p -> p.text(t -> t.analyzer("ik_max_word").searchAnalyzer("ik_max_word")))
                         .properties("embedding", p -> p.denseVector(v -> v.dims(options.getDimensions()).index(true).similarity("cosine"))) // 向量字段

@@ -7,7 +7,7 @@ import lombok.Data;
 public class RichUserInfo extends CurrentUserInfo{
     // 角色id
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long roleId;
+    private String roleId;
 
     // 角色编码
     @JsonInclude(JsonInclude.Include.NON_NULL)

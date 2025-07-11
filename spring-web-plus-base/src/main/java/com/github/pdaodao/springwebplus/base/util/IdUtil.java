@@ -5,6 +5,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pdaodao.springwebplus.base.entity.WithChildren;
 import com.github.pdaodao.springwebplus.base.entity.WithDelete;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 import java.util.*;
 import java.util.function.Function;
@@ -107,5 +108,55 @@ public class IdUtil {
             pEntity.getChildren().add(entity);
         }
         return tree;
+    }
+
+    /**
+     * 从树结构中获取该节点和子节点
+     * @param list
+     * @param id
+     * @param idFun
+     * @param pidFun
+     * @return
+     * @param <E>
+     * @param <K>
+     */
+    public static <E extends WithChildren, K> Set<K> selfSubIds(final List<E> list, final K id,
+                                                                final Function<E, K> idFun, final Function<E, K> pidFun) {
+        if(id == null){
+            return null;
+        }
+        Preconditions.checkNotNull(idFun, "idFun is null");
+        Preconditions.checkNotNull(pidFun, "pidFun is null");
+        final Set<K> ret = new LinkedHashSet<>();
+        ret.add(id);
+        if(CollUtil.isEmpty(list)) {
+            return ret;
+        }
+        for(final E t: list){
+            if(ObjectUtil.equals(pidFun.apply(t), id)){
+                ret.add(idFun.apply(t));
+                if(t instanceof WithChildren<?>){
+                    addAll(t.getChildren(), ret, idFun, pidFun);
+                }
+                continue;
+            }
+            if(t instanceof WithChildren<?>){
+                final Set<K> subs = selfSubIds(t.getChildren(), id, idFun, pidFun);
+                ret.addAll(subs);
+            }
+        }
+        return ret;
+    }
+
+    private static <E extends WithChildren, K>  void addAll(final List<E> list, final Set<K> ids,
+                                                            final Function<E, K> idFun,
+                                                            final Function<E, K> pidFun){
+        if(CollUtil.isEmpty(list) || ids == null){
+            return;
+        }
+        for(final E t: list){
+            ids.add(idFun.apply(t));
+            addAll(t.getChildren(), ids, idFun, pidFun);
+        }
     }
 }

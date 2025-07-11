@@ -14,22 +14,24 @@ public class AiEmbedTextQuery {
     /**
      * 团队id
      */
-    private Long teamId;
+    private String teamId;
 
     /**
      * 知识库id
      */
-    private Long datasetId;
+    private String dbId;
 
     /**
      * 文档id
      */
-    private Long docId;
+    private String docId;
 
     /**
      * 文本内容
      */
     private String content;
+
+    private Boolean enabled;
 
     /**
      * 向量

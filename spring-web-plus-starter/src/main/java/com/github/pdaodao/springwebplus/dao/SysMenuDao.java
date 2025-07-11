@@ -34,7 +34,7 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
 
     public List<SysMenu> allList(final SysMenuQuery query) {
         return list(QueryBuilder.lambda(SysMenu.class)
-                .like(query.getKeyword(), SysMenu::getName, SysMenu::getComponentPath, SysMenu::getRouteUrl)
+                .like(query.getKeyword(), SysMenu::getName, SysMenu::getComponentPath, SysMenu::getPath)
                 .eq(SysMenu::getIsShow, query.getIsShow())
                 .eq(SysMenu::getEnabled, query.getEnabled())
                 .build().orderByAsc(SysMenu::getSeq));

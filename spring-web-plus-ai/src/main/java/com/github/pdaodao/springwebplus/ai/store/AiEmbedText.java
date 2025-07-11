@@ -16,22 +16,22 @@ public class AiEmbedText {
     /**
      * 团队id
      */
-    private Long teamId;
+    private String teamId;
 
     /**
      * 知识库id
      */
-    private Long datasetId;
+    private String dbId;
 
     /**
      * 文档id
      */
-    private Long docId;
+    private String docId;
 
     /**
      * 文本块id
      */
-    private Long textId;
+    private String textId;
 
     /**
      * 表名， 字段名 ...
@@ -40,6 +40,8 @@ public class AiEmbedText {
 
     // 内容
     private String content;
+
+    private Boolean enabled = true;
 
     // 向量
     private float[] embedding;

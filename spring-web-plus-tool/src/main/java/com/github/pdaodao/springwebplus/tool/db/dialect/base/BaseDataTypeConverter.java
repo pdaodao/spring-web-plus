@@ -101,6 +101,10 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         if (DataType.BINARY == dataType || DataType.FILE == dataType) {
             return fieldDDLBinary(columnInfo);
         }
+        // 地理位置
+        if(DataType.GEOMETRY == dataType){
+            return fieldDDLGeometry(columnInfo);
+        }
         // 整数类型
         if (dataType.isIntFamily()) {
             return fieldDDLInt(columnInfo);
@@ -183,6 +187,9 @@ public class BaseDataTypeConverter implements DataTypeConverter {
         return FieldTypeNameWrap.of("LONGBLOB", null);
     }
 
+    public FieldTypeNameWrap fieldDDLGeometry(final TableField columnInfo) {
+        return FieldTypeNameWrap.of("GEOMETRY", null);
+    }
 
     /**
      * json类型

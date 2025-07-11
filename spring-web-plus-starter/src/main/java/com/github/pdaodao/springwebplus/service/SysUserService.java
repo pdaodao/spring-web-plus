@@ -61,6 +61,8 @@ public class SysUserService {
     }
 
     public List<SysUser> list(final SysUserQuery query) {
+
+
         return sysUserDao.list(query);
     }
 

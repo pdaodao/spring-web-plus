@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.controller;
 import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.dao.SysMenuDao;
+import com.github.pdaodao.springwebplus.dao.SysRoleDao;
 import com.github.pdaodao.springwebplus.entity.SysMenu;
 import com.github.pdaodao.springwebplus.query.SysMenuQuery;
 import com.github.pdaodao.springwebplus.util.Constant;
@@ -21,27 +22,24 @@ import java.util.List;
 @AllArgsConstructor
 public class SysMenuController {
     private final SysMenuDao sysMenuDao;
+    private final SysRoleDao roleDao;
 
-    @PostMapping("/add")
-    @Operation(summary = "添加系统菜单")
-    @Permission("sys:menu:add")
-    public Boolean addSysMenu(@Valid @RequestBody SysMenu menu) {
-        return sysMenuDao.save(menu);
-
-    }
-
-    @PostMapping("/update")
-    @Operation(summary = "修改系统菜单")
-    @Permission("sys:menu:update")
-    public Boolean updateSysMenu(@Valid @RequestBody SysMenu menu) {
-        return sysMenuDao.save(menu);
+    @PostMapping("/save")
+    @Operation(summary = "保存系统菜单")
+    @Permission("sys:menu:save")
+    public SysMenu addSysMenu(@Valid @RequestBody SysMenu menu) {
+        sysMenuDao.save(menu);
+        roleDao.clearCache();
+        return menu;
     }
 
     @PostMapping("/delete/{id}")
     @Operation(summary = "删除系统菜单")
-    @Permission("sys:menu:delete")
+    @Permission("sys:menu:save")
     public Boolean deleteSysMenu(@PathVariable(name = "id") String id) {
-        return sysMenuDao.deleteById(id);
+        sysMenuDao.deleteById(id);
+        roleDao.clearCache();
+        return true;
     }
 
     @GetMapping("/info/{id}")

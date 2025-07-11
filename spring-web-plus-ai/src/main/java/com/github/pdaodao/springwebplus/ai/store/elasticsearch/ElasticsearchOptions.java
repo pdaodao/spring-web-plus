@@ -1,8 +1,10 @@
 package com.github.pdaodao.springwebplus.ai.store.elasticsearch;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
+@ConfigurationProperties(prefix = "ai.elasticsearch")
 public class ElasticsearchOptions {
     private String url;
     private String username;
