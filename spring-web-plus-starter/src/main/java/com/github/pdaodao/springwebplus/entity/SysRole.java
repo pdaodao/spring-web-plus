@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.entity;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -34,6 +35,13 @@ public class SysRole extends BaseEntity implements WithTeam {
     @Schema(description = "团队id")
     private String teamId;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "菜单ID集合")
-    private transient List<String> menuIds;
+    @TableField(exist = false)
+    private List<String> menuIds;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "系统菜单")
+    @TableField(exist = false)
+    private List<SysMenu> menus;
 }

@@ -11,5 +11,5 @@ import java.util.List;
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    List<SysUser> infoWithRole(final SysUserQuery query);
+    SysUser infoWithRole(final SysUserQuery query);
 }

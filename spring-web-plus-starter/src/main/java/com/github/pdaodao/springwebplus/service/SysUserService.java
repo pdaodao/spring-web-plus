@@ -1,19 +1,27 @@
 package com.github.pdaodao.springwebplus.service;
 
 import cn.hutool.core.util.RandomUtil;
+import com.github.pdaodao.springwebplus.dao.SysRoleDao;
 import com.github.pdaodao.springwebplus.dao.SysUserDao;
+import com.github.pdaodao.springwebplus.dao.SysUserRoleDao;
+import com.github.pdaodao.springwebplus.entity.SysRole;
 import com.github.pdaodao.springwebplus.entity.SysUser;
+import com.github.pdaodao.springwebplus.entity.SysUserRole;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class SysUserService {
     private final SysUserDao sysUserDao;
+    private final SysRoleDao roleDao;
+    private final SysUserRoleDao userRoleDao;
 
     public SysUser infoWithRole(final String id, final String username) {
         return sysUserDao.infoWithRole(id, username);
@@ -29,7 +37,6 @@ public class SysUserService {
         if (sysUser.getId() == null) {
             Preconditions.checkNotBlank(sysUser.getPassword(), "密码为空.");
             final String salt = RandomUtil.randomString(6);
-            ;
             sysUser.setSalt(salt);
             String password = PasswordUtil.encrypt(sysUser.getPassword(), salt);
             sysUser.setPassword(password);
@@ -61,8 +68,6 @@ public class SysUserService {
     }
 
     public List<SysUser> list(final SysUserQuery query) {
-
-
         return sysUserDao.list(query);
     }
 
@@ -74,5 +79,15 @@ public class SysUserService {
      */
     public boolean updatePassword(final SysUser sysUser) {
         return true;
+    }
+
+    public List<SysRole> userRoles(final String userId){
+        final List<SysUserRole> rs = userRoleDao.userRoles(userId);
+        final List<SysRole> list = new ArrayList<>();
+        for(final SysUserRole r: rs){
+            final SysRole role = roleDao.info(r.getRoleId());
+            list.add(role);
+        }
+        return list;
     }
 }

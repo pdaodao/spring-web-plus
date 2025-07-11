@@ -12,7 +12,7 @@
     </resultMap>
 
     <select id="infoWithRole" resultMap="SysUserRoles">
-        select u.id, u.username, u.nickname, u.avatar, u.create_time, u.phone,
+        select u.id, u.username, u.password, u.salt, u.nickname, u.avatar, u.create_time, u.phone,
         u.pwd_update_time, u.last_login_time, u.login_ip, u.enabled,
         r.name as r_name,
         r.id as r_id, r.name as r_name,
@@ -22,7 +22,7 @@
         left join sys_role r on r.id = ur.role_id
         <where>
             <if test="id != null">
-                and = u.id = #{id}
+                and u.id = #{id}
             </if>
             <if test="username != null">
                 and u.username = #{username}

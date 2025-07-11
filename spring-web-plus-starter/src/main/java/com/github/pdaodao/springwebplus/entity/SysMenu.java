@@ -1,11 +1,17 @@
 package com.github.pdaodao.springwebplus.entity;
 
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.*;
+import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @TableName(value = "sys_menu", autoResultMap = true)
@@ -55,4 +61,38 @@ public class SysMenu extends BaseEntity implements WithChildren<SysMenu>, WithPi
 
     @Schema(description = "子项目")
     private transient List<SysMenu> children;
+
+    public static void collectByIds(final Collection<SysMenu> menus, final Set<String> ids, final SysMenu root){
+        if(CollUtil.isEmpty(menus)){
+            return;
+        }
+        for(final SysMenu m: menus){
+            final SysMenu menu = m.cloneIgnoreChildren();
+            if(CollUtil.isNotEmpty(m.getChildren())){
+                menu.setChildren(new ArrayList<>());
+                collectByIds(m.getChildren(), ids, menu);
+                if(CollUtil.isNotEmpty(menu.getChildren()) || ids.contains(m.getId())){
+                    root.addChildren(menu);
+                }
+            }else if(ids.contains(m.getId())){
+                root.addChildren(menu);
+            }
+        }
+    }
+
+    protected SysMenu cloneIgnoreChildren(){
+        final SysMenu m = new SysMenu();
+        BeanUtils.copyProperties(this, m, "children");
+        return m;
+    }
+
+    protected void addChildren(final SysMenu ch){
+        if(ch == null){
+            return;
+        }
+        if(children == null){
+            children = new ArrayList<>();
+        }
+        children.add(ch);
+    }
 }

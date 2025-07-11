@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
 import com.github.pdaodao.springwebplus.dao.SysTeamDao;
 import com.github.pdaodao.springwebplus.entity.SysTeam;
 import com.github.pdaodao.springwebplus.entity.SysTeamUser;
@@ -35,6 +36,11 @@ public class SysTeamService {
         sysTeamDao.save(sysTeam);
         return sysTeam;
     }
+
+    public List<SysTeam> list(final String q){
+        return sysTeamDao.list(QueryBuilder.lambda(SysTeam.class).like(q, SysTeam::getTitle).build());
+    }
+
 
     public List<SysTeamUser> teamUsers(final String teamId, final String q){
         return sysTeamDao.teamUsers(teamId, q);

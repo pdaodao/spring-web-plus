@@ -6,6 +6,7 @@ import com.github.pdaodao.springwebplus.dao.SysMenuDao;
 import com.github.pdaodao.springwebplus.dao.SysRoleDao;
 import com.github.pdaodao.springwebplus.entity.SysMenu;
 import com.github.pdaodao.springwebplus.query.SysMenuQuery;
+import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,18 +52,18 @@ public class SysMenuController {
 
     @GetMapping("/tree")
     @Operation(summary = "树形列表")
-    @Permission("sys:menu:all-tree-list")
-    public List<SysMenu> getAllSysMenuTreeList(final SysMenuQuery query) {
-        final List<SysMenu> list = sysMenuDao.allList(query);
+    @Permission("sys:menu:list")
+    public List<SysMenu> menuTree() {
+        final List<SysMenu> list = BeanUtils.copyToList(sysMenuDao.allList(), SysMenu.class);
         return IdUtil.toTree(list, SysMenu::getId, SysMenu::getPid);
     }
 
-    @GetMapping("/tree/enabled")
-    @Operation(summary = "启用的菜单树")
-    @Permission("sys:menu:tree-list")
-    public List<SysMenu> getSysMenuTreeList() {
-        final SysMenuQuery query = new SysMenuQuery();
-        query.setEnabled(true);
-        return getAllSysMenuTreeList(query);
-    }
+//    @GetMapping("/tree/enabled")
+//    @Operation(summary = "启用的菜单树")
+//    @Permission("sys:menu:tree-list")
+//    public List<SysMenu> getSysMenuTreeList() {
+//        final SysMenuQuery query = new SysMenuQuery();
+//        query.setEnabled(true);
+//        return getAllSysMenuTreeList(query);
+//    }
 }

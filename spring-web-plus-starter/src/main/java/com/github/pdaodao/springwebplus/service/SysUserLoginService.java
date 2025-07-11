@@ -4,12 +4,14 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.LoginUserInfo;
+import com.github.pdaodao.springwebplus.entity.SysRole;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,10 +34,12 @@ public class SysUserLoginService implements LoginService {
         result.setUsername(sysUser.getUsername());
         result.setUserNickname(sysUser.getNickname());
         result.setAvatar(sysUser.getAvatar());
-        if (CollUtil.isNotEmpty(sysUser.getRoleList())) {
-           // result.setRoles(sysUser.getRoleList().stream().map(t -> t.getIdCode()).collect(Collectors.toSet()));
-        }
         return result;
+    }
+
+    @Override
+    public List<SysRole> userRoles(String userId) {
+        return sysUserService.userRoles(userId);
     }
 
     public static void main(String[] args) {

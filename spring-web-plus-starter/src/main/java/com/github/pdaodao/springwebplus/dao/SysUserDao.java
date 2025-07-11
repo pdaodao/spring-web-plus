@@ -13,8 +13,10 @@ import java.util.List;
 public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
 
     public SysUser infoWithRole(final String id, final String username) {
-        return null;
-//        return baseMapper.infoWithRole(id, username);
+        final SysUserQuery query = new SysUserQuery();
+        query.setId(id);
+        query.setUsername(username);
+        return baseMapper.infoWithRole(query);
     }
 
     public List<SysUser> list(final SysUserQuery query) {

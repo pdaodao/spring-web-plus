@@ -1,12 +1,10 @@
 package com.github.pdaodao.springwebplus.controller;
 
 import com.github.pdaodao.springwebplus.base.auth.Permission;
-import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.service.SysUserService;
-import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.util.Constant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +26,7 @@ public class SysUserController {
 
     @Operation(summary = "系统用户分页列表")
     @GetMapping("/page")
-    @Permission("sys:user:page")
+    @Permission("sys:user:list")
     public List<SysUser> listPage(SysUserQuery userQuery) {
         PageHelper.startPage(userQuery);
         final List<SysUser> users = sysUserService.list(userQuery);
@@ -60,7 +58,12 @@ public class SysUserController {
     @GetMapping("/info/{id}")
     @Permission("sys:user:info")
     public SysUser getSysUser(@PathVariable("id") String id) {
-        return sysUserService.infoWithRole(id, null);
+        final SysUser sysUser = sysUserService.infoWithRole(id, null);
+        if(sysUser != null){
+            sysUser.setPassword(null);
+            sysUser.setSalt(null);
+        }
+        return sysUser;
     }
 
     @Operation(summary = "重置用户密码")

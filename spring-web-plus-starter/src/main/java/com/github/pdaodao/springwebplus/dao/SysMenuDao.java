@@ -9,6 +9,9 @@ import com.github.pdaodao.springwebplus.entity.SysMenu;
 import com.github.pdaodao.springwebplus.mapper.SysMenuMapper;
 import com.github.pdaodao.springwebplus.query.SysMenuQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,36 +21,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@CacheConfig(cacheNames = "SysMenu")
 public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
     @Autowired
     private SysRoleMenuDao roleMenuDao;
 
-    public List<SysMenu> list(final List<Integer> types) {
-        return list(Wrappers.lambdaUpdate(SysMenu.class)
-                .in(CollUtil.isNotEmpty(types), SysMenu::getType, types)
-                .orderByAsc(SysMenu::getSeq));
+    @Cacheable
+    public List<SysMenu> allList() {
+        return list();
     }
 
-    public List<SysMenu> menuList() {
-        return list(ListUtil.of(1, 2));
-    }
-
-    public List<SysMenu> allList(final SysMenuQuery query) {
-        return list(QueryBuilder.lambda(SysMenu.class)
-                .like(query.getKeyword(), SysMenu::getName, SysMenu::getComponentPath, SysMenu::getPath)
-                .eq(SysMenu::getIsShow, query.getIsShow())
-                .eq(SysMenu::getEnabled, query.getEnabled())
-                .build().orderByAsc(SysMenu::getSeq));
-    }
-
-    /**
-     * 用户菜单
-     *
-     * @param userId
-     * @return
-     */
-    public List<SysMenu> userMenu(final String userId) {
-        return baseMapper.userMenu(userId);
+    @Override
+    @CacheEvict(allEntries = true)
+    public boolean save(SysMenu entity) {
+        return super.save(entity);
     }
 
     /**
@@ -56,6 +43,7 @@ public class SysMenuDao extends BaseDao<SysMenuMapper, SysMenu> {
      * @param id
      * @return
      */
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteById(final String id) {
         final SysMenu sysMenu = getById(id);

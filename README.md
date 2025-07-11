@@ -1,12 +1,5 @@
 # spring-web项目脚手架
 
-todo
-https://sa-token.cc/doc.html#/more/link
-
-todo
-https://jtablesaw.github.io/tablesaw/gettingstarted
-sdk use java 17.0.11-tem
-
 ## 功能特性
 
 1. web配置、mybatis-plus配置、缓存配置
@@ -27,16 +20,6 @@ sdk use java 17.0.11-tem
 <dependency>
     <groupId>com.github.pdaodao</groupId>
     <artifactId>spring-web-plus-starter</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
 </dependency>
 ```
-
-参考
-https://github.com/geekidea/spring-boot-plus
-
-    @Parameters({
-            @Parameter(name = "id",description = "文件id",in = ParameterIn.PATH),
-            @Parameter(name = "file",description = "文件",required = true,in=ParameterIn.DEFAULT,
-                    schema = @Schema(name = "file",format = "binary")),
-            @Parameter(name = "name",description = "文件名称",required = true),
-    })

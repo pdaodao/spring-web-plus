@@ -35,6 +35,14 @@ public class SysTeamController {
         return list;
     }
 
+    @GetMapping("list")
+    @Operation(summary = "团队列表")
+    public List<SysTeam> teamList(final PageRequestParam pageRequestParam){
+        PageHelper.startPage(pageRequestParam);
+        return sysTeamService.list(pageRequestParam.getQ());
+    }
+
+
     @GetMapping("save")
     @Operation(summary = "保存团队信息")
     public SysTeam save(@RequestBody SysTeam sysTeam){

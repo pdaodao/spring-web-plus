@@ -5,17 +5,8 @@ import lombok.Data;
 
 @Data
 public class RichUserInfo extends CurrentUserInfo{
-    // 角色id
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String roleId;
-
-    // 角色编码
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String roleName;
-
-    // 角色名称
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String roleTitle;
+    private Object roles;
 
     // 菜单列表
     @JsonInclude(JsonInclude.Include.NON_NULL)
