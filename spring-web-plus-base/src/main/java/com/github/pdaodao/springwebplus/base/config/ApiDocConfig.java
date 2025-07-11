@@ -1,34 +1,19 @@
 package com.github.pdaodao.springwebplus.base.config;
 
-import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import io.swagger.v3.core.converter.AnnotatedType;
-import io.swagger.v3.core.converter.ModelConverter;
-import io.swagger.v3.core.converter.ModelConverterContext;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.media.Schema;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
-import java.util.Iterator;
-
-@Configuration
+@Order(Integer.MIN_VALUE)
+@AutoConfiguration(before = org.springdoc.core.configuration.SpringDocConfiguration.class)
 @ConditionalOnProperty(value = "swagger.enabled", havingValue = "true", matchIfMissing = true)
 public class ApiDocConfig implements InitializingBean {
-
-    @Bean
-    public OpenAPI openApi() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title(SpringUtil.getAppName())
-                        .description("接口文档")
-                        .version("v1"));
-    }
-
 //    @Bean
 //    public ModelConverter modelConverter(){
 //        return new ModelConverter() {
@@ -43,7 +28,7 @@ public class ApiDocConfig implements InitializingBean {
 //    }
 
     @Bean
-    public GroupedOpenApi curentAppApi() {
+    public GroupedOpenApi currentAppApi() {
         final String[] packagedToMatch = {SpringUtil.getBootPackage()};
         return GroupedOpenApi.builder()
                 .group("1_" + SpringUtil.getAppName())
@@ -65,6 +50,15 @@ public class ApiDocConfig implements InitializingBean {
                         .info(new Info().title("System API")))
                 .packagesToScan(packagedToMatch)
                 .build();
+    }
+
+    @Bean
+    public OpenAPI openApi() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title(SpringUtil.getAppName())
+                        .description("接口文档")
+                        .version("v1"));
     }
 
     @Override
