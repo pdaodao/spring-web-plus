@@ -5,13 +5,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 
-@Order(Integer.MIN_VALUE)
-@AutoConfiguration(before = org.springdoc.core.configuration.SpringDocConfiguration.class)
 @ConditionalOnProperty(value = "swagger.enabled", havingValue = "true", matchIfMissing = true)
 public class ApiDocConfig implements InitializingBean {
 //    @Bean
