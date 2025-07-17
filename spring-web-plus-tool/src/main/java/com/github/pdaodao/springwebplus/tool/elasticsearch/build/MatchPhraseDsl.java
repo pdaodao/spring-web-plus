@@ -1,0 +1,32 @@
+package com.github.pdaodao.springwebplus.tool.elasticsearch.build;
+
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.github.pdaodao.springwebplus.tool.elasticsearch.DslConfig;
+import java.util.List;
+
+/**
+ * match_phrase(key, 'f1, 'f2')
+ */
+public class MatchPhraseDsl extends EsDslBuilder {
+    public static final MatchPhraseDsl instance = new MatchPhraseDsl();
+
+    private MatchPhraseDsl() {
+    }
+
+    @Override
+    public Query doBuild(String field, DslConfig dslConfig, String method, List<Object> args) {
+        checkMoreThanOneArg("match_phrase", args);
+        Object key = args.get(0);
+
+        if (key != null && key instanceof String && ((String) key).length() == 1) {
+            return matchQuery(key, dslConfig, getFieldsFromArgs(args, dslConfig));
+        }
+
+        return matchPhraseQuery(key, dslConfig, getFieldsFromArgs(args, dslConfig));
+    }
+
+    @Override
+    public boolean isFilter() {
+        return false;
+    }
+}
