@@ -55,6 +55,11 @@ public class DbInfo implements Serializable, Cloneable {
     private String dbName;
 
     /**
+     * 扩展库名
+     */
+    private String dbExtName;
+
+    /**
      * 库 schema
      */
     private String dbSchema;

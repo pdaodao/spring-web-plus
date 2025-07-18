@@ -101,6 +101,11 @@
             <artifactId>elasticsearch-java</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
