@@ -24,6 +24,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -270,6 +271,12 @@ public class EntityScanUtil {
             }
             return ff;
         }
+        if (propDesc.getFieldClass().equals(LocalTime.class)) {
+            ff.setDataType(DataType.TIME);
+            ff.setTypeName("time");
+            return ff;
+        }
+
         if (propDesc.getFieldClass().equals(Boolean.class) || propDesc.getFieldClass().getName().equals("boolean")) {
             ff.setDataType(DataType.BOOLEAN);
             ff.setTypeName("boolean");

@@ -1,0 +1,5 @@
+com.github.pdaodao.springwebplus.tool.flow.processor.table.JdbcTableQuery
+com.github.pdaodao.springwebplus.tool.flow.processor.limit.Limit
+com.github.pdaodao.springwebplus.tool.flow.processor.orderby.OrderBy
+com.github.pdaodao.springwebplus.tool.flow.processor.join.Join
+com.github.pdaodao.springwebplus.tool.flow.processor.groupagg.GroupAgg

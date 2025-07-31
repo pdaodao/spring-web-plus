@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
 import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
+import com.github.pdaodao.springwebplus.tool.service.FileStoreService;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ import java.io.InputStream;
  */
 @Service
 @AllArgsConstructor
-public class FileStorageService {
+public class FileStorageService implements FileStoreService {
     private final FileStorage fileStorage;
 
     /**
