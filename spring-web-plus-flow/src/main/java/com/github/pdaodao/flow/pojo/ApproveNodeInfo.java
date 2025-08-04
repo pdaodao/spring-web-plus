@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Schema(description = "审批节点信息")
@@ -12,6 +13,11 @@ public class ApproveNodeInfo {
      * 权限标识（权限类型:权限标识，可以多个，用@@隔开)
      */
     private String permissionFlag;
+
+    /**
+     * 参与人
+     */
+    private List<ActorUser> actors;
 
     /**
      * 流程签署比例值

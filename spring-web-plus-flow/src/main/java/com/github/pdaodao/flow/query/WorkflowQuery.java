@@ -10,6 +10,9 @@ public class WorkflowQuery extends PageRequestParam implements WithTeam {
     @Schema(description = "团队id")
     private String teamId;
 
+    @Schema(description = "分类id")
+    private String categoryId;
+
     @Schema(description = "是否发布")
     private Boolean published;
 }

@@ -11,7 +11,6 @@ import com.github.pdaodao.springwebplus.base.pojo.handler.FileInfoListTypeHandle
 import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.Data;
 import java.util.List;
 

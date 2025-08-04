@@ -24,6 +24,7 @@ public class WorkflowDefineDao extends BaseDao<WorkflowDefineMapper, WorkflowDef
         return list(QueryBuilder.lambda(WorkflowDefine.class)
                 .eq(WorkflowDefine::getTeamId, query.getTeamId())
                 .eq(WorkflowDefine::getPublished, query.getPublished())
+                .eq(WorkflowDefine::getCategoryId, query.getCategoryId())
                 .like(query.getQ(), WorkflowDefine::getTitle, WorkflowDefine::getName)
                 .build());
     }
