@@ -1,8 +1,7 @@
 package com.github.pdaodao.springwebplus.base.auth;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.pdaodao.springwebplus.base.config.SysConfigProperties;
@@ -11,13 +10,13 @@ import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import com.github.pdaodao.springwebplus.base.pojo.TokenInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
+import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.List;
 
 public class LoginUtil {
@@ -59,15 +58,14 @@ public class LoginUtil {
         Preconditions.checkNotNull(tokenInfo, "tokenInfo is null.");
         Preconditions.checkNotNull(tokenInfo.getUserId(), "token用户信息为空.");
         if(StrUtil.isBlank(tokenInfo.getToken())){
-            final String token = tokenInfo.getUserId()+"-"+IdUtil.fastSimpleUUID();
+            final String token = IdUtil.snowIdString()+ RandomUtil.randomString(3);
             tokenInfo.setToken(token);
         }
         tokenInfo.setTokenTimeout(sysConfig().authExpireSeconds());
         tokenInfo.setTokenActiveTimeout(sysConfig().authActiveSeconds());
         final TokenStore tokenStore = tokenStore();
-        if(tokenInfo.getToken().contains("-")){
-            final String prefix = tokenInfo.getToken().substring(0, tokenInfo.getToken().indexOf("-"));
-            final List<TokenInfo> oldList = tokenStore.byPrefix(prefix);
+        if(StrUtil.isNotBlank(tokenInfo.getUserId())){
+            final List<TokenInfo> oldList = tokenStore.byUserId(tokenInfo.getUserId());
             if(CollUtil.isNotEmpty(oldList)){
                 for(final TokenInfo old: oldList){
                     if(isTokenExpired(old)){

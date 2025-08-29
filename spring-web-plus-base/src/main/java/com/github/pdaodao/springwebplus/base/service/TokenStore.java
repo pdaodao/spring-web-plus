@@ -6,7 +6,7 @@ import java.util.List;
 public interface TokenStore {
     TokenInfo byToken(final String token) throws Exception;
 
-    default List<TokenInfo> byPrefix(final String prefix) throws Exception{
+    default List<TokenInfo> byUserId(final String userId) throws Exception{
         return null;
     }
 

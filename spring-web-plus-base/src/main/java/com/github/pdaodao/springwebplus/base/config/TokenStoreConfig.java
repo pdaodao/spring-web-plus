@@ -1,31 +1,27 @@
 package com.github.pdaodao.springwebplus.base.config;
 
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
-import com.github.pdaodao.springwebplus.base.service.impl.ChronicleMapTokenStore;
 import com.github.pdaodao.springwebplus.base.service.impl.LocalTokenStore;
-import com.github.pdaodao.springwebplus.base.service.impl.RedisTokenStore;
-import com.github.pdaodao.springwebplus.base.service.impl.RocksTokenStore;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.github.pdaodao.springwebplus.base.support.DbTokenStore;
+import com.github.pdaodao.springwebplus.base.support.dao.SysUserTokenDao;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
+import javax.sql.DataSource;
 
 @AutoConfiguration
 public class TokenStoreConfig {
 
     @Bean
-    @ConditionalOnMissingBean(RedisTemplate.class)
+    @ConditionalOnMissingBean(DataSource.class)
     public TokenStore localTokenStore(SysConfigProperties configProperties) throws Exception{
-//        return new LocalTokenStore(configProperties);
-        return new RocksTokenStore();
-//        return new ChronicleMapTokenStore();
+        return new LocalTokenStore(configProperties);
     }
 
     @Bean
-    @ConditionalOnBean(RedisTemplate.class)
-    public TokenStore redisTokenStore(SysConfigProperties configProperties, @Qualifier("redisTemplate") RedisTemplate redisTemplate) {
-        return new RedisTokenStore(configProperties, redisTemplate);
+    @ConditionalOnBean(DataSource.class)
+    public TokenStore dbTokenStore(SysConfigProperties configProperties, SysUserTokenDao tokenDao) {
+        return new DbTokenStore(tokenDao);
     }
 }

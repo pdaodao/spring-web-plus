@@ -109,6 +109,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(new FirewallHandler());
         registry.addInterceptor(new HolderClearInterceptor());
         if (CollUtil.isNotEmpty(interceptorRegistryListeners)) {
             for (InterceptorRegistryListener listener : interceptorRegistryListeners) {
