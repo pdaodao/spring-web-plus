@@ -8,6 +8,7 @@ import com.github.pdaodao.springwebplus.tool.table.TableField;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
 import com.github.pdaodao.springwebplus.tool.db.pojo.FieldTypeNameWrap;
+import com.github.pdaodao.springwebplus.tool.util.DataTypeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -243,65 +244,6 @@ public class BaseDataTypeConverter implements DataTypeConverter {
 
     @Override
     public DataType toUniType(TableField columnInfo) {
-        if (StrUtil.isBlank(columnInfo.getTypeName())) {
-            return null;
-        }
-        final String dbType = columnInfo.getTypeName().trim().toLowerCase();
-        if (dbType.contains("int") && dbType.contains("unsigned")) {
-            return DataType.BIGINT;
-        }
-        if (dbType.contains("int8")) {
-            return DataType.BIGINT;
-        }
-        if (dbType.contains("numeric") || dbType.contains("decimal") || dbType.equals("dec")) {
-            return DataType.DECIMAL;
-        }
-        if (dbType.contains("text") || dbType.contains("json") || dbType.contains("clob")) {
-            return DataType.TEXT;
-        }
-        if (dbType.contains("double") || dbType.contains("float")) {
-            return DataType.DOUBLE;
-        }
-        if (dbType.contains("boolean") || dbType.contains("bool")
-                || dbType.contains("tinyint") || dbType.contains("bit")) {
-            return DataType.BOOLEAN;
-        }
-        if (dbType.contains("timestamp")) {
-            return DataType.TIMESTAMP;
-        }
-        if (dbType.contains("datetime")) {
-            return DataType.DATETIME;
-        }
-        if (dbType.contains("date")) {
-            return DataType.DATE;
-        }
-        if (dbType.contains("time")) {
-            return DataType.TIME;
-        }
-        if (dbType.contains("char") || dbType.contains("varchar") || dbType.contains("string")) {
-            return DataType.STRING;
-        }
-        if (dbType.contains("binary") || dbType.contains("blob")) {
-            return DataType.BINARY;
-        }
-        if("GEOMETRY".equalsIgnoreCase(dbType)){
-            return DataType.GEOMETRY;
-        }
-        if (dbType.contains("bigint") || dbType.contains("long")
-                || dbType.contains("serial")
-                || dbType.contains("bigserial")) {
-            return DataType.BIGINT;
-        }
-        if (dbType.contains("int")) {
-            return DataType.INT;
-        }
-        if (dbType.contains("json")) {
-            return DataType.Object;
-        }
-        if(dbType.startsWith("geo")){
-            return DataType.STRING;
-        }
-        log.warn("unknown data type {} for {}", columnInfo.getTypeName(), columnInfo.getName());
-        return DataType.UNKNOWN;
+        return DataTypeUtil.from(columnInfo.getTypeName());
     }
 }

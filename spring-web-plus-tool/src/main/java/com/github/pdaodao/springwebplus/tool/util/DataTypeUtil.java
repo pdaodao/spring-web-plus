@@ -17,7 +17,13 @@ public class DataTypeUtil {
             return null;
         }
         final String dbType = dbTypeName.trim().toLowerCase();
+        if(dbType.contains("tinyint")){
+            return DataType.INT;
+        }
         if (dbType.contains("int") && dbType.contains("unsigned")) {
+            return DataType.BIGINT;
+        }
+        if (dbType.contains("int8")) {
             return DataType.BIGINT;
         }
         if (dbType.contains("numeric") || dbType.contains("decimal") || dbType.equals("dec")) {
@@ -29,8 +35,7 @@ public class DataTypeUtil {
         if (dbType.contains("double") || dbType.contains("float")) {
             return DataType.DOUBLE;
         }
-        if (dbType.contains("boolean") || dbType.contains("bool")
-                || dbType.contains("tinyint") || dbType.contains("bit")) {
+        if (dbType.contains("boolean") || dbType.contains("bool") || dbType.contains("bit")) {
             return DataType.BOOLEAN;
         }
         if (dbType.contains("timestamp")) {
@@ -51,14 +56,22 @@ public class DataTypeUtil {
         if (dbType.contains("binary") || dbType.contains("blob")) {
             return DataType.BINARY;
         }
-        if (dbType.contains("bigint") || dbType.contains("long") || dbType.contains("bigserial")) {
+        if("GEOMETRY".equalsIgnoreCase(dbType)){
+            return DataType.GEOMETRY;
+        }
+        if (dbType.contains("bigint") || dbType.contains("long")
+                || dbType.contains("serial")
+                || dbType.contains("bigserial")) {
             return DataType.BIGINT;
         }
-        if (dbType.contains("int") || dbType.contains("serial")) {
+        if (dbType.contains("int")) {
             return DataType.INT;
         }
         if (dbType.contains("json")) {
             return DataType.Object;
+        }
+        if(dbType.startsWith("geo")){
+            return DataType.STRING;
         }
         log.warn("unknown data type {}", dbTypeName);
         return DataType.UNKNOWN;
