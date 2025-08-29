@@ -9,24 +9,50 @@ import java.util.List;
 
 public class PageHelper implements AutoCloseable {
     private static ThreadLocal<Page> holder = new ThreadLocal<>();
-    private static ThreadLocal<Boolean> used = new ThreadLocal<>();
+    // 1 可用 2 暂时不用 3 已使用
+    private static ThreadLocal<Integer> canUseFlag = new ThreadLocal<>();
 
     public static PageHelper startPage(final PageRequestParam pageRequestParam) {
         if (pageRequestParam != null && !pageRequestParam.empty()) {
             holder.set(pageRequestParam.toPage());
-            used.set(false);
+            canUseFlag.set(1);
         }
         return new PageHelper();
     }
 
-    public static Page get(final boolean use){
-        if(BooleanUtil.isFalse(used.get())){
-            if(use){
-                used.set(true);
-            }
-            return holder.get();
+    // 本次不分页
+    public static void noPage(){
+        canUseFlag.set(2);
+    }
+
+    /**
+     * 获取分页信息
+     * @return
+     */
+    public static Page getPage(){
+        final Page p = holder.get();
+        if(p == null){
+            return null;
+        }
+        final Integer flag = canUseFlag.get();
+        if(flag == null || flag == 1){
+            return p;
         }
         return null;
+    }
+
+    /**
+     * 标记分页已经使用
+     */
+    public static void setUsed(){
+        final Integer flag = canUseFlag.get();
+        if(flag == null || flag == 1){
+            canUseFlag.set(3);
+            return;
+        }
+        if(flag == 2){
+            canUseFlag.set(1);
+        }
     }
 
     public static PageHelper startPage() {
@@ -47,7 +73,7 @@ public class PageHelper implements AutoCloseable {
 
     public static void clearHolder(){
         holder.remove();
-        used.remove();
+        canUseFlag.remove();
     }
 
     @Override

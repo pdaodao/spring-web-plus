@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
@@ -99,7 +98,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
      */
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.get(true));
+        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.getPage());
         if (page == null || page.getSize() < 0 || !page.searchCount()) {
             return true;
         }
@@ -127,7 +126,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
             }
         }
         if(total <= 0){
-            PageHelper.get(true);
+            PageHelper.setUsed();
         }
         page.setTotal(total);
         return continuePage(page);
@@ -137,7 +136,8 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         final boolean isSubQueryPage = isSubPage(boundSql.getSql());
         // 1. pdaodao 获取分页信息
-        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.get(false));
+        final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.getPage());
+        PageHelper.setUsed();
         if (null == page || page.getSize() < 1) {
             // 不需要分页 删除该部分
             if (isSubQueryPage) {

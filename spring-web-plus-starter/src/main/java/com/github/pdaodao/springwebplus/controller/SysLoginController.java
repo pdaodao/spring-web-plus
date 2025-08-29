@@ -48,6 +48,7 @@ public class SysLoginController {
         tokenInfo.setDevice("PC");
         LoginUtil.login(tokenInfo);
         userInfo.setToken(tokenInfo.getToken());
+        RequestUtil.setCurrentUser(userInfo);
         return userInfo;
     }
 

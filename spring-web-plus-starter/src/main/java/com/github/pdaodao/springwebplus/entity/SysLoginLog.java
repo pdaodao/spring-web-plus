@@ -1,13 +1,11 @@
 package com.github.pdaodao.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
 import java.util.Date;
 
 @Data
@@ -37,6 +35,9 @@ public class SysLoginLog extends BaseEntity {
     @Schema(description = "ip地址描述")
     @Length(max = 200, message = "地址描述长度超过200限制")
     private String ipInfo;
+
+    @Schema(description = "耗时，单位：毫秒")
+    private Integer cost;
 
     @Schema(description = "是否成功")
     @TableFieldSize(value = 1, defaultValue = "0")
