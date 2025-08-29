@@ -19,6 +19,10 @@ import java.util.List;
 @TableName(value = "wf_instance", autoResultMap = true)
 @Schema(description = "流程实例")
 public class WorkflowInstance extends SnowIdWithTimeUserEntity {
+    @TableFieldSize(200)
+    @Schema(description = "流程实例名称")
+    private String title;
+
     @TableFieldIndex
     @Schema(description = "流程定义id")
     private String flowId;

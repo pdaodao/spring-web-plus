@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.github.pdaodao.flow.pojo.FlowStatus;
+import com.github.pdaodao.flow.pojo.TaskPerformType;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
@@ -32,6 +33,9 @@ public class WorkflowTask extends AutoIdWithTimeUserEntity {
 
     @Schema(description = "审批状态")
     private FlowStatus flowStatus;
+
+    @Schema(description = "参与类型,普通、会签")
+    private TaskPerformType performType;
 
     @TableFieldIndex
     @Schema(description = "团队id")

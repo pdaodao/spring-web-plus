@@ -6,10 +6,9 @@ public enum NodeType {
     //  数据查询
     query,
     // 数据转换
-    map,
+    data,
     source,
     sink,
-    filter,
     // 审批节点
     approve,
 }
