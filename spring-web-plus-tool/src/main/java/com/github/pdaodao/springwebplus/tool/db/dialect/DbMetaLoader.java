@@ -2,9 +2,25 @@ package com.github.pdaodao.springwebplus.tool.db.dialect;
 
 import com.github.pdaodao.springwebplus.tool.table.TableInfo;
 import com.github.pdaodao.springwebplus.tool.table.TableType;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public interface DbMetaLoader {
+    /**
+     * 数据库列表
+     * @return
+     * @throws Exception
+     */
+    List<String> dbList() throws Exception;
+
+    /**
+     * schema列表
+     * @return
+     * @throws SQLException
+     */
+    List<String> schemaList() throws SQLException;
+
     /**
      * 数据表列表 不带字段信息
      *

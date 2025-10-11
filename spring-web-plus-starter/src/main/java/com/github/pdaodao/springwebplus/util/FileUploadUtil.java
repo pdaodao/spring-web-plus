@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.util;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
@@ -11,6 +10,7 @@ import com.github.pdaodao.springwebplus.dao.SysFileDao;
 import com.github.pdaodao.springwebplus.entity.SysFile;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
+import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.fs.local.LocalConfig;
 import com.github.pdaodao.springwebplus.tool.fs.local.LocalFileStorage;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
@@ -97,6 +97,17 @@ public class FileUploadUtil {
         fileInfo.setNamespace(namespace);
         sysFileDao.saveInfo(fileInfo);
         return fileInfo;
+    }
+
+    /**
+     * 获取文件输入流
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static InputStreamWrap getInputStream(final String path) throws Exception{
+        final FileStorageService fileStorageService = SpringUtil.getBean(FileStorageService.class);
+        return fileStorageService.download(path);
     }
 
     /**

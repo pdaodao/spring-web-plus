@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,6 +25,23 @@ public class JdbcMetaLoader implements DbMetaLoader {
     public JdbcMetaLoader(DbInfo dbInfo, DbDialect dbDialect) {
         this.dbInfo = dbInfo;
         this.dbDialect = dbDialect;
+    }
+
+    @Override
+    public List<String> dbList() throws Exception {
+        return DbMetaUtil.dbList(DbUtil.getDatasource(dbInfo));
+    }
+
+    @Override
+    public List<String> schemaList() throws SQLException {
+        return DbMetaUtil.schemaList(DbUtil.getDatasource(dbInfo), dbCatalog());
+    }
+
+    protected String dbCatalog() {
+        if (StrUtil.isNotBlank(dbInfo.getDbName())) {
+            return dbInfo.getDbName();
+        }
+        return null;
     }
 
     @Override

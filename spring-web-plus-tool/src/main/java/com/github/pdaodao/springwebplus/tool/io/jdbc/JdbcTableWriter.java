@@ -70,6 +70,7 @@ public class JdbcTableWriter implements Writer {
                 f.setFrom(f.getName());
             }
         }
+        tableInfo.setFields(writerInfo.getFields());
         cdcBatchData = new BatchRowMap(tableInfo.pkColumnNames());
         batchRunner = new JdbcBatchRunner(writerInfo.getDbInfo(),dbDialect, tableInfo, cdcBatchData.getPks());
     }

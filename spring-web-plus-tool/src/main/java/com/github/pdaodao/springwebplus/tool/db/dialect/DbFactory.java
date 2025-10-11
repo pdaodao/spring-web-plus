@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect;
 
+import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.clickhouse.ClickhouseDialect;
 import com.github.pdaodao.springwebplus.tool.db.dialect.doris.DorisDialect;
@@ -26,6 +27,14 @@ public class DbFactory {
         map.put(DbType.Doris, new DorisDialect());
         map.put(DbType.Gbase, new GbaseDialect());
         map.put(DbType.Clickhouse, new ClickhouseDialect());
+    }
+
+    public static DbDialect of(final DbInfo dbInfo) {
+        DbType dbType = dbInfo.getDbType();
+        if(dbType == null){
+            dbType = DbType.of(dbInfo.getUrl());
+        }
+        return of(dbType);
     }
 
     public static DbDialect of(final DbType dbType) {

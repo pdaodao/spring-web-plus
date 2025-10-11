@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithDelete;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
-import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -26,6 +25,7 @@ public class AiChatSession extends SnowIdWithTimeUserEntity implements WithTeam,
     @Schema(description = "团队id")
     private String teamId;
 
+    // 用户id creatorId 见 父 SnowIdWithTimeUserEntity
     @TableLogic
     private Boolean isDeleted;
 }

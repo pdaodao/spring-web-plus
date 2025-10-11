@@ -1,13 +1,11 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.pg;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDbDialect;
 import com.github.pdaodao.springwebplus.tool.db.DbUtil;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 public class PgDialect extends BaseDbDialect {
 
@@ -32,17 +30,13 @@ public class PgDialect extends BaseDbDialect {
     }
 
     @Override
-    public String buildUrl(DbInfo dbInfo) {
-        Preconditions.checkNotBlank(dbInfo.getHost(), "主键地址不能为空");
-        Preconditions.checkNotBlank(dbInfo.getDbName(), "库名不能为空");
-        Preconditions.checkNotBlank(dbInfo.getDbSchema(), "请指定schema");
-        if (dbInfo.getPort() == null) {
-            dbInfo.setPort(5432);
-        }
-        final String fmt = "jdbc:postgresql://{}:{}/{}?currentSchema={}&reWriteBatchedInserts=true&prepareThreshold=0";
-        final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName(), dbInfo.getDbSchema());
-        dbInfo.setUrl(url);
-        return url;
+    protected String buildUrlDriveSchemaName() {
+        return "currentSchema";
+    }
+
+    @Override
+    protected String buildUrlDefaultProperties() {
+        return "reWriteBatchedInserts=true&prepareThreshold=0";
     }
 
     @Override

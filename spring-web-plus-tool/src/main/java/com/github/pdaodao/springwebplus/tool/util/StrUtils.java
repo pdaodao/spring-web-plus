@@ -74,6 +74,19 @@ public class StrUtils {
         return StrUtil.equalsIgnoreCase(toCamelCase(st1), toCamelCase(st2));
     }
 
+    public static int containsSize(final String str, char contains){
+        if(StrUtil.isBlank(str)){
+            return 0;
+        }
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == contains) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * 下划线转驼峰
      *

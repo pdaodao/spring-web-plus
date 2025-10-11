@@ -18,6 +18,8 @@ public class DateTimeUtil {
     public static final FastDateFormat DATE_TIME_FORMATTER3 = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMddHHmmss", ShangHaiZone);
     public static final FastDateFormat DATE_TIME_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss", ShangHaiZone);
+    public static final FastDateFormat DATE_TIME_FORMATTER_SLASH_NOSECOND = FastDateFormat.getInstance("yyyy/MM/dd HH:mm", ShangHaiZone);
+
     public static final FastDateFormat DATE_TIME_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd HH:mm:ss", ShangHaiZone);
 
     public static Date tryParse(final String str, final FastDateFormat... format){
@@ -48,6 +50,9 @@ public class DateTimeUtil {
                 return tryParse(str, DATE_TIME_FORMATTER);
             }
             if(str.contains("/")){
+                if(StrUtils.containsSize(str, ':') == 1){
+                    return tryParse(str, DATE_TIME_FORMATTER_SLASH_NOSECOND);
+                }
                 return tryParse(str, DATE_TIME_FORMATTER_SLASH);
             }
             if(str.contains(".")){

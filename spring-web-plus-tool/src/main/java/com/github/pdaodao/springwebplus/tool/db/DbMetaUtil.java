@@ -20,6 +20,41 @@ import java.util.*;
 
 public class DbMetaUtil {
 
+    public static List<String> dbList(final DataSource dataSource) throws SQLException {
+        final List<String> dbs = new ArrayList<>();
+        try (final Connection connection = dataSource.getConnection()) {
+            final DatabaseMetaData meta = connection.getMetaData();
+            try (ResultSet rs = meta.getCatalogs()) {
+                while (rs.next()) {
+                    dbs.add(rs.getString(1));
+                }
+            }
+        }
+        return dbs;
+    }
+
+    /**
+     * 获取 schema 列表
+     *
+     * @param dataSource
+     * @param catalog
+     * @return
+     * @throws SQLException
+     */
+    public static List<String> schemaList(final DataSource dataSource, final String catalog) throws SQLException {
+        final List<String> dbs = new ArrayList<>();
+        try (final Connection connection = dataSource.getConnection()) {
+            final DatabaseMetaData meta = connection.getMetaData();
+            try (ResultSet rs = meta.getSchemas(catalog, null)) {
+                while (rs.next()) {
+                    dbs.add(rs.getString(1));
+                }
+            }
+        }
+        return dbs;
+    }
+
+
     /**
      * 数据表列表 不含字段信息
      *

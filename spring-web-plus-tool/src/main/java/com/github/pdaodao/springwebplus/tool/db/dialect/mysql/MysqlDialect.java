@@ -1,17 +1,13 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.mysql;
 
-import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDDLGen;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbFunction;
 import com.github.pdaodao.springwebplus.tool.db.dialect.base.BaseDbDialect;
 import com.github.pdaodao.springwebplus.tool.db.DbUtil;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 public class MysqlDialect extends BaseDbDialect {
-    public static final String UrlSuffix = "useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useServerPrepStmts=true&useCompression=true";
     @Override
     public DbType dbType() {
         return DbType.Mysql;
@@ -38,29 +34,13 @@ public class MysqlDialect extends BaseDbDialect {
     }
 
     @Override
-    public String buildUrl(DbInfo dbInfo) {
-        Preconditions.checkNotBlank(dbInfo.getHost(), "主键地址不能为空");
-        Preconditions.checkNotBlank(dbInfo.getDbName(), "库名不能为空");
-        if (dbInfo.getPort() == null) {
-            dbInfo.setPort(3306);
-        }
-        if(StrUtil.isBlank(dbInfo.getUrl())){
-            final String fmt = "jdbc:mysql://{}:{}/{}?"+UrlSuffix;
-            final String url = StrUtil.format(fmt, dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDbName());
-            dbInfo.setUrl(url);
-            return url;
-        }
-        if (!dbInfo.getUrl().contains("rewriteBatchedStatements")) {
-            String url = dbInfo.getUrl();
-            if (url.contains("?")) {
-                url = url.substring(0, url.indexOf("?") + 1);
-                url += UrlSuffix;
-            } else {
-                url = url + "?" + UrlSuffix;
-            }
-            dbInfo.setUrl(url);
-        }
-        return dbInfo.getUrl();
+    protected String buildUrlDriverName() {
+        return "mysql";
+    }
+
+    @Override
+    protected String buildUrlDefaultProperties() {
+        return "useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useServerPrepStmts=true&useCompression=true";
     }
 
     @Override

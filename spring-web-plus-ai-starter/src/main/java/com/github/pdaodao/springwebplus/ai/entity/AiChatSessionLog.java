@@ -7,16 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "大模型问答会话消息")
-@TableName(value = "ai_chat_session_msg", autoResultMap = true)
-public class AiChatSessionMsg extends SnowIdWithTimeEntity {
+@Schema(description = "大模型问答日志")
+@TableName(value = "ai_chat_log", autoResultMap = true)
+public class AiChatSessionLog extends SnowIdWithTimeEntity {
     @TableFieldIndex
-    @Schema(description = "会话id")
     private String sessionId;
 
-    @Schema(description = "问答消息id")
-    private String msgId;
 
-    @Schema(description = "内容")
-    private String content;
 }

@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class DataValueTypeUtil {
-    private static final Pattern DatetimePattern = Pattern.compile("^(\\d{4})[-/](\\d{2})[-/](\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})");
-    private static final Pattern DatePattern = Pattern.compile("^(\\d{4})[-/](\\d{2})[-/](\\d{2})");
-    private static final Pattern TimePattern = Pattern.compile("^(\\d{2}):(\\d{2}):(\\d{2})");
+    private static final Pattern DatetimePattern = Pattern.compile("^(\\d{4})[-/](\\d{1,2})[-/](\\d{1,2}) (\\d{1,2}):(\\d{1,2})(?::(\\d{2}))?");
+    private static final Pattern DatePattern = Pattern.compile("^(\\d{4})[-/](\\d{1,2})[-/](\\d{1,2})");
+    private static final Pattern TimePattern = Pattern.compile("^(\\d{1,2}):(\\d{1,2}):(\\d{1,2})");
 
 
     /**
@@ -74,7 +74,6 @@ public class DataValueTypeUtil {
         }
         return list;
     }
-
 
     /**
      * 根据 json 行数据 猜测数据类型

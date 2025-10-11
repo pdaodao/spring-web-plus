@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.table;
 
 import lombok.Data;
-
 import java.io.Serializable;
 
 /**
@@ -9,6 +8,8 @@ import java.io.Serializable;
  */
 @Data
 public class DbInfo implements Serializable, Cloneable {
+    private String id;
+
     /**
      * 编号
      */
@@ -43,6 +44,11 @@ public class DbInfo implements Serializable, Cloneable {
      * 连接地址
      */
     private String url;
+
+    /**
+     * 连接串参数 ?后面的参数
+     */
+    private String urlProperties;
 
     /**
      * 驱动
