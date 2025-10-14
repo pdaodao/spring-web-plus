@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.ai.pojo.AiChatRating;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatDocItems;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithPidString;
+import com.github.pdaodao.springwebplus.base.entity.WithSql;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
@@ -18,7 +19,7 @@ import javax.validation.constraints.Size;
 @Data
 @Schema(description = "大模型问答会话消息")
 @TableName(value = "ai_chat_session_msg", autoResultMap = true)
-public class AiChatSessionMsg extends SnowIdWithTimeEntity implements WithPidString {
+public class AiChatSessionMsg extends SnowIdWithTimeEntity implements WithPidString, WithSql {
     @TableFieldIndex
     @Schema(description = "会话id")
     private String sessionId;

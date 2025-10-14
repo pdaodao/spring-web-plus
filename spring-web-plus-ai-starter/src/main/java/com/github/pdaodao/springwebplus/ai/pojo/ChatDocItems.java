@@ -11,5 +11,4 @@ public class ChatDocItems {
     @Schema(description = "文档-数据表列表")
     private List<NameTitle> docList;
 
-
 }

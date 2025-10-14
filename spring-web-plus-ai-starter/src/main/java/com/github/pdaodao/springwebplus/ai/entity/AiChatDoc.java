@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatDocNamespace;
@@ -15,7 +16,8 @@ import java.util.List;
 @Data
 @Schema(description = "知识库文档")
 @TableName(value = "ai_chat_doc", autoResultMap = true)
-public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled, WithDelete, WithChildren<AiChatDoc> {
+public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled, WithDelete,
+        WithPidString, WithSql, WithChildren<AiChatDoc> {
     @Schema(description = "标题-文件名称")
     private String title;
 
@@ -30,7 +32,11 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
 
     @Schema(description = "sql语句")
     @Size(max = 3000, message = "sql语句长度超长")
-    private String  sqlText;
+    private String sqlText;
+
+    @Schema(description = "文本块-字段列表")
+    @TableField(exist = false)
+    private List<AiChatDocItem> docItems;
 
     @Schema(description = "团队id")
     private String teamId;
@@ -40,10 +46,17 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     private String filePath;
 
     @Schema(description = "文本块数")
-    private Integer itemCount;
+    private Long itemCount;
 
     @Schema(description = "字符数")
-    private Integer charCount;
+    private Long charCount;
+
+    @Schema(description = "父分类id")
+    private String pid;
+
+    @Schema(description = "是否是分类")
+    @TableFieldSize(defaultValue = "false")
+    private Boolean isDir;
 
     @Schema(description = "是否启用")
     @TableFieldSize(defaultValue = "true")

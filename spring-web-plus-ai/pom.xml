@@ -27,32 +27,32 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud.ai</groupId>
-            <artifactId>spring-ai-alibaba-graph-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.alibaba.cloud.ai</groupId>
-                    <artifactId>spring-ai-alibaba-starter-document-parser-tika</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.alibaba.cloud.ai</groupId>
-                    <artifactId>spring-ai-alibaba-starter-document-parser-markdown</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.alibaba.cloud.ai</groupId>
-                    <artifactId>spring-ai-alibaba-starter-document-parser-bshtml</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.alibaba.cloud.ai</groupId>
-                    <artifactId>spring-ai-alibaba-starter-document-parser-yaml</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-mcp-client</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.cloud.ai</groupId>-->
+<!--            <artifactId>spring-ai-alibaba-graph-core</artifactId>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.alibaba.cloud.ai</groupId>-->
+<!--                    <artifactId>spring-ai-alibaba-starter-document-parser-tika</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.alibaba.cloud.ai</groupId>-->
+<!--                    <artifactId>spring-ai-alibaba-starter-document-parser-markdown</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.alibaba.cloud.ai</groupId>-->
+<!--                    <artifactId>spring-ai-alibaba-starter-document-parser-bshtml</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.alibaba.cloud.ai</groupId>-->
+<!--                    <artifactId>spring-ai-alibaba-starter-document-parser-yaml</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.ai</groupId>-->
+<!--            <artifactId>spring-ai-starter-mcp-client</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>

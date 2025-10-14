@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatType;
+import com.github.pdaodao.springwebplus.ai.pojo.ChatAppConfig;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import com.github.pdaodao.springwebplus.base.frame.StringListJsonHandler;
@@ -47,6 +48,10 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     @Schema(description = "文档名称列表")
     @TableField(exist = false)
     private List<String> docTitles;
+
+    @Schema(description = "场景配置")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ChatAppConfig appConfig;
 
     @TableFieldIndex
     private String teamId;
