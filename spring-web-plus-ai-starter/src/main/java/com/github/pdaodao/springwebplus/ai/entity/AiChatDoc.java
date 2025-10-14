@@ -30,7 +30,7 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
 
     @Schema(description = "sql语句")
     @Size(max = 3000, message = "sql语句长度超长")
-    private String sqlContent;
+    private String  sqlText;
 
     @Schema(description = "团队id")
     private String teamId;

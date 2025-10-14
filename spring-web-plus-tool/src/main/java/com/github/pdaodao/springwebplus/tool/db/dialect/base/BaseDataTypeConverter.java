@@ -235,11 +235,15 @@ public class BaseDataTypeConverter implements DataTypeConverter {
      * @return
      */
     public FieldTypeNameWrap fieldDDLStr(final TableField columnInfo) {
+        String df = null;
+        if(StrUtil.isNotBlank(columnInfo.getDefaultValue()) && !StrUtil.startWith(columnInfo.getDefaultValue(), "'")) {
+            df = "'"+columnInfo.getDefaultValue()+"'";
+        }
         if (columnInfo.getLength() == 0 || columnInfo.getLength() > 500) {
-            return FieldTypeNameWrap.of("text", columnInfo.getDefaultValue());
+            return FieldTypeNameWrap.of("text", df);
         }
         long length = columnInfo.getLength();
-        return FieldTypeNameWrap.of("varchar(" + length + ")", columnInfo.getDefaultValue());
+        return FieldTypeNameWrap.of("varchar(" + length + ")", df);
     }
 
     @Override

@@ -41,7 +41,7 @@ public class AiChatAppController {
     }
 
     @GetMapping("dicTree")
-    @Operation(summary = "可选的文档列表树")
+    @Operation(summary = "可选的知识库文档树")
     public List<AiChatDoc> docTree(@Parameter(description = "问答类型(大模型llm,sql问答sql)") @RequestParam(required = false) final AiChatType chatType) {
         return null;
     }

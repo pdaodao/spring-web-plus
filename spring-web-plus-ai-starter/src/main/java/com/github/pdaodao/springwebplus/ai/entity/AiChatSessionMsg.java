@@ -42,8 +42,7 @@ public class AiChatSessionMsg extends SnowIdWithTimeEntity implements WithPidStr
 
     @Schema(description = "sql语句")
     @TableFieldSize(4000)
-    @TableField("`sql`")
-    private String sql;
+    private String sqlText;
 
     @Schema(description = "文档-数据表列表")
     @TableFieldSize(5000)
