@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 
@@ -16,14 +17,14 @@ import java.util.List;
 @CacheConfig(cacheNames = "AiChatModel")
 public class AiChatModelDao extends BaseDao<AiChatModelMapper, AiChatModel> {
 
-    public List<AiChatModel> list(final ChatModelType type, final String teamId){
+    public List<AiChatModel> list(final ChatModelType type, final String teamId) {
         return list(QueryBuilder.lambda(AiChatModel.class)
                 .eq(AiChatModel::getTeamId, teamId)
                 .eq(AiChatModel::getType, type).build());
     }
 
     @Cacheable(key = "#p0")
-    public AiChatModel detail(final String id){
+    public AiChatModel detail(final String id) {
         return getById(id);
     }
 

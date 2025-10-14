@@ -20,17 +20,17 @@ public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam {
     @Length(max = 64, message = "名称长度超过64限制")
     private String title;
 
-    @Schema(description = "地址")
+    @Schema(description = "基础地址")
     @Length(max = 200, message = "地址长度超过200限制")
     @NotBlank(message = "地址信息不能为空")
-    private String url;
+    private String baseUrl;
+
+    @Schema(description = "接口密钥")
+    @Length(max = 300, message = "授权密钥长度超过300限制")
+    private String apiKey;
 
     @Schema(description = "模型")
     private String model;
-
-    @Schema(description = "授权密钥")
-    @Length(max = 300, message = "授权密钥长度超过300限制")
-    private String ak;
 
     @Schema(description = "模型供应商id")
     private LLMProvider providerId;
@@ -38,9 +38,15 @@ public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam {
     @Schema(description = "模型类型")
     private ChatModelType type;
 
+    @Schema(description = "采样温度")
+    private Double temperature;
+
     @Schema(description = "描述")
     @Length(max = 300, message = "描述长度超过300限制")
     private String remark;
+
+    @Schema(description = "是否默认")
+    private Boolean isDefault;
 
     @TableFieldIndex
     private String teamId;

@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
@@ -51,6 +52,9 @@ public class DatasourceConnectionProvider implements JdbcConnectionProvider {
                         hi.setMaxLifetime(TimeUnit.MINUTES.toMillis(20L));
                         if (StrUtil.isNotEmpty(dbInfo.getDriver())) {
                             hi.setDriverClassName(dbInfo.getDriver());
+                        }
+                        if(BooleanUtil.isTrue(dbInfo.getReadOnly())){
+                            hi.setReadOnly(true);
                         }
                         if (!url.startsWith("jdbc:gbase")) {
                             hi.addDataSourceProperty("remarks", true);

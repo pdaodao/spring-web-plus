@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnProperty(value = "swagger.enabled", havingValue = "true", matchIfMissing = true)
 public class AiChatSwaggerConfig {
-
     @Bean
     public GroupedOpenApi chatApi() {
-        final String[] packagedToMatch = {" com.github.pdaodao.springwebplus.ai"};
+        final String[] packagedToMatch = {"com.github.pdaodao.springwebplus.ai"};
         return GroupedOpenApi.builder()
                 .group("ai-chat")
                 .pathsToMatch("/**")

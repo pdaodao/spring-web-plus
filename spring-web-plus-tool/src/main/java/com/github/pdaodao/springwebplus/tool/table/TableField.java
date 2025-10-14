@@ -113,6 +113,7 @@ public class TableField implements Serializable, Cloneable, Comparable<TableFiel
     /**
      * excel 忽略
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean excelIgnore;
 
     public static TableField of(final Column column) {

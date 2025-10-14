@@ -28,7 +28,7 @@ public class RestResponse<T> implements IResponse {
      * 字段列表
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<TableField> columns;
+    private List<TableField> fields;
 
     /**
      *  其他信息
@@ -75,7 +75,7 @@ public class RestResponse<T> implements IResponse {
     public static RestResponse pageResult(final PageResult pageResult) {
         final RestResponse r = new RestResponse(RestCode.SUCCESS, pageResult.getList());
         r.setPageInfo(pageResult.getPageInfo());
-        r.setColumns(pageResult.getFields());
+        r.setFields(pageResult.getFields());
         r.setExt(pageResult.getExt());
         return r;
     }

@@ -26,8 +26,8 @@ public class AiChatModelProvider extends SnowIdEntity {
     @Schema(description = "模型类型")
     private ChatModelType type;
 
-    @Schema(description = "请求地址")
-    private String url;
+    @Schema(description = "基础地址")
+    private String baseUrl;
 
     @Schema(description = "图标")
     private String icon;
