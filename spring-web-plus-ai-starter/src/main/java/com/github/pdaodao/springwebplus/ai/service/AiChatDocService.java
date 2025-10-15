@@ -36,7 +36,7 @@ public class AiChatDocService {
         if (doc == null) {
             return null;
         }
-        if (ChatDocNamespace.file == doc.getDocNamespace()) {
+        if (ChatDocNamespace.file == doc.getNamespace()) {
             doc.setItemCount(itemDao.countByDocId(id));
             return doc;
         }
@@ -44,8 +44,18 @@ public class AiChatDocService {
         return doc;
     }
 
+    public List<AiEmbedText> search(final String key, final Double score) throws Exception{
+        final AiEmbedTextQuery query = new AiEmbedTextQuery();
+        query.setContent(key);
+        query.setScore(score);
+        return aiVectorStoreOptional.get().query(query);
+    }
+
     public void saveInfo(final AiChatDoc aiChatDoc) throws Exception {
         docDao.save(aiChatDoc);
+        if(BooleanUtil.isTrue(aiChatDoc.getIsDir())){
+            return;
+        }
         if (aiVectorStoreOptional.isPresent()) {
             final AiEmbedText embedText = new AiEmbedText();
             embedText.setNamespace("knowledge");
@@ -64,7 +74,8 @@ public class AiChatDocService {
             aiVectorStoreOptional.get().deleteByQuery(query);
             aiVectorStoreOptional.get().add(ListUtil.of(embedText));
         }
-        if (ChatDocNamespace.file == aiChatDoc.getDocNamespace()
+        // 文件文档 由于文本块较多 采用单个保存
+        if (ChatDocNamespace.file == aiChatDoc.getNamespace()
                 || CollUtil.isEmpty(aiChatDoc.getDocItems())) {
             return;
         }
@@ -74,7 +85,6 @@ public class AiChatDocService {
         itemDao.saveBatch(aiChatDoc.getDocItems());
         final List<AiEmbedText> embedTextList = new ArrayList<>();
         for (final AiChatDocItem item : itemDao.listByDocId(aiChatDoc.getId())) {
-            item.setDocId(aiChatDoc.getId());
             final AiEmbedText embedText = itemToAiEmbedText(item, aiChatDoc);
             embedText.setNamespace("knowledge");
             embedText.setType("item");

@@ -91,12 +91,11 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             final KnnSearch knnQuery = new KnnSearch.Builder()
                     .field("embedding")  // 向量字段
                     .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
-                    .similarity(query.getScore().floatValue())
                     .k(query.getTopK())   // 取前 5 个最相似的文档
                     .filter(matchQuery)
-                    .numCandidates(query.getTopK() * 2)  // 初步筛选
+                    .numCandidates(query.getTopK() * 10)  // 初步筛选
                     .build();
-            searchRequestBuilder.knn(knnQuery);
+            searchRequestBuilder.knn(knnQuery).rank();
         }else{
             searchRequestBuilder.query(matchQuery);
         }
@@ -137,7 +136,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         return termsQuery._toQuery();
     }
 
-    private static Query buildQuery(final AiEmbedTextQuery query){
+    private static Query buildFilter(final AiEmbedTextQuery query){
         if(query == null){
             return null;
         }

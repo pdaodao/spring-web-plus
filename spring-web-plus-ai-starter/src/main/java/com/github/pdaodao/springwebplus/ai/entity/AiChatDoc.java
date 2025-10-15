@@ -29,7 +29,7 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     private String remark;
 
     @Schema(description = "文档大类")
-    private ChatDocNamespace docNamespace;
+    private ChatDocNamespace namespace;
 
     @Schema(description = "数据源id")
     private String dbId;

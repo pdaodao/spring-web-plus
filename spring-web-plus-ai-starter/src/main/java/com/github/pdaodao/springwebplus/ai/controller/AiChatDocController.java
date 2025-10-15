@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.ai.controller;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatDoc;
 import com.github.pdaodao.springwebplus.ai.query.AiChatDocQuery;
 import com.github.pdaodao.springwebplus.ai.service.AiChatDocService;
+import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
@@ -50,11 +51,17 @@ public class AiChatDocController {
         return doc;
     }
 
+    @GetMapping("search")
+    @Operation(summary = "search")
+    public List<AiEmbedText> search(final String key, final Double score) throws Exception{
+        return docService.search(key, score);
+    }
+
     @PostMapping("save")
-    @Operation(summary = "详情")
+    @Operation(summary = "保存")
     public AiChatDoc saveInfo(@RequestBody AiChatDoc aiChatDoc) throws Exception {
         Preconditions.checkNotBlank(aiChatDoc.getTitle(), "标题不能为空");
-        Preconditions.checkNotNull(aiChatDoc.getDocNamespace(), "类型不能为空");
+        Preconditions.checkNotNull(aiChatDoc.getNamespace(), "类型不能为空");
         docService.saveInfo(aiChatDoc);
         return aiChatDoc;
     }
