@@ -52,7 +52,7 @@ public class AiChatDocController {
 
     @PostMapping("delete")
     @Operation(summary = "删除")
-    public Boolean delete(@Validated @RequestBody IdWrap<String> wrap) {
+    public Boolean delete(@Validated @RequestBody IdWrap<String> wrap) throws Exception {
         return docService.delete(wrap.getId());
     }
 }

@@ -11,7 +11,7 @@ public class ElasticsearchStoreTest {
 
     public static void main1(String[] args) throws Exception{
         final ElasticsearchOptions opt = ElasticsearchOptions.of("http://127.0.0.1:9200", "ai_test1");
-        final ElasticsearchVectorStore store = new ElasticsearchVectorStore(opt);
+        final ElasticsearchVectorStore store = new ElasticsearchVectorStore(opt, null);
 
         final List<AiEmbedText> list = new ArrayList<>();
         final AiEmbedText t1 = AiEmbedText.of("美国留给伊拉克的是个烂摊子吗");
@@ -36,7 +36,7 @@ public class ElasticsearchStoreTest {
 
     public static void main(String[] args) throws Exception{
         final ElasticsearchOptions opt = ElasticsearchOptions.of("http://127.0.0.1:9200", "ai_test1");
-        final ElasticsearchVectorStore store = new ElasticsearchVectorStore(opt);
+        final ElasticsearchVectorStore store = new ElasticsearchVectorStore(opt, null);
         final AiEmbedTextQuery q  = AiEmbedTextQuery.of("中国渔船冲突");
         q.setScore(0.7);
         final List<AiEmbedText> ret = store.query(q);

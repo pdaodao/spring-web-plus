@@ -37,7 +37,7 @@ public class AiChatDocItem extends SnowIdWithTimeEntity {
 
     @Schema(description = "内容")
     @TableFieldSize(3000)
-    private String remark;
+    private String content;
 
     @Schema(description = "可为空")
     protected Boolean nullable;

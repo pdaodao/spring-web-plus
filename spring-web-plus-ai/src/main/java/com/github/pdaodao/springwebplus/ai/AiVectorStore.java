@@ -9,5 +9,7 @@ public interface AiVectorStore {
 
     List<AiEmbedText> query(AiEmbedTextQuery query) throws Exception;
 
+    Long deleteByQuery(AiEmbedTextQuery query) throws Exception;
+
     long count() throws Exception;
 }

@@ -9,7 +9,7 @@ public class AiEmbedTextQuery {
     /**
      * 命名空间 doc, table, api
      */
-    private String namespace;
+    private List<String> namespaces;
 
     /**
      * 团队id
@@ -17,21 +17,24 @@ public class AiEmbedTextQuery {
     private String teamId;
 
     /**
-     * 知识库id
+     * 知识库主题
      */
-    private String dbId;
+    private List<String> topics;
 
     /**
      * 文档id
      */
-    private String docId;
+    private List<String> docIds;
+
+    /**
+     * 文本块id
+     */
+    private List<String> textIds;
 
     /**
      * 文本内容
      */
     private String content;
-
-    private Boolean enabled;
 
     /**
      * 向量

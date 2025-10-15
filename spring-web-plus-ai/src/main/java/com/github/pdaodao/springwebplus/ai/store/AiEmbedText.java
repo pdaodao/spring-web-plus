@@ -9,7 +9,7 @@ public class AiEmbedText {
     private String id;
 
     /**
-     * 命名空间 doc, table, api
+     * 命名空间 大类 用作区分不同地方的数据
      */
     private String namespace;
 
@@ -19,9 +19,9 @@ public class AiEmbedText {
     private String teamId;
 
     /**
-     * 知识库id
+     * 知识库主题id
      */
-    private String dbId;
+    private String topic;
 
     /**
      * 文档id
@@ -34,14 +34,20 @@ public class AiEmbedText {
     private String textId;
 
     /**
+     * 内部类型
+     */
+    private String type;
+
+    /**
      * 表名， 字段名 ...
      */
     private String name;
 
+    // 中文名称
+    private String title;
+
     // 内容
     private String content;
-
-    private Boolean enabled = true;
 
     // 向量
     private float[] embedding;
