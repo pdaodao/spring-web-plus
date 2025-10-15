@@ -3,9 +3,7 @@ package com.github.pdaodao.springwebplus.ai.store.elasticsearch;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.FieldValue;
-import co.elastic.clients.elasticsearch._types.KnnSearch;
-import co.elastic.clients.elasticsearch._types.Time;
+import co.elastic.clients.elasticsearch._types.*;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -91,13 +89,16 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             final KnnSearch knnQuery = new KnnSearch.Builder()
                     .field("embedding")  // 向量字段
                     .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
-                    .k(query.getTopK())   // 取前 5 个最相似的文档
-                    .filter(matchQuery)
-                    .numCandidates(query.getTopK() * 10)  // 初步筛选
+                    .k(query.getTopK() * 5)
+                    .numCandidates(query.getTopK() * 50)  // 初步筛选
                     .build();
-            searchRequestBuilder.knn(knnQuery);
+            searchRequestBuilder.query(matchQuery)
+                    .knn(knnQuery)
+//                    .rank(r -> r.rrf(new RrfRank.Builder().build()))
+                    .minScore(query.getScore());
         }else{
-            searchRequestBuilder.query(matchQuery);
+            searchRequestBuilder.query(matchQuery)
+                    .minScore(query.getScore());
         }
         final SearchRequest searchRequest = searchRequestBuilder.build();
         // 执行搜索
@@ -192,7 +193,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             final MatchQuery matchQuery = new MatchQuery.Builder()
                     .field("content")
                     .query(query.getContent().trim())
-                    .minimumShouldMatch(match+"%")
+//                    .minimumShouldMatch(match+"%")
                     .analyzer("ik_max_word")
                     .build();
             boolQuery.must(new Query.Builder()
