@@ -50,6 +50,15 @@ public class AiChatDocController {
         return doc;
     }
 
+    @PostMapping("save")
+    @Operation(summary = "详情")
+    public AiChatDoc saveInfo(@RequestBody AiChatDoc aiChatDoc) throws Exception {
+        Preconditions.checkNotBlank(aiChatDoc.getTitle(), "标题不能为空");
+        Preconditions.checkNotNull(aiChatDoc.getDocNamespace(), "类型不能为空");
+        docService.saveInfo(aiChatDoc);
+        return aiChatDoc;
+    }
+
     @PostMapping("delete")
     @Operation(summary = "删除")
     public Boolean delete(@Validated @RequestBody IdWrap<String> wrap) throws Exception {

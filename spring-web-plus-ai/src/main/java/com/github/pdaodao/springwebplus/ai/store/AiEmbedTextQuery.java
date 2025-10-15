@@ -11,6 +11,8 @@ public class AiEmbedTextQuery {
      */
     private List<String> namespaces;
 
+    private List<String> types;
+
     /**
      * 团队id
      */

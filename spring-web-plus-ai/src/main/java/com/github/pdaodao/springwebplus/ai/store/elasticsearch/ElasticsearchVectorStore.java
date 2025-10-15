@@ -157,6 +157,13 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                 boolQuery.filter(namespaceFilter);
             }
         }
+        // type
+        if(CollUtil.isNotEmpty(query.getTypes())){
+            final Query typeFilter = equalOrIn("type", query.getTypes());
+            if(typeFilter != null){
+                boolQuery.filter(typeFilter);
+            }
+        }
         // 主题
         if(CollUtil.isNotEmpty(query.getTopics())){
             final Query topicFilter = equalOrIn("topic", query.getTopics());
@@ -208,7 +215,9 @@ public class ElasticsearchVectorStore implements AiVectorStore {
     @Override
     public Long deleteByQuery(final AiEmbedTextQuery query) throws Exception {
         final Query q = buildQuery(query);
-        final DeleteByQueryResponse response = client.deleteByQuery(new DeleteByQueryRequest.Builder().query(q).build());
+        final DeleteByQueryResponse response = client.deleteByQuery(new DeleteByQueryRequest.Builder()
+                .index(options.getIndexName())
+                .query(q).build());
         return response.deleted();
     }
 

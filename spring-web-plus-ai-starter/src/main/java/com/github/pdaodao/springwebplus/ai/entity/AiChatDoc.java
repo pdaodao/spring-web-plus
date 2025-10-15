@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.entity;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -23,6 +24,9 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
 
     @Schema(description = "英文名称 如数据表名")
     private String name;
+
+    @Schema(description = "描述")
+    private String remark;
 
     @Schema(description = "文档大类")
     private ChatDocNamespace docNamespace;
@@ -69,4 +73,18 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     private Boolean isDeleted;
 
     private transient List<AiChatDoc> children;
+
+    public String content() {
+        final StringBuilder sb = new StringBuilder();
+        if (StrUtil.isNotBlank(name)) {
+            sb.append(name).append(":");
+        }
+        if (StrUtil.isNotBlank(title)) {
+            sb.append(title);
+        }
+        if (StrUtil.isNotBlank(remark)) {
+            sb.append(":").append(remark);
+        }
+        return sb.toString();
+    }
 }

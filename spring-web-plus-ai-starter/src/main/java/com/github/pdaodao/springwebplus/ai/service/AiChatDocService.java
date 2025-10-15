@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.BooleanUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
@@ -15,6 +16,7 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +36,55 @@ public class AiChatDocService {
         if (doc == null) {
             return null;
         }
-        if (ChatDocNamespace.doc == doc.getDocNamespace()) {
+        if (ChatDocNamespace.file == doc.getDocNamespace()) {
             doc.setItemCount(itemDao.countByDocId(id));
             return doc;
         }
         doc.setDocItems(itemDao.listByDocId(id));
         return doc;
+    }
+
+    public void saveInfo(final AiChatDoc aiChatDoc) throws Exception {
+        docDao.save(aiChatDoc);
+        if (aiVectorStoreOptional.isPresent()) {
+            final AiEmbedText embedText = new AiEmbedText();
+            embedText.setNamespace("knowledge");
+            embedText.setType("table");
+            embedText.setTopic(aiChatDoc.getPid());
+            embedText.setDocId(aiChatDoc.getId());
+            embedText.setTextId("0");
+            embedText.setName(aiChatDoc.getName());
+            embedText.setTitle(aiChatDoc.getTitle());
+            embedText.setTeamId(aiChatDoc.getTeamId());
+            embedText.setContent(aiChatDoc.content());
+            final AiEmbedTextQuery query = new AiEmbedTextQuery();
+            query.setDocIds(ListUtil.of(aiChatDoc.getId()));
+            query.setTypes(ListUtil.of("table"));
+            query.setTextIds(ListUtil.of("0"));
+            aiVectorStoreOptional.get().deleteByQuery(query);
+            aiVectorStoreOptional.get().add(ListUtil.of(embedText));
+        }
+        if (ChatDocNamespace.file == aiChatDoc.getDocNamespace()
+                || CollUtil.isEmpty(aiChatDoc.getDocItems())) {
+            return;
+        }
+        for (final AiChatDocItem item : aiChatDoc.getDocItems()) {
+            item.setDocId(aiChatDoc.getId());
+        }
+        itemDao.saveBatch(aiChatDoc.getDocItems());
+        final List<AiEmbedText> embedTextList = new ArrayList<>();
+        for (final AiChatDocItem item : itemDao.listByDocId(aiChatDoc.getId())) {
+            item.setDocId(aiChatDoc.getId());
+            final AiEmbedText embedText = itemToAiEmbedText(item, aiChatDoc);
+            embedText.setNamespace("knowledge");
+            embedText.setType("item");
+            embedTextList.add(embedText);
+        }
+        final AiEmbedTextQuery query = new AiEmbedTextQuery();
+        query.setDocIds(ListUtil.of(aiChatDoc.getId()));
+        query.setTypes(ListUtil.of("item"));
+        aiVectorStoreOptional.get().deleteByQuery(query);
+        aiVectorStoreOptional.get().add(embedTextList);
     }
 
     public Boolean delete(final String id) throws Exception {
@@ -51,7 +96,7 @@ public class AiChatDocService {
         if (BooleanUtil.isTrue(doc.getIsDir())) {
             return true;
         }
-        if(!aiVectorStoreOptional.isPresent()){
+        if (!aiVectorStoreOptional.isPresent()) {
             return true;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
@@ -71,7 +116,7 @@ public class AiChatDocService {
         final AiChatDoc doc = docDao.getById(item.getDocId());
         Preconditions.checkNotBlank(item.getDocId(), "文档不存在.");
         itemDao.save(item);
-        if(!aiVectorStoreOptional.isPresent()) {
+        if (!aiVectorStoreOptional.isPresent()) {
             return item;
         }
 
@@ -112,7 +157,7 @@ public class AiChatDocService {
             return false;
         }
         itemDao.removeById(id);
-        if(!aiVectorStoreOptional.isPresent()){
+        if (!aiVectorStoreOptional.isPresent()) {
             return true;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
