@@ -95,7 +95,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                     .filter(matchQuery)
                     .numCandidates(query.getTopK() * 10)  // 初步筛选
                     .build();
-            searchRequestBuilder.knn(knnQuery).rank();
+            searchRequestBuilder.knn(knnQuery);
         }else{
             searchRequestBuilder.query(matchQuery);
         }
@@ -136,7 +136,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         return termsQuery._toQuery();
     }
 
-    private static Query buildFilter(final AiEmbedTextQuery query){
+    private static Query buildQuery(final AiEmbedTextQuery query){
         if(query == null){
             return null;
         }
