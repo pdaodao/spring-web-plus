@@ -23,6 +23,10 @@ public class AiChatDocItem extends SnowIdWithTimeEntity {
     @Length(max = 200, message = "中文名称长度超过限制")
     private String title;
 
+    // ChatDocItemType
+    @Schema(description = "类型")
+    private String type;
+
     @Schema(description = "数据源表id")
     private String tableId;
 

@@ -3,14 +3,12 @@ package com.github.pdaodao.springwebplus.ai.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatDocDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatDocItemDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatDoc;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatDocItem;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatDocNamespace;
-import com.github.pdaodao.springwebplus.ai.pojo.ChatDocType;
 import com.github.pdaodao.springwebplus.ai.query.AiChatDocQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
@@ -57,7 +55,7 @@ public class AiChatDocService {
         if (BooleanUtil.isTrue(aiChatDoc.getIsDir())) {
             return;
         }
-        final String namespace = StrUtil.toString(aiChatDoc.getNamespace());
+        final String namespace = aiChatDoc.getNamespace();
         if (aiVectorStoreOptional.isPresent()) {
             final AiEmbedText embedText = new AiEmbedText();
             embedText.setNamespace(namespace);
@@ -82,14 +80,15 @@ public class AiChatDocService {
                 || CollUtil.isEmpty(aiChatDoc.getDocItems())) {
             return;
         }
+        final String type = aiChatDoc.itemType();;
         for (final AiChatDocItem item : aiChatDoc.getDocItems()) {
+            item.setType(type);
             item.setDocId(aiChatDoc.getId());
         }
         itemDao.saveBatch(aiChatDoc.getDocItems());
-        final String type = ChatDocNamespace.table == aiChatDoc.getNamespace()
-                || ChatDocNamespace.sql == aiChatDoc.getNamespace()
-                || ChatDocNamespace.excel == aiChatDoc.getNamespace() ? StrUtil.toString(ChatDocType.field) : StrUtil.toString(ChatDocType.text);
-
+        if(!aiVectorStoreOptional.isPresent()){
+            return;
+        }
         final List<AiEmbedText> embedTextList = new ArrayList<>();
         for (final AiChatDocItem item : itemDao.listByDocId(aiChatDoc.getId())) {
             final AiEmbedText embedText = itemToAiEmbedText(item, aiChatDoc);
@@ -132,11 +131,12 @@ public class AiChatDocService {
         Preconditions.checkNotBlank(item.getDocId(), "文档id不能为空.");
         final AiChatDoc doc = docDao.getById(item.getDocId());
         Preconditions.checkNotBlank(item.getDocId(), "文档不存在.");
+        final String type = doc.itemType();
+        item.setType(type);
         itemDao.save(item);
         if (!aiVectorStoreOptional.isPresent()) {
             return item;
         }
-
         // 向量化
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.setTextIds(ListUtil.of(item.getId()));
@@ -149,15 +149,17 @@ public class AiChatDocService {
 
     public static AiEmbedText itemToAiEmbedText(final AiChatDocItem item, final AiChatDoc doc) {
         final AiEmbedText embedText = new AiEmbedText();
+        embedText.setNamespace(doc.getNamespace());
         embedText.setTeamId(doc.getTeamId());
         embedText.setTopic(doc.getPid());
+
+        embedText.setType(item.getType());
         embedText.setId(item.getId());
         embedText.setTextId(item.getId());
         embedText.setDocId(item.getDocId());
         embedText.setName(item.getName());
         embedText.setTitle(item.getTitle());
         embedText.setContent(item.getContent());
-
         return embedText;
     }
 

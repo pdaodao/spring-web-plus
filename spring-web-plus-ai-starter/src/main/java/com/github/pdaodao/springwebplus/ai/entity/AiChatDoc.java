@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.pdaodao.springwebplus.ai.pojo.ChatDocItemType;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatDocNamespace;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
@@ -29,7 +30,7 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     private String remark;
 
     @Schema(description = "文档大类")
-    private ChatDocNamespace namespace;
+    private String namespace;
 
     @Schema(description = "数据源id")
     private String dbId;
@@ -86,5 +87,17 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
             sb.append(":").append(remark);
         }
         return sb.toString();
+    }
+
+    // 子项是否是字段
+    public boolean itemIsField(){
+        return StrUtil.equals(ChatDocNamespace.table, namespace)
+                || StrUtil.equals(ChatDocNamespace.sql, namespace)
+                || StrUtil.equals(ChatDocNamespace.excel, namespace);
+    }
+
+    // 子项类型
+    public String itemType(){
+        return itemIsField() ? ChatDocItemType.field : ChatDocItemType.text;
     }
 }
