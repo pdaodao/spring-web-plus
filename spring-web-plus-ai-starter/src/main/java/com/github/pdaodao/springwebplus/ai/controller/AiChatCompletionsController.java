@@ -25,7 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class AiChatCompletionsController {
     private final AiChatDispatcher chatDispatcher;
 
-    @PostMapping(path = "completions", headers = "Accept=text/event-stream")
+    @PostMapping(path = "sse")
     @Operation(summary = "流式问答")
     public SseEmitter chatSse(@RequestBody LLMRequest chatReq) {
         // 设置超时时间 10 分钟
@@ -34,14 +34,14 @@ public class AiChatCompletionsController {
         return emitter;
     }
 
-    @PostMapping(path = "completions", headers = "!Accept=text/event-stream")
+    @PostMapping(path = "http")
     @Operation(summary = "http问答")
     public LLMResponse chatHttp(@RequestBody LLMRequest chatReq) {
-        final  LLMResponse rr = chatDispatcher.http(prepare(chatReq));
+        final LLMResponse rr = chatDispatcher.http(prepare(chatReq));
         return rr;
     }
 
-    private RichLLMRequest prepare(final LLMRequest req){
+    private RichLLMRequest prepare(final LLMRequest req) {
         final RichLLMRequest rr = BeanUtil.copyProperties(req, RichLLMRequest.class);
         rr.setUserId(RequestUtil.getUserId());
         rr.setTeamId(RequestUtil.getTeamOrDefault());

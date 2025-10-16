@@ -13,24 +13,27 @@ import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 public class AiChatDaoUtil {
     /**
      * 获取应用场景信息
+     *
      * @param id
      * @return
      */
-    public static AiChatApp getAppById(final String id){
-        if(StrUtil.isBlank(id)){
+    public static AiChatApp getAppById(final String id) {
+        if (StrUtil.isBlank(id)) {
             return null;
         }
         final AiChatApp m = SpringUtil.getBean(AiChatAppDao.class).info(id);
         return m;
 
     }
+
     /**
      * 获取模型配置信息
+     *
      * @param id
      * @return
      */
-    public static AiChatModel getModelById(final String id){
-        if(StrUtil.isBlank(id)){
+    public static AiChatModel getModelById(final String id) {
+        if (StrUtil.isBlank(id)) {
             return null;
         }
         final AiChatModel m = SpringUtil.getBean(AiChatModelDao.class).detail(id);

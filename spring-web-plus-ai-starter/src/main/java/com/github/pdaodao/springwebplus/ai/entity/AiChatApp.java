@@ -11,6 +11,7 @@ import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
 import javax.validation.constraints.Size;
 import java.util.List;
 

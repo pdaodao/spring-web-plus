@@ -18,6 +18,9 @@ public class LLMRequest {
     @Schema(description = "会话id")
     private String sessionId;
 
+    @Schema(description = "问答消息id")
+    private String msgId;
+
     @Schema(description = "问题")
     private String question;
 
