@@ -230,8 +230,8 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         }
         final CreateIndexRequest request = new CreateIndexRequest.Builder()
                 .index(options.getIndexName())
-                .settings(t -> t.numberOfReplicas("0")
-                        .numberOfShards("1"))
+                .settings(t -> t.numberOfReplicas(StrUtil.toString(options.getNumberOfReplicas()))
+                        .numberOfShards(StrUtil.toString(options.getNumberOfShards())))
                 .mappings(m -> m
                         .properties("namespace", p -> p.keyword(t -> t))
                         .properties("teamId", p -> p.keyword(t -> t))

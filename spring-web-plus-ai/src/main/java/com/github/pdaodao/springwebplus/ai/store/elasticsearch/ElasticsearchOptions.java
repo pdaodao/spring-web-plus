@@ -14,6 +14,9 @@ public class ElasticsearchOptions {
 
     private int dimensions = 1536;
 
+    private Integer numberOfShards = 1;
+    private Integer numberOfReplicas = 0;
+
     public static ElasticsearchOptions of(final String url, final String indexName) {
         final ElasticsearchOptions opt = new ElasticsearchOptions();
         opt.setUrl(url);
