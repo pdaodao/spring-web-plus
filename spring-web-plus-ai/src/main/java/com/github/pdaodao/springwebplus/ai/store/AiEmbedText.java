@@ -56,7 +56,7 @@ public class AiEmbedText {
 
     private Map<String, Object> meta;
 
-    public static AiEmbedText of(final String text){
+    public static AiEmbedText of(final String text) {
         final AiEmbedText a = new AiEmbedText();
         a.setContent(text);
         return a;

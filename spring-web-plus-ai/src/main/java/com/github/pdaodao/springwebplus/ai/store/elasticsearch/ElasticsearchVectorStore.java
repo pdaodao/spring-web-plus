@@ -3,7 +3,9 @@ package com.github.pdaodao.springwebplus.ai.store.elasticsearch;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.*;
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.KnnSearch;
+import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -16,6 +18,7 @@ import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.tool.elasticsearch.EsUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +30,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
     private final ElasticsearchClient client;
     private final Optional<AiEmbedding> aiEmbedding;
 
-    public ElasticsearchVectorStore(final ElasticsearchOptions opt, final Optional<AiEmbedding> aiEmbedding) throws Exception{
+    public ElasticsearchVectorStore(final ElasticsearchOptions opt, final Optional<AiEmbedding> aiEmbedding) throws Exception {
         this.options = opt;
         this.aiEmbedding = aiEmbedding;
         this.client = EsUtil.getClient(opt.getUrl(), opt.getUsername(), opt.getPassword());
@@ -37,7 +40,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
 
     public ElasticsearchVectorStore(ElasticsearchClient client,
                                     final ElasticsearchOptions opt,
-                                    final Optional<AiEmbedding> aiEmbedding) throws Exception{
+                                    final Optional<AiEmbedding> aiEmbedding) throws Exception {
         this.options = opt;
         this.client = client;
         this.aiEmbedding = aiEmbedding;
@@ -47,14 +50,14 @@ public class ElasticsearchVectorStore implements AiVectorStore {
 
     @Override
     public void add(List<AiEmbedText> documents) throws Exception {
-        if(CollUtil.isEmpty(documents)){
+        if (CollUtil.isEmpty(documents)) {
             return;
         }
-        if(aiEmbedding.isPresent()){
+        if (aiEmbedding.isPresent()) {
             final List<String> contentList = documents.stream().map(t -> t.getContent()).collect(Collectors.toList());
             final List<float[]> floatList = aiEmbedding.get().embed(contentList);
             int index = 0;
-            for(final AiEmbedText d: documents){
+            for (final AiEmbedText d : documents) {
                 d.setEmbedding(floatList.get(index++));
             }
         }
@@ -67,24 +70,24 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         }
         // 执行批量插入
         final BulkResponse response = client.bulk(bulkRequest.build());
-        if(response.errors()){
+        if (response.errors()) {
             throw new RuntimeException(response.toString());
         }
     }
 
     @Override
     public List<AiEmbedText> query(final AiEmbedTextQuery query) throws Exception {
-        if(query.getScore() == null){
+        if (query.getScore() == null) {
             query.setScore(0.3);
         }
         final SearchRequest.Builder searchRequestBuilder = new SearchRequest.Builder();
         searchRequestBuilder.index(options.getIndexName());
         searchRequestBuilder.size(query.getTopK());
         final Query matchQuery = buildQuery(query);
-        if(aiEmbedding.isPresent() && StrUtil.isNotBlank(query.getContent()) && query.getEmbedding() == null){
+        if (aiEmbedding.isPresent() && StrUtil.isNotBlank(query.getContent()) && query.getEmbedding() == null) {
             query.setEmbedding(aiEmbedding.get().embed(query.getContent()));
         }
-        if(query.getEmbedding() != null){
+        if (query.getEmbedding() != null) {
             final KnnSearch knnQuery = new KnnSearch.Builder()
                     .field("embedding")  // 向量字段
                     .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
@@ -95,7 +98,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                     .knn(knnQuery)
 //                    .rank(r -> r.rrf(new RrfRank.Builder().build()))
                     .minScore(query.getScore());
-        }else{
+        } else {
             searchRequestBuilder.query(matchQuery)
                     .minScore(query.getScore());
         }
@@ -111,11 +114,11 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         return retList;
     }
 
-    private static Query equalOrIn(final String field, final List<String> values){
-        if(CollUtil.isEmpty(values)){
+    private static Query equalOrIn(final String field, final List<String> values) {
+        if (CollUtil.isEmpty(values)) {
             return null;
         }
-        if(CollUtil.size(values) == 1){
+        if (CollUtil.size(values) == 1) {
             final TermQuery namespace = new TermQuery.Builder()
                     .field(field)
                     .value(values.get(0))
@@ -123,8 +126,8 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             return new Query.Builder().term(namespace).build();
         }
         final List<FieldValue> filters = new ArrayList<>();
-        for(final String obj: values){
-            if(obj == null){
+        for (final String obj : values) {
+            if (obj == null) {
                 continue;
             }
             filters.add(FieldValue.of(obj));
@@ -136,13 +139,13 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         return termsQuery._toQuery();
     }
 
-    private static Query buildQuery(final AiEmbedTextQuery query){
-        if(query == null){
+    private static Query buildQuery(final AiEmbedTextQuery query) {
+        if (query == null) {
             return null;
         }
         final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
         // 团队id
-        if(StrUtil.isNotBlank(query.getTeamId())){
+        if (StrUtil.isNotBlank(query.getTeamId())) {
             final TermQuery teamId = new TermQuery.Builder()
                     .field("teamId")
                     .value(query.getTeamId())
@@ -150,45 +153,45 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             boolQuery.filter(new Query.Builder().term(teamId).build());
         }
         // 命名空间
-        if(CollUtil.isNotEmpty(query.getNamespaces())){
+        if (CollUtil.isNotEmpty(query.getNamespaces())) {
             final Query namespaceFilter = equalOrIn("namespace", query.getNamespaces());
-            if(namespaceFilter != null){
+            if (namespaceFilter != null) {
                 boolQuery.filter(namespaceFilter);
             }
         }
         // type
-        if(CollUtil.isNotEmpty(query.getTypes())){
+        if (CollUtil.isNotEmpty(query.getTypes())) {
             final Query typeFilter = equalOrIn("type", query.getTypes());
-            if(typeFilter != null){
+            if (typeFilter != null) {
                 boolQuery.filter(typeFilter);
             }
         }
         // 主题
-        if(CollUtil.isNotEmpty(query.getTopics())){
+        if (CollUtil.isNotEmpty(query.getTopics())) {
             final Query topicFilter = equalOrIn("topic", query.getTopics());
-            if(topicFilter != null){
+            if (topicFilter != null) {
                 boolQuery.filter(topicFilter);
             }
         }
         // 文档id
-        if(CollUtil.isNotEmpty(query.getDocIds())){
+        if (CollUtil.isNotEmpty(query.getDocIds())) {
             final Query docFilter = equalOrIn("docId", query.getDocIds());
-            if(docFilter != null){
+            if (docFilter != null) {
                 boolQuery.filter(docFilter);
             }
         }
         // 文本块id
-        if(CollUtil.isNotEmpty(query.getTextIds())){
+        if (CollUtil.isNotEmpty(query.getTextIds())) {
             final Query textIdFilter = equalOrIn("textId", query.getTextIds());
-            if(textIdFilter != null){
+            if (textIdFilter != null) {
                 boolQuery.filter(textIdFilter);
             }
         }
-        if(StrUtil.isNotBlank(query.getContent())){
-            if(query.getScore() < 0){
+        if (StrUtil.isNotBlank(query.getContent())) {
+            if (query.getScore() < 0) {
                 query.setScore(0.3);
             }
-            final int match = (int)(query.getScore() * 100);
+            final int match = (int) (query.getScore() * 100);
             final MatchQuery matchQuery = new MatchQuery.Builder()
                     .field("content")
                     .query(query.getContent().trim())
@@ -220,9 +223,9 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         return response.deleted();
     }
 
-    private void init() throws Exception{
+    private void init() throws Exception {
         final boolean indexExists = client.indices().exists(e -> e.index(options.getIndexName())).value();
-        if(indexExists){
+        if (indexExists) {
             return;
         }
         final CreateIndexRequest request = new CreateIndexRequest.Builder()
@@ -243,7 +246,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                 )
                 .build();
         final CreateIndexResponse response = client.indices().create(request);
-        if(!response.acknowledged()){
+        if (!response.acknowledged()) {
             throw new RuntimeException(response.toString());
         }
     }

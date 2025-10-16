@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
 import java.util.Optional;
 
 @AutoConfiguration(after = AiEmbeddingAutoConfig.class)
@@ -18,14 +19,14 @@ import java.util.Optional;
 @EnableConfigurationProperties(ElasticsearchOptions.class)
 public class ElasticsearchStoreAutoConfig {
     @Bean
-    public ElasticsearchClientService elasticsearchClientService(final ElasticsearchOptions opt){
+    public ElasticsearchClientService elasticsearchClientService(final ElasticsearchOptions opt) {
         final ElasticsearchClient client = EsUtil.getClient(opt.getUrl(), opt.getUsername(), opt.getPassword());
         return new ElasticsearchClientService(client);
     }
 
     @Bean
-    public AiVectorStore aiVectorStore(final ElasticsearchOptions options, final ElasticsearchClientService clientService, final Optional<AiEmbedding> aiEmbedding) throws Exception{
-        if(aiEmbedding.isPresent()){
+    public AiVectorStore aiVectorStore(final ElasticsearchOptions options, final ElasticsearchClientService clientService, final Optional<AiEmbedding> aiEmbedding) throws Exception {
+        if (aiEmbedding.isPresent()) {
             options.setDimensions(aiEmbedding.get().dimension());
         }
         final ElasticsearchVectorStore store = new ElasticsearchVectorStore(clientService.getClient(), options, aiEmbedding);

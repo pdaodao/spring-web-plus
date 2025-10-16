@@ -7,7 +7,6 @@ import com.github.pdaodao.springwebplus.ai.util.ChatModelUtil;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
-import org.springframework.ai.openai.api.OpenAiApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class OpenAiEmbedding implements AiEmbedding {
 
     @Override
     public int dimension() {
-        if(dimension > 0){
+        if (dimension > 0) {
             return dimension;
         }
         final float[] f = model().embed("北京欢迎您.");
@@ -40,13 +39,13 @@ public class OpenAiEmbedding implements AiEmbedding {
         return dimension;
     }
 
-    private OpenAiEmbeddingModel model(){
-        if(embeddingModel != null){
+    private OpenAiEmbeddingModel model() {
+        if (embeddingModel != null) {
             return embeddingModel;
         }
-        synchronized (this){
+        synchronized (this) {
             embeddingModel = new OpenAiEmbeddingModel(ChatModelUtil.openAiApi(baseUrl, apiKey),
-                    MetadataMode.EMBED,OpenAiEmbeddingOptions.builder().model(model).build());
+                    MetadataMode.EMBED, OpenAiEmbeddingOptions.builder().model(model).build());
         }
         return embeddingModel;
     }
@@ -58,12 +57,12 @@ public class OpenAiEmbedding implements AiEmbedding {
 
     @Override
     public List<float[]> embed(List<String> texts) {
-        if(CollUtil.isEmpty(texts)){
+        if (CollUtil.isEmpty(texts)) {
             return ListUtil.empty();
         }
         final List<float[]> ret = new ArrayList<>();
         final List<List<String>> sps = CollUtil.split(texts, batchSize);
-        for(final List<String> sp: sps){
+        for (final List<String> sp : sps) {
             final List<float[]> batched = embeddingModel.embed(sp);
             ret.addAll(batched);
         }

@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.ai;
 
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
+
 import java.util.List;
 
 public interface AiVectorStore {
