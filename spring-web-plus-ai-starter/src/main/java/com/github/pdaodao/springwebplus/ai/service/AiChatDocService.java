@@ -3,19 +3,20 @@ package com.github.pdaodao.springwebplus.ai.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatDocDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatDocItemDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatDoc;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatDocItem;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatDocNamespace;
+import com.github.pdaodao.springwebplus.ai.pojo.ChatDocType;
 import com.github.pdaodao.springwebplus.ai.query.AiChatDocQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class AiChatDocService {
         return doc;
     }
 
-    public List<AiEmbedText> search(final String key, final Double score) throws Exception{
+    public List<AiEmbedText> search(final String key, final Double score) throws Exception {
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.setContent(key);
         query.setScore(score);
@@ -53,13 +54,15 @@ public class AiChatDocService {
 
     public void saveInfo(final AiChatDoc aiChatDoc) throws Exception {
         docDao.save(aiChatDoc);
-        if(BooleanUtil.isTrue(aiChatDoc.getIsDir())){
+        if (BooleanUtil.isTrue(aiChatDoc.getIsDir())) {
             return;
         }
+        final String namespace = StrUtil.toString(aiChatDoc.getNamespace());
         if (aiVectorStoreOptional.isPresent()) {
             final AiEmbedText embedText = new AiEmbedText();
-            embedText.setNamespace("knowledge");
-            embedText.setType("table");
+            embedText.setNamespace(namespace);
+            embedText.setType(namespace);
+            embedText.setId(aiChatDoc.getId());
             embedText.setTopic(aiChatDoc.getPid());
             embedText.setDocId(aiChatDoc.getId());
             embedText.setTextId("0");
@@ -69,7 +72,7 @@ public class AiChatDocService {
             embedText.setContent(aiChatDoc.content());
             final AiEmbedTextQuery query = new AiEmbedTextQuery();
             query.setDocIds(ListUtil.of(aiChatDoc.getId()));
-            query.setTypes(ListUtil.of("table"));
+            query.setTypes(ListUtil.of(namespace));
             query.setTextIds(ListUtil.of("0"));
             aiVectorStoreOptional.get().deleteByQuery(query);
             aiVectorStoreOptional.get().add(ListUtil.of(embedText));
@@ -83,16 +86,20 @@ public class AiChatDocService {
             item.setDocId(aiChatDoc.getId());
         }
         itemDao.saveBatch(aiChatDoc.getDocItems());
+        final String type = ChatDocNamespace.table == aiChatDoc.getNamespace()
+                || ChatDocNamespace.sql == aiChatDoc.getNamespace()
+                || ChatDocNamespace.excel == aiChatDoc.getNamespace() ? StrUtil.toString(ChatDocType.field) : StrUtil.toString(ChatDocType.text);
+
         final List<AiEmbedText> embedTextList = new ArrayList<>();
         for (final AiChatDocItem item : itemDao.listByDocId(aiChatDoc.getId())) {
             final AiEmbedText embedText = itemToAiEmbedText(item, aiChatDoc);
-            embedText.setNamespace("knowledge");
-            embedText.setType("item");
+            embedText.setNamespace(namespace);
+            embedText.setType(type);
             embedTextList.add(embedText);
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.setDocIds(ListUtil.of(aiChatDoc.getId()));
-        query.setTypes(ListUtil.of("item"));
+        query.setTypes(ListUtil.of(type));
         aiVectorStoreOptional.get().deleteByQuery(query);
         aiVectorStoreOptional.get().add(embedTextList);
     }
@@ -144,7 +151,7 @@ public class AiChatDocService {
         final AiEmbedText embedText = new AiEmbedText();
         embedText.setTeamId(doc.getTeamId());
         embedText.setTopic(doc.getPid());
-
+        embedText.setId(item.getId());
         embedText.setTextId(item.getId());
         embedText.setDocId(item.getDocId());
         embedText.setName(item.getName());

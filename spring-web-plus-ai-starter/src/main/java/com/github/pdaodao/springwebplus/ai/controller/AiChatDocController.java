@@ -53,7 +53,7 @@ public class AiChatDocController {
 
     @GetMapping("search")
     @Operation(summary = "search")
-    public List<AiEmbedText> search(final String key, final Double score) throws Exception{
+    public List<AiEmbedText> search(final String key, final Double score) throws Exception {
         return docService.search(key, score);
     }
 

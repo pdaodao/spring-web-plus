@@ -13,7 +13,5 @@ public enum ChatDocNamespace {
     @Schema(description = "sql语句")
     sql,
     @Schema(description = "excel文件")
-    excel,
-    @Schema(description = "demoValue")
-    demoValue
+    excel
 }

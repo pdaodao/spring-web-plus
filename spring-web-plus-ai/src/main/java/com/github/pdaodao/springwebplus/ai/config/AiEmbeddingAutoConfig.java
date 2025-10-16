@@ -16,13 +16,14 @@ public class AiEmbeddingAutoConfig {
     @Value("${ai.embedding.apiKey:}")
     private String apiKey;
 
-
     @Value("${ai.embedding.model:}")
     private String model;
 
+    @Value("${ai.embedding.batchSize:15}")
+    private Integer batchSize;
 
     @Bean
     public AiEmbedding aiEmbedding(){
-        return new OpenAiEmbedding(baseUrl, apiKey, model);
+        return new OpenAiEmbedding(baseUrl, apiKey, model, batchSize);
     }
 }

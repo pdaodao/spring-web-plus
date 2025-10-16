@@ -63,7 +63,6 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         for (final AiEmbedText doc : documents) {
             bulkRequest.operations(op -> op.index(idx -> idx
                     .index(options.getIndexName())
-                    .id(doc.getId())
                     .document(doc)));
         }
         // 执行批量插入

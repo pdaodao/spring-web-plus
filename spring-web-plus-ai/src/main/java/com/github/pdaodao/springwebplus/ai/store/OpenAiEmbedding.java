@@ -18,13 +18,16 @@ public class OpenAiEmbedding implements AiEmbedding {
 
     private final String model;
 
+    private final int batchSize;
+
     private OpenAiEmbeddingModel embeddingModel;
     private int dimension = 0;
 
-    public OpenAiEmbedding(String baseUrl, String apiKey, String model) {
+    public OpenAiEmbedding(String baseUrl, String apiKey, String model, int batchSize) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
         this.model = model;
+        this.batchSize = batchSize;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class OpenAiEmbedding implements AiEmbedding {
             return ListUtil.empty();
         }
         final List<float[]> ret = new ArrayList<>();
-        final List<List<String>> sps = CollUtil.split(texts, 15);
+        final List<List<String>> sps = CollUtil.split(texts, batchSize);
         for(final List<String> sp: sps){
             final List<float[]> batched = embeddingModel.embed(sp);
             ret.addAll(batched);
