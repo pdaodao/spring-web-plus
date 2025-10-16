@@ -23,7 +23,7 @@ public class AiEmbeddingAutoConfig {
     private Integer batchSize;
 
     @Bean
-    public AiEmbedding aiEmbedding(){
+    public AiEmbedding aiEmbedding() {
         return new OpenAiEmbedding(baseUrl, apiKey, model, batchSize);
     }
 }

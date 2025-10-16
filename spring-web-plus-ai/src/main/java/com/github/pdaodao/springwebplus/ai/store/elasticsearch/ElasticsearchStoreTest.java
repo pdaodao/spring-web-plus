@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ElasticsearchStoreTest {
 
-    public static void main1(String[] args) throws Exception{
+    public static void main1(String[] args) throws Exception {
         final ElasticsearchOptions opt = ElasticsearchOptions.of("http://127.0.0.1:9200", "ai_test1");
         final ElasticsearchVectorStore store = new ElasticsearchVectorStore(opt, null);
 
@@ -34,10 +34,10 @@ public class ElasticsearchStoreTest {
         System.out.println("hello");
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         final ElasticsearchOptions opt = ElasticsearchOptions.of("http://127.0.0.1:9200", "ai_test1");
         final ElasticsearchVectorStore store = new ElasticsearchVectorStore(opt, null);
-        final AiEmbedTextQuery q  = AiEmbedTextQuery.of("中国渔船冲突");
+        final AiEmbedTextQuery q = AiEmbedTextQuery.of("中国渔船冲突");
         q.setScore(0.7);
         final List<AiEmbedText> ret = store.query(q);
         System.out.println("hello");

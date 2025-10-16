@@ -7,6 +7,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,20 +16,20 @@ public class ChatModelUtil {
 
     private static final Map<String, ChatModel> map = new ConcurrentHashMap<>();
 
-    public static ChatModel of(LLMProvider provider, final String baseUrl, final String apiKey, final String modelName){
+    public static ChatModel of(LLMProvider provider, final String baseUrl, final String apiKey, final String modelName) {
         Preconditions.checkNotBlank(baseUrl, "llm-model baseUrl is blank.");
-        if(provider == null){
+        if (provider == null) {
             provider = LLMProvider.openai;
         }
-        final String key = provider+":"+baseUrl+":"+apiKey+":"+modelName;
+        final String key = provider + ":" + baseUrl + ":" + apiKey + ":" + modelName;
         ChatModel model = map.get(key);
-        if(model == null){
-            synchronized (ChatModelUtil.class){
+        if (model == null) {
+            synchronized (ChatModelUtil.class) {
                 model = map.get(key);
-                if(model != null){
+                if (model != null) {
                     return model;
                 }
-                if(LLMProvider.openai == provider){
+                if (LLMProvider.openai == provider) {
                     model = ofOpenAi(baseUrl, apiKey, modelName);
                     map.put(key, model);
                 }
@@ -37,23 +38,23 @@ public class ChatModelUtil {
         return model;
     }
 
-    private static ChatModel ofOpenAi(final String baseUrl, final String apiKey, final String modelName){
+    private static ChatModel ofOpenAi(final String baseUrl, final String apiKey, final String modelName) {
         final OpenAiApi openAiApi = openAiApi(baseUrl, apiKey);
         final OpenAiChatModel.Builder builder = OpenAiChatModel.builder();
         builder.openAiApi(openAiApi);
-        if(StrUtil.isNotBlank(modelName)){
+        if (StrUtil.isNotBlank(modelName)) {
             builder.defaultOptions(OpenAiChatOptions.builder().model(modelName).build());
         }
         return builder.build();
     }
 
-    public static OpenAiApi openAiApi(final String baseUrl, final String apiKey){
-        final String key = StrUtil.toStringOrEmpty(baseUrl)+":"+StrUtil.toStringOrEmpty(apiKey);
+    public static OpenAiApi openAiApi(final String baseUrl, final String apiKey) {
+        final String key = StrUtil.toStringOrEmpty(baseUrl) + ":" + StrUtil.toStringOrEmpty(apiKey);
         final OpenAiApi old = openAiApiMap.get(key);
-        if(old != null){
+        if (old != null) {
             return old;
         }
-        synchronized (ChatModelUtil.class){
+        synchronized (ChatModelUtil.class) {
             final OpenAiApi openAiApi = OpenAiApi.builder()
                     .baseUrl(baseUrl)
                     .apiKey(apiKey)

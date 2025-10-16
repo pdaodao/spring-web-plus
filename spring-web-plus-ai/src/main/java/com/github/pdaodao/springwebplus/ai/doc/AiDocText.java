@@ -2,7 +2,6 @@ package com.github.pdaodao.springwebplus.ai.doc;
 
 import lombok.Data;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 /**

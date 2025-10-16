@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.store;
 
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class AiEmbedTextQuery {
      */
     private Double score = 0.6;
 
-    public static AiEmbedTextQuery of(final String text){
+    public static AiEmbedTextQuery of(final String text) {
         final AiEmbedTextQuery q = new AiEmbedTextQuery();
         q.setContent(text);
         return q;
@@ -61,11 +62,11 @@ public class AiEmbedTextQuery {
 
 
     public static List<Float> asList(float[] sp) {
-        if(sp == null){
+        if (sp == null) {
             return null;
         }
         final List<Float> list = new ArrayList(sp.length);
-        for(final float f: sp){
+        for (final float f : sp) {
             list.add(f);
         }
         return list;

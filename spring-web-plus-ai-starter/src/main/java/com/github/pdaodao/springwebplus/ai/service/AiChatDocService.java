@@ -15,6 +15,7 @@ import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,13 +81,14 @@ public class AiChatDocService {
                 || CollUtil.isEmpty(aiChatDoc.getDocItems())) {
             return;
         }
-        final String type = aiChatDoc.itemType();;
+        final String type = aiChatDoc.itemType();
+        ;
         for (final AiChatDocItem item : aiChatDoc.getDocItems()) {
             item.setType(type);
             item.setDocId(aiChatDoc.getId());
         }
         itemDao.saveBatch(aiChatDoc.getDocItems());
-        if(!aiVectorStoreOptional.isPresent()){
+        if (!aiVectorStoreOptional.isPresent()) {
             return;
         }
         final List<AiEmbedText> embedTextList = new ArrayList<>();

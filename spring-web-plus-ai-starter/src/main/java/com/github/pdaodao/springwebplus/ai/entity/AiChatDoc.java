@@ -90,14 +90,14 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     }
 
     // 子项是否是字段
-    public boolean itemIsField(){
+    public boolean itemIsField() {
         return StrUtil.equals(ChatDocNamespace.table, namespace)
                 || StrUtil.equals(ChatDocNamespace.sql, namespace)
                 || StrUtil.equals(ChatDocNamespace.excel, namespace);
     }
 
     // 子项类型
-    public String itemType(){
+    public String itemType() {
         return itemIsField() ? ChatDocItemType.field : ChatDocItemType.text;
     }
 }

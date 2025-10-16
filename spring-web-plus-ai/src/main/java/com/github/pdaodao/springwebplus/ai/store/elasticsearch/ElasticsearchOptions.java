@@ -14,7 +14,7 @@ public class ElasticsearchOptions {
 
     private int dimensions = 1536;
 
-    public static ElasticsearchOptions of(final String url, final String indexName){
+    public static ElasticsearchOptions of(final String url, final String indexName) {
         final ElasticsearchOptions opt = new ElasticsearchOptions();
         opt.setUrl(url);
         opt.setIndexName(indexName);
