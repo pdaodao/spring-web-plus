@@ -1,7 +1,12 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
-import com.github.pdaodao.springwebplus.ai.pojo.AiChatReq;
+import cn.hutool.core.bean.BeanUtil;
+import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
+import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
+import com.github.pdaodao.springwebplus.ai.base.RichLLMRequest;
+import com.github.pdaodao.springwebplus.ai.service.AiChatDispatcher;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
+import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,18 +23,28 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @AllArgsConstructor
 @RequestMapping(Constant.ChatApiPrefix + "/chat")
 public class AiChatCompletionsController {
+    private final AiChatDispatcher chatDispatcher;
+
     @PostMapping(path = "completions", headers = "Accept=text/event-stream")
     @Operation(summary = "流式问答")
-    public SseEmitter chatSse(@RequestBody AiChatReq chatReq) {
-        // 设置超时时间，单位毫秒
-        final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        // todo
+    public SseEmitter chatSse(@RequestBody LLMRequest chatReq) {
+        // 设置超时时间 10 分钟
+        final SseEmitter emitter = new SseEmitter(1000 * 60 * 10l);
+        chatDispatcher.sse(prepare(chatReq), emitter);
         return emitter;
     }
 
     @PostMapping(path = "completions", headers = "!Accept=text/event-stream")
     @Operation(summary = "http问答")
-    public void chatHttp(@RequestBody AiChatReq chatReq) {
-        // todo
+    public LLMResponse chatHttp(@RequestBody LLMRequest chatReq) {
+        final  LLMResponse rr = chatDispatcher.http(prepare(chatReq));
+        return rr;
+    }
+
+    private RichLLMRequest prepare(final LLMRequest req){
+        final RichLLMRequest rr = BeanUtil.copyProperties(req, RichLLMRequest.class);
+        rr.setUserId(RequestUtil.getUserId());
+        rr.setTeamId(RequestUtil.getTeamOrDefault());
+        return rr;
     }
 }

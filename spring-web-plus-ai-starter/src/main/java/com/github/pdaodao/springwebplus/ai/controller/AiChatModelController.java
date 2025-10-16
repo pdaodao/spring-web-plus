@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
@@ -18,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Slf4j
@@ -73,7 +73,7 @@ public class AiChatModelController {
     @GetMapping("info")
     @Operation(summary = "详情")
     public AiChatModel info(@Parameter(name = "id", description = "主键") @RequestParam(required = false) final String id) {
-        final AiChatModel t = dao.getById(id);
+        final AiChatModel t = BeanUtil.copyProperties(dao.detail(id), AiChatModel.class);
         if (t != null) {
             t.setApiKey(Constant.FakePassword);
         }

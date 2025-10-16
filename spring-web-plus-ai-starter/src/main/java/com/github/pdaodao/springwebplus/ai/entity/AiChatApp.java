@@ -3,7 +3,6 @@ package com.github.pdaodao.springwebplus.ai.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.github.pdaodao.springwebplus.ai.pojo.AiChatType;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatAppConfig;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
@@ -12,7 +11,6 @@ import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     private String title;
 
     @Schema(description = "问答类型大模型-sql")
-    private AiChatType chatType;
+    private String chatType;
 
     @Schema(description = "开场白")
     @Size(max = 1024, message = "开场白最大不能超过256")
@@ -39,7 +37,7 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     private String modelId;
 
     @Schema(description = "模型名称")
-    private transient String modelTitle;
+    private transient AiChatModel chatModel;
 
     @Schema(description = "文档列表")
     @TableField(typeHandler = JacksonTypeHandler.class)
