@@ -14,6 +14,9 @@ public class LLMResponse {
     @Schema(description = "内容")
     private String content;
 
+    @Schema(description = "分析阶段")
+    private String phase;
+
     @Schema(description = "数据表数据")
     private TableData tableData;
 
