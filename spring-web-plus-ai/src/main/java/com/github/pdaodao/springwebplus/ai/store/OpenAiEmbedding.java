@@ -63,7 +63,7 @@ public class OpenAiEmbedding implements AiEmbedding {
         final List<float[]> ret = new ArrayList<>();
         final List<List<String>> sps = CollUtil.split(texts, batchSize);
         for (final List<String> sp : sps) {
-            final List<float[]> batched = embeddingModel.embed(sp);
+            final List<float[]> batched = model().embed(sp);
             ret.addAll(batched);
         }
         return ret;

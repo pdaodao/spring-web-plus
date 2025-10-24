@@ -14,28 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatModelUtil {
     private static final Map<String, OpenAiApi> openAiApiMap = new ConcurrentHashMap<>();
 
-    private static final Map<String, ChatModel> map = new ConcurrentHashMap<>();
+    public static AiChatModelFactory ofFactory(final LLMProvider provider, final String baseUrl, final String apiKey, final String modelName){
+        final OpenAiApi openAiApi = openAiApi(baseUrl, apiKey);
+        return new AiChatModelFactory(openAiApi, modelName);
+    }
 
     public static ChatModel of(LLMProvider provider, final String baseUrl, final String apiKey, final String modelName) {
         Preconditions.checkNotBlank(baseUrl, "llm-model baseUrl is blank.");
         if (provider == null) {
             provider = LLMProvider.openai;
         }
-        final String key = provider + ":" + baseUrl + ":" + apiKey + ":" + modelName;
-        ChatModel model = map.get(key);
-        if (model == null) {
-            synchronized (ChatModelUtil.class) {
-                model = map.get(key);
-                if (model != null) {
-                    return model;
-                }
-                if (LLMProvider.openai == provider) {
-                    model = ofOpenAi(baseUrl, apiKey, modelName);
-                    map.put(key, model);
-                }
-            }
+        if (LLMProvider.openai == provider) {
+            return ofOpenAi(baseUrl, apiKey, modelName);
         }
-        return model;
+        return ofOpenAi(baseUrl, apiKey, modelName);
     }
 
     private static ChatModel ofOpenAi(final String baseUrl, final String apiKey, final String modelName) {
