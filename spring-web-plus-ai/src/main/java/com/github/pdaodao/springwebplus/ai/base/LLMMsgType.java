@@ -2,6 +2,8 @@ package com.github.pdaodao.springwebplus.ai.base;
 
 public enum LLMMsgType {
     text,
+    sql,
+    sqlData,
     reasoning,
 
     thinking,

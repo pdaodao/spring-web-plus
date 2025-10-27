@@ -7,7 +7,7 @@ import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelProviderDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModelProvider;
-import com.github.pdaodao.springwebplus.ai.util.ChatModelUtil;
+import com.github.pdaodao.springwebplus.ai.core.ChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;

@@ -1,9 +1,8 @@
-package com.github.pdaodao.springwebplus.ai.store;
+package com.github.pdaodao.springwebplus.ai.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
-import com.github.pdaodao.springwebplus.ai.util.ChatModelUtil;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;

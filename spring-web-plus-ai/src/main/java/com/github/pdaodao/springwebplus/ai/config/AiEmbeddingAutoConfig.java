@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.config;
 
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
-import com.github.pdaodao.springwebplus.ai.store.OpenAiEmbedding;
+import com.github.pdaodao.springwebplus.ai.core.OpenAiEmbedding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

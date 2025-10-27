@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.pdaodao.springwebplus.tool.data.TableData;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -37,6 +38,9 @@ public class LLMMsg {
 
     private String error;
 
+    @Schema(description = "数据表数据")
+    private TableData tableData;
+
     // 函数名称
     private String name;
     // 函数参数
@@ -47,10 +51,10 @@ public class LLMMsg {
     private Object value;
 
     @Data
-    public static class Annotation{
+    public static class Annotation {
         private String id;
         private String title;
-        private String snippet;
         private String url;
+        private String snippet;
     }
 }
