@@ -17,6 +17,10 @@ public class AiChatModelFactory {
     private final OpenAiApi openAiApi;
     private final ChatOptions chatOptions;
 
+    public String getModelName(){
+        return chatOptions.getModel();
+    }
+
     public static AiChatModelFactory instance(final LLMProvider provider,
                                               final String baseUrl, final String apiKey,
                                               ChatOptions chatOptions) {
