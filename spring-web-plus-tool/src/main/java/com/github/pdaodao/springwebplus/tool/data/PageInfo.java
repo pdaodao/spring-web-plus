@@ -23,6 +23,22 @@ public class PageInfo {
      */
     private Long total;
 
+    public static PageInfo of(final Long pageNum, final Long pageSize){
+        final PageInfo pp = new PageInfo();
+        pp.setPageNum(pageNum);
+        pp.setPageSize(pageSize);
+        return pp;
+    }
+
+    public static PageInfo of(final Long pageNum, final Long pageSize, final Long total){
+        final PageInfo pp = new PageInfo();
+        pp.setPageNum(pageNum);
+        pp.setPageSize(pageSize);
+        pp.setTotal(total);
+        return pp;
+    }
+
+
     /**
      * 起始行数
      *

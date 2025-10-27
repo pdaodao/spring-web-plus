@@ -32,6 +32,12 @@ public class SysDic extends BaseEntity implements WithPidString, WithChildren<Sy
     @Schema(description = "备注")
     private String remark;
 
+    @Schema(description = "颜色")
+    private String color;
+
+    @Schema(description= "图标")
+    private String icon;
+
     @Schema(description = "子项")
     private transient List<SysDic> children;
 }
