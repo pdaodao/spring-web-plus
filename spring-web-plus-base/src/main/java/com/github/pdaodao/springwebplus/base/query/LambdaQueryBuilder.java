@@ -135,6 +135,17 @@ public class LambdaQueryBuilder<T> {
         return this;
     }
 
+    public LambdaQueryBuilder<T> isNotNull(boolean condition, SFunction<T, ?> columnName) {
+        if (!condition) {
+            return this;
+        }
+        if (columnName == null) {
+            return this;
+        }
+        wrap.isNotNull(columnName);
+        return this;
+    }
+
     public LambdaQueryBuilder<T> ge(SFunction<T, ?> columnName, Object val) {
         if (val == null || ObjectUtil.isEmpty(val)) {
             return this;

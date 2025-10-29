@@ -26,6 +26,9 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     @Schema(description = "英文名称 如数据表名")
     private String name;
 
+    @Schema(description = "来源id 如数据表id")
+    private String tableId;
+
     @Schema(description = "描述")
     private String remark;
 

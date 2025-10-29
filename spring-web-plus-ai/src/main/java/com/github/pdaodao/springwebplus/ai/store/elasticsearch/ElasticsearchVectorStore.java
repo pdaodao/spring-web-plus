@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.store.elasticsearch;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
@@ -54,11 +55,20 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             return;
         }
         if (aiEmbedding.isPresent()) {
-            final List<String> contentList = documents.stream().map(t -> t.getContent()).collect(Collectors.toList());
-            final List<float[]> floatList = aiEmbedding.get().embed(contentList);
-            int index = 0;
-            for (final AiEmbedText d : documents) {
-                d.setEmbedding(floatList.get(index++));
+            final List<String> contentList = documents.stream()
+                    .filter(t -> StrUtil.isNotBlank(t.getContent()))
+                    .filter(t -> ArrayUtil.isNotEmpty(t.getEmbedding()))
+                    .map(t -> t.getContent())
+                    .collect(Collectors.toList());
+            if(CollUtil.isNotEmpty(contentList)){
+                final List<float[]> floatList = aiEmbedding.get().embed(contentList);
+                int index = 0;
+                for (final AiEmbedText d : documents) {
+                    if(StrUtil.isBlank(d.getContent()) || ArrayUtil.isNotEmpty(d.getEmbedding())){
+                        continue;
+                    }
+                    d.setEmbedding(floatList.get(index++));
+                }
             }
         }
         final BulkRequest.Builder bulkRequest = new BulkRequest.Builder();
@@ -195,7 +205,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             final MatchQuery matchQuery = new MatchQuery.Builder()
                     .field("content")
                     .query(query.getContent().trim())
-//                    .minimumShouldMatch(match+"%")
+                    .minimumShouldMatch("0%")
                     .analyzer("ik_max_word")
                     .build();
             boolQuery.must(new Query.Builder()

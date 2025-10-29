@@ -2,7 +2,9 @@ package com.github.pdaodao.springwebplus.ai.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
@@ -10,6 +12,7 @@ import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class OpenAiEmbedding implements AiEmbedding {
     private final String baseUrl;
     private final String apiKey;
@@ -62,9 +65,28 @@ public class OpenAiEmbedding implements AiEmbedding {
         final List<float[]> ret = new ArrayList<>();
         final List<List<String>> sps = CollUtil.split(texts, batchSize);
         for (final List<String> sp : sps) {
-            final List<float[]> batched = model().embed(sp);
+            final List<float[]> batched = retry(sp);
             ret.addAll(batched);
+
         }
         return ret;
+    }
+
+    private List<float[]> retry(final List<String> sp){
+        if(CollUtil.isEmpty(sp)){
+            return ListUtil.empty();
+        }
+        for(int i = 0; i < 3; i++){
+            try{
+                return model().embed(sp);
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+                if(i == 2){
+                    throw e;
+                }
+                ThreadUtil.sleep(3);
+            }
+        }
+        return ListUtil.empty();
     }
 }

@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
  */
 @Data
 public class TableInfo implements Serializable, Cloneable {
+    private String id;
+
+    private String dbId;
+
     /**
      * 表名
      */

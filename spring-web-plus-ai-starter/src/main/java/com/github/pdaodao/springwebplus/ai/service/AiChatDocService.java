@@ -2,7 +2,9 @@ package com.github.pdaodao.springwebplus.ai.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatDocDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatDocItemDao;
@@ -16,9 +18,7 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -52,57 +52,54 @@ public class AiChatDocService {
     }
 
     public void saveInfo(final AiChatDoc aiChatDoc) throws Exception {
-        docDao.save(aiChatDoc);
-        if (BooleanUtil.isTrue(aiChatDoc.getIsDir())) {
+        boolean next = docDao.saveRich(aiChatDoc);
+        if(BooleanUtil.isFalse(next) || !aiVectorStoreOptional.isPresent()){
             return;
         }
         final String namespace = aiChatDoc.getNamespace();
-        if (aiVectorStoreOptional.isPresent()) {
-            final AiEmbedText embedText = new AiEmbedText();
-            embedText.setNamespace(namespace);
-            embedText.setType(namespace);
-            embedText.setId(aiChatDoc.getId());
-            embedText.setTopic(aiChatDoc.getPid());
-            embedText.setDocId(aiChatDoc.getId());
-            embedText.setTextId("0");
-            embedText.setName(aiChatDoc.getName());
-            embedText.setTitle(aiChatDoc.getTitle());
-            embedText.setTeamId(aiChatDoc.getTeamId());
-            embedText.setContent(aiChatDoc.content());
-            final AiEmbedTextQuery query = new AiEmbedTextQuery();
-            query.setDocIds(ListUtil.of(aiChatDoc.getId()));
-            query.setTypes(ListUtil.of(namespace));
-            query.setTextIds(ListUtil.of("0"));
-            aiVectorStoreOptional.get().deleteByQuery(query);
-            aiVectorStoreOptional.get().add(ListUtil.of(embedText));
-        }
-        // 文件文档 由于文本块较多 采用单个保存
-        if (ChatDocNamespace.file == aiChatDoc.getNamespace()
-                || CollUtil.isEmpty(aiChatDoc.getDocItems())) {
-            return;
-        }
         final String type = aiChatDoc.itemType();
-        ;
-        for (final AiChatDocItem item : aiChatDoc.getDocItems()) {
-            item.setType(type);
-            item.setDocId(aiChatDoc.getId());
-        }
-        itemDao.saveBatch(aiChatDoc.getDocItems());
-        if (!aiVectorStoreOptional.isPresent()) {
-            return;
-        }
-        final List<AiEmbedText> embedTextList = new ArrayList<>();
+
+        final AiEmbedText embedText = new AiEmbedText();
+        embedText.setNamespace(namespace);
+        embedText.setType(namespace);
+        embedText.setId(aiChatDoc.getId());
+        embedText.setTopic(aiChatDoc.getPid());
+        embedText.setDocId(aiChatDoc.getId());
+        embedText.setTextId("0");
+        embedText.setName(aiChatDoc.getName());
+        embedText.setTitle(aiChatDoc.getTitle());
+        embedText.setTeamId(aiChatDoc.getTeamId());
+        embedText.setContent(aiChatDoc.content());
+
+        final List<AiEmbedText> toEmbedList = new ArrayList<>();
+        toEmbedList.add(embedText);
+
         for (final AiChatDocItem item : itemDao.listByDocId(aiChatDoc.getId())) {
-            final AiEmbedText embedText = itemToAiEmbedText(item, aiChatDoc);
+            final AiEmbedText itemText = itemToAiEmbedText(item, aiChatDoc);
             embedText.setNamespace(namespace);
             embedText.setType(type);
-            embedTextList.add(embedText);
+            toEmbedList.add(itemText);
+        }
+        if(CollUtil.isEmpty(toEmbedList)){
+            return;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.setDocIds(ListUtil.of(aiChatDoc.getId()));
-        query.setTypes(ListUtil.of(type));
+        final List<AiEmbedText>  oldList = aiVectorStoreOptional.get().query(query);
+        final Map<String, float[]> oldMap = new LinkedHashMap<>();
+        for(final AiEmbedText t: oldList){
+            if(StrUtil.isNotBlank(t.getContent()) && t.getEmbedding() != null){
+                oldMap.put(t.getContent(), t.getEmbedding());
+            }
+        }
+        for(final AiEmbedText t: toEmbedList){
+            final float[] ff = oldMap.get(t.getContent());
+            if(ArrayUtil.isNotEmpty(ff)){
+                t.setEmbedding(ff);
+            }
+        }
         aiVectorStoreOptional.get().deleteByQuery(query);
-        aiVectorStoreOptional.get().add(embedTextList);
+        aiVectorStoreOptional.get().add(toEmbedList);
     }
 
     public Boolean delete(final String id) throws Exception {
