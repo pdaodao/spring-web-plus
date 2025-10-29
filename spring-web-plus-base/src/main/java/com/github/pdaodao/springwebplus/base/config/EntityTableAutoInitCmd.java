@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 表结构初始化
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class EntityTableAutoInitCmd implements CommandLineRunner, Ordered {
-    private final DataSource dataSource;
+    private final Optional<DataSource> dataSource;
     private final SysConfigProperties configProperties;
 
     @Override
@@ -35,13 +36,16 @@ public class EntityTableAutoInitCmd implements CommandLineRunner, Ordered {
 
     @Override
     public void run(String... args) throws Exception {
+        if(!dataSource.isPresent()){
+            return;
+        }
         try {
             //1. 执行前置 sql 语句
-            SqlInitUtil.dbSqlInit("before", dataSource);
+            SqlInitUtil.dbSqlInit("before", dataSource.get());
             //2. 表结构初始化
             entityToTable();
             //3. 执行后置 sql 语句
-            SqlInitUtil.dbSqlInit("", dataSource);
+            SqlInitUtil.dbSqlInit("", dataSource.get());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -51,22 +55,22 @@ public class EntityTableAutoInitCmd implements CommandLineRunner, Ordered {
      * 实体自动转为表结构
      */
     private void entityToTable() throws Exception {
-        if (BooleanUtil.isFalse(configProperties.getDdlGenEnabled())) {
+        if (!dataSource.isPresent() || BooleanUtil.isFalse(configProperties.getDdlGenEnabled())) {
             return;
         }
         final DbDialect dbDialect = DbFactory.of(configProperties.getDatasourceUrl());
         String dbSchema;
-        try (final Connection cn = dataSource.getConnection()) {
+        try (final Connection cn = dataSource.get().getConnection()) {
             dbSchema = cn.getSchema();
         }
         final List<TableInfo> tableInfoList = EntityScanUtil.entityList();
         for (final TableInfo tableInfo : tableInfoList) {
             tableInfo.setDbSchema(dbSchema);
-            final TableInfo old = DbMetaUtil.tableInfo(dataSource, tableInfo.getName(), dbSchema, dbDialect);
+            final TableInfo old = DbMetaUtil.tableInfo(dataSource.get(), tableInfo.getName(), dbSchema, dbDialect);
             if(old != null){
                 old.setDbSchema(dbSchema);
             }
-            DBDdLUtil.tableCheck(dbDialect, configProperties.getDdlGenDeleteField(), dataSource, tableInfo, old);
+            DBDdLUtil.tableCheck(dbDialect, configProperties.getDdlGenDeleteField(), dataSource.get(), tableInfo, old);
         }
     }
 }

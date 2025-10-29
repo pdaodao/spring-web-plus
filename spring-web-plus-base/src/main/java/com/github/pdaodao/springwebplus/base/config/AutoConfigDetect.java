@@ -54,6 +54,11 @@ public class AutoConfigDetect implements AutoConfigurationImportFilter, Environm
                 if(StrUtil.isBlank(uris)){
                     arr[i] = false;
                 }
+            }else if(clazz.contains("DataSourceAutoConfiguration")){
+                final String t = env.getProperty("spring.datasource.url");
+                if(StrUtil.isBlank(t)){
+                    arr[i] = false;
+                }
             }
         }
         return arr;

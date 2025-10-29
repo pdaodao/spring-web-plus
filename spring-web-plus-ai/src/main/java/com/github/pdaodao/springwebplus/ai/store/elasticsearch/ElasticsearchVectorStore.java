@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.KnnSearch;
+import co.elastic.clients.elasticsearch._types.RrfRank;
 import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.*;
@@ -104,9 +105,10 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                     .k(query.getTopK() * 5)
                     .numCandidates(query.getTopK() * 50)  // 初步筛选
                     .build();
-            searchRequestBuilder.query(matchQuery)
+            searchRequestBuilder
+//                    .query(matchQuery)
                     .knn(knnQuery)
-//                    .rank(r -> r.rrf(new RrfRank.Builder().build()))
+                    .rank(r -> r.rrf(new RrfRank.Builder().build()))
                     .minScore(query.getScore());
         } else {
             searchRequestBuilder.query(matchQuery)
@@ -148,6 +150,60 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                 .build();
         return termsQuery._toQuery();
     }
+
+    private static Query buildFilter(final AiEmbedTextQuery query) {
+        if (query == null) {
+            return null;
+        }
+        final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
+        // 团队id
+        if (StrUtil.isNotBlank(query.getTeamId())) {
+            final TermQuery teamId = new TermQuery.Builder()
+                    .field("teamId")
+                    .value(query.getTeamId())
+                    .build();
+            boolQuery.filter(new Query.Builder().term(teamId).build());
+        }
+        // 命名空间
+        if (CollUtil.isNotEmpty(query.getNamespaces())) {
+            final Query namespaceFilter = equalOrIn("namespace", query.getNamespaces());
+            if (namespaceFilter != null) {
+                boolQuery.filter(namespaceFilter);
+            }
+        }
+        // type
+        if (CollUtil.isNotEmpty(query.getTypes())) {
+            final Query typeFilter = equalOrIn("type", query.getTypes());
+            if (typeFilter != null) {
+                boolQuery.filter(typeFilter);
+            }
+        }
+        // 主题
+        if (CollUtil.isNotEmpty(query.getTopics())) {
+            final Query topicFilter = equalOrIn("topic", query.getTopics());
+            if (topicFilter != null) {
+                boolQuery.filter(topicFilter);
+            }
+        }
+        // 文档id
+        if (CollUtil.isNotEmpty(query.getDocIds())) {
+            final Query docFilter = equalOrIn("docId", query.getDocIds());
+            if (docFilter != null) {
+                boolQuery.filter(docFilter);
+            }
+        }
+        // 文本块id
+        if (CollUtil.isNotEmpty(query.getTextIds())) {
+            final Query textIdFilter = equalOrIn("textId", query.getTextIds());
+            if (textIdFilter != null) {
+                boolQuery.filter(textIdFilter);
+            }
+        }
+
+        return boolQuery.build()._toQuery();
+    }
+
+
 
     private static Query buildQuery(final AiEmbedTextQuery query) {
         if (query == null) {
@@ -198,24 +254,25 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             }
         }
         if (StrUtil.isNotBlank(query.getContent())) {
-            if (query.getScore() < 0) {
-                query.setScore(0.3);
-            }
-            final int match = (int) (query.getScore() * 100);
+//            if (query.getScore() < 0) {
+//                query.setScore(0.3);
+//            }
+
+            // 2. 构建一个“兜底”查询：匹配所有文档（但 score=0 或极低）
+            final ConstantScoreQuery fallbackQuery = new ConstantScoreQuery.Builder()
+                    .filter(new MatchAllQuery.Builder().build()._toQuery())
+                    .boost(0.001f) // 极低权重，确保只有 match 无结果时才靠它排序
+                    .build();
+
             final MatchQuery matchQuery = new MatchQuery.Builder()
                     .field("content")
                     .query(query.getContent().trim())
-                    .minimumShouldMatch("0%")
                     .analyzer("ik_max_word")
                     .build();
-            boolQuery.must(new Query.Builder()
-                    .match(matchQuery)
-                    .build());
+
+            boolQuery.should(fallbackQuery._toQuery(),  matchQuery._toQuery());
         }
-        final Query finalQuery = new Query.Builder()
-                .bool(boolQuery.build())
-                .build();
-        return finalQuery;
+        return boolQuery.build()._toQuery();
     }
 
 
