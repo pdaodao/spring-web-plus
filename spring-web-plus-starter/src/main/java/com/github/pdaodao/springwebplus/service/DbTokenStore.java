@@ -1,11 +1,11 @@
-package com.github.pdaodao.springwebplus.base.support;
+package com.github.pdaodao.springwebplus.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.TokenInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
-import com.github.pdaodao.springwebplus.base.support.dao.SysUserTokenDao;
-import com.github.pdaodao.springwebplus.base.support.entity.SysUserTokenEntity;
+import com.github.pdaodao.springwebplus.dao.SysUserTokenDao;
+import com.github.pdaodao.springwebplus.entity.SysUserTokenEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;

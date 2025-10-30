@@ -1,7 +1,7 @@
-package com.github.pdaodao.springwebplus.base.support.mapper;
+package com.github.pdaodao.springwebplus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.pdaodao.springwebplus.base.support.entity.SysUserTokenEntity;
+import com.github.pdaodao.springwebplus.entity.SysUserTokenEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

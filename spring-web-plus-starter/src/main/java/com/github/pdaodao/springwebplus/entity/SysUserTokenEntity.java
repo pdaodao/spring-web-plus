@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.base.support.entity;
+package com.github.pdaodao.springwebplus.entity;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.TableName;

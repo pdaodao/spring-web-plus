@@ -227,6 +227,8 @@ public class SysLogAop {
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }
+        }else{
+            log.debug(JsonUtil.toJsonString(sysLog));
         }
     }
 
