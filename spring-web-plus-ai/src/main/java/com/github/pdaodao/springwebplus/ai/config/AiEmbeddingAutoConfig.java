@@ -19,7 +19,7 @@ public class AiEmbeddingAutoConfig {
     @Value("${ai.embedding.model:}")
     private String model;
 
-    @Value("${ai.embedding.batchSize:15}")
+    @Value("${ai.embedding.batchSize:8}")
     private Integer batchSize;
 
     @Bean

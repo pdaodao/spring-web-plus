@@ -4,11 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.KnnSearch;
-import co.elastic.clients.elasticsearch._types.RrfRank;
 import co.elastic.clients.elasticsearch._types.Time;
-import co.elastic.clients.elasticsearch._types.query_dsl.*;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
@@ -58,14 +58,14 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         if (aiEmbedding.isPresent()) {
             final List<String> contentList = documents.stream()
                     .filter(t -> StrUtil.isNotBlank(t.getContent()))
-                    .filter(t -> ArrayUtil.isNotEmpty(t.getEmbedding()))
+                    .filter(t -> ArrayUtil.isEmpty(t.getEmbedding()))
                     .map(t -> t.getContent())
                     .collect(Collectors.toList());
-            if(CollUtil.isNotEmpty(contentList)){
+            if (CollUtil.isNotEmpty(contentList)) {
                 final List<float[]> floatList = aiEmbedding.get().embed(contentList);
                 int index = 0;
                 for (final AiEmbedText d : documents) {
-                    if(StrUtil.isBlank(d.getContent()) || ArrayUtil.isNotEmpty(d.getEmbedding())){
+                    if (StrUtil.isBlank(d.getContent()) || ArrayUtil.isNotEmpty(d.getEmbedding())) {
                         continue;
                     }
                     d.setEmbedding(floatList.get(index++));
@@ -88,35 +88,38 @@ public class ElasticsearchVectorStore implements AiVectorStore {
 
     @Override
     public List<AiEmbedText> query(final AiEmbedTextQuery query) throws Exception {
-        if (query.getScore() == null) {
-            query.setScore(0.3);
-        }
         final SearchRequest.Builder searchRequestBuilder = new SearchRequest.Builder();
         searchRequestBuilder.index(options.getIndexName());
         searchRequestBuilder.size(query.getTopK());
-        final Query matchQuery = buildQuery(query);
-        if (aiEmbedding.isPresent() && StrUtil.isNotBlank(query.getContent()) && query.getEmbedding() == null) {
-            query.setEmbedding(aiEmbedding.get().embed(query.getContent()));
-        }
-        if (query.getEmbedding() != null) {
-            final KnnSearch knnQuery = new KnnSearch.Builder()
-                    .field("embedding")  // 向量字段
-                    .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
-                    .k(query.getTopK() * 5)
-                    .numCandidates(query.getTopK() * 50)  // 初步筛选
+        searchRequestBuilder.minScore(query.getScore());
+
+        final Query filterQuery = EsQueryUtil.buildFilter(query);
+        final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
+        boolQuery.filter(filterQuery);
+
+        if (StrUtil.isNotBlank(query.getContent())) {
+            if (aiEmbedding.isPresent() && query.getEmbedding() == null) {
+                query.setEmbedding(aiEmbedding.get().embed(query.getContent()));
+                final KnnSearch knnQuery = new KnnSearch.Builder()
+                        .field("embedding")  // 向量字段
+                        .similarity(0.1f)
+                        .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
+                        .k(query.getTopK() * 5)
+//                .filter(filterQuery)
+                        .numCandidates(query.getTopK() * 50)  // 初步筛选
+                        .build();
+                searchRequestBuilder.knn(knnQuery);
+            }
+            final MatchQuery matchQuery = new MatchQuery.Builder()
+                    .field("content")
+                    .query(query.getContent().trim())
+                    .analyzer("ik_max_word")
                     .build();
-            searchRequestBuilder
-//                    .query(matchQuery)
-                    .knn(knnQuery)
-                    .rank(r -> r.rrf(new RrfRank.Builder().build()))
-                    .minScore(query.getScore());
-        } else {
-            searchRequestBuilder.query(matchQuery)
-                    .minScore(query.getScore());
+            boolQuery.must(matchQuery._toQuery());
         }
-        final SearchRequest searchRequest = searchRequestBuilder.build();
+        searchRequestBuilder.query(boolQuery.build()._toQuery());
         // 执行搜索
-        final SearchResponse<AiEmbedText> response = client.search(searchRequest, AiEmbedText.class);
+        final SearchResponse<AiEmbedText> response = client.search(searchRequestBuilder.build(), AiEmbedText.class);
         final List<AiEmbedText> retList = new ArrayList<>();
         for (final Hit<AiEmbedText> hit : response.hits().hits()) {
             final AiEmbedText tt = hit.source();
@@ -124,155 +127,6 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             retList.add(tt);
         }
         return retList;
-    }
-
-    private static Query equalOrIn(final String field, final List<String> values) {
-        if (CollUtil.isEmpty(values)) {
-            return null;
-        }
-        if (CollUtil.size(values) == 1) {
-            final TermQuery namespace = new TermQuery.Builder()
-                    .field(field)
-                    .value(values.get(0))
-                    .build();
-            return new Query.Builder().term(namespace).build();
-        }
-        final List<FieldValue> filters = new ArrayList<>();
-        for (final String obj : values) {
-            if (obj == null) {
-                continue;
-            }
-            filters.add(FieldValue.of(obj));
-        }
-        final TermsQuery termsQuery = new TermsQuery.Builder()
-                .field(field)
-                .terms(new TermsQueryField.Builder().value(filters).build())
-                .build();
-        return termsQuery._toQuery();
-    }
-
-    private static Query buildFilter(final AiEmbedTextQuery query) {
-        if (query == null) {
-            return null;
-        }
-        final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
-        // 团队id
-        if (StrUtil.isNotBlank(query.getTeamId())) {
-            final TermQuery teamId = new TermQuery.Builder()
-                    .field("teamId")
-                    .value(query.getTeamId())
-                    .build();
-            boolQuery.filter(new Query.Builder().term(teamId).build());
-        }
-        // 命名空间
-        if (CollUtil.isNotEmpty(query.getNamespaces())) {
-            final Query namespaceFilter = equalOrIn("namespace", query.getNamespaces());
-            if (namespaceFilter != null) {
-                boolQuery.filter(namespaceFilter);
-            }
-        }
-        // type
-        if (CollUtil.isNotEmpty(query.getTypes())) {
-            final Query typeFilter = equalOrIn("type", query.getTypes());
-            if (typeFilter != null) {
-                boolQuery.filter(typeFilter);
-            }
-        }
-        // 主题
-        if (CollUtil.isNotEmpty(query.getTopics())) {
-            final Query topicFilter = equalOrIn("topic", query.getTopics());
-            if (topicFilter != null) {
-                boolQuery.filter(topicFilter);
-            }
-        }
-        // 文档id
-        if (CollUtil.isNotEmpty(query.getDocIds())) {
-            final Query docFilter = equalOrIn("docId", query.getDocIds());
-            if (docFilter != null) {
-                boolQuery.filter(docFilter);
-            }
-        }
-        // 文本块id
-        if (CollUtil.isNotEmpty(query.getTextIds())) {
-            final Query textIdFilter = equalOrIn("textId", query.getTextIds());
-            if (textIdFilter != null) {
-                boolQuery.filter(textIdFilter);
-            }
-        }
-
-        return boolQuery.build()._toQuery();
-    }
-
-
-
-    private static Query buildQuery(final AiEmbedTextQuery query) {
-        if (query == null) {
-            return null;
-        }
-        final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
-        // 团队id
-        if (StrUtil.isNotBlank(query.getTeamId())) {
-            final TermQuery teamId = new TermQuery.Builder()
-                    .field("teamId")
-                    .value(query.getTeamId())
-                    .build();
-            boolQuery.filter(new Query.Builder().term(teamId).build());
-        }
-        // 命名空间
-        if (CollUtil.isNotEmpty(query.getNamespaces())) {
-            final Query namespaceFilter = equalOrIn("namespace", query.getNamespaces());
-            if (namespaceFilter != null) {
-                boolQuery.filter(namespaceFilter);
-            }
-        }
-        // type
-        if (CollUtil.isNotEmpty(query.getTypes())) {
-            final Query typeFilter = equalOrIn("type", query.getTypes());
-            if (typeFilter != null) {
-                boolQuery.filter(typeFilter);
-            }
-        }
-        // 主题
-        if (CollUtil.isNotEmpty(query.getTopics())) {
-            final Query topicFilter = equalOrIn("topic", query.getTopics());
-            if (topicFilter != null) {
-                boolQuery.filter(topicFilter);
-            }
-        }
-        // 文档id
-        if (CollUtil.isNotEmpty(query.getDocIds())) {
-            final Query docFilter = equalOrIn("docId", query.getDocIds());
-            if (docFilter != null) {
-                boolQuery.filter(docFilter);
-            }
-        }
-        // 文本块id
-        if (CollUtil.isNotEmpty(query.getTextIds())) {
-            final Query textIdFilter = equalOrIn("textId", query.getTextIds());
-            if (textIdFilter != null) {
-                boolQuery.filter(textIdFilter);
-            }
-        }
-        if (StrUtil.isNotBlank(query.getContent())) {
-//            if (query.getScore() < 0) {
-//                query.setScore(0.3);
-//            }
-
-            // 2. 构建一个“兜底”查询：匹配所有文档（但 score=0 或极低）
-            final ConstantScoreQuery fallbackQuery = new ConstantScoreQuery.Builder()
-                    .filter(new MatchAllQuery.Builder().build()._toQuery())
-                    .boost(0.001f) // 极低权重，确保只有 match 无结果时才靠它排序
-                    .build();
-
-            final MatchQuery matchQuery = new MatchQuery.Builder()
-                    .field("content")
-                    .query(query.getContent().trim())
-                    .analyzer("ik_max_word")
-                    .build();
-
-            boolQuery.should(fallbackQuery._toQuery(),  matchQuery._toQuery());
-        }
-        return boolQuery.build()._toQuery();
     }
 
 
@@ -283,7 +137,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
 
     @Override
     public Long deleteByQuery(final AiEmbedTextQuery query) throws Exception {
-        final Query q = buildQuery(query);
+        final Query q = EsQueryUtil.buildFilter(query);
         final DeleteByQueryResponse response = client.deleteByQuery(new DeleteByQueryRequest.Builder()
                 .index(options.getIndexName())
                 .query(q).build());
