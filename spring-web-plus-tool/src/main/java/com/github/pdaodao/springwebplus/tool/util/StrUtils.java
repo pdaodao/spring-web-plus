@@ -1,9 +1,12 @@
 package com.github.pdaodao.springwebplus.tool.util;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -11,6 +14,21 @@ import java.util.regex.Pattern;
  */
 public class StrUtils {
     private static final Pattern RemarkPattern = Pattern.compile("[\\\\/:*?\"<>|\r\n|'|\"]");
+    /***
+     * 字符串拼接 不重复
+     * @param texts
+     * @return
+     */
+    public static String joinUnique(final String... texts){
+        if(ArrayUtil.isEmpty(texts)){
+            return null;
+        }
+        final Set<String> sets = new LinkedHashSet<>();
+        for(final String t: texts){
+            sets.add(StrUtil.trim(t));
+        }
+        return StrUtil.join(";", sets);
+    }
 
     /**
      * 截取字符串
