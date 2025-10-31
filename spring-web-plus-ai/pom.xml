@@ -11,6 +11,24 @@
     <artifactId>spring-web-plus-ai</artifactId>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>com.ag-ui</groupId>-->
+<!--            <artifactId>core</artifactId>-->
+<!--            <version>0.0.1</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.ag-ui</groupId>-->
+<!--            <artifactId>client</artifactId>-->
+<!--            <version>0.0.1</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.ag-ui</groupId>-->
+<!--            <artifactId>http</artifactId>-->
+<!--            <version>0.0.1</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.github.pdaodao</groupId>
             <artifactId>spring-web-plus-tool</artifactId>

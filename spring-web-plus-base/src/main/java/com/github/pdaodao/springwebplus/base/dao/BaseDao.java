@@ -4,7 +4,6 @@ package com.github.pdaodao.springwebplus.base.dao;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -12,6 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pdaodao.springwebplus.base.entity.*;
+import com.github.pdaodao.springwebplus.base.pojo.PublishStatus;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
@@ -97,6 +97,10 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
             if(p.getProjectId() == null){
                 p.setProjectId(RequestUtil.getProjectIdOrDefault());
             }
+        }
+        if(entity instanceof WithVersion){
+            ((WithVersion) entity).setVersion(1);
+            ((WithVersion) entity).setPublishStatus(PublishStatus.draft);
         }
     }
 
