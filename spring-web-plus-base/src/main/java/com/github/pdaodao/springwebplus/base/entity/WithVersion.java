@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.base.entity;
 
 import com.github.pdaodao.springwebplus.base.pojo.PublishStatus;
 
-public interface WithVersion {
+public interface WithVersion extends Entity<String>{
     /**
      * 当前版本号
      * @return
