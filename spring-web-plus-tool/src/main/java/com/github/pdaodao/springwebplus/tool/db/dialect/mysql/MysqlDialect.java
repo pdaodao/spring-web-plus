@@ -40,7 +40,7 @@ public class MysqlDialect extends BaseDbDialect {
 
     @Override
     protected String buildUrlDefaultProperties() {
-        return "useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useServerPrepStmts=true&useCompression=true";
+        return "useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&useInformationSchema=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useServerPrepStmts=true&useCompression=true";
     }
 
     @Override
