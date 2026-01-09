@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 页面Schema - 顶层设计
@@ -40,7 +39,7 @@ public class PageSchema {
     @Schema(description = "子组件")
     private List<PageSchema> children;
 
-    @Schema(description = "组件数据配置")
+    @Schema(description = "组件数据和数据显示配置")
     private DataConfig dataConfig;
 
     @Schema(description = "联动配置")
@@ -148,11 +147,15 @@ public class PageSchema {
         @Schema(description = "请求方法")
         private String method = "post";
 
+        @Schema(description = "静态数据值 如input和文本显示等")
+        private String value;
+
         @Schema(description = "请求参数")
         private List<PageVariable> params;
 
+        @Schema(description = "数据展示方式配置如表格字段、echarts图表x,y轴等的配置")
+        private String dataDisplayConfig;
 
-        private List<Object> staticData;        // 静态数据
         // 依赖的组件ID（这些组件值变化时刷新数据）
         // private List<String> dependOn;
     }
