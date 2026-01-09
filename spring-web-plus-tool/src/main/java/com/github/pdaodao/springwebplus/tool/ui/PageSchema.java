@@ -63,7 +63,7 @@ public class PageSchema {
         private String y;
         private Integer gutter = 20;
         private Integer span;
-        // 状态
+        // 其他显示属性考虑通用性可以继续在这里补充
         private Boolean hidden = false;
         private Boolean disabled = false;
         private Boolean readonly = false;
@@ -147,15 +147,21 @@ public class PageSchema {
         @Schema(description = "请求方法")
         private String method = "post";
 
+        @Schema(description = "是否需要分页")
+        private Boolean enablePage;
+
         @Schema(description = "静态数据值 如input和文本显示等")
         private String value;
 
         @Schema(description = "请求参数")
         private List<PageVariable> params;
 
-        @Schema(description = "数据展示方式配置如表格字段、echarts图表x,y轴等的配置")
-        private String dataDisplayConfig;
+        @Schema(description = "显示字段-表格显示时特别要使用 其他根据情况使用")
+        private List<PageVariable> displays;
 
+        @Schema(description = "数据展示方式配置如表格显示控制首尾冻结等、echarts图表x,y轴等的配置")
+        private String dataDisplayConfig;
+        
         // 依赖的组件ID（这些组件值变化时刷新数据）
         // private List<String> dependOn;
     }
