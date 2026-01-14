@@ -7,6 +7,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class EsQueryUtil {
@@ -58,26 +59,25 @@ public class EsQueryUtil {
                 boolQuery.filter(docFilter);
             }
         }
-        // 文本块id
-        if (CollUtil.isNotEmpty(query.getTextIds())) {
-            final Query textIdFilter = EsQueryUtil.equalOrIn("textId", query.getTextIds());
+        // 主键
+        if (CollUtil.isNotEmpty(query.getIds())) {
+            final Query textIdFilter = EsQueryUtil.equalOrIn("id", query.getIds());
             if (textIdFilter != null) {
                 boolQuery.filter(textIdFilter);
             }
         }
-
         return boolQuery.build()._toQuery();
     }
 
 
-    public static Query equalOrIn(final String field, final List<String> values) {
+    public static Query equalOrIn(final String field, final Collection<String> values) {
         if (CollUtil.isEmpty(values)) {
             return null;
         }
         if (CollUtil.size(values) == 1) {
             final TermQuery namespace = new TermQuery.Builder()
                     .field(field)
-                    .value(values.get(0))
+                    .value(values.iterator().next())
                     .build();
             return new Query.Builder().term(namespace).build();
         }

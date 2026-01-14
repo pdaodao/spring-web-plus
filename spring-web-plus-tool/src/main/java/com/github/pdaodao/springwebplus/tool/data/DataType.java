@@ -33,6 +33,10 @@ public enum DataType {
      */
     DECIMAL,
     /**
+     * 金额
+     */
+    MONEY,
+    /**
      * 时间戳  毫秒精度为3位
      */
     TIMESTAMP,
@@ -112,7 +116,8 @@ public enum DataType {
      */
     public boolean isDoubleFamily() {
         return DataType.DOUBLE == this ||
-                DataType.DECIMAL == this;
+                DataType.DECIMAL == this ||
+                DataType.MONEY == this;
     }
 
     public boolean isDateFamily() {

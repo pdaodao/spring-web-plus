@@ -20,12 +20,11 @@ import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.tool.elasticsearch.EsUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+/**
+ * 基于Elasticsearch 的向量存储
+ */
 @AllArgsConstructor
 public class ElasticsearchVectorStore implements AiVectorStore {
     private final ElasticsearchOptions options;
@@ -50,28 +49,69 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         init();
     }
 
+    private void checkNamespace(final List<AiEmbedText> documents){
+        for(final AiEmbedText t: documents){
+            Preconditions.checkNotBlank(t.getNamespace(), "namespace不能为空:"+t.getContent());
+        }
+    }
+
     @Override
-    public void add(List<AiEmbedText> documents) throws Exception {
+    public void save(final List<AiEmbedText> documents) throws Exception {
         if (CollUtil.isEmpty(documents)) {
             return;
         }
-        if (aiEmbedding.isPresent()) {
-            final List<String> contentList = documents.stream()
-                    .filter(t -> StrUtil.isNotBlank(t.getContent()))
-                    .filter(t -> ArrayUtil.isEmpty(t.getEmbedding()))
-                    .map(t -> t.getContent())
-                    .collect(Collectors.toList());
-            if (CollUtil.isNotEmpty(contentList)) {
-                final List<float[]> floatList = aiEmbedding.get().embed(contentList);
-                int index = 0;
-                for (final AiEmbedText d : documents) {
-                    if (StrUtil.isBlank(d.getContent()) || ArrayUtil.isNotEmpty(d.getEmbedding())) {
-                        continue;
-                    }
-                    d.setEmbedding(floatList.get(index++));
+        checkNamespace(documents);
+        // 旧数据的查询条件
+        final AiEmbedTextQuery query = new AiEmbedTextQuery();
+        for(final AiEmbedText t: documents){
+            query.addNamespace(t.getNamespace());
+            query.setTeamId(t.getTeamId());
+            query.addTopic(t.getTopic());
+            query.addDocId(t.getDocId());
+            query.addType(t.getType());
+            query.addId(t.getId());
+        }
+        final Query esFilter = EsQueryUtil.buildFilter(query);
+        if (aiEmbedding != null && aiEmbedding.isPresent()) {
+            //1. 先获取旧数据 节省向量化资源
+            final Map<String, float[]> floatMap = new HashMap<>();
+            final SearchResponse<AiEmbedText> response = client.search(new SearchRequest.Builder()
+                    .index(options.getIndexName())
+                    .query(esFilter)
+                    .build(), AiEmbedText.class);
+            for (final Hit<AiEmbedText> hit : response.hits().hits()) {
+                final AiEmbedText tt = hit.source();
+                if(StrUtil.isNotBlank(tt.getContent()) && tt.getEmbedding() != null){
+                    floatMap.put(tt.getContent(), tt.getEmbedding());
                 }
             }
+            //2. 待向量化的文本
+            final List<String> toEmbedTexts = new ArrayList<>();
+            for(final AiEmbedText t: documents){
+                if(StrUtil.isNotBlank(t.getContent()) &&
+                        ArrayUtil.isEmpty(t.getEmbedding()) &&
+                        !floatMap.containsKey(t.getContent())){
+                    toEmbedTexts.add(t.getContent());
+                }
+            }
+            //3. 进行向量化
+            if(CollUtil.isNotEmpty(toEmbedTexts)){
+                final List<float[]> floatList = aiEmbedding.get().embed(toEmbedTexts);
+                int index = 0;
+                for(final String t: toEmbedTexts){
+                    floatMap.put(t, floatList.get(index++));
+                }
+            }
+            for(final AiEmbedText t: documents){
+                if(StrUtil.isBlank(t.getContent()) || ArrayUtil.isNotEmpty(t.getEmbedding())){
+                    continue;
+                }
+                t.setEmbedding(floatMap.get(t.getContent()));
+            }
         }
+        // 删除旧数据
+        deleteByQuery(query);
+        // 插入新数据
         final BulkRequest.Builder bulkRequest = new BulkRequest.Builder();
         bulkRequest.timeout(Time.of(f -> f.time("90s")));
         for (final AiEmbedText doc : documents) {
@@ -91,8 +131,9 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         final SearchRequest.Builder searchRequestBuilder = new SearchRequest.Builder();
         searchRequestBuilder.index(options.getIndexName());
         searchRequestBuilder.size(query.getTopK());
-        searchRequestBuilder.minScore(query.getScore());
-
+        if(query.getScore() != null && query.getScore() > 0){
+            searchRequestBuilder.minScore(query.getScore());
+        }
         final Query filterQuery = EsQueryUtil.buildFilter(query);
         final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
         boolQuery.filter(filterQuery);
@@ -156,14 +197,15 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                 .mappings(m -> m
                         .properties("namespace", p -> p.keyword(t -> t))
                         .properties("teamId", p -> p.keyword(t -> t))
+                        .properties("id", p -> p.keyword(t -> t))
+                        .properties("type", p -> p.keyword(t -> t))
                         .properties("topic", p -> p.keyword(t -> t))
                         .properties("docId", p -> p.keyword(t -> t))
-                        .properties("textId", p -> p.keyword(t -> t))
-                        .properties("type", p -> p.keyword(t -> t))
                         .properties("name", p -> p.keyword(t -> t))
                         .properties("title", p -> p.keyword(t -> t))
                         .properties("content", p -> p.text(t -> t.analyzer("ik_max_word").searchAnalyzer("ik_max_word")))
                         .properties("embedding", p -> p.denseVector(v -> v.dims(options.getDimensions()).index(true).similarity("cosine"))) // 向量字段
+                        .properties("meta", p -> p.object(o -> o))
                 )
                 .build();
         final CreateIndexResponse response = client.indices().create(request);

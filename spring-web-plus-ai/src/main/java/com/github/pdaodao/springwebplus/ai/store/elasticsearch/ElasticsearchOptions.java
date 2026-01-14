@@ -10,7 +10,7 @@ public class ElasticsearchOptions {
     private String username;
     private String password;
 
-    private String indexName;
+    private String indexName = "zt_chat";
 
     private int dimensions = 1536;
 

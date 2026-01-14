@@ -9,6 +9,8 @@ import com.github.pdaodao.springwebplus.tool.task.core.TaskRingThread;
 import com.github.pdaodao.springwebplus.tool.task.core.TaskRunnable;
 import com.github.pdaodao.springwebplus.tool.task.cron.CronSetting;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Date;
 
 public class TaskThreadPoolTest {
@@ -49,6 +51,7 @@ public class TaskThreadPoolTest {
         }
     }
 
+    @Slf4j
     public static class PrintTask implements TaskRunnable{
         private Long id;
 
@@ -63,6 +66,7 @@ public class TaskThreadPoolTest {
 
         @Override
         public void execute() throws Exception {
+            log.info("MDC job start....");
             ThreadUtil.sleep(3000);
             System.out.println(id + ":hello"+DateTimeUtil.formatDateTime(new Date()));
 //            System.out.println(Thread.currentThread().getName()+":hello");

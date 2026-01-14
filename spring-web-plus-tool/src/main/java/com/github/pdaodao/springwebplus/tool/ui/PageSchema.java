@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 页面Schema - 顶层设计
@@ -55,19 +56,26 @@ public class PageSchema {
     @Schema(description = "组件布局配置")
     public static class LayoutConfig {
         private String layout = "flow";
-        private Integer labelWidth = 100;
-        private String labelPosition = "right";
-        private String width;
+        // 主轴对齐
+        private String justify;
+        // 交叉轴对齐
+        private String alignItems;
+        private Integer gutter = 20;
+        private Integer span;
+        // private String width;
         private String height;
         private String x;
         private String y;
-        private Integer gutter = 20;
-        private Integer span;
+
+        private Integer labelWidth = 100;
+        private String labelPosition = "right";
         // 其他显示属性考虑通用性可以继续在这里补充
         private Boolean hidden = false;
         private Boolean disabled = false;
         private Boolean readonly = false;
         private Boolean required = false;
+        // 样式设置
+        private Map<String, String> ui;
         private String css;
     }
 
@@ -95,8 +103,14 @@ public class PageSchema {
         @Schema(description = "格式,如文件后缀,时间格式等")
         protected String format;
 
-        @Schema(description = "变量来源")
-        private String from;        // url/query/cookie/session/api或者是组件id
+        @Schema(description = "变量来源 url/query/cookie/session/api或者是组件id")
+        private String from;
+
+        @Schema(description = "字段角色 如图形中的x、y等")
+        private String role;
+
+        @Schema(description = "显示配置如align、width等")
+        private Map<String, String> ui;
     }
 
 
@@ -150,18 +164,18 @@ public class PageSchema {
         @Schema(description = "是否需要分页")
         private Boolean enablePage;
 
-        @Schema(description = "静态数据值 如input和文本显示等")
+        @Schema(description = "静态数据值 如input和文本显示,表格数据等")
         private String value;
 
         @Schema(description = "请求参数")
         private List<PageVariable> params;
 
-        @Schema(description = "显示字段-表格显示时特别要使用 其他根据情况使用")
+        @Schema(description = "显示字段-表格显示时特别要使用 其他根据情况使用 图形的x和y轴配置")
         private List<PageVariable> displays;
 
         @Schema(description = "数据展示方式配置如表格显示控制首尾冻结等、echarts图表x,y轴等的配置")
         private String dataDisplayConfig;
-        
+
         // 依赖的组件ID（这些组件值变化时刷新数据）
         // private List<String> dependOn;
     }

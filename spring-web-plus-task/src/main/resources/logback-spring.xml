@@ -1,0 +1,25 @@
+<configuration>
+    <property name="LOG_HOME" value="logs"/>
+
+    <appender name="TASK_FILE" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>logSubPath</key>
+            <defaultValue>default/task-unknown.log</defaultValue>
+        </discriminator>
+
+        <sift>
+            <appender name="File-${logSubPath}" class="ch.qos.logback.core.FileAppender">
+                <!-- 注意：这里 ${logSubPath} 是 discriminator 的值 -->
+                <file>${LOG_HOME}/${logSubPath}</file>
+                <append>true</append>
+                <encoder>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{30} - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="TASK_FILE"/>
+    </root>
+</configuration>

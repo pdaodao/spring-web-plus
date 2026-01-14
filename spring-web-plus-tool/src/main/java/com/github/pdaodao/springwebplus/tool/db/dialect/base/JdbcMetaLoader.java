@@ -68,7 +68,7 @@ public class JdbcMetaLoader implements DbMetaLoader {
                 DatabaseMetaData metaData = con.getMetaData();
                 msg.append("数据库为:")
                         .append(metaData.getDatabaseProductName())
-                        .append("  版本为: ")
+                        .append("  \n版本为: ")
                         .append(metaData.getDatabaseProductVersion());
             }
         }
