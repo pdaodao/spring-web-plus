@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.task.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.github.pdaodao.springwebplus.task.config.ZtTaskNodeConfig;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskNodeDao;
@@ -42,10 +43,10 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
         this.adminService = adminScheduler;
     }
 
-    public ZtTaskNodeEntity executorNode(final Long taskId) {
+    public ZtTaskNodeEntity executorNode(final String taskId) {
         final List<ZtTaskNodeEntity> ns = nodeList.stream().filter(t -> !t.getIsAdmin()).collect(Collectors.toList());
         Preconditions.checkArgument(CollUtil.size(ns) > 0, "执行节点不存在");
-        return ns.get((int)(taskId % CollUtil.size(ns)));
+        return ns.get(RandomUtil.randomInt(ns.size() - 1));
     }
 
     public ZtTaskNodeEntity adminNode(final Long taskId) {
@@ -92,7 +93,7 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
         if(ObjectUtil.equals(taskNodeConfig.getNodeId() + 100, firstOption.get().getId())){
             adminService.setIsAdmin(true);
         }
-        final Set<Long> ids = nodeDao.list().stream().map(t -> t.getId()).collect(Collectors.toSet());
+        final Set<String> ids = nodeDao.list().stream().map(t -> t.getId()).collect(Collectors.toSet());
         for(final ZtTaskNodeEntity old: oldList){
             if(!ids.contains(old.getId())){
                 logDao.setRunningErrorByNodeId(old.getId());

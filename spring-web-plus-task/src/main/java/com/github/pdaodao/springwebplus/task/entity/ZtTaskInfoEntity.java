@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeEntity;
-import com.github.pdaodao.springwebplus.base.entity.WithDelete;
-import com.github.pdaodao.springwebplus.base.entity.WithPid;
-import com.github.pdaodao.springwebplus.base.entity.WithTeam;
+import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
 import com.github.pdaodao.springwebplus.tool.task.cron.CronSetting;
@@ -22,7 +19,7 @@ import org.hibernate.validator.constraints.Length;
 @Schema(description = "任务调度信息")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TableName(value = "zt_task_info", autoResultMap = true)
-public class ZtTaskInfoEntity extends AutoIdWithTimeEntity implements WithPid, WithTeam, WithDelete {
+public class ZtTaskInfoEntity extends SnowIdWithTimeEntity implements WithPidString, WithTeam, WithDelete {
     @TableFieldSize(200)
     @NotBlank(message = "名称不能为空")
     @Length(max = 100, message = "名称不能超过100个字")
@@ -37,7 +34,7 @@ public class ZtTaskInfoEntity extends AutoIdWithTimeEntity implements WithPid, W
     private String taskType;
 
     @Schema(description = "父分类id")
-    private Long pid;
+    private String pid;
 
     @Schema(description = "是否是分类")
     @TableFieldSize(defaultValue = "0")

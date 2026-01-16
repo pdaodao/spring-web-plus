@@ -11,6 +11,7 @@ import com.github.pdaodao.springwebplus.ai.core.ChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,6 +46,14 @@ public class AiChatModelController {
             t.setApiKey(Constant.FakePassword);
         }
         return list;
+    }
+
+    @PostMapping("setEnabled")
+    @Operation(summary = "设置是否启用")
+    public Boolean setEnabled(@RequestBody AiChatModel entity) {
+        Preconditions.checkNotBlank(entity.getId(), "id不能为空");
+        Preconditions.checkNotNull(entity.getEnabled(), "是否启用不能为空");
+        return dao.setEnabled(entity.getId(), entity.getEnabled());
     }
 
     @PostMapping("save")

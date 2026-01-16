@@ -23,7 +23,7 @@ public class ZtNodeService {
      * @param cronTaskInfo
      * @return
      */
-    public Long triggerByAdmin(final CronTaskInfo cronTaskInfo) throws Exception{
+    public String triggerByAdmin(final CronTaskInfo cronTaskInfo) throws Exception{
         Preconditions.checkNotNull(cronTaskInfo.getTaskId(), "task-id is null.");
         final ZtTaskNodeEntity node = registService.executorNode(cronTaskInfo.getTaskId());
         final ZtTaskLogEntity log = new ZtTaskLogEntity();

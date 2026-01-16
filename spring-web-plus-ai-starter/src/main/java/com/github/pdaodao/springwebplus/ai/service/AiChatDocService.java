@@ -65,7 +65,7 @@ public class AiChatDocService {
         embedText.setId(aiChatDoc.getId());
         embedText.setTopic(aiChatDoc.getPid());
         embedText.setDocId(aiChatDoc.getId());
-        embedText.setTextId("0");
+        embedText.setId("0");
         embedText.setName(aiChatDoc.getName());
         embedText.setTitle(aiChatDoc.getTitle());
         embedText.setTeamId(aiChatDoc.getTeamId());
@@ -84,7 +84,7 @@ public class AiChatDocService {
             return;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.setDocIds(ListUtil.of(aiChatDoc.getId()));
+        query.addDocId(aiChatDoc.getId());
         final List<AiEmbedText>  oldList = aiVectorStoreOptional.get().query(query);
         final Map<String, float[]> oldMap = new LinkedHashMap<>();
         for(final AiEmbedText t: oldList){
@@ -99,7 +99,7 @@ public class AiChatDocService {
             }
         }
         aiVectorStoreOptional.get().deleteByQuery(query);
-        aiVectorStoreOptional.get().add(toEmbedList);
+        aiVectorStoreOptional.get().save(toEmbedList);
     }
 
     public Boolean delete(final String id) throws Exception {
@@ -115,7 +115,7 @@ public class AiChatDocService {
             return true;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.setDocIds(ListUtil.of(id));
+        query.addDocId(id);
         aiVectorStoreOptional.get().deleteByQuery(query);
         return true;
     }
@@ -138,11 +138,11 @@ public class AiChatDocService {
         }
         // 向量化
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.setTextIds(ListUtil.of(item.getId()));
+        query.addId(item.getId());
         aiVectorStoreOptional.get().deleteByQuery(query);
 
         final AiEmbedText embedText = itemToAiEmbedText(item, doc);
-        aiVectorStoreOptional.get().add(ListUtil.of(embedText));
+        aiVectorStoreOptional.get().save(ListUtil.of(embedText));
         return item;
     }
 
@@ -154,7 +154,7 @@ public class AiChatDocService {
 
         embedText.setType(item.getType());
         embedText.setId(item.getId());
-        embedText.setTextId(item.getId());
+        embedText.setId(item.getId());
         embedText.setDocId(item.getDocId());
         embedText.setName(item.getName());
         embedText.setTitle(item.getTitle());
@@ -179,7 +179,7 @@ public class AiChatDocService {
             return true;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.setTextIds(ListUtil.of(id));
+        query.setIds(Set.of(id));
         aiVectorStoreOptional.get().deleteByQuery(query);
         return true;
     }

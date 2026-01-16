@@ -18,10 +18,18 @@ public class AiChatModelProvider extends SnowIdEntity {
     @Schema(description = "名称")
     private String title;
 
+    @Schema(description = "接口请求格式")
+    @TableFieldSize(defaultValue = "openai")
+    private String format;
+
     @Schema(description = "提供的模型列表")
     @TableField(typeHandler = StringListJsonHandler.class)
     @TableFieldSize(500)
     private List<String> models;
+
+    @Schema(description = "最大上下文大小")
+    @TableFieldSize(defaultValue = "4096")
+    private Integer maxTokens;
 
     @Schema(description = "模型类型")
     private ChatModelType type;

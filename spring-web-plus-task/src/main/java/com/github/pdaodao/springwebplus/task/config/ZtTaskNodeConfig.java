@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ZtTaskNodeConfig {
     @Value("${zt.node.id:1}")
-    private Long nodeId;
+    private String nodeId;
 
     @Value("${zt.node.executor:true}")
     private Boolean isExecutor;

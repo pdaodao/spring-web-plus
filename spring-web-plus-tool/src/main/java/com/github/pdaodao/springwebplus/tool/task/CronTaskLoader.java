@@ -10,7 +10,7 @@ import java.util.List;
 public interface CronTaskLoader {
     List<CronTaskInfo> load();
 
-    Boolean setNext(final Long taskId, final Long nextTime);
+    Boolean setNext(final String taskId, final Long nextTime);
 
 
     static ArrayListTaskLoader ofList(){

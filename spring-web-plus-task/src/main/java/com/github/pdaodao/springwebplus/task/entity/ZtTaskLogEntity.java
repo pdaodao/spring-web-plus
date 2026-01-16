@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeEntity;
+import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
 import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
@@ -18,19 +19,19 @@ import java.util.Date;
 @Data
 @Schema(description = "任务运行记录")
 @TableName(value = "zt_task_log", autoResultMap = true)
-public class ZtTaskLogEntity extends AutoIdWithTimeEntity {
+public class ZtTaskLogEntity extends SnowIdWithTimeEntity {
     @Schema(description = "任务id")
-    private Long taskId;
+    private String taskId;
 
     @Schema(description = "执行节点id")
-    private Long nodeId;
+    private String nodeId;
 
     @Schema(description = "运行时参数")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private ConfigOptions params;
 
     @Schema(description = "批次id")
-    private Long batchId;
+    private String batchId;
 
     @Schema(description = "是否是调度执行")
     @TableFieldSize(defaultValue = "0")

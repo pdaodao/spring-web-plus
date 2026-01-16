@@ -45,7 +45,7 @@ public class ArrayListTaskLoader implements CronTaskLoader {
     }
 
     @Override
-    public Boolean setNext(Long taskId, Long nextTime) {
+    public Boolean setNext(String taskId, Long nextTime) {
         return true;
     }
 }

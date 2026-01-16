@@ -9,12 +9,12 @@ public class CronTaskInfo {
     /**
      * 任务id
      */
-    private Long taskId;
+    private String taskId;
 
     /**
      * 任务运行id
      */
-    private Long logId;
+    private String logId;
 
     /**
      * 任务类型

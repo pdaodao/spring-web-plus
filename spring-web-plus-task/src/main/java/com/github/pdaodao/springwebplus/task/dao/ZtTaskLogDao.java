@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ZtTaskLogDao extends BaseDao<ZtTaskLogMapper, ZtTaskLogEntity> {
-    public boolean setRunningErrorByNodeId(final Long nodeId){
+    public boolean setRunningErrorByNodeId(final String nodeId){
         return update(Wrappers.lambdaUpdate(ZtTaskLogEntity.class)
                 .eq(ZtTaskLogEntity::getNodeId, nodeId)
                 .eq(ZtTaskLogEntity::getTaskStatus, TaskStatus.running)

@@ -15,7 +15,7 @@ public class TaskThreadPoolFactory {
     private static TaskThreadPool big;
     private static TaskThreadPool small;
 
-    public static final Map<Long, TaskFuture> taskFutureMap = new ConcurrentHashMap<>();
+    public static final Map<String, TaskFuture> taskFutureMap = new ConcurrentHashMap<>();
 
     public static synchronized TaskThreadPool ofBig(){
         if(big == null){
@@ -45,7 +45,7 @@ public class TaskThreadPoolFactory {
     }
 
 
-    public static void put(final Long id, final TaskFuture taskExecutor){
+    public static void put(final String id, final TaskFuture taskExecutor){
         if(id == null || taskExecutor == null){
             return;
         }
@@ -60,7 +60,7 @@ public class TaskThreadPoolFactory {
         return taskFutureMap.get(id);
     }
 
-    public static void remove(final Long id){
+    public static void remove(final String id){
         if(id != null){
             taskFutureMap.remove(id);
         }

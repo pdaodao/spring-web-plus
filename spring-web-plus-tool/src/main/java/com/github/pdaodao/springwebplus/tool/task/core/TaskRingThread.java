@@ -116,7 +116,7 @@ public class TaskRingThread extends Thread{
         }
 
         @Override
-        public Long getId() {
+        public String getId() {
             return taskInfo.getTaskId();
         }
 

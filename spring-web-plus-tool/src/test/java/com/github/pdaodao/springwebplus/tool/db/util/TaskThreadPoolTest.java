@@ -21,7 +21,7 @@ public class TaskThreadPoolTest {
         ringThread.start();
         for(long i = 1; i < 50; i++){
             final CronTaskInfo taskInfo = new CronTaskInfo();
-            taskInfo.setTaskId(i);
+            taskInfo.setTaskId(i+"");
             ringThread.addToRing(taskInfo, DateTimeUtil.offsetSecond(DateTimeUtil.now(), 3).getTime());
             ThreadUtil.sleep(2000);
         }
@@ -33,7 +33,7 @@ public class TaskThreadPoolTest {
         final TaskTimer taskTimer = new TaskTimer(printFactory, loader);
         taskTimer.start();
         final CronTaskInfo taskInfo = new CronTaskInfo();
-        taskInfo.setTaskId(1l);
+        taskInfo.setTaskId("1");
         taskInfo.setCronSetting(CronSetting.ofSecond(3));
         loader.add(taskInfo);
     }
@@ -53,14 +53,14 @@ public class TaskThreadPoolTest {
 
     @Slf4j
     public static class PrintTask implements TaskRunnable{
-        private Long id;
+        private String id;
 
         @Override
-        public Long getId() {
+        public String getId() {
             return id;
         }
 
-        public PrintTask(Long id) {
+        public PrintTask(String id) {
             this.id = id;
         }
 

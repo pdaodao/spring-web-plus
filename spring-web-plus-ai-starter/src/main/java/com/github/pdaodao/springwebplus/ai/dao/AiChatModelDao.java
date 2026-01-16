@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.dao;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
 import com.github.pdaodao.springwebplus.ai.mapper.AiChatModelMapper;
@@ -32,5 +33,12 @@ public class AiChatModelDao extends BaseDao<AiChatModelMapper, AiChatModel> {
     @CacheEvict(key = "#p0.id", condition = "#p0.id != null")
     public boolean save(final AiChatModel entity) {
         return super.save(entity);
+    }
+
+    @CacheEvict(key = "#p0", condition = "#p0 != null")
+    public Boolean setEnabled(final String id, final Boolean enabled){
+        return update(Wrappers.lambdaUpdate(AiChatModel.class)
+                .eq(AiChatModel::getId, id)
+                .set(AiChatModel::getEnabled, enabled));
     }
 }

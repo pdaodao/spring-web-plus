@@ -31,7 +31,7 @@ public class ZtCronTaskInfoLoader implements CronTaskLoader {
     }
 
     @Override
-    public Boolean setNext(Long taskId, Long nextTime) {
+    public Boolean setNext(String taskId, Long nextTime) {
         return taskInfoDao.setNext(taskId, nextTime);
     }
 }

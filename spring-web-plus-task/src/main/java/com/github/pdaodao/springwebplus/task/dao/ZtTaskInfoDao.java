@@ -41,7 +41,7 @@ public class ZtTaskInfoDao extends BaseDao<ZtTaskInfoMapper, ZtTaskInfoEntity> {
                 .set(ZtTaskInfoEntity::getNextTime, nextTime));
     }
 
-    public Boolean setNext(final Long taskId, final Long nextTime){
+    public Boolean setNext(final String taskId, final Long nextTime){
         return update(Wrappers.lambdaUpdate(ZtTaskInfoEntity.class)
                 .eq(ZtTaskInfoEntity::getId, taskId)
                 .set(ZtTaskInfoEntity::getNextTime, nextTime));

@@ -17,12 +17,12 @@ public final class TaskContextHolder {
     /**
      * 请求入口处，将任务日志meta信息写入上下文
      */
-    public static void trace(Long taskId) {
+    public static void trace(String taskId) {
         MDC.put("logSubPath", logSubPath(new Date(), taskId));
         MDC.put(TASK_ID, String.valueOf(taskId));
     }
 
-    public static String logSubPath(Date d, Long taskId){
+    public static String logSubPath(Date d, String taskId){
         if(d == null){
             d = new Date();
         }

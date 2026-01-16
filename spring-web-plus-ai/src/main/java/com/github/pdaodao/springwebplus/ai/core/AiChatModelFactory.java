@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.core;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.ai.base.LLMProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.ai.chat.model.ChatModel;
@@ -21,7 +20,7 @@ public class AiChatModelFactory {
         return chatOptions.getModel();
     }
 
-    public static AiChatModelFactory instance(final LLMProvider provider,
+    public static AiChatModelFactory instance(final String provider,
                                               final String baseUrl, final String apiKey,
                                               ChatOptions chatOptions) {
         if (chatOptions == null) {
@@ -30,7 +29,7 @@ public class AiChatModelFactory {
         return ChatModelUtil.ofFactory(provider, baseUrl, apiKey, chatOptions);
     }
 
-    public static AiChatModelFactory instance(final LLMProvider provider,
+    public static AiChatModelFactory instance(final String provider,
                                               final String baseUrl, final String apiKey,
                                               final String modelName) {
         final DefaultChatOptions chatOptions = new DefaultChatOptions();

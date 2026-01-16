@@ -5,7 +5,7 @@ public interface TaskRunnable {
      * 获取任务运行id
      * @return
      */
-    Long getId();
+    String getId();
 
     /**
      * 任务运行开始 通知

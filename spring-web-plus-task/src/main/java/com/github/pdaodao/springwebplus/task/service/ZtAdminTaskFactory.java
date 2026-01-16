@@ -39,7 +39,7 @@ public class ZtAdminTaskFactory implements TaskFactory {
         }
 
         @Override
-        public Long getId() {
+        public String getId() {
             return taskInfo.getTaskId();
         }
 

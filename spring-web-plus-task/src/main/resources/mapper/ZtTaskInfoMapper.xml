@@ -9,7 +9,7 @@
         <where>
             t.is_deleted = false and t.is_dir = false
             <if test="q != null and q != null">
-                and t.title like #{qLike}
+                and t.title like #{qlike}
             </if>
             <if test="taskId != null">
                 and t.id = #{taskId}

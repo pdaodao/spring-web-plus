@@ -34,7 +34,7 @@ public class PageRequestParam {
     private Boolean orderAsc = true;
 
     @JsonIgnore
-    public String getQLike(){
+    public String getQlike(){
         return QueryBuilder.likeValue(q);
     }
 
