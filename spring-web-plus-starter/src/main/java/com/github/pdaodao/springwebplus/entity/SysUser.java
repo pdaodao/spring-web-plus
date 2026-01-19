@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -69,6 +70,10 @@ public class SysUser extends SnowIdWithTimeUserEntity {
 
     @Schema(description = "状态，0：禁用，1：启用")
     private Boolean enabled;
+
+    @Schema(description = "语言")
+    @TableFieldSize(defaultValue = "zh-cn")
+    private String locale;
 
     @Schema(description = "角色列表")
     private transient List<SysRole> roleList;

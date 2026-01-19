@@ -23,7 +23,7 @@ public class AiChatDispatcher {
         if (StrUtil.isNotBlank(req.getAppId())) {
             final AiChatApp app = AiChatDaoUtil.getAppById(req.getAppId());
             req.setChatType(app.getChatType());
-            req.setChatModel(app.getChatModel());
+//            req.setChatModel(app.getChatModel());
         }
     }
 

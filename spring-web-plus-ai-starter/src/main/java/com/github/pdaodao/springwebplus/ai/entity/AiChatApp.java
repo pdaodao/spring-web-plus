@@ -34,15 +34,15 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     @TableField(typeHandler = StringListJsonHandler.class)
     private List<String> examples;
 
-    @Schema(description = "模型id")
-    private String modelId;
+//    @Schema(description = "模型id")
+//    private String modelId;
+//
+//    @Schema(description = "模型名称")
+//    private transient AiChatModel chatModel;
 
-    @Schema(description = "模型名称")
-    private transient AiChatModel chatModel;
-
-    @Schema(description = "文档列表")
+    @Schema(description = "知识库列表")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> docIds;
+    private List<String> knowledgeIds;
 
     @Schema(description = "文档名称列表")
     @TableField(exist = false)

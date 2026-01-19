@@ -22,10 +22,10 @@ public class AiChatAppDao extends BaseDao<AiChatAppMapper, AiChatApp> {
         if (app == null) {
             return null;
         }
-        if (StrUtil.isNotBlank(app.getModelId())) {
-            final AiChatModel m = modelDao.getById(app.getModelId());
-            app.setChatModel(m);
-        }
+//        if (StrUtil.isNotBlank(app.getModelId())) {
+//            final AiChatModel m = modelDao.getById(app.getModelId());
+//            app.setChatModel(m);
+//        }
         return app;
     }
 }

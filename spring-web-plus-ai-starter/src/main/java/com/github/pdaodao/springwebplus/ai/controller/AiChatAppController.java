@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.ai.controller;
 
 import com.github.pdaodao.springwebplus.ai.dao.AiChatAppDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
-import com.github.pdaodao.springwebplus.ai.entity.AiChatDoc;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatKnowledge;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatType;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
@@ -42,7 +42,7 @@ public class AiChatAppController {
 
     @GetMapping("docTree")
     @Operation(summary = "可选的知识库文档树")
-    public List<AiChatDoc> docTree(@Parameter(description = "问答类型(大模型llm,sql问答sql)") @RequestParam(required = false) final AiChatType chatType) {
+    public List<AiChatKnowledge> docTree(@Parameter(description = "问答类型(大模型llm,sql问答sql)") @RequestParam(required = false) final AiChatType chatType) {
         return null;
     }
 

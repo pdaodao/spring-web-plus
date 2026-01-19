@@ -4,51 +4,31 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.github.pdaodao.springwebplus.ai.pojo.ChatDocItemType;
-import com.github.pdaodao.springwebplus.ai.pojo.ChatDocNamespace;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
-@Schema(description = "知识库文档")
-@TableName(value = "ai_chat_doc", autoResultMap = true)
-public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled, WithDelete,
-        WithPidString, WithSql, WithChildren<AiChatDoc> {
+@Schema(description = "知识库")
+@TableName(value = "ai_chat_knowledge", autoResultMap = true)
+public class AiChatKnowledge extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled, WithDelete,
+        WithPidString, WithChildren<AiChatKnowledge> {
     @Schema(description = "标题-文件名称")
     private String title;
-
-    @Schema(description = "英文名称 如数据表名")
-    private String name;
-
-    @Schema(description = "来源id 如数据表id")
-    private String tableId;
 
     @Schema(description = "描述")
     private String remark;
 
-    @Schema(description = "文档大类")
-    private String namespace;
-
-    // ChatDocItemType
-    @Schema(description = "类型")
+    @Schema(description = "文件类型")
     private String type;
 
-    @Schema(description = "数据源id")
-    private String dbId;
-
-    @Schema(description = "sql语句")
-    @Size(max = 3000, message = "sql语句长度超长")
-    private String sqlText;
 
     @Schema(description = "文本块-字段列表")
     @TableField(exist = false)
-    private List<AiChatDocItem> docItems;
+    private List<AiChatKnowledgeChunk> chunkList;
 
     @Schema(description = "团队id")
     private String teamId;
@@ -58,12 +38,13 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     private String filePath;
 
     @Schema(description = "文本块数")
-    private Long itemCount;
+    private Long chunkCount;
 
     @Schema(description = "字符数")
     private Long charCount;
 
     @Schema(description = "父分类id")
+    @TableFieldSize(defaultValue = "0")
     private String pid;
 
     @Schema(description = "是否是分类")
@@ -80,13 +61,10 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
     @TableLogic
     private Boolean isDeleted;
 
-    private transient List<AiChatDoc> children;
+    private transient List<AiChatKnowledge> children;
 
     public String content() {
         final StringBuilder sb = new StringBuilder();
-        if (StrUtil.isNotBlank(name)) {
-            sb.append(name).append(":");
-        }
         if (StrUtil.isNotBlank(title)) {
             sb.append(title);
         }
@@ -94,17 +72,5 @@ public class AiChatDoc extends SnowIdWithTimeUserEntity implements WithTeam, Wit
             sb.append(":").append(remark);
         }
         return sb.toString();
-    }
-
-    // 子项是否是字段
-    public boolean itemIsField() {
-        return StrUtil.equals(ChatDocNamespace.table, namespace)
-                || StrUtil.equals(ChatDocNamespace.sql, namespace)
-                || StrUtil.equals(ChatDocNamespace.excel, namespace);
-    }
-
-    // 子项类型
-    public String itemType() {
-        return itemIsField() ? ChatDocItemType.field : ChatDocItemType.text;
     }
 }

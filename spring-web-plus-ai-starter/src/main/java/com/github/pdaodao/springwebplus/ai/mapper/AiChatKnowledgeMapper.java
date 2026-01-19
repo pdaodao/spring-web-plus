@@ -1,9 +1,9 @@
 package com.github.pdaodao.springwebplus.ai.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.pdaodao.springwebplus.ai.entity.AiChatDocItem;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatKnowledge;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface AiChatDocItemMapper extends BaseMapper<AiChatDocItem> {
+public interface AiChatKnowledgeMapper extends BaseMapper<AiChatKnowledge> {
 }
