@@ -168,6 +168,16 @@ public class TableInfo implements Serializable, Cloneable {
         return t;
     }
 
+    public String remarkOrTitle(){
+        if(StrUtil.isBlank(remark)){
+            return title;
+        }
+        if(StrUtil.similar(title, remark) > 0.5){
+            return remark;
+        }
+        return title+":"+remark;
+    }
+
     /**
      * 更新字段的title
      *

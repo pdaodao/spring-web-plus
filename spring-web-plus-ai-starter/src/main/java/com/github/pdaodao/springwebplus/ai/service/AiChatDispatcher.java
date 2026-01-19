@@ -31,6 +31,8 @@ public class AiChatDispatcher {
         context.setPhase(req.getPhase());
         final AiChatApp app = AiChatDaoUtil.getAppById(req.getAppId());
         Preconditions.checkNotNull(app, "问答场景不存在.");
+        context.setChatApp(app);
+
         context.setModelId(req.getModelId());
         if(StrUtil.isBlank(context.getModelId())){
             context.setModelId(app.getModelId());
