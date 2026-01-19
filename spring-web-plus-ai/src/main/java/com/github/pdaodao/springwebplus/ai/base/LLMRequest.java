@@ -14,7 +14,7 @@ public class LLMRequest {
     private String appId;
 
     @Schema(description = "问答类型,ChatBi、...")
-    private String chatType;
+    private AiChatType chatType;
 
     @Schema(description = "场景的阶段如生成sql，查询数据, 归因分析，预测分析等")
     private String phase;
