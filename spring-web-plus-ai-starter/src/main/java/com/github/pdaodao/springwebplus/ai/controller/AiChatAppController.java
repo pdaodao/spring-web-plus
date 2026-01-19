@@ -55,7 +55,7 @@ public class AiChatAppController {
     @GetMapping("modelList")
     @Operation(summary = "模型列表")
     public List<IdTitle> modelList() {
-        final List<AiChatModel> list = modelDao.list(null, RequestUtil.getTeamId());
+        final List<AiChatModel> list = modelDao.list(null, RequestUtil.getTeamId(), true);
         final List<IdTitle> ret = new ArrayList<>();
         for(final AiChatModel m: list){
             ret.add(IdTitle.of(m.getId(), m.getTitle()));

@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.ai.service;
 
 import cn.hutool.core.collection.ListUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
+import com.github.pdaodao.springwebplus.ai.base.AiChatNamespace;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatTermTextDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatTermText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
@@ -32,7 +33,7 @@ public class AiChatTermTextService {
             return;
         }
         final AiEmbedText embedText = new AiEmbedText();
-        embedText.setNamespace("term-text");
+        embedText.setNamespace(AiChatNamespace.term.name());
         embedText.setType("text");
         embedText.setId(text.getId());
         embedText.setTeamId(text.getTeamId());
@@ -49,7 +50,7 @@ public class AiChatTermTextService {
             return true;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.addNamespace("term-text");
+        query.addNamespace(AiChatNamespace.term.name());
         query.addId(id);
         vectorStore.get().deleteByQuery(query);
         return true;

@@ -1,13 +1,13 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
-import com.github.pdaodao.springwebplus.ai.base.RichLLMRequest;
+import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface AiChatProcessor {
-    boolean accept(final RichLLMRequest req);
+    boolean accept(final AiChatContext context);
 
-    void sse(final RichLLMRequest req, final SseEmitter sseEmitter);
+    void sse(final AiChatContext context, final SseEmitter sseEmitter);
 
-    LLMResponse http(final RichLLMRequest req);
+    LLMResponse http(final AiChatContext context);
 }

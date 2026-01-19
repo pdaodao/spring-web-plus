@@ -41,7 +41,7 @@ public class AiChatModelController {
     @GetMapping("list")
     @Operation(summary = "列表")
     public List<AiChatModel> list(@RequestParam(required = false) final ChatModelType type) {
-        final List<AiChatModel> list = dao.list(type, RequestUtil.getTeamId());
+        final List<AiChatModel> list = dao.list(type, RequestUtil.getTeamId(), null);
         for (final AiChatModel t : list) {
             t.setApiKey(Constant.FakePassword);
         }

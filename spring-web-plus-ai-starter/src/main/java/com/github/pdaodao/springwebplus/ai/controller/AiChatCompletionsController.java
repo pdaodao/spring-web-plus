@@ -3,7 +3,6 @@ package com.github.pdaodao.springwebplus.ai.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
-import com.github.pdaodao.springwebplus.ai.base.RichLLMRequest;
 import com.github.pdaodao.springwebplus.ai.service.AiChatDispatcher;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
@@ -41,8 +40,8 @@ public class AiChatCompletionsController {
         return rr;
     }
 
-    private RichLLMRequest prepare(final LLMRequest req) {
-        final RichLLMRequest rr = BeanUtil.copyProperties(req, RichLLMRequest.class);
+    private LLMRequest prepare(final LLMRequest req) {
+        final LLMRequest rr = BeanUtil.copyProperties(req, LLMRequest.class);
         rr.setUserId(RequestUtil.getUserId());
         rr.setTeamId(RequestUtil.getTeamOrDefault());
         return rr;

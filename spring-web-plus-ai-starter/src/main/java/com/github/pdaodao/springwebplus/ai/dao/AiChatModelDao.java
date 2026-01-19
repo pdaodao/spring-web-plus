@@ -18,9 +18,12 @@ import java.util.List;
 @CacheConfig(cacheNames = "AiChatModel")
 public class AiChatModelDao extends BaseDao<AiChatModelMapper, AiChatModel> {
 
-    public List<AiChatModel> list(final ChatModelType type, final String teamId) {
+    @Cacheable
+    public List<AiChatModel> list(final ChatModelType type,
+                                  final String teamId, final Boolean enabled) {
         return list(QueryBuilder.lambda(AiChatModel.class)
                 .eq(AiChatModel::getTeamId, teamId)
+                .eq(AiChatModel::getEnabled, enabled)
                 .eq(AiChatModel::getType, type).build());
     }
 
@@ -30,12 +33,12 @@ public class AiChatModelDao extends BaseDao<AiChatModelMapper, AiChatModel> {
     }
 
     @Override
-    @CacheEvict(key = "#p0.id", condition = "#p0.id != null")
+    @CacheEvict(allEntries = true)
     public boolean save(final AiChatModel entity) {
         return super.save(entity);
     }
 
-    @CacheEvict(key = "#p0", condition = "#p0 != null")
+    @CacheEvict(allEntries = true)
     public Boolean setEnabled(final String id, final Boolean enabled){
         return update(Wrappers.lambdaUpdate(AiChatModel.class)
                 .eq(AiChatModel::getId, id)

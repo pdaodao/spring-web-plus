@@ -23,7 +23,6 @@ public class AiChatDaoUtil {
         }
         final AiChatApp m = SpringUtil.getBean(AiChatAppDao.class).info(id);
         return m;
-
     }
 
     /**
