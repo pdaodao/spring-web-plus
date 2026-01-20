@@ -9,9 +9,9 @@ import java.util.List;
 
 @Data
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class LLMMsg {
+public class MsgBlock {
     @Schema(description = "消息类型标识")
-    private LLMMsgType type;
+    private MsgType type;
 
     @Schema(description = "文本内容")
     private String text;
@@ -45,10 +45,19 @@ public class LLMMsg {
     private String name;
     // 函数参数
     private Object args;
+
     private String index;
 
     // 非标准
     private Object value;
+
+
+    public static MsgBlock ofText(final String content){
+        final MsgBlock msgBlock = new MsgBlock();
+        msgBlock.setType(MsgType.text);
+        msgBlock.setText(content);
+        return msgBlock;
+    }
 
     @Data
     public static class Annotation {

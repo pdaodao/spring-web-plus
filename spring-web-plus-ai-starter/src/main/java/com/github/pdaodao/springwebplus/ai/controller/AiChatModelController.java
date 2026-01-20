@@ -3,11 +3,11 @@ package com.github.pdaodao.springwebplus.ai.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
+import com.github.pdaodao.springwebplus.ai.core.AiChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelProviderDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModelProvider;
-import com.github.pdaodao.springwebplus.ai.core.ChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Slf4j
@@ -75,10 +74,9 @@ public class AiChatModelController {
                 entity.setApiKey(old.getApiKey());
             }
         }
-        final ChatModel chatModel = ChatModelUtil.of(entity.getProviderId(), entity.getBaseUrl(), entity.getApiKey(), entity.getModel());
+        final ChatModel chatModel = AiChatModelUtil.of(entity.getProviderId(), entity.toOption());
         return chatModel.call("你好 你是谁");
     }
-
 
     @GetMapping("info")
     @Operation(summary = "详情")

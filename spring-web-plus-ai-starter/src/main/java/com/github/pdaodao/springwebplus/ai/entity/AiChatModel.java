@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.ai.entity;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.pdaodao.springwebplus.ai.base.AiChatModelOption;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.entity.WithEnabled;
@@ -63,4 +64,10 @@ public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam, W
     @TableLogic
     @TableFieldSize(defaultValue = "0")
     private Boolean isDeleted;
+
+    public AiChatModelOption toOption(){
+        final AiChatModelOption option = AiChatModelOption.of(getBaseUrl(), getApiKey(), getModel());
+        option.setTemperature(getTemperature());
+        return option;
+    }
 }

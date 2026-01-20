@@ -3,11 +3,13 @@ package com.github.pdaodao.springwebplus.ai.core;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,9 @@ public class OpenAiEmbedding implements AiEmbedding {
     private int dimension = 0;
 
     public OpenAiEmbedding(String baseUrl, String apiKey, String model, int batchSize) {
+        if(StrUtil.isBlank(apiKey)){
+            apiKey = "123";
+        }
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
         this.model = model;
@@ -46,8 +51,11 @@ public class OpenAiEmbedding implements AiEmbedding {
             return embeddingModel;
         }
         synchronized (this) {
-            embeddingModel = new OpenAiEmbeddingModel(ChatModelUtil.openAiApi(baseUrl, apiKey),
-                    MetadataMode.EMBED, OpenAiEmbeddingOptions.builder().model(model).build());
+            final OpenAiApi openAiApi = OpenAiApi.builder()
+                    .baseUrl(baseUrl)
+                    .apiKey(apiKey)
+                    .build();
+            embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED, OpenAiEmbeddingOptions.builder().model(model).build());
         }
         return embeddingModel;
     }
