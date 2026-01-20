@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.tool.sql.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.sql.util.support.MybatisHelper;
@@ -66,6 +67,20 @@ public class SqlUtil {
             vs.add(matcher.group(2).trim());
         }
         return vs;
+    }
+
+    /**
+     * 是否是查询语句
+     * @param sql
+     * @return
+     */
+    public static Boolean isSelect(final String sql) {
+        if (StrUtil.isBlank(sql)) {
+            return false;
+        }
+        final String trimmed = trim(sql);
+        return trimmed.startsWith("select")
+                || ( trimmed.startsWith("with") && trimmed.contains(" select "));
     }
 
     /**
