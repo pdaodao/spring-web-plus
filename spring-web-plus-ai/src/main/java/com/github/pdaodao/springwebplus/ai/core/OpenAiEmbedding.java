@@ -55,7 +55,8 @@ public class OpenAiEmbedding implements AiEmbedding {
                     .baseUrl(baseUrl)
                     .apiKey(apiKey)
                     .build();
-            embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED, OpenAiEmbeddingOptions.builder().model(model).build());
+            embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED, OpenAiEmbeddingOptions.builder()
+                    .model(model).build());
         }
         return embeddingModel;
     }
