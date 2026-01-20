@@ -1,5 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.table;
 
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import java.io.Serializable;
 
@@ -94,11 +96,17 @@ public class DbInfo implements Serializable, Cloneable {
     public String key() {
         StringBuilder sb = new StringBuilder();
         sb.append(name);
-        sb.append(url);
+        sb.append(host);
+        sb.append(port);
         sb.append(username);
         sb.append(password);
         sb.append(dbName);
-        sb.append(getDbSchema());
+        if(StrUtil.isNotBlank(getDbSchema())){
+            sb.append(getDbSchema());
+        }
+        if(BooleanUtil.isTrue(readOnly)){
+            sb.append(":r");
+        }
         return sb.toString();
     }
 }
