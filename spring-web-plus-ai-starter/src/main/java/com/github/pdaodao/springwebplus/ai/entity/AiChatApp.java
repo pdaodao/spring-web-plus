@@ -64,14 +64,6 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private ChatAppConfig appConfig;
 
-    @Schema(description = "topK文档数")
-    @TableFieldSize(defaultValue = "5")
-    private Integer topK = 5;
-
-    @Schema(description = "相似度得分")
-    @TableFieldSize(defaultValue = "0.6")
-    private Double score = 0.6;
-
     @TableFieldIndex
     @Schema(description = "团队-租户id")
     private String teamId;
