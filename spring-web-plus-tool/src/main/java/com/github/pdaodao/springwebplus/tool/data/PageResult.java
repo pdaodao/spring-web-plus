@@ -12,7 +12,7 @@ public class PageResult<T> {
     /**
      * 数据
      */
-    private Collection<T> list;
+    private Collection<T> data;
 
     /**
      * 分页
@@ -33,7 +33,7 @@ public class PageResult<T> {
 
     public static <T> PageResult<T> build(Long pageNum, Long pageSize, Long total, Collection<T> data) {
         final PageResult pageR = new PageResult();
-        pageR.setList(data);
+        pageR.setData(data);
         if(pageSize != null && pageSize >= 0){
             final PageInfo pageInfo = new PageInfo();
             pageInfo.setPageNum(pageNum);
@@ -46,7 +46,7 @@ public class PageResult<T> {
 
     public static <T> PageResult<T> of(Collection<T> data) {
         final PageResult pageR = new PageResult();
-        pageR.setList(data);
+        pageR.setData(data);
         return pageR;
     }
 
@@ -54,10 +54,10 @@ public class PageResult<T> {
         if (row == null) {
             return this;
         }
-        if (list == null) {
-            list = new ArrayList<>();
+        if (data == null) {
+            data = new ArrayList<>();
         }
-        list.add(row);
+        data.add(row);
         return this;
     }
 

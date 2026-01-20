@@ -35,11 +35,11 @@ public class NosqlUtil {
         final List<TableField> fields = new ArrayList<>();
         pageResult.setFields(fields);
         // 获取字段信息
-        if (pageResult.getList() != null && pageResult.getList().size() > 0) {
+        if (pageResult.getData() != null && pageResult.getData().size() > 0) {
             // 从数据里获取字段信息
             LinkedHashMap<String, String> fieldsMap = new LinkedHashMap<>();
             int size = 0;
-            for (final Map<String, Object> map : pageResult.getList()) {
+            for (final Map<String, Object> map : pageResult.getData()) {
                 if (size++ > 5) {
                     break;
                 }

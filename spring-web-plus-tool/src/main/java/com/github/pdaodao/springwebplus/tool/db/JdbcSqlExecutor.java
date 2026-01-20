@@ -76,11 +76,11 @@ public class JdbcSqlExecutor implements AutoCloseable {
      */
     public TableRowData getOne(final String sql, @Nullable Object... args) throws SQLException{
         final TableData rr = list(sql, null, args);
-        if(rr == null || CollUtil.isEmpty(rr.getList())){
+        if(rr == null || CollUtil.isEmpty(rr.getData())){
             return null;
         }
-        Preconditions.assertTrue(CollUtil.size(rr.getList()) > 1, "expected one data but get {}", CollUtil.size(rr.getList()));
-        return rr.getList().iterator().next();
+        Preconditions.assertTrue(CollUtil.size(rr.getData()) > 1, "expected one data but get {}", CollUtil.size(rr.getData()));
+        return rr.getData().iterator().next();
     }
 
     /**
@@ -115,11 +115,11 @@ public class JdbcSqlExecutor implements AutoCloseable {
      */
     public TableRowData getOne(final SqlWithMapParams sqlWithMapParams) throws SQLException{
         final TableData rr = list(sqlWithMapParams, null);
-        if(rr == null || CollUtil.isEmpty(rr.getList())){
+        if(rr == null || CollUtil.isEmpty(rr.getData())){
             return null;
         }
-        Preconditions.assertTrue(CollUtil.size(rr.getList()) > 1, "expected one data but get {}", CollUtil.size(rr.getList()));
-        return rr.getList().iterator().next();
+        Preconditions.assertTrue(CollUtil.size(rr.getData()) > 1, "expected one data but get {}", CollUtil.size(rr.getData()));
+        return rr.getData().iterator().next();
     }
 
     /**

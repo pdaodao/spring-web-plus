@@ -24,13 +24,13 @@ public class TableData extends PageResult<TableRowData> {
                 f.setName(StrUtils.toCamelCase(f.getName()));
             }
         }
-        if(CollUtil.isEmpty(getList())){
+        if(CollUtil.isEmpty(getData())){
             return;
         }
         final List<TableRowData> rows = new ArrayList();
-        for(final TableRowData r: getList()){
+        for(final TableRowData r: getData()){
             rows.add(r.toCamelCase());
         }
-        setList(rows);
+        setData(rows);
     }
 }

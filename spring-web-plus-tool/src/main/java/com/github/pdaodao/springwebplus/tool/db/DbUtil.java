@@ -190,7 +190,7 @@ public class DbUtil {
         Preconditions.checkNotNull(dbInfo, "数据源不存在");
         Preconditions.checkNotNull(tableInfo, "数据表不存在.");
         Preconditions.checkArgument(CollUtil.isNotEmpty(tableInfo.getFields()), "字段为空.");
-        if(CollUtil.isEmpty(data.getList())){
+        if(CollUtil.isEmpty(data.getData())){
             return 0l;
         }
         final WriterInfo writerInfo = new WriterInfo();
@@ -200,7 +200,7 @@ public class DbUtil {
         writerInfo.setFields(tableInfo.getFields().stream().filter(t -> StrUtil.isNotBlank(t.getFrom())).collect(Collectors.toList()));
         try (final Writer writer = ReaderWriterLoader.createWriter(writerInfo)) {
              writer.open();
-             for(final TableRowData row : data.getList()){
+             for(final TableRowData row : data.getData()){
                  writer.write(TableRow.ofKind(RowKind.INSERT, row));
              }
              return writer.total();

@@ -73,7 +73,7 @@ public class RestResponse<T> implements IResponse {
     }
 
     public static RestResponse pageResult(final PageResult pageResult) {
-        final RestResponse r = new RestResponse(RestCode.SUCCESS, pageResult.getList());
+        final RestResponse r = new RestResponse(RestCode.SUCCESS, pageResult.getData());
         r.setPageInfo(pageResult.getPageInfo());
         r.setFields(pageResult.getFields());
         r.setExt(pageResult.getExt());
