@@ -78,7 +78,7 @@ public class SqlUtil {
         if (StrUtil.isBlank(sql)) {
             return false;
         }
-        final String trimmed = trim(sql);
+        final String trimmed = trim(sql).toLowerCase();
         return trimmed.startsWith("select")
                 || ( trimmed.startsWith("with") && trimmed.contains(" select "));
     }
