@@ -5,6 +5,8 @@ import com.github.pdaodao.springwebplus.tool.data.DataType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,25 +34,25 @@ public class PageSchema {
     private String remark;
 
     @Schema(description = "页面布局样式配置")
-    private LayoutConfig layoutConfig;
+    private LayoutConfig layoutConfig = new LayoutConfig();
 
     @Schema(description = "组件输入参数（URL参数/路由参数）")
-    private List<PageVariable> variables;
+    private List<PageVariable> variables = new ArrayList<>();
 
     @Schema(description = "子组件")
-    private List<PageSchema> children;
+    private List<PageSchema> children = new ArrayList<>();
 
     @Schema(description = "组件数据和数据显示配置")
-    private DataConfig dataConfig;
+    private DataConfig dataConfig = new DataConfig();
 
     @Schema(description = "联动配置")
-    private List<EventAction> actions;
+    private List<EventAction> actions = new ArrayList<>();
 
     @Schema(description = "子页面（抽屉/弹窗）")
-    private List<PageSchema> subPages;
+    private List<PageSchema> subPages = new ArrayList<>();
 
     @Schema(description = "组件值校验规则")
-    private List<CheckRule> checkRules;
+    private List<CheckRule> checkRules = new ArrayList<>();
 
     @Data
     @Schema(description = "组件布局配置")
@@ -75,7 +77,7 @@ public class PageSchema {
         private Boolean readonly = false;
         private Boolean required = false;
         // 样式设置
-        private Map<String, String> ui;
+        private Map<String, String> ui = new HashMap<>();
         private String css;
     }
 
@@ -110,7 +112,7 @@ public class PageSchema {
         private String role;
 
         @Schema(description = "显示配置如align、width等")
-        private Map<String, String> ui;
+        private Map<String, String> ui = new HashMap<>();
     }
 
 
@@ -130,7 +132,7 @@ public class PageSchema {
         private String targetAction;
 
         @Schema(description = "参数传递 主要使用name和from字段")
-        private List<PageVariable> variableMapping;
+        private List<PageVariable> variableMapping = new ArrayList<>();
     }
 
     @Data
@@ -168,10 +170,10 @@ public class PageSchema {
         private String value;
 
         @Schema(description = "请求参数")
-        private List<PageVariable> params;
+        private List<PageVariable> params = new ArrayList<>();
 
         @Schema(description = "显示字段-表格显示时特别要使用 其他根据情况使用 图形的x和y轴配置")
-        private List<PageVariable> displays;
+        private List<PageVariable> displays = new ArrayList<>();
 
         @Schema(description = "数据展示方式配置如表格显示控制首尾冻结等、echarts图表x,y轴等的配置")
         private String dataDisplayConfig;
