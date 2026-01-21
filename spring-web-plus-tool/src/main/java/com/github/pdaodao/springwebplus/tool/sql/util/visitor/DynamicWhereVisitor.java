@@ -26,13 +26,11 @@ public class DynamicWhereVisitor {
 
     public static SqlWithMapParams dynamicFilter(final PlainSelect select, final List<FilterItem> filterItems) throws Exception {
         final SqlWithMapParams ret = new SqlWithMapParams();
-        if (CollUtil.isEmpty(filterItems)) {
-            ret.setSql(select.toString());
-            return ret;
-        }
         final Map<String, FilterItem> filterMap = new LinkedCaseInsensitiveMap<>();
-        for (final FilterItem item : filterItems) {
-            filterMap.put(item.getName(), item);
+        if(CollUtil.isNotEmpty(filterItems)){
+            for (final FilterItem item : filterItems) {
+                filterMap.put(item.getName(), item);
+            }
         }
         if (select.getWhere() != null) {
             final Expression whereExp = processWhere(select.getWhere(), select, filterMap, ret);

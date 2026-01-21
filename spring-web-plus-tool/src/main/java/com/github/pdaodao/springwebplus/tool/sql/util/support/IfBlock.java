@@ -6,10 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import org.apache.ibatis.scripting.xmltags.OgnlCache;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,9 +55,12 @@ public class IfBlock {
         return blocks;
     }
 
-    public static String buildSql(final String template, final Map<String, Object> params) {
-        if(MapUtil.isEmpty(params) || StrUtil.length(template) < 10){
+    public static String buildSql(final String template, Map<String, Object> params) {
+        if(StrUtil.length(template) < 10){
             return template;
+        }
+        if(params == null){
+            params = new HashMap<>();
         }
         // 按顺序提取所有 if 块
         final List<IfBlock> blocks = extractAllIfBlocks(template);

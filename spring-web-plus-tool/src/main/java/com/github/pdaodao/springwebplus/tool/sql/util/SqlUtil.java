@@ -415,12 +415,12 @@ public class SqlUtil {
      * @param filterItems
      * @return
      */
-    public static SqlWithMapParams dynamicFilter(String sql, final List<FilterItem> filterItems) throws Exception {
+    public static SqlWithMapParams dynamicFilter(String sql, List<FilterItem> filterItems) throws Exception {
         if (StrUtil.isBlank(sql)) {
             return null;
         }
-        if (CollUtil.isEmpty(filterItems)) {
-            return SqlWithMapParams.of(sql, null);
+        if(filterItems == null){
+            filterItems = new ArrayList<>();
         }
         // 处理 if{a != null, sql...}
         sql = processIf(sql, filterItems);
