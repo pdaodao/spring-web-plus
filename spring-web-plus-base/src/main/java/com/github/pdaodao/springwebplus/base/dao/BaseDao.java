@@ -11,14 +11,12 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pdaodao.springwebplus.base.entity.*;
-import com.github.pdaodao.springwebplus.base.pojo.PublishStatus;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.pojo.EntityDiffWrap;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,7 +98,6 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
         }
         if(entity instanceof WithVersion){
             ((WithVersion) entity).setVersion(1);
-            ((WithVersion) entity).setPublishStatus(PublishStatus.draft);
         }
     }
 
