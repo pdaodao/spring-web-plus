@@ -2,10 +2,9 @@ package com.github.pdaodao.springwebplus.tool.sql.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
-import com.github.pdaodao.springwebplus.tool.sql.util.support.MybatisHelper;
+import com.github.pdaodao.springwebplus.tool.sql.util.support.IfBlock;
 import com.github.pdaodao.springwebplus.tool.sql.core.FilterItem;
 import com.github.pdaodao.springwebplus.tool.sql.core.SqlWithMapParams;
 import com.github.pdaodao.springwebplus.tool.table.TableField;
@@ -17,7 +16,6 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -437,10 +435,7 @@ public class SqlUtil {
 
 
     public static String processIf(final String sql, final List<FilterItem> filterItems) {
-        if (!MybatisHelper.hasIf(sql)) {
-            return sql;
-        }
-        return MybatisHelper.processIf(sql, filterItems);
+        return IfBlock.buildSql(sql, FilterItem.toParamValueMap(filterItems));
     }
 
     /**
