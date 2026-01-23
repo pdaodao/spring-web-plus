@@ -18,33 +18,44 @@ import java.io.Serializable;
  */
 @Data
 public class TableField implements Serializable, Cloneable, Comparable<TableField> {
-
     /**
-     * 小数点位数
+     * 唯一id值
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Integer scale;
+    private String id;
 
-    /**
-     * 是否自增
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Boolean isAuto;
     /**
      * 字段-变量名称(英文)
      */
     protected String name;
 
     /**
+     * 中文名称
+     */
+    protected String title;
+
+    /**
+     * 标准字段类型
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private DataType dataType;
+
+    /**
+     * 是否是主键
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected Boolean isPk;
+
+    /**
+     * 是否自增
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Boolean isAuto;
+
+    /**
      * 来源字段
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String from;
-
-    /**
-     * 中文名称
-     */
-    protected String title;
 
     /**
      * 是否不存储
@@ -75,16 +86,10 @@ public class TableField implements Serializable, Cloneable, Comparable<TableFiel
     protected Integer length;
 
     /**
-     * 排序
+     * 小数点位数
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected Integer seq;
-
-    /**
-     * 是否是主键
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected Boolean isPk;
+    public Integer scale;
 
     /**
      * 是否可为空
@@ -98,11 +103,14 @@ public class TableField implements Serializable, Cloneable, Comparable<TableFiel
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String defaultValue;
 
+
+
     /**
-     * 标准字段类型
+     * 排序
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private DataType dataType;
+    protected Integer seq;
+
 
 
     /**
