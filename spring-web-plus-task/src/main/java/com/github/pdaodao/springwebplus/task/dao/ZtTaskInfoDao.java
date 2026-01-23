@@ -15,7 +15,7 @@ import java.util.List;
 
 @Component
 public class ZtTaskInfoDao extends BaseDao<ZtTaskInfoMapper, ZtTaskInfoEntity> {
-    public Boolean toggleCron(final Long id, final Boolean cronEnabled){
+    public Boolean toggleCron(final String id, final Boolean cronEnabled){
         return update(Wrappers.lambdaUpdate(ZtTaskInfoEntity.class)
                 .eq(ZtTaskInfoEntity::getId, id)
                 .set(ZtTaskInfoEntity::getEnabled, cronEnabled));

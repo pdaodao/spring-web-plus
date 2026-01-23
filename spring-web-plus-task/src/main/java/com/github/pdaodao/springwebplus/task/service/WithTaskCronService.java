@@ -16,7 +16,7 @@ public abstract class WithTaskCronService<T extends ZtTaskInfoEntity>{
      * @param cronEnabled
      * @return
      */
-    public Boolean toggleCron(final Long id, final Boolean cronEnabled){
+    public Boolean toggleCron(final String id, final Boolean cronEnabled){
         return taskInfoDao().toggleCron(id, cronEnabled);
     }
 
@@ -28,7 +28,7 @@ public abstract class WithTaskCronService<T extends ZtTaskInfoEntity>{
      * 任务详情
      * @return
      */
-    public T info(final Long id){
+    public T info(final String id){
         Preconditions.checkNotNull(id, " task-id is null.");
         final ZtTaskInfoEntity taskInfo = taskInfoDao().getById(id);
         if(taskInfo == null){

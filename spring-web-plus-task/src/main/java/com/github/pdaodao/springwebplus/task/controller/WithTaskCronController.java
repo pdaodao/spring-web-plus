@@ -21,13 +21,13 @@ public abstract class WithTaskCronController<T extends ZtTaskInfoEntity> {
 
     @Operation(summary = "切换调度状态")
     @GetMapping("toggle")
-    public Boolean cronToggle(final Long id, final Boolean enabled){
+    public Boolean cronToggle(final String id, final Boolean enabled){
         return jobCronService().toggleCron(id, enabled);
     }
 
     @Operation(summary = "任务详情")
     @GetMapping("info")
-    public T info(final Long id){
+    public T info(final String id){
         return jobCronService().info(id);
     }
 

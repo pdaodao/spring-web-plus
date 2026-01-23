@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class TaskLogQuery extends PageRequestParam {
     @Schema(description = "任务id")
-    private Long taskId;
+    private String taskId;
 
     @Schema(description = "命名空间")
     private String namespace;
@@ -20,5 +20,5 @@ public class TaskLogQuery extends PageRequestParam {
     private TaskStatus taskStatus;
 
     @Schema(hidden = true)
-    private Long teamId;
+    private String teamId;
 }

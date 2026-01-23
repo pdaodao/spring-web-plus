@@ -49,12 +49,6 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
         return ns.get(RandomUtil.randomInt(ns.size() - 1));
     }
 
-    public ZtTaskNodeEntity adminNode(final Long taskId) {
-        final List<ZtTaskNodeEntity> ns = nodeList.stream().filter(t -> !t.getIsAdmin()).collect(Collectors.toList());
-        Preconditions.checkArgument(CollUtil.size(ns) > 0, "执行节点不存在");
-        return ns.get((int)(taskId % CollUtil.size(ns)));
-    }
-
     @Override
     public void run() {
         try{

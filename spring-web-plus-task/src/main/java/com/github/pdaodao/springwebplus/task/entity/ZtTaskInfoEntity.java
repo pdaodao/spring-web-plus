@@ -58,7 +58,7 @@ public class ZtTaskInfoEntity extends SnowIdWithTimeEntity implements WithPidStr
     private TaskStatus taskStatus;
 
     @Schema(description = "最后运行的日志id")
-    private Long logId;
+    private String logId;
 
     @Schema(description = "版本")
     private Integer version;
