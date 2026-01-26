@@ -22,6 +22,10 @@ public class LogUtil {
     private static final ThreadLocal<TaskLogContext> logContext = new ThreadLocal<>();
     private static final String basePath = FilePathUtil.pathJoin(System.getProperty("user.dir"), "task");
 
+    public static TaskLogContext getContext(){
+        return logContext.get();
+    }
+
     public static TaskLogContext setContext(final String taskId, final String logId, final Date startTime){
         final TaskLogContext ct = TaskLogContext.of(taskId, logId, startTime);
         logContext.set(ct);

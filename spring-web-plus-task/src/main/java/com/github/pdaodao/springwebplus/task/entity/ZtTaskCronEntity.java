@@ -18,8 +18,8 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @Schema(description = "任务调度信息")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@TableName(value = "zt_task_info", autoResultMap = true)
-public class ZtTaskInfoEntity extends SnowIdWithTimeEntity implements WithPidString, WithTeam, WithDelete {
+@TableName(value = "zt_task_cron", autoResultMap = true)
+public class ZtTaskCronEntity extends SnowIdWithTimeEntity implements WithPidString, WithTeam, WithDelete {
     @TableFieldSize(200)
     @NotBlank(message = "名称不能为空")
     @Length(max = 100, message = "名称不能超过100个字")

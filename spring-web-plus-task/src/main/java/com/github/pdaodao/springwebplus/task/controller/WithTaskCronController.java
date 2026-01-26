@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.task.controller;
 import cn.hutool.core.thread.ThreadUtil;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import com.github.pdaodao.springwebplus.task.entity.ZtTaskInfoEntity;
+import com.github.pdaodao.springwebplus.task.entity.ZtTaskCronEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.task.service.WithTaskCronService;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public abstract class WithTaskCronController<T extends ZtTaskInfoEntity> {
+public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
     protected abstract WithTaskCronService<T> jobCronService();
 
     @Operation(summary = "切换调度状态")
@@ -38,7 +38,7 @@ public abstract class WithTaskCronController<T extends ZtTaskInfoEntity> {
 
     @Operation(summary = "保存调度信息-返回未来执行时间列表")
     @PostMapping("/save-cron")
-    public List<String> saveCron(@RequestBody ZtTaskInfoEntity entity) throws Exception{
+    public List<String> saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
         Preconditions.checkNotNull(entity.getId(), "任务id不能为空.");
         Preconditions.checkNotNull(entity.getCronSetting(), "调度信息配置不能为空.");
         jobCronService().saveCron(entity);

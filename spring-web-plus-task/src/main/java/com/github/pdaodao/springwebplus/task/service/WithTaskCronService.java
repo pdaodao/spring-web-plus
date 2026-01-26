@@ -1,15 +1,15 @@
 package com.github.pdaodao.springwebplus.task.service;
 
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import com.github.pdaodao.springwebplus.task.dao.ZtTaskInfoDao;
-import com.github.pdaodao.springwebplus.task.entity.ZtTaskInfoEntity;
+import com.github.pdaodao.springwebplus.task.dao.ZtTaskCronDao;
+import com.github.pdaodao.springwebplus.task.entity.ZtTaskCronEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
-public abstract class WithTaskCronService<T extends ZtTaskInfoEntity>{
+public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
     /**
      * 切换调度
      * @param id
@@ -17,11 +17,11 @@ public abstract class WithTaskCronService<T extends ZtTaskInfoEntity>{
      * @return
      */
     public Boolean toggleCron(final String id, final Boolean cronEnabled){
-        return taskInfoDao().toggleCron(id, cronEnabled);
+        return taskCronDao().toggleCron(id, cronEnabled);
     }
 
     public List<ZtTaskLogEntity> logList(final TaskLogQuery query){
-        return taskInfoDao().logList(query);
+        return taskCronDao().logList(query);
     }
 
     /**
@@ -30,15 +30,15 @@ public abstract class WithTaskCronService<T extends ZtTaskInfoEntity>{
      */
     public T info(final String id){
         Preconditions.checkNotNull(id, " task-id is null.");
-        final ZtTaskInfoEntity taskInfo = taskInfoDao().getById(id);
-        if(taskInfo == null){
+        final ZtTaskCronEntity cronInfo = taskCronDao().getById(id);
+        if(cronInfo == null){
             return null;
         }
-        return taskContent(taskInfo);
+        return taskContent(cronInfo);
     }
 
-    public Boolean saveCron(@RequestBody ZtTaskInfoEntity entity) throws Exception{
-        return taskInfoDao().saveCron(entity);
+    public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
+        return taskCronDao().saveCron(entity);
     }
 
     /**
@@ -46,9 +46,9 @@ public abstract class WithTaskCronService<T extends ZtTaskInfoEntity>{
      * @param taskInfo
      * @return
      */
-    protected abstract T taskContent(final ZtTaskInfoEntity taskInfo);
+    protected abstract T taskContent(final ZtTaskCronEntity taskInfo);
 
-    protected ZtTaskInfoDao taskInfoDao(){
-        return SpringUtil.getBean(ZtTaskInfoDao.class);
+    protected ZtTaskCronDao taskCronDao(){
+        return SpringUtil.getBean(ZtTaskCronDao.class);
     }
 }

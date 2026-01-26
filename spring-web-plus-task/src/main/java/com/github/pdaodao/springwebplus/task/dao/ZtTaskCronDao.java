@@ -1,0 +1,53 @@
+package com.github.pdaodao.springwebplus.task.dao;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pdaodao.springwebplus.base.dao.BaseDao;
+import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
+import com.github.pdaodao.springwebplus.task.entity.ZtTaskCronEntity;
+import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
+import com.github.pdaodao.springwebplus.task.mapper.ZtTaskCronMapper;
+import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
+import com.github.pdaodao.springwebplus.tool.task.CronUtil;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Date;
+import java.util.List;
+
+@Component
+public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
+    public Boolean toggleCron(final String id, final Boolean cronEnabled){
+        return update(Wrappers.lambdaUpdate(ZtTaskCronEntity.class)
+                .eq(ZtTaskCronEntity::getId, id)
+                .set(ZtTaskCronEntity::getEnabled, cronEnabled));
+    }
+
+    public List<ZtTaskCronEntity> loadCron(final Date nextTime){
+        return list(QueryBuilder.lambda(ZtTaskCronEntity.class)
+                .eq(ZtTaskCronEntity::getEnabled, true)
+                .le(ZtTaskCronEntity::getNextTime, nextTime.getTime()).build());
+    }
+
+    /**
+     * 保存调度信息其他信息不保存
+     * @param entity
+     * @return
+     */
+    public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
+        final Date next = CronUtil.nextTime(entity.getCronSetting(), new Date());
+        final Long nextTime = next != null ? next.getTime() : null;
+        return update(Wrappers.lambdaUpdate(ZtTaskCronEntity.class)
+                .eq(ZtTaskCronEntity::getId, entity.getId())
+                .set(ZtTaskCronEntity::getCronSetting, entity.getCronSetting())
+                .set(ZtTaskCronEntity::getNextTime, nextTime));
+    }
+
+    public Boolean setNext(final String taskId, final Long nextTime){
+        return update(Wrappers.lambdaUpdate(ZtTaskCronEntity.class)
+                .eq(ZtTaskCronEntity::getId, taskId)
+                .set(ZtTaskCronEntity::getNextTime, nextTime));
+    }
+
+    public List<ZtTaskLogEntity> logList(final TaskLogQuery query){
+        return baseMapper.logList(query);
+    }
+}
