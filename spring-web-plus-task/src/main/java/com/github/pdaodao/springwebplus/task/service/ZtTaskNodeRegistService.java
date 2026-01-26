@@ -62,6 +62,12 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
             nodeEntity.setIsAdmin(taskNodeConfig.getIsAdmin());
             nodeEntity.setIsExecutor(taskNodeConfig.getIsExecutor());
             nodeEntity.setAccess(taskNodeConfig.getAccess());
+            final ZtTaskNodeEntity old = nodeDao.getById(taskNodeConfig.getNodeId());
+            if(old != null){
+                nodeEntity.setIsAdmin(null);
+                nodeEntity.setIsExecutor(null);
+                nodeEntity.setAccess(null);
+            }
             nodeDao.save(nodeEntity);
             // 清除2分钟前刷新的节点信息
             nodeDao.clear(DateTimeUtil.offsetMinute(DateTimeUtil.now(), -2));
