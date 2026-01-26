@@ -18,12 +18,17 @@ public class ZtTaskNodeEntity extends SnowIdWithTimeEntity implements WithEnable
     private String url;
 
     @Schema(description = "是否是调度中心")
+    @TableFieldSize(defaultValue = "true")
     private Boolean isAdmin;
+
+    @Schema(description = "是否是执行器")
+    @TableFieldSize(defaultValue = "true")
+    private Boolean isExecutor;
 
     @Schema(description = "提交请求校验码")
     private String access;
 
     @Schema(description = "是否启用")
-    @TableFieldSize(defaultValue = "1")
+    @TableFieldSize(defaultValue = "true")
     private Boolean enabled;
 }

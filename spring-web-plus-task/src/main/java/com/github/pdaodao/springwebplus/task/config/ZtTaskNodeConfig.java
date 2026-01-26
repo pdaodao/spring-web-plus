@@ -13,6 +13,9 @@ public class ZtTaskNodeConfig {
     @Value("${zt.node.id:1}")
     private String nodeId;
 
+    @Value("${zt.node.access:beijing}")
+    private String access;
+
     @Value("${zt.node.executor:true}")
     private Boolean isExecutor;
 

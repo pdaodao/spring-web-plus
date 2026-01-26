@@ -46,7 +46,7 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
 
     public ZtTaskNodeEntity executorNode(final String taskId) {
         final List<ZtTaskNodeEntity> ns = nodeList.stream()
-                .filter(t -> !t.getIsAdmin())
+                .filter(t -> BooleanUtil.isTrue(t.getIsExecutor()))
                 .filter(t -> BooleanUtil.isTrue(t.getEnabled()))
                 .collect(Collectors.toList());
         Preconditions.checkArgument(CollUtil.size(ns) > 0, "执行节点不存在");
@@ -59,19 +59,13 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
             final ZtTaskNodeEntity nodeEntity = new ZtTaskNodeEntity();
             nodeEntity.setUrl(taskNodeConfig.getHost());
             nodeEntity.setId(taskNodeConfig.getNodeId());
-            nodeEntity.setIsAdmin(false);
-            if(BooleanUtil.isTrue(taskNodeConfig.getIsExecutor())){
-                nodeDao.save(nodeEntity);
-            }
-            if(BooleanUtil.isTrue(taskNodeConfig.getIsAdmin())){
-                nodeEntity.setId(taskNodeConfig.getNodeId()+100);
-                nodeEntity.setIsAdmin(true);
-                nodeDao.save(nodeEntity);
-            }
+            nodeEntity.setIsAdmin(taskNodeConfig.getIsAdmin());
+            nodeEntity.setIsExecutor(taskNodeConfig.getIsExecutor());
+            nodeEntity.setAccess(taskNodeConfig.getAccess());
+            nodeDao.save(nodeEntity);
             // 清除2分钟前刷新的节点信息
             nodeDao.clear(DateTimeUtil.offsetMinute(DateTimeUtil.now(), -2));
             loadNodes();
-            logDao.setRunningErrorByNodeId(taskNodeConfig.getNodeId());
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
@@ -106,6 +100,8 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
     @Override
     public void afterPropertiesSet() throws Exception {
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(this, 3, 90, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this, 6, 90, TimeUnit.SECONDS);
+        logDao.setRunningErrorByNodeId(taskNodeConfig.getNodeId());
+        taskNodeConfig.setAccess(RandomUtil.randomString(8));
     }
 }
