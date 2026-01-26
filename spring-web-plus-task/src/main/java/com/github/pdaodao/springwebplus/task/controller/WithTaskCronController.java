@@ -1,11 +1,16 @@
 package com.github.pdaodao.springwebplus.task.controller;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
+import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskInfoEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.task.service.WithTaskCronService;
+import com.github.pdaodao.springwebplus.task.service.ZtNodeService;
+import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
+import com.github.pdaodao.springwebplus.tool.task.LogResult;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,6 +52,22 @@ public abstract class WithTaskCronController<T extends ZtTaskInfoEntity> {
         return ret;
     }
 
+    @Operation(summary = "提交任务运行")
+    @PostMapping("/submit")
+    public String submit(final @RequestBody CronTaskInfo taskInfo) throws Exception{
+        final ZtNodeService nodeService = SpringUtil.getBean(ZtNodeService.class);
+        final String runtimeId = nodeService.triggerByAdmin(taskInfo);
+        ThreadUtil.safeSleep(1000);
+        return runtimeId;
+    }
+
+    @Operation(summary = "获取任务日志")
+    @GetMapping("/getLog")
+    public LogResult getLog(final String logId, final Integer from) {
+        final ZtNodeService nodeService = SpringUtil.getBean(ZtNodeService.class);
+        return nodeService.getLog(logId, from);
+    }
+
     @Operation(summary = "运行记录")
     @GetMapping("log")
     public List<ZtTaskLogEntity> logs(final TaskLogQuery query){
@@ -55,26 +76,6 @@ public abstract class WithTaskCronController<T extends ZtTaskInfoEntity> {
         return logs;
     }
 
-//    @Operation(summary = "提交任务运行")
-//    @GetMapping("/submit")
-//    public Long submit(final ZtJobInfo jobInfo){
-//        if(StrUtil.isBlank(jobInfo.getJobType())){
-//            jobInfo.setJobType(jobType());
-//        }
-//        return jobCronService().jobSubmitter().submit(jobInfo);
-//    }
-//
-//    @Operation(summary = "获取任务日志")
-//    @GetMapping("/getLog")
-//    public LogResult getLog(final JobDataLogRequest request) {
-//        final XxlJobManager m = SpringUtil.getBean(XxlJobManager.class);
-//        Preconditions.checkNotNull(m, "任务管理器不存在.");
-//        try {
-//            return m.getLog(request);
-//        } catch (Exception e) {
-//            return new LogResult();
-//        }
-//    }
 //
 //    @Operation(summary = "关闭任务")
 //    @GetMapping("/stop")

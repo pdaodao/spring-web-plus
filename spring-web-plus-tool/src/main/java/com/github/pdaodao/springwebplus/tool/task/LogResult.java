@@ -1,7 +1,8 @@
-package com.github.pdaodao.springwebplus.task.pojo;
+package com.github.pdaodao.springwebplus.tool.task;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 

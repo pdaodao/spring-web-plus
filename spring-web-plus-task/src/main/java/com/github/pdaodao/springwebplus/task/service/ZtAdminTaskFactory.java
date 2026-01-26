@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
  * 调度中心任务提交任务工厂
  */
 @Slf4j
-@Service
 @AllArgsConstructor
 public class ZtAdminTaskFactory implements TaskFactory {
 

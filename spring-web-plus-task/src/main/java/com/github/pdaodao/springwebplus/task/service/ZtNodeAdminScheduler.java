@@ -10,8 +10,8 @@ public class ZtNodeAdminScheduler implements InitializingBean {
     private final ZtCronTaskInfoLoader taskInfoLoader;
     private TaskTimer taskTimer;
 
-    public ZtNodeAdminScheduler(ZtAdminTaskFactory adminTaskFactory, ZtCronTaskInfoLoader taskInfoLoader) {
-        this.adminTaskFactory = adminTaskFactory;
+    public ZtNodeAdminScheduler(ZtCronTaskInfoLoader taskInfoLoader) {
+        this.adminTaskFactory = new ZtAdminTaskFactory();
         this.taskInfoLoader = taskInfoLoader;
     }
 

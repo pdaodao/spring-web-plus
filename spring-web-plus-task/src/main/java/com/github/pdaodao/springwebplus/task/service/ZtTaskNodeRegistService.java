@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.task.config.ZtTaskNodeConfig;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskNodeDao;
@@ -44,7 +45,10 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
     }
 
     public ZtTaskNodeEntity executorNode(final String taskId) {
-        final List<ZtTaskNodeEntity> ns = nodeList.stream().filter(t -> !t.getIsAdmin()).collect(Collectors.toList());
+        final List<ZtTaskNodeEntity> ns = nodeList.stream()
+                .filter(t -> !t.getIsAdmin())
+                .filter(t -> BooleanUtil.isTrue(t.getEnabled()))
+                .collect(Collectors.toList());
         Preconditions.checkArgument(CollUtil.size(ns) > 0, "执行节点不存在");
         return ns.get(RandomUtil.randomInt(ns.size() - 1));
     }
@@ -71,6 +75,10 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
+    }
+
+    public ZtTaskNodeEntity getById(final String id){
+        return nodeList.stream().filter(t -> StrUtil.equals(id, t.getId())).findFirst().get();
     }
 
     private void loadNodes(){
