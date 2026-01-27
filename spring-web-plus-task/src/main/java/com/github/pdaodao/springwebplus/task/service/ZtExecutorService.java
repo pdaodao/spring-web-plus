@@ -42,7 +42,7 @@ public class ZtExecutorService {
         log.setIsCron(cronTaskInfo.getIsCron());
         logDao.save(log);
         try{
-            final String url = node.getUrl()+"/node/api/v1/executor/submit";
+            final String url = node.getUrl()+"/executor/api/v1/task/submit";
             for(int i = 0; i < 3; i++){
                 try{
                     final String ret = HttpUtil.createPost(url)
@@ -74,7 +74,7 @@ public class ZtExecutorService {
         paramMap.put("logId", logId);
         paramMap.put("from", from);
         try{
-            final String url = nodeEntity.getUrl()+"/node/api/v1/executor/getLog";
+            final String url = nodeEntity.getUrl()+"/executor/api/v1/task/getLog";
             for(int i = 0; i < 3; i++){
                 try{
                     final String ret = HttpUtil.createGet(url)

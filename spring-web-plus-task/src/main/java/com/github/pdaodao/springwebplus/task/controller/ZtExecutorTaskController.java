@@ -20,9 +20,9 @@ import java.util.Date;
 @Slf4j
 @Hidden
 @RestController
-@RequestMapping("/node/api/v1/executor")
+@RequestMapping("/executor/api/v1/task")
 @AllArgsConstructor
-public class ZtExecutorNodeController {
+public class ZtExecutorTaskController {
     private final ZtExecutorService nodeService;
     @IgnoreLogin
     @PostMapping("submit")

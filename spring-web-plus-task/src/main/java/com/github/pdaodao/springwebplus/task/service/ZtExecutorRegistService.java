@@ -5,7 +5,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pdaodao.springwebplus.task.config.ZtTaskNodeConfig;
+import com.github.pdaodao.springwebplus.task.config.ZtTaskExecutorConfig;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskExecutorDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskExecutorEntity;
@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 public class ZtExecutorRegistService implements InitializingBean, Runnable {
     private final ZtTaskExecutorDao nodeDao;
     private final ZtTaskLogDao logDao;
-    private final ZtTaskNodeConfig taskNodeConfig;
+    private final ZtTaskExecutorConfig taskNodeConfig;
     private final ZtExecutorAdminService adminService;
     private transient ScheduledExecutorService scheduler;
 
     private List<ZtTaskExecutorEntity> nodeList = new ArrayList<>();
 
-    public ZtExecutorRegistService(ZtTaskExecutorDao nodeDao, ZtTaskLogDao logDao, ZtTaskNodeConfig nodeConfig, ZtExecutorAdminService adminScheduler) {
+    public ZtExecutorRegistService(ZtTaskExecutorDao nodeDao, ZtTaskLogDao logDao, ZtTaskExecutorConfig nodeConfig, ZtExecutorAdminService adminScheduler) {
         this.nodeDao = nodeDao;
         this.logDao = logDao;
         this.taskNodeConfig = nodeConfig;

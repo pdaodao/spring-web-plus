@@ -9,20 +9,20 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-public class ZtTaskNodeConfig {
-    @Value("${zt.node.id:1}")
+public class ZtTaskExecutorConfig {
+    @Value("${zt.executor.id:1}")
     private String nodeId;
 
-    @Value("${zt.node.access:beijing}")
+    @Value("${zt.executor.access:beijing}")
     private String access;
 
-    @Value("${zt.node.executor:true}")
+    @Value("${zt.executor.executor:true}")
     private Boolean isExecutor;
 
-    @Value("${zt.node.admin:true}")
+    @Value("${zt.executor.admin:true}")
     private Boolean isAdmin;
 
-    @Value("${zt.node.ip:}")
+    @Value("${zt.executor.ip:}")
     private String ip;
 
     public String getHost(){

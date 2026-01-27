@@ -233,6 +233,8 @@
                     <parameters>true</parameters>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <debug>false</debug>
+                    <debuglevel>none</debuglevel>
                 </configuration>
             </plugin>
             <plugin>
