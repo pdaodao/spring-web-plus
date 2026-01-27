@@ -6,10 +6,13 @@ import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskCronEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.mapper.ZtTaskCronMapper;
+import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.management.Query;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +28,14 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
         return list(QueryBuilder.lambda(ZtTaskCronEntity.class)
                 .eq(ZtTaskCronEntity::getEnabled, true)
                 .le(ZtTaskCronEntity::getNextTime, nextTime.getTime()).build());
+    }
+
+    public List<ZtTaskCronEntity> list(final TaskCronQuery query){
+        return list(QueryBuilder.lambda(ZtTaskCronEntity.class)
+                .eq(ZtTaskCronEntity::getTeamId, query.getTeamId())
+                .eq(ZtTaskCronEntity::getNamespace, query.getNamespace())
+                .like(query.getQ(), ZtTaskCronEntity::getTitle).build()
+                .orderByDesc(ZtTaskCronEntity::getId));
     }
 
     /**

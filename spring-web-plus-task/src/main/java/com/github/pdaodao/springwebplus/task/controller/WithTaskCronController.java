@@ -1,10 +1,13 @@
 package com.github.pdaodao.springwebplus.task.controller;
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
+import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskCronEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
+import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.task.service.WithTaskCronService;
 import com.github.pdaodao.springwebplus.task.service.ZtNodeService;
@@ -24,20 +27,29 @@ import java.util.List;
 public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
     protected abstract WithTaskCronService<T> jobCronService();
 
-    @Operation(summary = "切换调度状态")
+    @GetMapping("tree")
+    @Operation(summary = "任务树")
+    public List<ZtTaskCronEntity> tree(){
+        final TaskCronQuery query = new TaskCronQuery();
+        query.setTeamId(RequestUtil.getTeamId());
+        final List<ZtTaskCronEntity> list = jobCronService().list(query);
+        return IdUtil.toTree(list, ZtTaskCronEntity::getId, ZtTaskCronEntity::getPid);
+    }
+
     @GetMapping("toggle")
+    @Operation(summary = "切换调度状态")
     public Boolean cronToggle(final String id, final Boolean enabled){
         return jobCronService().toggleCron(id, enabled);
     }
 
-    @Operation(summary = "任务详情")
     @GetMapping("info")
+    @Operation(summary = "任务详情")
     public T info(final String id){
         return jobCronService().info(id);
     }
 
-    @Operation(summary = "保存调度信息-返回未来执行时间列表")
     @PostMapping("/save-cron")
+    @Operation(summary = "保存调度信息-返回未来执行时间列表")
     public List<String> saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
         Preconditions.checkNotNull(entity.getId(), "任务id不能为空.");
         Preconditions.checkNotNull(entity.getCronSetting(), "调度信息配置不能为空.");
@@ -61,13 +73,6 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
         return runtimeId;
     }
 
-    @Operation(summary = "获取任务日志")
-    @GetMapping("/getLog")
-    public LogResult getLog(final String logId, final Integer from) {
-        final ZtNodeService nodeService = SpringUtil.getBean(ZtNodeService.class);
-        return nodeService.getLog(logId, from);
-    }
-
     @Operation(summary = "运行记录")
     @GetMapping("log")
     public List<ZtTaskLogEntity> logs(final TaskLogQuery query){
@@ -75,6 +80,14 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
         final List<ZtTaskLogEntity> logs = jobCronService().logList(query);
         return logs;
     }
+
+    @Operation(summary = "获取任务日志文本")
+    @GetMapping("/getLog")
+    public LogResult getLog(final String logId, final Integer from) {
+        final ZtNodeService nodeService = SpringUtil.getBean(ZtNodeService.class);
+        return nodeService.getLog(logId, from);
+    }
+
 
 //
 //    @Operation(summary = "关闭任务")

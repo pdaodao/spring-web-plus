@@ -4,6 +4,7 @@ import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskCronDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskCronEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
+import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,12 @@ public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
         return taskCronDao().logList(query);
     }
 
+    public List<ZtTaskCronEntity> list(final TaskCronQuery query){
+        query.setNamespace(namespace());
+        return taskCronDao().list(query);
+    }
+
+
     /**
      * 任务详情
      * @return
@@ -40,6 +47,8 @@ public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
     public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
         return taskCronDao().saveCron(entity);
     }
+
+    protected abstract String namespace();
 
     /**
      * 获取任务内容
