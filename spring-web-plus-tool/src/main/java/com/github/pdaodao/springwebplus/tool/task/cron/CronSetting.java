@@ -1,8 +1,11 @@
 package com.github.pdaodao.springwebplus.tool.task.cron;
 
+import cn.hutool.core.collection.ListUtil;
+import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +21,11 @@ public class CronSetting {
     // 间隔时间
     private Long timeInterval = 1L;
 
+    //天 1 - 31 可以是周的天 也可以是月的天 -1 表示最后一天
+    private List<Integer> days = ListUtil.empty();
+
     // 小时列表 (0-23)
-    private List<Integer> hours;
+    private List<Integer> hours = ListUtil.empty();
 
     // 分钟 (0-59)
     private Integer minute;
@@ -72,5 +78,9 @@ public class CronSetting {
         setting.setType(CronSettingType.cron);
         setting.setCron(cron);
         return setting;
+    }
+
+    public String toString(){
+        return JsonUtil.toJsonString(this);
     }
 }

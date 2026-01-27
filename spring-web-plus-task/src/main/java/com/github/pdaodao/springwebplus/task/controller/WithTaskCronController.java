@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.task.controller;
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
@@ -17,6 +18,7 @@ import com.github.pdaodao.springwebplus.tool.task.LogResult;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +48,27 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
     @Operation(summary = "任务详情")
     public T info(final String id){
         return jobCronService().info(id);
+    }
+
+    @PostMapping("mkDir")
+    @Operation(summary = "保存分类")
+    public T mkDir(@RequestBody T body) throws Exception{
+        body.setIsDir(true);
+        jobCronService().save(body);
+        return body;
+    }
+
+    @PostMapping("save")
+    @Operation(summary = "保存")
+    public T save(@RequestBody T body) throws Exception{
+        jobCronService().save(body);
+        return body;
+    }
+
+    @PostMapping("delete")
+    @Operation(summary = "删除")
+    public Boolean delete(@Validated @RequestBody final IdWrap<String> idWrap){
+        return jobCronService().delete(idWrap.getId());
     }
 
     @PostMapping("/save-cron")

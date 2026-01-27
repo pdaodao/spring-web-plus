@@ -9,6 +9,7 @@ import com.github.pdaodao.springwebplus.task.mapper.ZtTaskCronMapper;
 import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
+import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -34,8 +35,7 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
         return list(QueryBuilder.lambda(ZtTaskCronEntity.class)
                 .eq(ZtTaskCronEntity::getTeamId, query.getTeamId())
                 .eq(ZtTaskCronEntity::getNamespace, query.getNamespace())
-                .like(query.getQ(), ZtTaskCronEntity::getTitle).build()
-                .orderByDesc(ZtTaskCronEntity::getId));
+                .like(query.getQ(), ZtTaskCronEntity::getTitle).build());
     }
 
     /**
@@ -46,9 +46,10 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
     public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
         final Date next = CronUtil.nextTime(entity.getCronSetting(), new Date());
         final Long nextTime = next != null ? next.getTime() : null;
+        entity.setNextTime(nextTime);
         return update(Wrappers.lambdaUpdate(ZtTaskCronEntity.class)
                 .eq(ZtTaskCronEntity::getId, entity.getId())
-                .set(ZtTaskCronEntity::getCronSetting, entity.getCronSetting())
+                .set(ZtTaskCronEntity::getCronSetting, JsonUtil.toJsonString(entity.getCronSetting()))
                 .set(ZtTaskCronEntity::getNextTime, nextTime));
     }
 

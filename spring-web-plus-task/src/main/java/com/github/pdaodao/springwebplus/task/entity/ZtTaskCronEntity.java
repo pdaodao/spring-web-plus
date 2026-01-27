@@ -55,6 +55,7 @@ public class ZtTaskCronEntity extends SnowIdWithTimeEntity implements WithPidStr
     private Long nextTime;
 
     @Schema(description = "是否启用调度")
+    @TableFieldSize(defaultValue = "true")
     private Boolean enabled;
 
     @Schema(description = "运行状态")
@@ -64,6 +65,7 @@ public class ZtTaskCronEntity extends SnowIdWithTimeEntity implements WithPidStr
     private String logId;
 
     @Schema(description = "版本")
+    @TableFieldSize(defaultValue = "1")
     private Integer version;
 
     @TableLogic
