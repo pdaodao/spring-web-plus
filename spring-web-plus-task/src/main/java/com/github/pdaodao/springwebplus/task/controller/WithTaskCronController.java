@@ -10,7 +10,7 @@ import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.task.service.WithTaskCronService;
-import com.github.pdaodao.springwebplus.task.service.ZtNodeService;
+import com.github.pdaodao.springwebplus.task.service.ZtExecutorService;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
 import com.github.pdaodao.springwebplus.tool.task.LogResult;
@@ -67,7 +67,7 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
     @Operation(summary = "提交任务运行")
     @PostMapping("/submit")
     public String submit(final @RequestBody CronTaskInfo taskInfo) throws Exception{
-        final ZtNodeService nodeService = SpringUtil.getBean(ZtNodeService.class);
+        final ZtExecutorService nodeService = SpringUtil.getBean(ZtExecutorService.class);
         final String runtimeId = nodeService.triggerByAdmin(taskInfo);
         ThreadUtil.safeSleep(1000);
         return runtimeId;
@@ -84,7 +84,7 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
     @Operation(summary = "获取任务日志文本")
     @GetMapping("/getLog")
     public LogResult getLog(final String logId, final Integer from) {
-        final ZtNodeService nodeService = SpringUtil.getBean(ZtNodeService.class);
+        final ZtExecutorService nodeService = SpringUtil.getBean(ZtExecutorService.class);
         return nodeService.getLog(logId, from);
     }
 

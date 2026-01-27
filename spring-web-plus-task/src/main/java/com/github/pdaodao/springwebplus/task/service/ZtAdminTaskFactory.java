@@ -6,7 +6,6 @@ import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
 import com.github.pdaodao.springwebplus.tool.task.core.TaskRunnable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * 调度中心任务提交任务工厂
@@ -17,7 +16,7 @@ public class ZtAdminTaskFactory implements TaskFactory {
 
     @Override
     public TaskRunnable executor(CronTaskInfo taskInfo) {
-        return new ZtAdminTaskRunner(taskInfo, SpringUtil.getBean(ZtNodeService.class));
+        return new ZtAdminTaskRunner(taskInfo, SpringUtil.getBean(ZtExecutorService.class));
     }
 
     @Override
@@ -30,9 +29,9 @@ public class ZtAdminTaskFactory implements TaskFactory {
      */
     public static class ZtAdminTaskRunner implements TaskRunnable{
         private final CronTaskInfo taskInfo;
-        private final ZtNodeService nodeService;
+        private final ZtExecutorService nodeService;
 
-        public ZtAdminTaskRunner(CronTaskInfo taskInfo, ZtNodeService nodeService) {
+        public ZtAdminTaskRunner(CronTaskInfo taskInfo, ZtExecutorService nodeService) {
             this.taskInfo = taskInfo;
             this.nodeService = nodeService;
         }

@@ -4,7 +4,7 @@ import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
-import com.github.pdaodao.springwebplus.task.entity.ZtTaskNodeEntity;
+import com.github.pdaodao.springwebplus.task.entity.ZtTaskExecutorEntity;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.LogResult;
 import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class ZtNodeService {
-    private final ZtTaskNodeRegistService registService;
+public class ZtExecutorService {
+    private final ZtExecutorRegistService registService;
     private final ZtTaskLogDao logDao;
     private final TaskFactory taskFactory;
 
@@ -33,7 +33,7 @@ public class ZtNodeService {
      */
     public String triggerByAdmin(final CronTaskInfo cronTaskInfo) throws Exception{
         Preconditions.checkNotNull(cronTaskInfo.getTaskId(), "task-id is null.");
-        final ZtTaskNodeEntity node = registService.executorNode(cronTaskInfo.getTaskId());
+        final ZtTaskExecutorEntity node = registService.executorNode(cronTaskInfo.getTaskId());
         final ZtTaskLogEntity log = new ZtTaskLogEntity();
         log.setTaskId(cronTaskInfo.getTaskId());
         log.setNodeId(node.getId());
@@ -68,7 +68,7 @@ public class ZtNodeService {
         final ZtTaskLogEntity log = logDao.getById(logId);
         Preconditions.checkNotNull(log, "任务运行记录不存在.");
         Preconditions.checkNotBlank(log.getNodeId(), "任务运行执行器为空.");
-        final ZtTaskNodeEntity nodeEntity = registService.getById(log.getNodeId());
+        final ZtTaskExecutorEntity nodeEntity = registService.getById(log.getNodeId());
         Preconditions.checkNotNull(nodeEntity, "执行器不存在.");
         final Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("logId", logId);

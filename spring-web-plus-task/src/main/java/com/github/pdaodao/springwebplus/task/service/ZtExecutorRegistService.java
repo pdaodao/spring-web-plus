@@ -7,8 +7,8 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.task.config.ZtTaskNodeConfig;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
-import com.github.pdaodao.springwebplus.task.dao.ZtTaskNodeDao;
-import com.github.pdaodao.springwebplus.task.entity.ZtTaskNodeEntity;
+import com.github.pdaodao.springwebplus.task.dao.ZtTaskExecutorDao;
+import com.github.pdaodao.springwebplus.task.entity.ZtTaskExecutorEntity;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.extern.slf4j.Slf4j;
@@ -28,24 +28,24 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
-    private final ZtTaskNodeDao nodeDao;
+public class ZtExecutorRegistService implements InitializingBean, Runnable {
+    private final ZtTaskExecutorDao nodeDao;
     private final ZtTaskLogDao logDao;
     private final ZtTaskNodeConfig taskNodeConfig;
-    private final ZtNodeAdminService adminService;
+    private final ZtExecutorAdminService adminService;
     private transient ScheduledExecutorService scheduler;
 
-    private List<ZtTaskNodeEntity> nodeList = new ArrayList<>();
+    private List<ZtTaskExecutorEntity> nodeList = new ArrayList<>();
 
-    public ZtTaskNodeRegistService(ZtTaskNodeDao nodeDao, ZtTaskLogDao logDao, ZtTaskNodeConfig nodeConfig, ZtNodeAdminService adminScheduler) {
+    public ZtExecutorRegistService(ZtTaskExecutorDao nodeDao, ZtTaskLogDao logDao, ZtTaskNodeConfig nodeConfig, ZtExecutorAdminService adminScheduler) {
         this.nodeDao = nodeDao;
         this.logDao = logDao;
         this.taskNodeConfig = nodeConfig;
         this.adminService = adminScheduler;
     }
 
-    public ZtTaskNodeEntity executorNode(final String taskId) {
-        final List<ZtTaskNodeEntity> ns = nodeList.stream()
+    public ZtTaskExecutorEntity executorNode(final String taskId) {
+        final List<ZtTaskExecutorEntity> ns = nodeList.stream()
                 .filter(t -> BooleanUtil.isTrue(t.getIsExecutor()))
                 .filter(t -> BooleanUtil.isTrue(t.getEnabled()))
                 .collect(Collectors.toList());
@@ -56,13 +56,13 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
     @Override
     public void run() {
         try{
-            final ZtTaskNodeEntity nodeEntity = new ZtTaskNodeEntity();
+            final ZtTaskExecutorEntity nodeEntity = new ZtTaskExecutorEntity();
             nodeEntity.setUrl(taskNodeConfig.getHost());
             nodeEntity.setId(taskNodeConfig.getNodeId());
             nodeEntity.setIsAdmin(taskNodeConfig.getIsAdmin());
             nodeEntity.setIsExecutor(taskNodeConfig.getIsExecutor());
             nodeEntity.setAccess(taskNodeConfig.getAccess());
-            final ZtTaskNodeEntity old = nodeDao.getById(taskNodeConfig.getNodeId());
+            final ZtTaskExecutorEntity old = nodeDao.getById(taskNodeConfig.getNodeId());
             if(old != null){
                 nodeEntity.setIsAdmin(null);
                 nodeEntity.setIsExecutor(null);
@@ -77,18 +77,18 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
         }
     }
 
-    public ZtTaskNodeEntity getById(final String id){
+    public ZtTaskExecutorEntity getById(final String id){
         return nodeList.stream().filter(t -> StrUtil.equals(id, t.getId())).findFirst().get();
     }
 
     private void loadNodes(){
-        final List<ZtTaskNodeEntity> oldList = nodeList;
+        final List<ZtTaskExecutorEntity> oldList = nodeList;
         nodeList = nodeDao.listEnabled();
         if(CollUtil.isEmpty(nodeList)){
             return;
         }
 
-        final Optional<ZtTaskNodeEntity> firstOption = nodeList.stream().filter(t -> t.getIsAdmin()).findFirst();
+        final Optional<ZtTaskExecutorEntity> firstOption = nodeList.stream().filter(t -> t.getIsAdmin()).findFirst();
         if(!firstOption.isPresent()){
             adminService.setIsAdmin(false);
         }
@@ -96,7 +96,7 @@ public class ZtTaskNodeRegistService implements InitializingBean, Runnable {
             adminService.setIsAdmin(true);
         }
         final Set<String> ids = nodeDao.list().stream().map(t -> t.getId()).collect(Collectors.toSet());
-        for(final ZtTaskNodeEntity old: oldList){
+        for(final ZtTaskExecutorEntity old: oldList){
             if(!ids.contains(old.getId())){
                 logDao.setRunningErrorByNodeId(old.getId());
             }

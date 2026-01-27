@@ -5,12 +5,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ZtNodeAdminScheduler implements InitializingBean {
+public class ZtExecutorAdminScheduler implements InitializingBean {
     private final ZtAdminTaskFactory adminTaskFactory;
     private final ZtCronTaskInfoLoader taskInfoLoader;
     private TaskTimer taskTimer;
 
-    public ZtNodeAdminScheduler(ZtCronTaskInfoLoader taskInfoLoader) {
+    public ZtExecutorAdminScheduler(ZtCronTaskInfoLoader taskInfoLoader) {
         this.adminTaskFactory = new ZtAdminTaskFactory();
         this.taskInfoLoader = taskInfoLoader;
     }

@@ -2,7 +2,7 @@ package com.github.pdaodao.springwebplus.task.controller;
 
 import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.base.auth.SysLogAop;
-import com.github.pdaodao.springwebplus.task.service.ZtNodeService;
+import com.github.pdaodao.springwebplus.task.service.ZtExecutorService;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.LogResult;
 import com.github.pdaodao.springwebplus.tool.task.LogUtil;
@@ -23,7 +23,7 @@ import java.util.Date;
 @RequestMapping("/node/api/v1/executor")
 @AllArgsConstructor
 public class ZtExecutorNodeController {
-    private final ZtNodeService nodeService;
+    private final ZtExecutorService nodeService;
     @IgnoreLogin
     @PostMapping("submit")
     @Operation(summary = "提交任务")
