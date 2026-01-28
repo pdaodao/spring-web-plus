@@ -27,6 +27,9 @@ public class CronUtil {
             return null;
         }
         final Date now = DateTimeUtil.now();
+        if(lastTime == null){
+            lastTime = now;
+        }
         if(CronSettingType.fixed == cronSetting.getType()){
             Preconditions.checkNotNull(cronSetting.getTimeInterval(), "fixed cron time is null");
             return new Date(cronSetting.getTimeInterval());
@@ -36,9 +39,6 @@ public class CronUtil {
         }
         if(cronSetting.getEndTime() != null && now.after(cronSetting.getEndTime())){
             return null;
-        }
-        if(lastTime == null){
-            lastTime = DateTimeUtil.now();
         }
         if(CronSettingType.cron == cronSetting.getType()){
             return nextTime(cronSetting.getCron(), lastTime);
@@ -51,14 +51,19 @@ public class CronUtil {
         if(CronSettingType.minute == cronSetting.getType()){
             return DateTimeUtil.offsetMinute(lastTime,  (int) (long)cronSetting.getTimeInterval());
         }
-        // 按小时调度 几小时调度一次
+        // 按小时调度 每小时的几分钟
         if(CronSettingType.hour == cronSetting.getType()){
-            final Date d = DateTimeUtil.offsetHour(lastTime, (int) (long)cronSetting.getTimeInterval());
-            // 指定调度的分钟
-            if(cronSetting.getMinute() != null){
-                d.setMinutes(cronSetting.getMinute());
+            for(int i = 0; i <=1; i++){
+                final Date d = DateTimeUtil.offsetHour(lastTime, i);
+                // 指定调度的分钟
+                if(cronSetting.getMinute() != null){
+                    d.setMinutes(cronSetting.getMinute());
+                }
+                if(d.after(DateTimeUtil.offsetSecond(now, 1))){
+                    return d;
+                }
             }
-            return d;
+            return now;
         }
         // 按天调度 几天调度一次
         if(CronSettingType.day == cronSetting.getType()){
@@ -91,7 +96,7 @@ public class CronUtil {
 //        final Date d = new Date();
 //        d.setHours(11);
 //        System.out.println(DateTimeUtil.formatDateTime(d));
-        final CronSetting cronSetting = CronSetting.of(CronSettingType.day, 1);
+        final CronSetting cronSetting = CronSetting.of(CronSettingType.hour, 1);
         cronSetting.setHours(ListUtil.of(3));
         cronSetting.setMinute(5);
         final Date next = CronUtil.nextTime(cronSetting, null);

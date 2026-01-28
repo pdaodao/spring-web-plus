@@ -102,7 +102,7 @@ public class ZtExecutorRegistService implements InitializingBean, Runnable {
         if(!firstOption.isPresent()){
             adminService.setIsAdmin(false);
         }
-        if(ObjectUtil.equals(taskNodeConfig.getNodeId() + 100, firstOption.get().getId())){
+        if(ObjectUtil.equals(taskNodeConfig.getNodeId(), firstOption.get().getId())){
             adminService.setIsAdmin(true);
         }
         final Set<String> ids = nodeDao.list().stream().map(t -> t.getId()).collect(Collectors.toSet());

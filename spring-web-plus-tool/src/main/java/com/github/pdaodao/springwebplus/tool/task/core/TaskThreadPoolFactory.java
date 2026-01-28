@@ -10,7 +10,7 @@ public class TaskThreadPoolFactory {
     public static int bigCorePoolSize = 2;
     public static int bigMaxPoolSize = 100;
     public static int smallCorePoolSize = 2;
-    public static int smallMaxPoolSize = 8;
+    public static int smallMaxPoolSize = 12;
 
     private static TaskThreadPool big;
     private static TaskThreadPool small;

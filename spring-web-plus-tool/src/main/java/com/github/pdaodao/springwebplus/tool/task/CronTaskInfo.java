@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.task;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
 import com.github.pdaodao.springwebplus.tool.task.cron.CronSetting;
 import lombok.Data;
@@ -37,4 +38,8 @@ public class CronTaskInfo {
      * 运行参数
      */
     private ConfigOptions params;
+
+    public String key(){
+        return StrUtil.join(",", taskId, logId);
+    }
 }

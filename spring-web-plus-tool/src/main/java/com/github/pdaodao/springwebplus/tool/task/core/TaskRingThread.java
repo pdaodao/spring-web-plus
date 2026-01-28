@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.task.core;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
@@ -83,19 +84,25 @@ public class TaskRingThread extends Thread{
      * @param taskInfo
      * @param nextTime 一分钟之内的时间
      */
-    public synchronized void addToRing(final CronTaskInfo taskInfo, long nextTime) {
+    public synchronized boolean addToRing(final CronTaskInfo taskInfo, long nextTime) {
         if(taskInfo == null || nextTime < 1000){
-            return;
+            return false;
         }
         Preconditions.assertTrue(nextTime > DateTimeUtil.offsetMinute(DateTimeUtil.now(), 1).getTime(), "非法的精细时间调度要在一分钟之内");
         nextTime = nextTime % 60000;
-        final int tick = (int) nextTime / 100;
+        final int tick = (int) (nextTime / 100);
         List<CronTaskInfo> list = ringData.get(tick);
         if (list == null) {
             list = new ArrayList<>();
             ringData.put(tick, list);
         }
+        for(final CronTaskInfo old : list){
+            if(StrUtil.equals(old.key(), taskInfo.key())){
+                return false;
+            }
+        }
         list.add(taskInfo);
+        return true;
     }
 
     /**
@@ -125,7 +132,7 @@ public class TaskRingThread extends Thread{
             try{
                 final TaskRunnable taskExecutor = executorFactory.executor(taskInfo);
                 Preconditions.checkNotNull(taskExecutor, "TaskExecutor is null by task-info");
-                TaskThreadPoolFactory.ofBig().execute(taskExecutor);
+                TaskThreadPoolFactory.ofSmall().execute(taskExecutor);
             }catch (Exception e){
                 executorFactory.triggerError(taskInfo, e);
             }

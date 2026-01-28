@@ -48,7 +48,11 @@ public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
         if(cronInfo == null){
             return null;
         }
-        return taskContent(cronInfo);
+        T ret = taskContent(cronInfo);
+        if(ret != null && cronInfo.getCronSetting() != null && cronInfo.getNextTime() != null){
+            ret.setNextTime(cronInfo.getNextTime());
+        }
+        return ret;
     }
 
     public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
@@ -79,7 +83,7 @@ public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
             final ZtTaskCronEntity old = taskCronDao().getById(body.getId());
             if(old.getCronSetting() == null){
                 needSaveCron = true;
-            }else if(StrUtil.equals(body.getCronSetting().toString(), old.getCronSetting().toString())){
+            }else if(!StrUtil.equals(body.getCronSetting().toString(), old.getCronSetting().toString())){
                 needSaveCron = true;
             }
         }

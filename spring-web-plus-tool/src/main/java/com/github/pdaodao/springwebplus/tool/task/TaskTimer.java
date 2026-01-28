@@ -43,7 +43,10 @@ public class TaskTimer extends Thread{
         while (true){
             try{
                if(isRunning){
-                   scan();
+                   final List<CronTaskInfo> taskList = loader.load();
+                   for(int i = 0; i < 60; i++){
+                       scan(taskList);
+                   }
                }else {
                    TimeUnit.MILLISECONDS.sleep(2000);
                }
@@ -57,11 +60,10 @@ public class TaskTimer extends Thread{
      * 扫描任务并调度
      * @throws Exception
      */
-    private void scan() throws Exception{
+    private void scan(final List<CronTaskInfo> taskList) throws Exception{
         final long nowTime = DateTimeUtil.currentTimeMillis();
-        final long upTime = nowTime + 60000 - 200;
+        final long upTime = nowTime + 1000 + 200;
         try{
-            final List<CronTaskInfo> taskList = loader.load();
             final List<CronTaskInfo> toUpdateList = new ArrayList<>();
             if(CollUtil.isNotEmpty(taskList)){
                 for(final CronTaskInfo t: taskList){
@@ -69,8 +71,10 @@ public class TaskTimer extends Thread{
                         continue;
                     }
                     if(t.getNextTime() <= upTime){
-                        ringThread.addToRing(t, t.getNextTime());
-                        toUpdateList.add(t);
+                        final boolean added = ringThread.addToRing(t, t.getNextTime());
+                        if(added){
+                            toUpdateList.add(t);
+                        }
                     }
                 }
             }

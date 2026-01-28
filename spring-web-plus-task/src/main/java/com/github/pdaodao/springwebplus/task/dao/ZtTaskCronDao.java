@@ -9,6 +9,7 @@ import com.github.pdaodao.springwebplus.task.mapper.ZtTaskCronMapper;
 import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,12 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
      * @return
      */
     public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
-        final Date next = CronUtil.nextTime(entity.getCronSetting(), new Date());
+        final Date now = DateTimeUtil.now();
+        Date lastTime = entity.getCronSetting().getBeginTime();
+        if(lastTime == null || now.after(lastTime)){
+            lastTime = now;
+        }
+        final Date next = CronUtil.nextTime(entity.getCronSetting(), lastTime);
         final Long nextTime = next != null ? next.getTime() : null;
         entity.setNextTime(nextTime);
         return update(Wrappers.lambdaUpdate(ZtTaskCronEntity.class)
