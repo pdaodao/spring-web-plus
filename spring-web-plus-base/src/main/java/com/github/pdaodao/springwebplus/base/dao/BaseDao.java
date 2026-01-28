@@ -90,6 +90,12 @@ public abstract class BaseDao<M extends BaseMapper<T>, T extends Entity> extends
                 withTeam.setTeamId(RequestUtil.getTeamOrDefault());
             }
         }
+        if(entity instanceof WithEnabled){
+            final WithEnabled withEnabled = (WithEnabled) entity;
+            if(withEnabled.getEnabled() == null){
+                withEnabled.setEnabled(true);
+            }
+        }
         if(entity instanceof WithProject){
             final WithProject p = (WithProject) entity;
             if(p.getProjectId() == null){
