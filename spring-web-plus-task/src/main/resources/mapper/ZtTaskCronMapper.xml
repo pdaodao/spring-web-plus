@@ -28,4 +28,11 @@
             </if>
         </where>
     </select>
+
+    <update id="setExecutorRestartError">
+        update zt_task_cron t
+        join zt_task_log log on t.log_id = log.id
+        set task_status = 'cancel'
+        where log.node_id = #{nodeId} and log.task_status = 'running' and t.log_id is not null
+    </update>
 </mapper>

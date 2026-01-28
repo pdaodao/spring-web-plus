@@ -62,4 +62,8 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
     public List<ZtTaskLogEntity> logList(final TaskLogQuery query){
         return baseMapper.logList(query);
     }
+
+    public void setExecutorRestartError(final String nodeId){
+
+    }
 }

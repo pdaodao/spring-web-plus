@@ -13,7 +13,7 @@ public class ZtTaskLogDao extends BaseDao<ZtTaskLogMapper, ZtTaskLogEntity> {
         return update(Wrappers.lambdaUpdate(ZtTaskLogEntity.class)
                 .eq(ZtTaskLogEntity::getNodeId, nodeId)
                 .eq(ZtTaskLogEntity::getTaskStatus, TaskStatus.running)
-                .set(ZtTaskLogEntity::getTaskStatus, TaskStatus.failed)
+                .set(ZtTaskLogEntity::getTaskStatus, TaskStatus.cancel)
                 .set(ZtTaskLogEntity::getError, "执行节点重启"));
     }
 }

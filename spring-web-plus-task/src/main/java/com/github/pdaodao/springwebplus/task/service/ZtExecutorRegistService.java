@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.task.config.ZtTaskExecutorConfig;
+import com.github.pdaodao.springwebplus.task.dao.ZtTaskCronDao;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskExecutorDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskExecutorEntity;
@@ -30,15 +31,19 @@ import java.util.stream.Collectors;
 @Service
 public class ZtExecutorRegistService implements InitializingBean, Runnable {
     private final ZtTaskExecutorDao nodeDao;
+    private final ZtTaskCronDao cronDao;
     private final ZtTaskLogDao logDao;
     private final ZtTaskExecutorConfig taskNodeConfig;
     private final ZtExecutorAdminService adminService;
     private transient ScheduledExecutorService scheduler;
 
     private List<ZtTaskExecutorEntity> nodeList = new ArrayList<>();
+    private boolean processed = false;
 
-    public ZtExecutorRegistService(ZtTaskExecutorDao nodeDao, ZtTaskLogDao logDao, ZtTaskExecutorConfig nodeConfig, ZtExecutorAdminService adminScheduler) {
+    public ZtExecutorRegistService(ZtTaskExecutorDao nodeDao, ZtTaskCronDao cronDao, ZtTaskLogDao logDao,
+                                   ZtTaskExecutorConfig nodeConfig, ZtExecutorAdminService adminScheduler) {
         this.nodeDao = nodeDao;
+        this.cronDao = cronDao;
         this.logDao = logDao;
         this.taskNodeConfig = nodeConfig;
         this.adminService = adminScheduler;
@@ -55,6 +60,11 @@ public class ZtExecutorRegistService implements InitializingBean, Runnable {
 
     @Override
     public void run() {
+        if(processed == false){
+            cronDao.setExecutorRestartError(taskNodeConfig.getNodeId());
+            logDao.setRunningErrorByNodeId(taskNodeConfig.getNodeId());
+        }
+        processed = true;
         try{
             final ZtTaskExecutorEntity nodeEntity = new ZtTaskExecutorEntity();
             nodeEntity.setUrl(taskNodeConfig.getHost());
@@ -107,7 +117,6 @@ public class ZtExecutorRegistService implements InitializingBean, Runnable {
     public void afterPropertiesSet() throws Exception {
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(this, 6, 90, TimeUnit.SECONDS);
-        logDao.setRunningErrorByNodeId(taskNodeConfig.getNodeId());
         taskNodeConfig.setAccess(RandomUtil.randomString(8));
     }
 }
