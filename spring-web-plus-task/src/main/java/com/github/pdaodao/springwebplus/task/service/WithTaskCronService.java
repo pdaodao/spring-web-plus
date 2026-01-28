@@ -22,7 +22,9 @@ public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
      * @param cronEnabled
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public Boolean toggleCron(final String id, final Boolean cronEnabled){
+        toggleEnabled(id, cronEnabled);
         return taskCronDao().toggleCron(id, cronEnabled);
     }
 
@@ -106,6 +108,8 @@ public abstract class WithTaskCronService<T extends ZtTaskCronEntity>{
     protected abstract T taskContent(final ZtTaskCronEntity taskInfo);
 
     protected abstract T saveContent(final T t);
+
+    protected abstract Boolean toggleEnabled(final String id, final Boolean enabled);
 
     protected abstract Boolean deleteContent(final String id);
 }

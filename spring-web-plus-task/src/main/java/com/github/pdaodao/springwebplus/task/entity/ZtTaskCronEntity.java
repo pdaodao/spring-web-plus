@@ -21,7 +21,7 @@ import java.util.List;
 @Schema(description = "任务调度信息")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TableName(value = "zt_task_cron", autoResultMap = true)
-public class ZtTaskCronEntity extends SnowIdWithTimeEntity implements WithPidString, WithTeam, WithDelete, WithChildren<ZtTaskCronEntity> {
+public class ZtTaskCronEntity extends SnowIdWithTimeEntity implements WithPidString, WithEnabled, WithTeam, WithDelete, WithChildren<ZtTaskCronEntity> {
     @TableFieldSize(200)
     @NotBlank(message = "名称不能为空")
     @Length(max = 100, message = "名称不能超过100个字")
