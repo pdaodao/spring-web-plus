@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.db.dialect.sqlite;
 
+import com.github.pdaodao.springwebplus.tool.db.DbUtil;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.table.DbType;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DataTypeConverter;
@@ -14,12 +15,23 @@ public class SqliteDialect extends BaseDbDialect {
 
     @Override
     public String driverName() {
-        return null;
+        return "org.sqlite.JDBC";
+    }
+
+    @Override
+    public String keywordsFile() {
+        return "/META-INF/db-keywords/sqlite.keywords";
     }
 
     @Override
     public String buildUrl(DbInfo dbInfo) {
+        // spring.datasource.url=jdbc:sqlite:db.db
         return null;
+    }
+
+    @Override
+    protected String buildUrlDriverName() {
+        return "sqlite";
     }
 
     @Override
@@ -29,12 +41,15 @@ public class SqliteDialect extends BaseDbDialect {
 
     @Override
     public String escape() {
-        return null;
+        return "\"";
     }
 
     @Override
     public String pageSql(String sql, Long offset, Long size) {
-        return null;
+        if (offset == null || offset < 1) {
+            return DbUtil.pageSqlWrap(sql, "limit " + size);
+        }
+        return DbUtil.pageSqlWrap(sql, "limit " + size + " offset " + offset);
     }
 
     @Override
