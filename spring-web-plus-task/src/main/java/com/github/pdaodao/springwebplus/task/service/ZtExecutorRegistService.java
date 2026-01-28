@@ -55,7 +55,7 @@ public class ZtExecutorRegistService implements InitializingBean, Runnable {
                 .filter(t -> BooleanUtil.isTrue(t.getEnabled()))
                 .collect(Collectors.toList());
         Preconditions.checkArgument(CollUtil.size(ns) > 0, "执行节点不存在");
-        return ns.get(RandomUtil.randomInt(ns.size() - 1));
+        return ns.get(RandomUtil.randomInt(ns.size()));
     }
 
     @Override

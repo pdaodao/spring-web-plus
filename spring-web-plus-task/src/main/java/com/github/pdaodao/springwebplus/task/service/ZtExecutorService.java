@@ -1,7 +1,9 @@
 package com.github.pdaodao.springwebplus.task.service;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
+import com.github.pdaodao.springwebplus.task.config.ZtTaskExecutorConfig;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskExecutorEntity;
@@ -25,6 +27,7 @@ public class ZtExecutorService {
     private final ZtExecutorRegistService registService;
     private final ZtTaskLogDao logDao;
     private final TaskFactory taskFactory;
+    private final ZtTaskExecutorConfig executorConfig;
 
     /**
      * 任务中心触发任务到执行器
@@ -96,10 +99,25 @@ public class ZtExecutorService {
 
     public void doExecute(final CronTaskInfo taskInfo){
         Preconditions.checkNotNull(taskInfo.getTaskId(), "任务id为空.");
-        Preconditions.checkNotNull(taskInfo.getLogId(), "任务运行id为空.");
-        final TaskRunnable taskRunnable = taskFactory.executor(taskInfo);
-        Preconditions.checkNotNull(taskRunnable, "不支持该任务运行{}", taskInfo.getTaskType());
-        TaskThreadPoolFactory.ofBig()
-                .execute(taskRunnable);
+        final ZtTaskLogEntity logEntity = new ZtTaskLogEntity();
+        logEntity.setId(taskInfo.getLogId());
+        if(StrUtil.isBlank(taskInfo.getLogId())){
+            logEntity.setTaskId(taskInfo.getTaskId());
+            logEntity.setTaskStatus(TaskStatus.running);
+            logEntity.setIsCron(taskInfo.getIsCron());
+            logEntity.setNodeId(executorConfig.getNodeId());
+            logDao.save(logEntity);
+            taskInfo.setLogId(logEntity.getId());
+        }
+        try{
+            final TaskRunnable taskRunnable = taskFactory.executor(taskInfo);
+            Preconditions.checkNotNull(taskRunnable, "不支持该任务运行{}", taskInfo.getTaskType());
+            TaskThreadPoolFactory.ofBig()
+                    .execute(taskRunnable);
+        }catch (Exception e){
+            logEntity.setTaskStatus(TaskStatus.failed);
+            logEntity.setError(ExceptionUtil.getSimpleMsg(e));
+            logDao.save(logEntity);
+        }
     }
 }

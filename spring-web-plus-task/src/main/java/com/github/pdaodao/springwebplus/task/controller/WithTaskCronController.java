@@ -92,7 +92,7 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
     public String submit(final @RequestBody CronTaskInfo taskInfo) throws Exception{
         final ZtExecutorService nodeService = SpringUtil.getBean(ZtExecutorService.class);
         final String runtimeId = nodeService.triggerByAdmin(taskInfo);
-        ThreadUtil.safeSleep(1000);
+        ThreadUtil.safeSleep(300);
         return runtimeId;
     }
 
