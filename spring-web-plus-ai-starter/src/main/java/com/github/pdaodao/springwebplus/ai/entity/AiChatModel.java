@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.ai.base.AiChatModelOption;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.WithDelete;
 import com.github.pdaodao.springwebplus.base.entity.WithEnabled;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
@@ -17,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @Schema(description = "模型信息")
 @TableName(value = "ai_chat_model", autoResultMap = true)
-public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled {
+public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled, WithDelete {
     @Schema(description = "名称")
     @Length(max = 64, message = "名称长度超过64限制")
     private String title;
