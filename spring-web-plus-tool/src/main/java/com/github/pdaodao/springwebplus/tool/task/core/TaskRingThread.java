@@ -42,13 +42,11 @@ public class TaskRingThread extends Thread{
                 }
             }
             try {
-                final int tick = (int) ((DateTimeUtil.currentTimeMillis() % 60000) / 100);
+                final int tick = (int) ((DateTimeUtil.currentTimeMillis() % 1000) / 100);
                 final List<CronTaskInfo> toRunList = new ArrayList<>();
-                for (int i = 0; i < 3; i++) {
-                    final List<CronTaskInfo> tmpData = getRing((tick + 600 - i) % 600);
-                    if (tmpData != null) {
-                        toRunList.addAll(tmpData);
-                    }
+                final List<CronTaskInfo> tmpData = getRing(tick % 10);
+                if (tmpData != null) {
+                    toRunList.addAll(tmpData);
                 }
                 if (CollUtil.isNotEmpty(toRunList)) {
                     for (final CronTaskInfo task : toRunList) {
@@ -89,8 +87,8 @@ public class TaskRingThread extends Thread{
             return false;
         }
         Preconditions.assertTrue(nextTime > DateTimeUtil.offsetMinute(DateTimeUtil.now(), 1).getTime(), "非法的精细时间调度要在一分钟之内");
-        nextTime = nextTime % 60000;
-        final int tick = (int) (nextTime / 100);
+        nextTime = (nextTime - 500) % 1000;
+        final int tick = ((int) (nextTime / 100)) % 10;
         List<CronTaskInfo> list = ringData.get(tick);
         if (list == null) {
             list = new ArrayList<>();

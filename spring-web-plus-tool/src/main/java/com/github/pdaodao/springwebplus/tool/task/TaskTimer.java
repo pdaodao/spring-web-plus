@@ -62,7 +62,7 @@ public class TaskTimer extends Thread{
      */
     private void scan(final List<CronTaskInfo> taskList) throws Exception{
         final long nowTime = DateTimeUtil.currentTimeMillis();
-        final long upTime = nowTime + 1000 + 200;
+        final long upTime = nowTime + 1000;
         try{
             final List<CronTaskInfo> toUpdateList = new ArrayList<>();
             if(CollUtil.isNotEmpty(taskList)){
