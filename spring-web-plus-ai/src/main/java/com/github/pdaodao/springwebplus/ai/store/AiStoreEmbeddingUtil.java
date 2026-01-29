@@ -22,6 +22,24 @@ public class AiStoreEmbeddingUtil {
     }
 
     /**
+     * 在删除数据前 先查询一下缓存向量化数据
+     * @param query
+     * @param vectorStore
+     * @param aiEmbedding
+     * @throws Exception
+     */
+    public static void cacheBeforeDelete(final AiEmbedTextQuery query, final AiVectorStore vectorStore,
+                                         final AiEmbedding aiEmbedding) throws Exception{
+        query.setTopK(200);
+        query.setScore(0.0);
+        final List<AiEmbedText> oldList = vectorStore.query(query);
+        for(final AiEmbedText tt: oldList){
+            aiEmbedding.putCache(tt.getContent(), tt.getEmbedding());
+        }
+    }
+
+
+    /**
      * 在保存数据前进行向量化
      * 1. 先检索数据 节省向量化资源
      * 2. 调用向量化模型
@@ -59,7 +77,7 @@ public class AiStoreEmbeddingUtil {
         final List<float[]> fts = aiEmbedding.embed(toProcessed);
         int i = 0;
         for(final AiEmbedText t: documents){
-            if(StrUtil.isNotBlank(t.getContent())){
+            if(StrUtil.isBlank(t.getContent())){
                 continue;
             }
             t.setEmbedding(fts.get(i++));

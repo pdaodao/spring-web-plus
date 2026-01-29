@@ -35,14 +35,14 @@ public class AiChatTermTextService {
         }
         final AiEmbedText embedText = new AiEmbedText();
         embedText.setNamespace(AiChatNamespace.term.name());
+        embedText.setTeamId(text.getTeamId());
         embedText.setType("text");
         embedText.setId(text.getId());
-        embedText.setTeamId(text.getTeamId());
         embedText.setName(text.getTitle());
         embedText.setTitle(text.getRemark());
         embedText.setContent(text.toEmbeddingText());
         AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(text.getTeamId(), null));
-        vectorStore.get().save(ListUtil.of(embedText));
+        vectorStore.get().save(ListUtil.of(embedText), true);
     }
 
     public Boolean deleteById(final String id) throws Exception{

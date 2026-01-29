@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.ai.store.elasticsearch;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.KnnSearch;
@@ -56,23 +57,25 @@ public class ElasticsearchVectorStore implements AiVectorStore {
     }
 
     @Override
-    public void save(final List<AiEmbedText> documents) throws Exception {
+    public void save(final List<AiEmbedText> documents, final boolean isDelete) throws Exception {
         if (CollUtil.isEmpty(documents)) {
             return;
         }
         checkNamespace(documents);
-        // 旧数据的查询条件
-        final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        for(final AiEmbedText t: documents){
-            query.addNamespace(t.getNamespace());
-            query.setTeamId(t.getTeamId());
-            query.addTopic(t.getTopic());
-            query.addDocId(t.getDocId());
-            query.addType(t.getType());
-            query.addId(t.getId());
+        if(BooleanUtil.isTrue(isDelete)){
+            // 旧数据的查询条件
+            final AiEmbedTextQuery query = new AiEmbedTextQuery();
+            for(final AiEmbedText t: documents){
+                query.addNamespace(t.getNamespace());
+                query.setTeamId(t.getTeamId());
+                query.addTopic(t.getTopic());
+                query.addDocId(t.getDocId());
+                query.addType(t.getType());
+                query.addId(t.getId());
+            }
+            // 删除旧数据
+            deleteByQuery(query);
         }
-        // 删除旧数据
-        deleteByQuery(query);
         // 插入新数据
         final BulkRequest.Builder bulkRequest = new BulkRequest.Builder();
         bulkRequest.timeout(Time.of(f -> f.time("90s")));

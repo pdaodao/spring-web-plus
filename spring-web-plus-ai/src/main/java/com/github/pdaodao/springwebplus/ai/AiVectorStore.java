@@ -11,9 +11,10 @@ public interface AiVectorStore {
     /**
      * 保存或者更新
      * @param documents
+     * @param isDelete   是否根据 documents 中的条件先删除数据
      * @throws Exception
      */
-    void save(List<AiEmbedText> documents) throws Exception;
+    void save(final List<AiEmbedText> documents, final boolean isDelete) throws Exception;
 
     /**
      * 查询

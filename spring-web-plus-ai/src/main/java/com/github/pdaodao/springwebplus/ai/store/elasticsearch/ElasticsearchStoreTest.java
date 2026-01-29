@@ -34,7 +34,7 @@ public class ElasticsearchStoreTest {
         t4.setNamespace("test");
         t4.setId("db1d3ff1-ba90-44af-a4bf-40012e9ebecc");
         list.add(t4);
-        store.save(list);
+        store.save(list, true);
 
         System.out.println("hello");
     }
