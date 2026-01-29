@@ -26,7 +26,6 @@ public class RequestUtil {
         if (userInfo == null) {
             return null;
         }
-        Preconditions.checkNotNull(userInfo, "current-user-info is null.");
         return userInfo.getId();
     }
 

@@ -9,14 +9,15 @@ import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
+import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import com.github.pdaodao.springwebplus.ai.util.AiChatDaoUtil;
+import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,22 +55,21 @@ public class AiChatDispatcher {
         return context;
     }
 
-    @Async
-    public void sse(final LLMRequest req, final SseEmitter sseEmitter) {
+    public void streaming(final LLMRequest req, final MsgSender msgSender) throws IOException {
         final AiChatContext context = prepare(req);
         try {
             final AiChatProcessor p = selectProcessor(context);
             if (p == null) {
-                sseEmitter.send("未找到处理逻辑:" + context.getChatType());
+                msgSender.sendError("未找到处理逻辑:" + context.getChatType());
             }
-            p.sse(context, sseEmitter);
+            p.streaming(context, msgSender);
         } catch (final Exception e) {
-            sseEmitter.completeWithError(e);
+            msgSender.sendError(ExceptionUtil.getSimpleMsg(e));
         } finally {
             AiChatContext.clear();
-            sseEmitter.complete();
         }
     }
+
 
     public LLMResponse http(final LLMRequest req) {
         final AiChatContext context = prepare(req);
