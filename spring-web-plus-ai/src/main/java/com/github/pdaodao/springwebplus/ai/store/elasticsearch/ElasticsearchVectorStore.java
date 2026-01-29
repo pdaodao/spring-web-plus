@@ -29,22 +29,22 @@ import java.util.*;
 public class ElasticsearchVectorStore implements AiVectorStore {
     private final ElasticsearchOptions options;
     private final ElasticsearchClient client;
-    private final Optional<AiEmbedding> aiEmbedding;
+    private final Integer dimension;
 
-    public ElasticsearchVectorStore(final ElasticsearchOptions opt, final Optional<AiEmbedding> aiEmbedding) throws Exception {
+    public ElasticsearchVectorStore(final ElasticsearchOptions opt, final Integer dimension) throws Exception {
         this.options = opt;
-        this.aiEmbedding = aiEmbedding;
         this.client = EsUtil.getClient(opt.getUrl(), opt.getUsername(), opt.getPassword());
+        this.dimension = dimension;
         Preconditions.checkNotBlank(opt.getIndexName(), "Elasticsearch indexName is null.");
         init();
     }
 
     public ElasticsearchVectorStore(ElasticsearchClient client,
                                     final ElasticsearchOptions opt,
-                                    final Optional<AiEmbedding> aiEmbedding) throws Exception {
+                                    final Integer dimension) throws Exception {
         this.options = opt;
         this.client = client;
-        this.aiEmbedding = aiEmbedding;
+        this.dimension = dimension;
         Preconditions.checkNotBlank(opt.getIndexName(), "Elasticsearch indexName is null.");
         init();
     }
@@ -70,44 +70,6 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             query.addDocId(t.getDocId());
             query.addType(t.getType());
             query.addId(t.getId());
-        }
-        final Query esFilter = EsQueryUtil.buildFilter(query);
-        if (aiEmbedding != null && aiEmbedding.isPresent()) {
-            //1. 先获取旧数据 节省向量化资源
-            final Map<String, float[]> floatMap = new HashMap<>();
-            final SearchResponse<AiEmbedText> response = client.search(new SearchRequest.Builder()
-                    .index(options.getIndexName())
-                    .query(esFilter)
-                    .build(), AiEmbedText.class);
-            for (final Hit<AiEmbedText> hit : response.hits().hits()) {
-                final AiEmbedText tt = hit.source();
-                if(StrUtil.isNotBlank(tt.getContent()) && tt.getEmbedding() != null){
-                    floatMap.put(tt.getContent(), tt.getEmbedding());
-                }
-            }
-            //2. 待向量化的文本
-            final List<String> toEmbedTexts = new ArrayList<>();
-            for(final AiEmbedText t: documents){
-                if(StrUtil.isNotBlank(t.getContent()) &&
-                        ArrayUtil.isEmpty(t.getEmbedding()) &&
-                        !floatMap.containsKey(t.getContent())){
-                    toEmbedTexts.add(t.getContent());
-                }
-            }
-            //3. 进行向量化
-            if(CollUtil.isNotEmpty(toEmbedTexts)){
-                final List<float[]> floatList = aiEmbedding.get().embed(toEmbedTexts);
-                int index = 0;
-                for(final String t: toEmbedTexts){
-                    floatMap.put(t, floatList.get(index++));
-                }
-            }
-            for(final AiEmbedText t: documents){
-                if(StrUtil.isBlank(t.getContent()) || ArrayUtil.isNotEmpty(t.getEmbedding())){
-                    continue;
-                }
-                t.setEmbedding(floatMap.get(t.getContent()));
-            }
         }
         // 删除旧数据
         deleteByQuery(query);
@@ -137,10 +99,8 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         final Query filterQuery = EsQueryUtil.buildFilter(query);
         final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
         boolQuery.filter(filterQuery);
-
         if (StrUtil.isNotBlank(query.getContent())) {
-            if (aiEmbedding.isPresent() && query.getEmbedding() == null) {
-                query.setEmbedding(aiEmbedding.get().embed(query.getContent()));
+            if (ArrayUtil.isNotEmpty(query.getEmbedding())) {
                 final KnnSearch knnQuery = new KnnSearch.Builder()
                         .field("embedding")  // 向量字段
                         .similarity(0.1f)
@@ -204,7 +164,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                         .properties("name", p -> p.keyword(t -> t))
                         .properties("title", p -> p.keyword(t -> t))
                         .properties("content", p -> p.text(t -> t.analyzer("ik_max_word").searchAnalyzer("ik_max_word")))
-                        .properties("embedding", p -> p.denseVector(v -> v.dims(options.getDimensions()).index(true).similarity("cosine"))) // 向量字段
+                        .properties("embedding", p -> p.denseVector(v -> v.dims(dimension).index(true).similarity("cosine"))) // 向量字段
                         .properties("meta", p -> p.object(o -> o))
                 )
                 .build();

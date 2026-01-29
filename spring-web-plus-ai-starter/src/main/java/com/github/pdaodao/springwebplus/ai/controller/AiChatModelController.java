@@ -1,7 +1,9 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.ai.AiEmbedding;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.core.AiChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
@@ -74,8 +76,19 @@ public class AiChatModelController {
                 entity.setApiKey(old.getApiKey());
             }
         }
-        final ChatModel chatModel = AiChatModelUtil.of(entity.getProviderId(), entity.toOption());
-        return chatModel.call("你好 你是谁");
+        if(entity.getType() == null || entity.getType() == ChatModelType.LLM){
+            final ChatModel chatModel = AiChatModelUtil.of(entity.getProviderId(), entity.toOption());
+            return chatModel.call("你好 你是谁");
+        }
+        if(ChatModelType.EMBEDDING == entity.getType()){
+            final AiEmbedding aiEmbedding = AiChatModelUtil.ofEmbedding(null, entity.toOption());
+            final float[] ft = aiEmbedding.embed("你好 你是谁");
+            if(ArrayUtil.length(ft) == 1024){
+                return "连接成功,向量纬度为1024";
+            }
+            return "不支持的纬度,系统要求的向量纬度为1024";
+        }
+        return "不支持的模型";
     }
 
     @GetMapping("info")

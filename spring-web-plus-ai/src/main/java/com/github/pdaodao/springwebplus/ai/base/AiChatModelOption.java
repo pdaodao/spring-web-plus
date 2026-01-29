@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -23,5 +24,9 @@ public class AiChatModelOption {
         option.setApiKey(apiKey);
         option.setModel(model);
         return option;
+    }
+
+    public String key(){
+        return StrUtil.join(",", baseUrl, apiKey, model);
     }
 }

@@ -46,9 +46,11 @@ public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam, W
     private String providerId;
 
     @Schema(description = "模型类型")
+    @TableFieldSize(defaultValue = "LLM")
     private ChatModelType type;
 
     @Schema(description = "采样温度")
+    @TableFieldSize(defaultValue = "0.3")
     private Double temperature;
 
     @Schema(description = "描述")
@@ -59,6 +61,7 @@ public class AiChatModel extends SnowIdWithTimeUserEntity implements WithTeam, W
 //    private Boolean isDefault;
 
     @TableFieldIndex
+    @TableFieldSize(defaultValue = "0")
     private String teamId;
 
     @TableLogic

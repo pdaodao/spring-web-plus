@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.core;
 
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.ai.AiEmbedding;
 import com.github.pdaodao.springwebplus.ai.base.AiChatModelOption;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import org.springframework.ai.chat.model.ChatModel;
@@ -16,7 +17,30 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AiChatModelUtil {
     private static final Map<String, ChatModel> chatModelMap = new ConcurrentHashMap<>();
+    private static final Map<String, AiEmbedding>  embeddingMap = new ConcurrentHashMap<>();
 
+    /**
+     * 向量化模型
+     * @param provider
+     * @param option
+     * @return
+     */
+    public static AiEmbedding ofEmbedding(final String provider, final AiChatModelOption option){
+        final String key = option.key();
+        AiEmbedding old = embeddingMap.get(key);
+        if(old != null){
+            return old;
+        }
+        synchronized (embeddingMap){
+            old = embeddingMap.get(key);
+            if(old != null){
+                return old;
+            }
+            old = new OpenAiEmbedding(option.getBaseUrl(), option.getApiKey(), option.getModel(), 1024, 16);
+            embeddingMap.put(key, old);
+        }
+        return old;
+    }
 
     /**
      * 创建聊天模型
@@ -41,7 +65,7 @@ public class AiChatModelUtil {
             return chatModel;
         }
         synchronized (AiChatModelUtil.class){
-            final String key = option.getBaseUrl() + StrUtil.toStringOrEmpty(option.getApiKey());
+            final String key = option.key();
             chatModel = chatModelMap.get(key);
             if(chatModel != null){
                 return chatModel;
@@ -72,7 +96,8 @@ public class AiChatModelUtil {
             return chatModel;
         }
         synchronized (AiChatModelUtil.class){
-            chatModel = chatModelMap.get(option.getBaseUrl());
+            final String key = option.key();
+            chatModel = chatModelMap.get(key);
             if(chatModel != null){
                 return chatModel;
             }
@@ -88,7 +113,7 @@ public class AiChatModelUtil {
                             .disableThinking()
                             .build())
                     .build();
-            chatModelMap.put(option.getBaseUrl(), ollamaChatModel);
+            chatModelMap.put(key, ollamaChatModel);
             return ollamaChatModel;
         }
     }

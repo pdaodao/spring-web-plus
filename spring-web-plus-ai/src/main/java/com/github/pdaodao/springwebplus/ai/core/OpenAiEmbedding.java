@@ -2,17 +2,19 @@ package com.github.pdaodao.springwebplus.ai.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
+import com.github.pdaodao.springwebplus.ai.store.VectorCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class OpenAiEmbedding implements AiEmbedding {
@@ -24,16 +26,20 @@ public class OpenAiEmbedding implements AiEmbedding {
     private final int batchSize;
 
     private OpenAiEmbeddingModel embeddingModel;
-    private int dimension = 0;
+    private int dimension = 1024;
 
-    public OpenAiEmbedding(String baseUrl, String apiKey, String model, int batchSize) {
+    private VectorCache vectorCache;
+
+    public OpenAiEmbedding(String baseUrl, String apiKey, String model, int dimension, int batchSize) {
         if(StrUtil.isBlank(apiKey)){
             apiKey = "123";
         }
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
         this.model = model;
+        this.dimension = dimension;
         this.batchSize = batchSize;
+        this.vectorCache = new VectorCache();
     }
 
     @Override
@@ -46,6 +52,11 @@ public class OpenAiEmbedding implements AiEmbedding {
         return dimension;
     }
 
+    @Override
+    public void putCache(String key, float[] embed) {
+        vectorCache.put(key, embed);
+    }
+
     private OpenAiEmbeddingModel model() {
         if (embeddingModel != null) {
             return embeddingModel;
@@ -55,8 +66,8 @@ public class OpenAiEmbedding implements AiEmbedding {
                     .baseUrl(baseUrl)
                     .apiKey(apiKey)
                     .build();
-            embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED, OpenAiEmbeddingOptions.builder()
-                    .model(model).build());
+            embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED,
+                    OpenAiEmbeddingOptions.builder().dimensions(dimension).model(model).build());
         }
         return embeddingModel;
     }
@@ -67,16 +78,37 @@ public class OpenAiEmbedding implements AiEmbedding {
     }
 
     @Override
-    public List<float[]> embed(List<String> texts) {
+    public List<float[]> embed(final List<String> texts) {
         if (CollUtil.isEmpty(texts)) {
             return ListUtil.empty();
         }
-        final List<float[]> ret = new ArrayList<>();
-        final List<List<String>> sps = CollUtil.split(texts, batchSize);
+        final Map<String, float[]> map = new HashMap<>();
+        final Set<String> toProcessed = new HashSet<>();
+        for(final String t: texts){
+            final float[] ft = vectorCache.get(t);
+            if(ArrayUtil.isNotEmpty(ft)){
+                map.put(StrUtil.trim(t), ft);
+            }else{
+                toProcessed.add(StrUtil.trim(t));
+            }
+        }
+        final List<List<String>> sps = CollUtil.split(toProcessed, batchSize);
         for (final List<String> sp : sps) {
             final List<float[]> batched = retry(sp);
-            ret.addAll(batched);
-
+            for(int i = 0; i < sp.size(); i++){
+                final String k = sp.get(i);
+                final float[] ft = batched.get(i);
+                vectorCache.put(k, ft);
+                map.put(k, ft);
+            }
+        }
+        final List<float[]> ret = new ArrayList<>();
+        for(final String t: texts){
+            if(StrUtil.isBlank(t)){
+                ret.add(new float[0]);
+            }else{
+                ret.add(map.get(StrUtil.trim(t)));
+            }
         }
         return ret;
     }

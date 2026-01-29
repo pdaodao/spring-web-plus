@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.ai.dao.AiChatTermTextDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatTermText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
+import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class AiChatTermTextService {
         embedText.setName(text.getTitle());
         embedText.setTitle(text.getRemark());
         embedText.setContent(text.toEmbeddingText());
+        AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(text.getTeamId(), null));
         vectorStore.get().save(ListUtil.of(embedText));
     }
 

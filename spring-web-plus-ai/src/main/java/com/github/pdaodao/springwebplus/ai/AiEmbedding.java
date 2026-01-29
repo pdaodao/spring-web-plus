@@ -13,6 +13,9 @@ public interface AiEmbedding {
     int dimension();
 
 
+    void putCache(final String key, float[] embed);
+
+
     default float[] embed(final String text) {
         Preconditions.checkNotNull(text, "Text must not be null");
         List<float[]> response = this.embed(List.of(text));

@@ -11,9 +11,6 @@ public class ElasticsearchOptions {
     private String password;
 
     private String indexName = "zt_chat";
-
-    private int dimensions = 1536;
-
     private Integer numberOfShards = 1;
     private Integer numberOfReplicas = 0;
 
