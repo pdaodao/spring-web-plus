@@ -1,13 +1,19 @@
 package com.github.pdaodao.springwebplus.ai.store;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import java.util.Map;
+
+import java.util.*;
 
 @Data
 @Schema(description = "向量化文本")
-public class AiEmbedText {
+public class AiEmbedText{
     @Schema(description = "主键值")
     private String id;
 
@@ -43,6 +49,33 @@ public class AiEmbedText {
 
     @Schema(description = "其他元信息")
     private Map<String, Object> meta;
+
+
+    public void addScore(final Double sk){
+        if(sk == null){
+            return;
+        }
+        if(score == null){
+            score = 0.0;
+        }
+        score += sk;
+    }
+
+    public static List<AiEmbedText> sortByScore(final Collection<AiEmbedText> list, final Integer topK){
+        if(CollUtil.isEmpty(list)){
+            return ListUtil.empty();
+        }
+        for(final AiEmbedText t: list){
+            if(t.getScore() == null){
+                t.setScore(0.0);
+            }
+        }
+        final List<AiEmbedText> ret = CollectionUtil.sort(list, (o1, o2) -> NumberUtil.compare(o2.getScore(), o1.getScore()));
+        if(topK == null || CollUtil.size(ret) <= topK){
+            return ret;
+        }
+        return ListUtil.toList(ListUtil.sub(ret, 0, topK));
+    }
 
     public static AiEmbedText of(final String text) {
         final AiEmbedText a = new AiEmbedText();
