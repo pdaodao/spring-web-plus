@@ -9,7 +9,6 @@ import com.github.pdaodao.springwebplus.ai.core.AiChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import org.springframework.ai.chat.model.ChatModel;
 import java.util.List;
 
@@ -21,17 +20,9 @@ public class AiChatModelProvider {
      * @return
      */
     public static ChatModel of(final String teamId, final String modelId){
-        final AiChatModelDao dao = SpringUtil.getBean(AiChatModelDao.class);
-        AiChatModel model = null;
-        if(StrUtil.isNotBlank(modelId)){
-            model = dao.detail(modelId);
-        }
+        final AiChatModel model = ofModelInfo(teamId, modelId, ChatModelType.LLM);
         if(model == null){
-            final List<AiChatModel> list = dao.list(ChatModelType.LLM, teamId, true);
-            if(CollUtil.isEmpty(list)){
-                return SpringUtil.getBean(ChatModel.class);
-            }
-            model = list.get(RandomUtil.randomInt(list.size()));
+            return SpringUtil.getBean(ChatModel.class);
         }
         return AiChatModelUtil.of(model.getProviderId(), model.toOption());
     }
@@ -43,19 +34,35 @@ public class AiChatModelProvider {
      * @return
      */
     public static AiEmbedding ofEmbedding(final String teamId, final String modelId){
-        final AiChatModelDao dao = SpringUtil.getBean(AiChatModelDao.class);
-        AiChatModel model = null;
-        if(StrUtil.isNotBlank(modelId)){
-             model = dao.detail(modelId);
-            Preconditions.checkNotNull(ChatModelType.EMBEDDING == model.getType(), "模型类型不是向量化模型");
-        }
+        final AiChatModel model = ofModelInfo(teamId, modelId, ChatModelType.EMBEDDING);
         if(model == null){
-            final List<AiChatModel> list = dao.list(ChatModelType.EMBEDDING, teamId, true);
-            if(CollUtil.isEmpty(list)){
-                return SpringUtil.getBean(AiEmbedding.class);
-            }
-            model = list.get(RandomUtil.randomInt(list.size()));
+            return SpringUtil.getBean(AiEmbedding.class);
         }
         return AiChatModelUtil.ofEmbedding(null, model.toOption());
+    }
+
+    /**
+     * 获取模型配置信息
+     * @param teamId
+     * @param modelId
+     * @param modelType
+     * @return
+     */
+    public static AiChatModel ofModelInfo(final String teamId, final String modelId, ChatModelType modelType){
+        if(modelType == null){
+            modelType = ChatModelType.LLM;
+        }
+        final AiChatModelDao dao = SpringUtil.getBean(AiChatModelDao.class);
+        if(StrUtil.isNotBlank(modelId)){
+            final AiChatModel model = dao.detail(modelId);
+            if(model != null && modelType == model.getType()){
+                return model;
+            }
+        }
+        final List<AiChatModel> list = dao.list(modelType, teamId, true);
+        if(CollUtil.isEmpty(list)){
+            return null;
+        }
+        return list.get(RandomUtil.randomInt(list.size()));
     }
 }
