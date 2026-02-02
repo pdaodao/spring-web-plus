@@ -33,7 +33,6 @@ public class AiChatDispatcher {
         final AiChatApp app = AiChatDaoUtil.getAppById(req.getAppId());
         Preconditions.checkNotNull(app, "问答场景不存在.");
         context.setChatApp(app);
-
         context.setModelId(req.getModelId());
         if(StrUtil.isBlank(context.getModelId())){
             context.setModelId(app.getModelId());
@@ -46,7 +45,7 @@ public class AiChatDispatcher {
             int random = RandomUtil.randomInt(CollUtil.size(list));
             context.setModelId(list.get(random).getId());
         }
-        if(StrUtil.isBlank(req.getDbId())){
+        if(StrUtil.isBlank(req.getDbId()) && app.getDbInfo() != null){
             req.setDbId(app.getDbInfo().getId());
         }
         if(StrUtil.isNotBlank(req.getDbId()) && CollUtil.isEmpty(req.getTableIds())){

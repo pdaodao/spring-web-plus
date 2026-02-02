@@ -167,7 +167,8 @@ public class DbMetaUtil {
         for (int i = 1; i <= count; i++) {
             final TableField f = new TableField();
             f.setSeq(i);
-            f.setName(rsMeta.getColumnLabel(i));
+            f.setName(rsMeta.getColumnName(i));
+            f.setTitle(rsMeta.getColumnLabel(i));
             f.setTypeName(rsMeta.getColumnTypeName(i));
             f.setDataType(dialect.dataTypeConverter().toUniType(f));
             list.add(f);

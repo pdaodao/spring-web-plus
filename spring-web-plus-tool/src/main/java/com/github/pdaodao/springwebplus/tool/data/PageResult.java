@@ -26,6 +26,12 @@ public class PageResult<T> {
     private List<TableField> fields;
 
     /**
+     * 展示方式配置
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private TableDataDisplay display;
+
+    /**
      *  其他信息
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
