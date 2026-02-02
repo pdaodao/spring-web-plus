@@ -15,6 +15,7 @@ import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 public class DynamicWhereVisitor {
 
-    public static SqlWithMapParams dynamicFilter(final PlainSelect select, final List<FilterItem> filterItems) throws Exception {
+    public static SqlWithMapParams dynamicFilter(final Select select, final List<FilterItem> filterItems) throws Exception {
         final SqlWithMapParams ret = new SqlWithMapParams();
         final Map<String, FilterItem> filterMap = new LinkedCaseInsensitiveMap<>();
         if(CollUtil.isNotEmpty(filterItems)){
@@ -32,9 +33,9 @@ public class DynamicWhereVisitor {
                 filterMap.put(item.getName(), item);
             }
         }
-        if (select.getWhere() != null) {
-            final Expression whereExp = processWhere(select.getWhere(), select, filterMap, ret);
-            select.setWhere(whereExp);
+        if(select instanceof PlainSelect ps && ps.getWhere() != null){
+            final Expression whereExp = processWhere(ps.getWhere(), select, filterMap, ret);
+            ps.setWhere(whereExp);
         }
         ret.setSql(select.toString());
         return ret;

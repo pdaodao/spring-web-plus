@@ -16,6 +16,9 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SetOperationList;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -426,13 +429,12 @@ public class SqlUtil {
         sql = processIf(sql, filterItems);
         sql = dropPlaceholderBracket(sql);
         final Statement st = CCJSqlParserUtil.parse(sql);
-        if (!(st instanceof PlainSelect)) {
+        if (!(st instanceof Select)) {
             throw new IllegalArgumentException("只支持数据查询语句." + sql);
         }
-        final PlainSelect select = (PlainSelect) st;
+        final Select select = (Select) st;
         return DynamicWhereVisitor.dynamicFilter(select, filterItems);
     }
-
 
     public static String processIf(final String sql, final List<FilterItem> filterItems) {
         return IfBlock.buildSql(sql, FilterItem.toParamValueMap(filterItems));
