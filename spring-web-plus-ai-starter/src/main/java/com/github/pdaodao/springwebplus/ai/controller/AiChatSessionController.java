@@ -2,7 +2,9 @@ package com.github.pdaodao.springwebplus.ai.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatSessionDao;
+import com.github.pdaodao.springwebplus.ai.dao.AiChatSessionMsgDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatSession;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatSessionMsg;
 import com.github.pdaodao.springwebplus.ai.query.AiChatSessionQuery;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
@@ -25,6 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AiChatSessionController {
     private final AiChatSessionDao sessionDao;
+    private final AiChatSessionMsgDao sessionMsgDao;
 
     @GetMapping("list")
     @Operation(summary = "用户的session列表")
@@ -33,6 +36,12 @@ public class AiChatSessionController {
         query.setTeamId(RequestUtil.getTeamOrDefault());
         PageHelper.startPage(query);
         return sessionDao.list(query);
+    }
+
+    @GetMapping("msgs")
+    @Operation(summary = "会话消息列表")
+    public List<AiChatSessionMsg> msgList(@Parameter(description = "会话id") final String sessionId) {
+        return sessionMsgDao.listBySession(sessionId);
     }
 
     @PostMapping("save")
