@@ -20,6 +20,11 @@ public class StreamingMsgSender implements MsgSender {
     }
 
     @Override
+    public void done(final AiChatContext context, final Exception e) throws IOException {
+        outputStream.close();
+    }
+
+    @Override
     public void sendJson(Object obj) throws IOException{
         if(obj == null){
             return;

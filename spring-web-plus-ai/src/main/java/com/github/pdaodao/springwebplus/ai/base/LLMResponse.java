@@ -8,6 +8,9 @@ import java.util.List;
 @Data
 @Schema(description = "大模型返回内容")
 public class LLMResponse {
+    @Schema(description = "回答id")
+    private String id;
+
     @Schema(description = "返回内容块")
     private List<MsgBlock> blocks;
 

@@ -48,6 +48,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final List<InterceptorRegistryListener> interceptorRegistryListeners;
 
 
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(5 * 60 * 1000L); // 300,000 ms
+    }
 
     @Bean
     @ConditionalOnProperty("http.proxy")

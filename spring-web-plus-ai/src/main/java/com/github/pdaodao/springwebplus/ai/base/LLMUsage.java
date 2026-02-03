@@ -13,4 +13,12 @@ public class LLMUsage {
 
     @JsonProperty("total_tokens")
     private Integer totalTokens;
+
+    public static LLMUsage of(final Integer promptTokens, final Integer completionTokens, final Integer totalTokens){
+        final LLMUsage u = new LLMUsage();
+        u.setPromptTokens(promptTokens);
+        u.setCompletionTokens(completionTokens);
+        u.setTotalTokens(totalTokens);
+        return u;
+    }
 }

@@ -4,6 +4,7 @@ import com.github.pdaodao.springwebplus.ai.base.AiChatType;
 import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatSessionMsg;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,6 +22,9 @@ public class AiChatContext {
     private String modelId;
 
     private LLMResponse response;
+
+    private AiChatSessionMsg sessionMsg;
+
     public static AiChatContext of(final LLMRequest req){
         final AiChatContext context = new AiChatContext();
         context.setReq(req);

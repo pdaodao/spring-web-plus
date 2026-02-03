@@ -10,6 +10,9 @@ import java.util.List;
 @Data
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class MsgBlock {
+    @Schema(description = "回答响应id")
+    private String respId;
+
     @Schema(description = "消息块id")
     private String id;
 
@@ -38,13 +41,15 @@ public class MsgBlock {
     @Schema(description = "图片请求地址")
     private String url;
 
-    private String query;
-
-    private Object extras;
-
+    @Schema(description = "错误信息")
     private String error;
 
+    @Schema(description = "耗时ms")
+    private Long cost;
 
+//    private String query;
+//
+//    private Object extras;
 
     // 函数名称
 //    private String name;
@@ -62,6 +67,11 @@ public class MsgBlock {
         msgBlock.setType(MsgType.text);
         msgBlock.setText(content);
         return msgBlock;
+    }
+
+    public MsgBlock setIsEnd(){
+        isEnd = true;
+        return this;
     }
 
     @Data

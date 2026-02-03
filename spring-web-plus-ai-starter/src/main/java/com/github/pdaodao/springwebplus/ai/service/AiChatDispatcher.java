@@ -6,8 +6,10 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
+import com.github.pdaodao.springwebplus.ai.dao.AiChatSessionMsgDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatSessionMsg;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import com.github.pdaodao.springwebplus.ai.util.AiChatDaoUtil;
@@ -25,10 +27,23 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AiChatDispatcher {
     private final List<AiChatProcessor> processorList;
+    private final AiChatSessionMsgDao sessionMsgDao;
+
+    private void lastPrepare(final AiChatContext context, final Exception e){
+        context.getSessionMsg().setErrorMsg(e == null ? null : ExceptionUtil.getSimpleMsg(e));
+        context.getSessionMsg().setAnswer(context.getResponse());
+        if(context.getResponse().getUsage() != null){
+            context.getSessionMsg().setTotalTokens(context.getResponse().getUsage().getTotalTokens());
+            context.getSessionMsg().setInputTokens(context.getResponse().getUsage().getPromptTokens());
+            context.getSessionMsg().setOutputTokens(context.getResponse().getUsage().getCompletionTokens());
+        }
+        sessionMsgDao.save(context.getSessionMsg());
+    }
 
     private AiChatContext prepare(final LLMRequest req) {
         Preconditions.checkNotBlank(req.getAppId(), "问答场景id不能为空.");
         final AiChatContext context = AiChatContext.of(req);
+        context.setResponse(new LLMResponse());
         context.setPhase(req.getPhase());
         final AiChatApp app = AiChatDaoUtil.getAppById(req.getAppId());
         Preconditions.checkNotNull(app, "问答场景不存在.");
@@ -51,6 +66,13 @@ public class AiChatDispatcher {
         if(StrUtil.isNotBlank(req.getDbId()) && CollUtil.isEmpty(req.getTableIds())){
             req.setTableIds(app.getTableList().stream().map(t -> t.getId()).collect(Collectors.toList()));
         }
+        final AiChatSessionMsg sessionMsg = new AiChatSessionMsg();
+        sessionMsg.setQuestion(req.getQuestion());
+        sessionMsg.setSessionId(req.getSessionId());
+        sessionMsg.setAppId(req.getAppId());
+        sessionMsg.setDbId(req.getDbId());
+        sessionMsgDao.save(sessionMsg);
+        context.setSessionMsg(sessionMsg);
         return context;
     }
 
@@ -62,8 +84,10 @@ public class AiChatDispatcher {
                 msgSender.sendError("未找到处理逻辑:" + context.getChatType());
             }
             p.streaming(context, msgSender);
+            lastPrepare(context, null);
         } catch (final Exception e) {
             msgSender.sendError(ExceptionUtil.getSimpleMsg(e));
+            lastPrepare(context, e);
         } finally {
             AiChatContext.clear();
         }

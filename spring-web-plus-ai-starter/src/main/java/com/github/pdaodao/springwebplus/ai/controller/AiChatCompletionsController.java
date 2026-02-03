@@ -41,7 +41,9 @@ public class AiChatCompletionsController {
         final AiChatStreamingBodyWrap wrap = new AiChatStreamingBodyWrap(chatDispatcher, prepare(chatReq));
         return ResponseEntity.ok()
                 .header("Cache-Control", "no-cache")
+                .header("Content-Type", "text/plain")
                 .header("Connection", "keep-alive")
+                .header("X-Accel-Buffering", "no")
                 .body(wrap);
     }
 
