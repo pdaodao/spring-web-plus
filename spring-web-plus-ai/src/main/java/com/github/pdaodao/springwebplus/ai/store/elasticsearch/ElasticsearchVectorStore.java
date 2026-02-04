@@ -109,7 +109,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
             if (ArrayUtil.isNotEmpty(query.getEmbedding())) {
                 final KnnSearch knnQuery = new KnnSearch.Builder()
                         .field("embedding")  // 向量字段
-                        .similarity(0.1f)
+                        .similarity(query.getScore().floatValue())
                         .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
                         .k(query.getTopK()*3)
                         .filter(filterQuery)
