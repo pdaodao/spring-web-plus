@@ -92,7 +92,7 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 }
                 msgBlock.setId(chatResponse.getMetadata().getId());
                 try{
-                    msgSender.sendJson(msgBlock);
+                    msgSender.sendMsg(msgBlock);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

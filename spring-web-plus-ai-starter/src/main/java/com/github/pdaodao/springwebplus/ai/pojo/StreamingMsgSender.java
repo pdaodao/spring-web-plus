@@ -1,6 +1,9 @@
 package com.github.pdaodao.springwebplus.ai.pojo;
 
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
+import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
+import com.github.pdaodao.springwebplus.ai.base.MsgType;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import lombok.AllArgsConstructor;
 import java.io.IOException;
@@ -10,8 +13,7 @@ import java.io.OutputStream;
 public class StreamingMsgSender implements MsgSender {
     private final OutputStream outputStream;
 
-    @Override
-    public void sendText(String text) throws IOException {
+    private void sendText(final String text) throws IOException {
         if(StrUtil.isBlank(text)){
             return;
         }
@@ -20,16 +22,24 @@ public class StreamingMsgSender implements MsgSender {
     }
 
     @Override
-    public void done(final AiChatContext context, final Exception e) throws IOException {
-        outputStream.close();
+    public void sendMsg(final MsgBlock msgBlock) throws IOException {
+        if(msgBlock == null){
+            return;
+        }
+        sendText(JsonUtil.toJsonString(msgBlock));
     }
 
     @Override
-    public void sendJson(Object obj) throws IOException{
-        if(obj == null){
+    public void sendResponse(final LLMResponse response) throws IOException {
+        if(response == null){
             return;
         }
-        sendText(JsonUtil.toJsonString(obj));
+        sendText(JsonUtil.toJsonString(response));
+    }
+
+    @Override
+    public void done(final AiChatContext context, final Exception e) throws IOException {
+        outputStream.close();
     }
 
     @Override
@@ -37,6 +47,9 @@ public class StreamingMsgSender implements MsgSender {
         if(StrUtil.isBlank(errorMsg)){
             return;
         }
-        sendText("Error:"+errorMsg);
+        final MsgBlock msgBlock = new MsgBlock();
+        msgBlock.setType(MsgType.error);
+        msgBlock.setText(errorMsg);
+        sendMsg(msgBlock);
     }
 }
