@@ -99,20 +99,23 @@ public class ElasticsearchVectorStore implements AiVectorStore {
         if(query.getScore() != null && query.getScore() > 0){
             searchRequestBuilder.minScore(query.getScore());
         }
+        // 检索过滤条件
         final Query filterQuery = EsQueryUtil.buildFilter(query);
+        // 检索
         final BoolQuery.Builder boolQuery = new BoolQuery.Builder();
         boolQuery.filter(filterQuery);
+
         if (StrUtil.isNotBlank(query.getContent())) {
             if (ArrayUtil.isNotEmpty(query.getEmbedding())) {
                 final KnnSearch knnQuery = new KnnSearch.Builder()
                         .field("embedding")  // 向量字段
                         .similarity(0.1f)
                         .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
-                        .k(query.getTopK() * 5)
-//                .filter(filterQuery)
+                        .k(query.getTopK()*3)
+                        .filter(filterQuery)
                         .numCandidates(query.getTopK() * 50)  // 初步筛选
                         .build();
-                searchRequestBuilder.knn(knnQuery);
+                 searchRequestBuilder.knn(knnQuery);
             }
             final MatchQuery matchQuery = new MatchQuery.Builder()
                     .field("content")

@@ -40,10 +40,14 @@ public class AiChatTermTextService {
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.addNamespace(AiChatNamespace.term.name());
         query.setTeamId(teamId);
+        query.setContent(q);
         final AiChatContext context = AiChatContext.fromHolder();
-        if(context != null && context.getChatApp() != null){
+        if(context != null && context.getChatApp() != null && context.getChatApp().getAppConfig() != null){
             query.setTopK(context.getChatApp().getAppConfig().getTopK());
             query.setScore(context.getChatApp().getAppConfig().getScore());
+        }else{
+            query.setTopK(5);
+            query.setScore(0.6);
         }
         AiStoreEmbeddingUtil.buildQuery(query, AiChatModelProvider.ofEmbedding(teamId, null));
         final List<AiChatTermText> ret = new ArrayList<>();
@@ -53,7 +57,7 @@ public class AiChatTermTextService {
             term.setId(h.getId());
             term.setTeamId(h.getTeamId());
             term.setTitle(h.getName());
-            term.setRemark(h.getContent());
+            term.setRemark(h.getTitle());
             ret.add(term);
         }
         return ret;
