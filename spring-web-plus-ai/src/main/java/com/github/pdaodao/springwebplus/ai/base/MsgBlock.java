@@ -69,6 +69,13 @@ public class MsgBlock {
         return msgBlock;
     }
 
+    public static MsgBlock of(final MsgType msgType, final String text){
+        final MsgBlock msgBlock = new MsgBlock();
+        msgBlock.setType(msgType);
+        msgBlock.setText(text);
+        return msgBlock;
+    }
+
     public MsgBlock setIsEnd(){
         isEnd = true;
         return this;

@@ -5,6 +5,8 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
+import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
+import com.github.pdaodao.springwebplus.ai.base.MsgType;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatSessionMsgDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
@@ -40,9 +42,9 @@ public class AiChatDispatcher {
         sessionMsgDao.save(context.getSessionMsg());
     }
 
-    private AiChatContext prepare(final LLMRequest req) {
+    private AiChatContext prepare(final LLMRequest req, final MsgSender msgSender) {
         Preconditions.checkNotBlank(req.getAppId(), "问答场景id不能为空.");
-        final AiChatContext context = AiChatContext.of(req);
+        final AiChatContext context = AiChatContext.of(req, msgSender);
         context.setResponse(new LLMResponse());
         context.setPhase(req.getPhase());
         final AiChatApp app = AiChatDaoUtil.getAppById(req.getAppId());
@@ -77,7 +79,7 @@ public class AiChatDispatcher {
     }
 
     public void streaming(final LLMRequest req, final MsgSender msgSender) throws IOException {
-        final AiChatContext context = prepare(req);
+        final AiChatContext context = prepare(req, msgSender);
         try {
             final AiChatProcessor p = selectProcessor(context);
             if (p == null) {
@@ -89,13 +91,14 @@ public class AiChatDispatcher {
             msgSender.sendError(ExceptionUtil.getSimpleMsg(e));
             lastPrepare(context, e);
         } finally {
+            msgSender.sendMsg(MsgBlock.of(MsgType.done, null));
             AiChatContext.clear();
         }
     }
 
 
     public LLMResponse http(final LLMRequest req) {
-        final AiChatContext context = prepare(req);
+        final AiChatContext context = prepare(req, null);
         final AiChatProcessor p = selectProcessor(context);
         Preconditions.checkNotNull(p, "未找到处理逻辑:" + context.getChatType());
         try{

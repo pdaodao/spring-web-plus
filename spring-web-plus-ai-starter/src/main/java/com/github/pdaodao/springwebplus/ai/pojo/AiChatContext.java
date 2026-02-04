@@ -25,9 +25,12 @@ public class AiChatContext {
 
     private AiChatSessionMsg sessionMsg;
 
-    public static AiChatContext of(final LLMRequest req){
+    private MsgSender msgSender;
+
+    public static AiChatContext of(final LLMRequest req, final MsgSender msgSender){
         final AiChatContext context = new AiChatContext();
         context.setReq(req);
+        context.setMsgSender(msgSender);
         AiChatContextHolder.set(context);
         return context;
     }

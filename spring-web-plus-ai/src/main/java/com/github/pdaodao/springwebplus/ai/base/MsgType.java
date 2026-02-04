@@ -2,6 +2,9 @@ package com.github.pdaodao.springwebplus.ai.base;
 
 public enum MsgType {
     text,
+
+    done,
+
     sql,
     // 错误提示
     error,
