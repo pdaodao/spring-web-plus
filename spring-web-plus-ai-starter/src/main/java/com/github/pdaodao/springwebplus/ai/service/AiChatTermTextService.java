@@ -1,6 +1,8 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
 import com.github.pdaodao.springwebplus.ai.base.AiChatNamespace;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatTermTextDao;
@@ -11,12 +13,14 @@ import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class AiChatTermTextService {
     private final AiChatTermTextDao termTextDao;
@@ -29,6 +33,27 @@ public class AiChatTermTextService {
     public List<AiChatTermText> infoList(final String teamId, final String q){
         return termTextDao.infoList(teamId, q);
     }
+
+    public String searchMsg(final String teamId, final String q){
+        try{
+            final List<AiChatTermText> list = search(teamId, q);
+            if(CollUtil.isEmpty(list)){
+                return StrUtil.EMPTY;
+            }
+            final StringBuilder sb = new StringBuilder();
+            sb.append("已知以下业务知识:");
+            for(final AiChatTermText t: list){
+                sb.append("\n -").append(t.getRemark());
+            }
+            log.info("业务术语检索:"+q);
+            log.info(sb.toString());
+            return sb.toString();
+        }catch (final Exception e){
+            log.error(e.getMessage(), e);
+        }
+        return StrUtil.EMPTY;
+    }
+
 
     /**
      * 通过关键词到向量库中检索

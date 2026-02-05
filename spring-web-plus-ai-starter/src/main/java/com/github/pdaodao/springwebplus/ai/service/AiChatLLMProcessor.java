@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
@@ -41,23 +42,15 @@ public class AiChatLLMProcessor implements AiChatProcessor{
     @Override
     public void streaming(AiChatContext context, MsgSender sseEmitter) throws IOException, InterruptedException {
         final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
-        final StringBuilder sb = new StringBuilder();
-        try{
-            final List<AiChatTermText> list = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion());
-            if(CollUtil.isNotEmpty(list)){
-                sb.append("已知如下信息:");
-            }
-            for(final AiChatTermText t: list){
-                sb.append("\n").append(t.getRemark());
-            }
-            System.out.println("termTextService.search:"+sb.toString());
-        }catch (final Exception e){
-            log.error(e.getMessage(), e);
-        }
         final List<Message> messages = new ArrayList<>();
-        if(!sb.isEmpty()){
-            messages.add(SystemMessage.builder().text(sb.toString()).build());
+        // 业务术语
+        if(context.getChatApp() != null && BooleanUtil.isTrue(context.getChatApp().getTermEnabled())){
+            final String termMsg = termTextService.searchMsg(context.getReq().getTeamId(), context.getReq().getQuestion());
+            if(StrUtil.isNotBlank(termMsg)){
+                messages.add(SystemMessage.builder().text(termMsg).build());
+            }
         }
+        // 用户问题
         messages.add(UserMessage.builder().text(context.getReq().getQuestion()).build());
         final CountDownLatch latch = new CountDownLatch(1);
         final Flux<ChatResponse> fluxResp = model.stream(Prompt.builder().messages(messages).build());
