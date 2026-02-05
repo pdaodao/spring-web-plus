@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.tool.ui;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +18,7 @@ import java.util.Map;
  */
 @Data
 @Schema(description = "页面Schema")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PageSchema {
     @Schema(description = "组件实例ID(前端生成uuid保证唯一)")
     private String id;
@@ -56,6 +58,7 @@ public class PageSchema {
 
     @Data
     @Schema(description = "组件布局配置")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class LayoutConfig {
         private String layout = "flow";
         // 主轴对齐
@@ -84,6 +87,7 @@ public class PageSchema {
 
     @Data
     @Schema(description = "页面-组件参数-变量")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PageVariable implements Serializable {
         @Schema(description = "参数名")
         private String name;
@@ -118,12 +122,16 @@ public class PageSchema {
 
     @Data
     @Schema(description = "联动配置")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class EventAction{
         @Schema(description = "触发事件click..")
         private String event;
 
         @Schema(description = "条件表达式")
         private String when;
+
+        @Schema(description = "来源组件id")
+        private String sourceId;
 
         @Schema(description = "目标组件id")
         private String targetId;
