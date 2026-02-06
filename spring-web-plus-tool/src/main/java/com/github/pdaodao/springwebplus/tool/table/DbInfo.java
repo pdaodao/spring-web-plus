@@ -23,6 +23,11 @@ public class DbInfo implements Serializable, Cloneable {
     private String title;
 
     /**
+     * 团队/租户id
+     */
+    private String teamId;
+
+    /**
      * 备注
      */
     private String remark;

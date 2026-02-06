@@ -377,7 +377,7 @@ public class EntityScanUtil {
                 ff.setTypeName(tableFieldSize.type().name());
             }
             if(StrUtil.isNotBlank(tableFieldSize.dic())){
-                ff.setDic(tableFieldSize.dic());
+                ff.setDicId(tableFieldSize.dic());
             }
             if (tableFieldSize.value() > 1) {
                 return tableFieldSize.value();

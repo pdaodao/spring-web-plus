@@ -111,12 +111,15 @@ public class TableField implements Serializable, Cloneable, Comparable<TableFiel
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Integer seq;
 
-
+    /**
+     * 特征数据
+     */
+    private FieldDemoValue demoValue;
 
     /**
-     * 字典编码
+     * 字典id
      */
-    private String dic;
+    private String dicId;
 
     /**
      * excel 忽略
