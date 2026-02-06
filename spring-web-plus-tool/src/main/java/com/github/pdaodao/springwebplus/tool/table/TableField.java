@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
@@ -17,6 +18,7 @@ import java.io.Serializable;
  * 字段信息
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TableField implements Serializable, Cloneable, Comparable<TableField> {
     /**
      * 唯一id值

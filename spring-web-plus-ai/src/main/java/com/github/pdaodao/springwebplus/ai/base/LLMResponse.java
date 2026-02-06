@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 @Data
 @Schema(description = "大模型返回内容")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LLMResponse {
     @Schema(description = "回答id")
     private String id;

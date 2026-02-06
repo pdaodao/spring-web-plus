@@ -111,7 +111,7 @@ public class ElasticsearchVectorStore implements AiVectorStore {
                         .field("embedding")  // 向量字段
                         .similarity(query.getScore().floatValue())
                         .queryVector(AiEmbedTextQuery.asList(query.getEmbedding()))  // 查询向量
-                        .k(query.getTopK()*3)
+                        .k(query.getTopK()*10)
                         .filter(filterQuery)
                         .numCandidates(query.getTopK() * 50)  // 初步筛选
                         .build();

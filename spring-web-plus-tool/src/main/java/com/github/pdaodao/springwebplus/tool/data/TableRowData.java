@@ -86,6 +86,18 @@ public class TableRowData extends LinkedHashMap<String, Object> implements Seria
         return f;
     }
 
+    /**
+     * 值转为string
+     * @return
+     */
+    public TableRowData toStringValue() {
+        final TableRowData f = new TableRowData();
+        for (Map.Entry<String, Object> entry : entrySet()) {
+            f.put(entry.getKey(), DataValueUtil.toString(entry.getValue(), null));
+        }
+        return f;
+    }
+
     public Set<String> keys() {
         return keySet();
     }

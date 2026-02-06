@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.ai.mapper.AiChatAppMapper;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class AiChatAppDao extends BaseDao<AiChatAppMapper, AiChatApp> {
     @Autowired
     private AiChatModelDao modelDao;
 
-    @Cacheable
+    @Cacheable(key = "#p0")
     public AiChatApp info(final String id) {
         final AiChatApp app = getById(id);
         if (app == null) {
@@ -27,5 +28,11 @@ public class AiChatAppDao extends BaseDao<AiChatAppMapper, AiChatApp> {
             app.setModelTitle(m.getTitle());
         }
         return app;
+    }
+
+    @Override
+    @CacheEvict(key = "#p0.id", condition = "#p0.id != null")
+    public boolean save(AiChatApp entity) {
+        return super.save(entity);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,6 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class MsgBlock {
     @Schema(description = "回答响应id")

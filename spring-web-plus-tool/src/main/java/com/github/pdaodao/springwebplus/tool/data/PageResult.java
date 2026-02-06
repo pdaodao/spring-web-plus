@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.data;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.table.TableField;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.Data;
 import java.util.*;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PageResult<T> {
     /**
      * 数据
