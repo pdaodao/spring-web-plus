@@ -78,4 +78,12 @@ public class PageResult<T> {
         }
         ext.put(key, val);
     }
+
+    public Map<String, TableField> asFieldMap(){
+        final Map<String, TableField> map = new LinkedCaseInsensitiveMap<>();
+        for(final TableField f: fields){
+            map.put(f.getName(), f);
+        }
+        return map;
+    }
 }
