@@ -17,28 +17,6 @@ public class ExceptionUtil {
         if (e == null) {
             return "异常为空.";
         }
-        final Throwable ee = cn.hutool.core.exceptions.ExceptionUtil.getRootCause(e);
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (StackTraceElement st : ee.getStackTrace()) {
-            if (st.getClassName().contains("Preconditions")) {
-                continue;
-            }
-            if (st.getClassName().startsWith("sun.reflect.")) {
-                continue;
-            }
-            if (st.getClassName().startsWith("java.lang.reflect")) {
-                continue;
-            }
-            if (st.getClassName().startsWith("org.springframework.web.")) {
-                break;
-            }
-            if (false == isFirst) {
-                sb.append("\n");
-            }
-            isFirst = false;
-            sb.append(st.toString());
-        }
-        return sb.toString();
+        return cn.hutool.core.exceptions.ExceptionUtil.stacktraceToOneLineString(e, 300);
     }
 }

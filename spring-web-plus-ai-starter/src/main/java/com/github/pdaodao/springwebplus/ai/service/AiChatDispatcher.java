@@ -55,13 +55,6 @@ public class AiChatDispatcher {
             context.setModelId(app.getModelId());
         }
         context.setChatType(app.getChatType());
-        if(StrUtil.isBlank(context.getModelId())){
-            // 随机选择一个启用的模型
-            final List<AiChatModel> list = SpringUtil.getBean(AiChatModelDao.class).list(null, req.getTeamId(), true);
-            Preconditions.checkArgument(CollUtil.isNotEmpty(list), "请先添加模型");
-            int random = RandomUtil.randomInt(CollUtil.size(list));
-            context.setModelId(list.get(random).getId());
-        }
         if(StrUtil.isBlank(req.getDbId()) && app.getDbInfo() != null){
             req.setDbId(app.getDbInfo().getId());
         }
