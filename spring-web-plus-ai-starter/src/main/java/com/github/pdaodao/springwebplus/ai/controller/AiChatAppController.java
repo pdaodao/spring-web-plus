@@ -1,5 +1,8 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
+import cn.hutool.core.lang.hash.Hash;
+import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatAppDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
@@ -18,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Tag(name = "问答场景管理")
@@ -33,9 +38,20 @@ public class AiChatAppController {
     @GetMapping("list")
     @Operation(summary = "列表")
     public List<AiChatApp> list() {
-        return appDao.list(QueryBuilder.lambda(AiChatApp.class)
+        final List<AiChatModel>  models = modelDao.list(null, RequestUtil.getTeamOrDefault(), null);
+        final Map<String, String> nameMap = new HashMap<>();
+        for(final AiChatModel m: models){
+            nameMap.put(m.getId(), m.getTitle());
+        }
+        final List<AiChatApp> list = appDao.list(QueryBuilder.lambda(AiChatApp.class)
                 .eq(AiChatApp::getTeamId, RequestUtil.getTeamOrDefault())
                 .build().orderByAsc(AiChatApp::getSeq));
+        for(final AiChatApp app: list){
+            if(StrUtil.isNotBlank(app.getModelId())){
+                app.setModelTitle(nameMap.get(app.getModelId()));
+            }
+        }
+        return list;
     }
 
     @GetMapping("info")
@@ -55,7 +71,7 @@ public class AiChatAppController {
     @GetMapping("modelList")
     @Operation(summary = "模型列表")
     public List<IdTitle> modelList() {
-        final List<AiChatModel> list = modelDao.list(null, RequestUtil.getTeamId(), true);
+        final List<AiChatModel> list = modelDao.list(ChatModelType.LLM, RequestUtil.getTeamId(), true);
         final List<IdTitle> ret = new ArrayList<>();
         for(final AiChatModel m: list){
             ret.add(IdTitle.of(m.getId(), m.getTitle()));
