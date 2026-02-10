@@ -23,7 +23,7 @@ public class FromTableFieldCollector implements FromVisitor {
     }
 
     @Override
-    public SelectFromTable visit(final FromItem fromItem, final List<SelectItem> selectItems) {
+    public SelectFromTable visit(final FromItem fromItem, final List<SelectItem<?>> selectItems) {
         SelectFromTable table = null;
         if(fromItem instanceof Table){
             final Table tt = (Table) fromItem;

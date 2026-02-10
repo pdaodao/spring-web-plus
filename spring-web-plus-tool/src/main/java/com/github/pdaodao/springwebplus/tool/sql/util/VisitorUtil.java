@@ -3,21 +3,39 @@ package com.github.pdaodao.springwebplus.tool.sql.util;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.sql.util.visitor.FromVisitor;
+import com.github.pdaodao.springwebplus.tool.sql.util.visitor.JSelectVisitor;
 import com.github.pdaodao.springwebplus.tool.sql.util.visitor.SelectFromField;
+import com.github.pdaodao.springwebplus.tool.sql.util.visitor.WhereItemVisitor;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.statement.select.AllColumns;
-import net.sf.jsqlparser.statement.select.AllTableColumns;
-import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.*;
 
 /**
  * sql 语法树遍历器工具类
  */
 public class VisitorUtil {
+    public static PlainSelect parseSelect(final String sql) throws Exception{
+        // 解析sql
+        final Statement st = CCJSqlParserUtil.parse(sql);
+        if (!(st instanceof Select)) {
+            throw new IllegalArgumentException("not support this kind of sql.");
+        }
+        return ((Select) st).getPlainSelect();
+    }
+
+    public static String sqlVisit(final String sql, final String dbId, final FromVisitor fromVisitor, final WhereItemVisitor whereItemVisitor) throws Exception{
+        final JSelectVisitor jSelectVisitor = JSelectVisitor.of(dbId, fromVisitor, whereItemVisitor);
+        final String ret = jSelectVisitor.sqlVisit(sql);
+        return ret;
+    }
+
 
     /**
      * 构建等于条件  当值为多个时 构建为 in

@@ -11,7 +11,7 @@ public interface FromVisitor {
 
     SelectFromTables get();
 
-    SelectFromTable visit(final FromItem fromItem, final List<SelectItem> selectItems);
+    SelectFromTable visit(final FromItem fromItem, final List<SelectItem<?>> selectItems);
 
     default void visitJoin(SelectFromTable leftTable, SelectFromTable rightTable, Join join){
 
