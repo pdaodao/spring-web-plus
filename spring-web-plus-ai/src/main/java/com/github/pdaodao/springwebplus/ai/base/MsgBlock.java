@@ -46,6 +46,9 @@ public class MsgBlock {
     @Schema(description = "错误信息")
     private String error;
 
+    @Schema(description = "使用量")
+    private LLMUsage usage;
+
     @Schema(description = "耗时ms")
     private Long cost;
 

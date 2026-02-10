@@ -36,6 +36,19 @@ public class LLMResponse {
         blocks.add(block);
     }
 
+    public void addUsage(final LLMUsage llmUsage){
+        if(llmUsage == null){
+            return;
+        }
+        if(usage == null){
+            usage = llmUsage;
+            return;
+        }
+        usage.setPromptTokens(usage.getPromptTokens() + llmUsage.getPromptTokens());
+        usage.setCompletionTokens(usage.getCompletionTokens() + llmUsage.getCompletionTokens());
+        usage.setTotalTokens(usage.getTotalTokens() + llmUsage.getTotalTokens());
+    }
+
     public MsgBlock addTextBlock(final String text){
         final MsgBlock block = MsgBlock.ofText(text);
         addBlock(block);
