@@ -2,9 +2,10 @@ package com.github.pdaodao.springwebplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.*;
+import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 import java.util.List;
 
 /**
@@ -12,33 +13,23 @@ import java.util.List;
  */
 @Data
 @TableName(value = "sys_dic", autoResultMap = true)
-@Schema(description = "字典数据")
+@Schema(description = "系统字典")
 public class SysDic extends BaseEntity implements WithPidString, WithChildren<SysDic> {
     @Schema(description = "编码")
+    @NotBlank(message = "编码不能为空")
     private String name;
 
     @Schema(description = "标题")
+    @NotBlank(message = "标题不能为空")
     private String title;
 
     @Schema(description = "父id")
+    @TableFieldSize(defaultValue = "0")
     private String pid;
-
-    @Schema(description = "是否启用")
-    private Boolean enabled;
-
-    @Schema(description = "排序值")
-    private Integer seq;
 
     @Schema(description = "备注")
     private String remark;
 
-    @Schema(description = "颜色")
-    private String color;
-
-    @Schema(description= "图标")
-    private String icon;
-
     @Schema(description = "子项")
     private transient List<SysDic> children;
 }
-

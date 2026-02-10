@@ -4,57 +4,73 @@ import cn.hutool.core.collection.CollUtil;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
 import com.github.pdaodao.springwebplus.entity.SysDic;
+import com.github.pdaodao.springwebplus.entity.SysDicValue;
 import com.github.pdaodao.springwebplus.mapper.SysDicMapper;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import java.io.Serializable;
 import java.util.List;
 
 @Component
 @CacheConfig(cacheNames = "sysDic")
 public class SysDicDao extends BaseDao<SysDicMapper, SysDic> {
-    public List<SysDic> list(final String pid,  final String title){
-        return list(QueryBuilder.lambda(SysDic.class)
-                .eq(SysDic::getPid, pid)
-                .like(title, SysDic::getName, SysDic::getTitle).build());
+    @Autowired
+    private SysDicValueDao valueDao;
+
+    @Cacheable
+    public List<SysDic> infoList(){
+        return list();
+    }
+
+    public List<SysDic> byPid(final String id){
+        return list(QueryBuilder.lambda(SysDic.class).eq(SysDic::getPid, id).build());
     }
 
     @Override
-    @CacheEvict(key = "#p0.id", condition = "#p0.id != null")
+    @CacheEvict(allEntries = true)
     public boolean save(SysDic entity) {
         return super.save(entity);
     }
 
-    @Cacheable(key = "all")
-    public List<SysDic> allList(){
-        return list();
+    @Override
+    @CacheEvict(allEntries = true)
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
     }
 
-    @CacheEvict(key = "all")
-    public void  allListClear(){
+    public List<SysDicValue> values(final String dicId){
+        return valueDao.values(dicId);
     }
 
-
-    @CacheEvict(key = "#p0", condition = "#p0 != null")
-    public void clearValue(final String pid){
+    public List<SysDicValue> valuePage(String dicId, String q) {
+        return valueDao.valuePage(dicId, q);
     }
-    @CacheEvict(key = "#p0", condition = "#p0 != null")
-    public void saveValues(final String pid, final List<SysDic> values){
-        Preconditions.checkNotBlank(pid, "pid is empty");
-        if(CollUtil.isEmpty(values)){
-            return;
+
+    public Boolean valueDelete(List<String> list) {
+        valueDao.removeByIds(list);
+        valueDao.cacheClear();
+        return true;
+    }
+
+    public SysDicValue valueSave(SysDicValue entity) {
+        Preconditions.checkNotBlank(entity.getDicId(), "dicId is null.");
+        valueDao.save(entity);
+        valueDao.cacheClear();
+        return entity;
+    }
+
+    public Boolean valuesSave(List<SysDicValue> list) {
+        if(CollUtil.isEmpty(list)){
+            return false;
         }
-        remove(QueryBuilder.lambda(SysDic.class).eq(SysDic::getPid, pid).build());
-        for(final SysDic v: values){
-            v.setPid(pid);
-        }
-        saveBatch(values);
-    }
-
-    @Cacheable(key = "#p0", condition = "#p0 != null")
-    public List<SysDic> values(final String pid){
-        return list(QueryBuilder.lambda(SysDic.class).eq(SysDic::getPid, pid).build());
+        final String dicId = list.get(0).getDicId();
+        Preconditions.checkNotBlank(dicId, "dicId is null.");
+        valueDao.cacheClear();
+        valueDao.saveOrUpdateBatch(list);
+        return true;
     }
 }
