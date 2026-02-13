@@ -150,15 +150,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
             return;
         }
         for (final File f : fs) {
-            if (f.isDirectory() && !WebappFile.FileNames.contains(f.getName())) {
+            if(WebappFile.FileNames.contains(f.getName())){
+                continue;
+            }
+            if(f.isDirectory()){
                 final String subAppName = f.getName();
                 log.info("add sub  app:{}", subAppName);
                 WebappFile.SubApps.add(subAppName);
-                final String filePath = rootPath + subAppName + "/";
+                final String filePath = rootPath + subAppName +  "/";
                 fileResourceMap(registry, subAppName, filePath);
+            }else{
+                registry.addResourceHandler("/"+f.getName())
+                        .addResourceLocations(rootPath)
+                        .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
             }
         }
     }
+
 
     /**
      * 静态资源请求映射
@@ -170,7 +178,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private void fileResourceMap(final ResourceHandlerRegistry registry, final String app, final String filePath) {
         registry.addResourceHandler(app + "/index.html")
                 .addResourceLocations(filePath)
-                .setCacheControl(CacheControl.noStore());
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
 
         registry.addResourceHandler(app + "/favicon.ico")
                 .addResourceLocations(filePath)

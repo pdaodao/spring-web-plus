@@ -12,5 +12,6 @@ public class WebappFile {
         FileNames.add("static");
         FileNames.add("public");
         FileNames.add("assets");
+        FileNames.add("index.html");
     }
 }

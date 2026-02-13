@@ -90,7 +90,7 @@ public class GlobalExceptionAdvice {
             return modelAndView;
         }
         modelAndView.setStatus(HttpStatus.OK);
-        if(url.contains("/api") || url.endsWith("index.html")){
+        if(url.contains("/api/") || url.endsWith("index.html")){
             response.setStatus(404);
             response.setContentType("application/json");
             final RestResponse<String> restResponse = new RestResponse();
