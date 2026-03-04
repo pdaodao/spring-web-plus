@@ -9,5 +9,5 @@ import lombok.Data;
 public class FirewallConfig {
     private Boolean enabled = true;
 
-    private Integer qpsApi = 1000;
+    private Integer qpsApi = 1000 * 60;
 }
