@@ -453,4 +453,75 @@ public class SqlUtil {
         t = t.replaceAll("\\$\\{\\s*([^}]+?)\\s*}", "\\$$1");
         return t;
     }
+
+    /**
+     * 将 SQL 中所有不在字符串字面量内的中文逗号 '，' 替换为英文逗号 ','
+     *
+     * @param sql 原始 SQL
+     * @return 修正后的 SQL
+     */
+    public static String fixAllChineseCommasOutsideQuotes(String sql) {
+        if (sql == null || sql.isEmpty()) {
+            return sql;
+        }
+
+        StringBuilder result = new StringBuilder();
+        boolean inSingleQuote = false;
+        boolean inDoubleQuote = false;
+
+        for (int i = 0; i < sql.length(); i++) {
+            char c = sql.charAt(i);
+
+            // 处理转义字符（简单跳过下一个字符，避免 \' 被当作字符串结束）
+            if (c == '\\' && i + 1 < sql.length()) {
+                result.append(c).append(sql.charAt(i + 1));
+                i++; // 跳过下一个字符
+                continue;
+            }
+
+            // 切换单引号状态（仅当不在双引号内）
+            if (c == '\'' && !inDoubleQuote) {
+                inSingleQuote = !inSingleQuote;
+                result.append(c);
+                continue;
+            }
+
+            // 切换双引号状态（仅当不在单引号内）
+            if (c == '"' && !inSingleQuote) {
+                inDoubleQuote = !inDoubleQuote;
+                result.append(c);
+                continue;
+            }
+
+            // 如果在字符串内，直接追加（包括中文逗号）
+            if (inSingleQuote || inDoubleQuote) {
+                result.append(c);
+                continue;
+            }
+
+            // 不在字符串中：将中文逗号替换为英文逗号
+            if (c == '，') {
+                result.append(',');
+            } else {
+                result.append(c);
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        String[] testCases = {
+                "SELECT SUM(x) AS 总用电量，SUM(y) AS 总费用 FROM t WHERE name = '张三，李四'",
+                "INSERT INTO logs(msg, level) VALUES('系统，启动', 'INFO')，('错误，发生'，'ERROR')",
+                "SELECT a，b，c FROM table1 WHERE d = \"hello，world\" AND e = 'test，ok'",
+                "UPDATE users SET name = '王五，先生'，age = 30 WHERE id = 1"
+        };
+
+        for (String sql : testCases) {
+            System.out.println("原始: " + sql);
+            System.out.println("修正: " + fixAllChineseCommasOutsideQuotes(sql));
+            System.out.println("---");
+        }
+    }
 }
