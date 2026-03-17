@@ -170,46 +170,33 @@ public class DocumentSplitter {
             // 计算当前块的token总数
             int currentTotalTokens = currentChunkTokens.stream().mapToInt(Integer::intValue).sum();
 
-            // 检查是否需要新建块
-            // 逻辑：如果添加这个子段落会超过阈值，就先保存当前块
-            boolean needNewChunk = !currentChunkTokens.isEmpty() &&
-                    (currentTotalTokens + subTokens) > threshold;
-
-            if (needNewChunk) {
-                // 处理重叠：取上一个块的末尾部分
-                if (!currentChunkTexts.isEmpty() && option.getOverlappedPercent() > 0) {
-                    String lastChunk = String.join("", currentChunkTexts);
-                    int overlapChars = (int) (lastChunk.length() * option.getOverlappedPercent());
-                    int startPos = Math.max(0, lastChunk.length() - overlapChars);
-                    String overlapText = lastChunk.substring(startPos);
-
-                    currentChunkTexts.clear();
-                    currentChunkTokens.clear();
-                    currentChunkTexts.add(overlapText);
-                    currentChunkTokens.add(TokenCounter.countTokens(overlapText));
+            // RAGFlow逻辑：先追加，再检查
+            // 如果当前块为空，直接添加
+            // 否则追加内容，然后检查是否超阈值
+            if (currentChunkTokens.isEmpty()) {
+                currentChunkTexts.add(sub.content);
+                currentChunkTokens.add(subTokens);
+            } else {
+                // 追加到当前块（先不加换行，模拟RAGFlow的 +=）
+                if (subTokens >= MIN_SECTION_TOKENS) {
+                    // 较大段落，加换行
+                    currentChunkTexts.add("\n" + sub.content);
                 } else {
-                    // 保存当前块
+                    // 小段落，直接合并
+                    currentChunkTexts.add(sub.content);
+                }
+                currentChunkTokens.add(subTokens);
+
+                // 追加后再检查是否超阈值（和RAGFlow一致）
+                currentTotalTokens = currentChunkTokens.stream().mapToInt(Integer::intValue).sum();
+                if (currentTotalTokens > threshold) {
+                    // 超阈值了，需要新建块
+                    // 保存当前块（包含超出的部分）
                     chunks.add(createChunk(currentChunkTexts, sub.parentLayoutType, chunks.size()));
                     currentChunkTexts.clear();
                     currentChunkTokens.clear();
                 }
             }
-
-            // 添加子段落
-            // RAGFlow逻辑：如果子段落token数 < 8，不带分隔符合并；否则带分隔符合并
-            if (!currentChunkTexts.isEmpty()) {
-                // 当前块已有内容，判断是否加换行
-                if (subTokens >= MIN_SECTION_TOKENS) {
-                    // 较大段落，加换行分隔
-                    currentChunkTexts.add("\n" + sub.content);
-                } else {
-                    // 小段落，直接合并不加换行
-                    currentChunkTexts.add(sub.content);
-                }
-            } else {
-                currentChunkTexts.add(sub.content);
-            }
-            currentChunkTokens.add(subTokens);
         }
 
         // 处理最后一个块

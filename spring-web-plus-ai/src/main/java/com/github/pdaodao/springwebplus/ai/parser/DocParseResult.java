@@ -184,23 +184,13 @@ public class DocParseResult {
     @AllArgsConstructor
     public static class Position {
         /**
-         * 相对X坐标（0-1）
+         * 对齐方式：LEFT(左对齐), CENTER(居中), RIGHT(右对齐), JUSTIFIED(两端对齐)
          */
-        private Double x0;
+        private String alignment;
 
         /**
-         * 相对X坐标（0-1）
+         * 首行缩进（磅）
          */
-        private Double x1;
-
-        /**
-         * 相对Y坐标（0-1）
-         */
-        private Double top;
-
-        /**
-         * 相对Y坐标（0-1）
-         */
-        private Double bottom;
+        private Double firstLineIndent;
     }
 }
