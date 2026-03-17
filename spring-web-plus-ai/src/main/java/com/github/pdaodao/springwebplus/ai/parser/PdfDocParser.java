@@ -19,54 +19,25 @@ import javax.imageio.ImageIO;
  * PDF文档解析器
  * 对应RAGFlow: deepdoc/parser/pdf_parser.py
  *
- * 基于Apache PDFBox实现生产可用的PDF解析器
+ * 基于Apache PDFBox实现
  * 支持外部算法服务（OCR）进行增强
- *
- * 功能：
- * - 提取文本（按页面和段落）
- * - 提取图片（嵌入式图片）
- * - 可选：OCR识别图片中的文字
  */
 @Slf4j
 public class PdfDocParser extends AbstractDocParser {
 
-    /**
-     * 支持的图片格式
-     */
     private static final java.util.List<String> SUPPORTED_IMAGE_FORMATS = java.util.List.of(
             "png", "jpg", "jpeg", "gif", "bmp"
     );
 
-    // ==================== 外部服务（可选） ====================
-
-    /**
-     * OCR服务（可选，用于识别图片中的文字）
-     */
     private OcrService ocrService;
-
-    // ==================== 解析状态 ====================
-
-    /**
-     * 当前是否检测为英文文档
-     */
     private boolean isEnglish = false;
 
-    // ==================== 构造函数 ====================
-
-    /**
-     * 默认构造函数
-     */
     public PdfDocParser() {
     }
 
-    /**
-     * 构造函数（注入OCR服务）
-     */
     public PdfDocParser(OcrService ocrService) {
         this.ocrService = ocrService;
     }
-
-    // ==================== 服务注入 ====================
 
     public void setOcrService(OcrService ocrService) {
         this.ocrService = ocrService;
@@ -76,15 +47,11 @@ public class PdfDocParser extends AbstractDocParser {
         return ocrService;
     }
 
-    // ==================== 解析入口 ====================
-
     @Override
     public DocParseResult parse(File file, ParseOption option) {
         long startTime = System.currentTimeMillis();
-
         option = option != null ? option : new ParseOption();
 
-        // 检查文件格式
         String extension = getFileExtension(file.getName()).toLowerCase();
         if (!"pdf".equals(extension)) {
             throw new RuntimeException("不支持的文档格式: " + extension);
@@ -98,9 +65,6 @@ public class PdfDocParser extends AbstractDocParser {
         }
     }
 
-    /**
-     * 解析PDF
-     */
     private DocParseResult parsePdf(File file, ParseOption option, long startTime) {
         String fileName = file.getName();
 
@@ -110,70 +74,75 @@ public class PdfDocParser extends AbstractDocParser {
             int positionIndex = 0;
 
             int pageCount = document.getNumberOfPages();
-
-            // 检测文档语言
             detectLanguage(document);
 
-            // 逐页解析
+            DocParseResult.Chunk lastChunk = null;
+
             for (int pageNum = 1; pageNum <= pageCount; pageNum++) {
-                // 提取文本
+                PDPage page = document.getPage(pageNum - 1);
+
+                // 1. 提取文本
                 java.util.List<String> pageParagraphs = extractPageText(document, pageNum);
 
-                // 处理文本块
                 for (String para : pageParagraphs) {
                     if (para == null || para.trim().isEmpty()) {
                         continue;
                     }
-
-                    // 跳过噪声
                     if (isNoise(para.trim())) {
                         continue;
                     }
 
                     String layoutType = detectLayoutType(para.trim());
 
-                    // 第一个标题作为文档标题
                     if (title == null && "title".equals(layoutType)) {
                         title = para.trim();
                     }
 
-                    chunks.add(DocParseResult.Chunk.builder()
-                            .id(generateChunkId())
-                            .type("text")
-                            .content(para.trim())
-                            .layoutType(layoutType)
-                            .pageNumber(pageNum)
-                            .positionIndex(positionIndex++)
-                            .build());
+                    // 跨页合并
+                    if (lastChunk != null && "text".equals(lastChunk.getType())
+                            && "text".equals(layoutType)
+                            && canMerge(lastChunk.getContent(), para.trim())) {
+                        lastChunk.setContent(lastChunk.getContent() + "\n" + para.trim());
+                    } else {
+                        DocParseResult.Chunk chunk = DocParseResult.Chunk.builder()
+                                .id(generateChunkId())
+                                .type("text")
+                                .content(para.trim())
+                                .layoutType(layoutType)
+                                .pageNumber(pageNum)
+                                .positionIndex(positionIndex++)
+                                .build();
+                        chunks.add(chunk);
+                        lastChunk = chunk;
+                    }
                 }
 
-                // 提取图片（如果启用）
+                // 2. 提取图片
                 if (option.isExtractImage()) {
-                    PDPage page = document.getPage(pageNum - 1);
-                    java.util.List<DocParseResult.Chunk> imageChunks = extractImages(page, pageNum, positionIndex);
-                    chunks.addAll(imageChunks);
-                    positionIndex += imageChunks.size();
+                    java.util.List<DocParseResult.Chunk> imageChunks = extractImages(page, pageNum);
+                    for (DocParseResult.Chunk imageChunk : imageChunks) {
+                        imageChunk.setPositionIndex(positionIndex++);
+                        chunks.add(imageChunk);
+                        lastChunk = imageChunk;
+                    }
                 }
             }
 
-            // 添加标题块（只有真正检测到标题时才添加）
-            if (!chunks.isEmpty() && title != null) {
-                // 检查是否已经有标题块
-                boolean hasTitle = chunks.stream().anyMatch(c -> "title".equals(c.getLayoutType()));
-                if (!hasTitle) {
-                    chunks.add(0, DocParseResult.Chunk.builder()
-                            .id(generateChunkId())
-                            .type("text")
-                            .content(title)
-                            .layoutType("title")
-                            .pageNumber(1)
-                            .positionIndex(0)
-                            .build());
-                    // 重新编号
-                    for (int i = 1; i < chunks.size(); i++) {
-                        chunks.get(i).setPositionIndex(i);
+            if (title == null && !chunks.isEmpty()) {
+                for (DocParseResult.Chunk chunk : chunks) {
+                    if ("text".equals(chunk.getType()) && "title".equals(chunk.getLayoutType())) {
+                        title = chunk.getContent();
+                        break;
                     }
                 }
+            }
+
+            for (int i = 0; i < chunks.size(); i++) {
+                chunks.get(i).setPositionIndex(i);
+            }
+
+            if (title == null) {
+                title = fileName;
             }
 
             return DocParseResult.builder()
@@ -190,9 +159,6 @@ public class PdfDocParser extends AbstractDocParser {
         }
     }
 
-    /**
-     * 提取单页文本，返回段落列表
-     */
     private java.util.List<String> extractPageText(PDDocument document, int pageNum) {
         java.util.List<String> paragraphs = new java.util.ArrayList<>();
 
@@ -203,19 +169,13 @@ public class PdfDocParser extends AbstractDocParser {
             String text = stripper.getText(document);
 
             if (text != null && !text.isEmpty()) {
-                // 按空行分割为段落
                 String[] lines = text.split("\n");
                 java.util.List<String> paraLines = new java.util.ArrayList<>();
 
                 for (String line : lines) {
-                    if (line == null) {
-                        continue;
-                    }
-
+                    if (line == null) continue;
                     line = line.trim();
-
                     if (line.isEmpty()) {
-                        // 空行表示段落结束
                         if (!paraLines.isEmpty()) {
                             paragraphs.add(java.lang.String.join("\n", paraLines));
                             paraLines.clear();
@@ -225,7 +185,6 @@ public class PdfDocParser extends AbstractDocParser {
                     }
                 }
 
-                // 处理最后一个段落
                 if (!paraLines.isEmpty()) {
                     paragraphs.add(java.lang.String.join("\n", paraLines));
                 }
@@ -237,9 +196,6 @@ public class PdfDocParser extends AbstractDocParser {
         return paragraphs;
     }
 
-    /**
-     * 检测文档语言
-     */
     private void detectLanguage(PDDocument document) {
         try {
             PDFTextStripper stripper = new PDFTextStripper();
@@ -264,88 +220,59 @@ public class PdfDocParser extends AbstractDocParser {
         }
     }
 
-    /**
-     * 检测布局类型
-     */
     private String detectLayoutType(String text) {
-        if (text == null || text.isEmpty()) {
-            return "text";
-        }
+        if (text == null || text.isEmpty()) return "text";
 
-        // 中文标题模式
-        if (text.matches("^第[一二三四五六七八九十百]+[章条节]")) {
-            return "title";
-        }
-        if (text.matches("^(摘要|Abstract|目录|前言|参考文献|附录|致谢)$")) {
-            return "title";
-        }
-
-        // 英文标题模式
-        if (text.matches("^(Chapter|Section|Abstract|Contents|Introduction|References|Appendix|Acknowledgments)\\s*.*")) {
-            return "title";
-        }
-
-        // 数字标题
-        if (text.matches("^[0-9]+[.、].*") && text.length() < 80) {
-            return "title";
-        }
-
-        // 短行且没有句号结尾，可能是标题
-        if (text.length() < 60 && !text.endsWith(".") && !text.endsWith("。")) {
-            return "title";
-        }
+        if (text.matches("^第[一二三四五六七八九十百]+[章条节]")) return "title";
+        if (text.matches("^(摘要|Abstract|目录|前言|参考文献|附录|致谢)$")) return "title";
+        if (text.matches("^(Chapter|Section|Abstract|Contents|Introduction|References|Appendix|Acknowledgments)\\s*.*")) return "title";
+        if (text.matches("^[0-9]+[.、].*") && text.length() < 80) return "title";
+        if (text.length() < 60 && !text.endsWith(".") && !text.endsWith("。")) return "title";
 
         return "text";
     }
 
-    /**
-     * 检测是否为噪声
-     */
     private boolean isNoise(String text) {
-        if (text == null || text.isEmpty()) {
-            return true;
-        }
-
+        if (text == null || text.isEmpty()) return true;
         text = text.trim();
-
-        // 纯数字
-        if (text.matches("^[0-9]+$")) {
-            return true;
-        }
-
-        // 特殊符号
-        if (text.matches("^[\\-\\*\\._]+$")) {
-            return true;
-        }
-
-        // 网址
-        if (text.matches("^https?://.*")) {
-            return true;
-        }
-
+        if (text.matches("^[0-9]+$")) return true;
+        if (text.matches("^[\\-\\*\\._]+$")) return true;
+        if (text.matches("^https?://.*")) return true;
         return false;
     }
 
-    /**
-     * 从页面提取图片
-     */
-    private java.util.List<DocParseResult.Chunk> extractImages(PDPage page, int pageNum, int startIndex) {
+    private boolean canMerge(String text1, String text2) {
+        if (text1 == null || text2 == null) return false;
+        text1 = text1.trim();
+        text2 = text2.trim();
+        if (text1.isEmpty() || text2.isEmpty()) return false;
+
+        char endChar = text1.charAt(text1.length() - 1);
+        if ("。！？!?".indexOf(endChar) >= 0) return false;
+        if (text1.endsWith("...") || text1.endsWith("……")) return false;
+        if (text2.matches("^[0-9]+[.、].*")) return false;
+        if (text2.matches("^[（\\(][0-9]+[）\\)].*")) return false;
+
+        return true;
+    }
+
+    private java.util.List<DocParseResult.Chunk> extractImages(PDPage page, int pageNum) {
         java.util.List<DocParseResult.Chunk> imageChunks = new java.util.ArrayList<>();
 
         try {
             PDResources resources = page.getResources();
-            if (resources == null) {
-                return imageChunks;
-            }
+            if (resources == null) return imageChunks;
 
-            for (COSName name : resources.getXObjectNames()) {
+            Iterable<COSName> xObjectNames = resources.getXObjectNames();
+            if (xObjectNames == null) return imageChunks;
+
+            for (COSName name : xObjectNames) {
                 try {
                     PDXObject object = resources.getXObject(name);
                     if (object instanceof PDImageXObject) {
                         PDImageXObject pdImage = (PDImageXObject) object;
                         BufferedImage image = pdImage.getImage();
 
-                        // 过滤太小的图片
                         if (image != null && image.getWidth() > 10 && image.getHeight() > 10) {
                             byte[] imageBytes = bufferedImageToBytes(image);
                             String base64 = java.util.Base64.getEncoder().encodeToString(imageBytes);
@@ -355,7 +282,6 @@ public class PdfDocParser extends AbstractDocParser {
                                 format = "png";
                             }
 
-                            // OCR识别
                             String ocrText = null;
                             java.util.List<DocParseResult.TextBlock> ocrBlocks = null;
                             String layoutType = "figure";
@@ -395,7 +321,6 @@ public class PdfDocParser extends AbstractDocParser {
                                     .imageFormat(format)
                                     .layoutType(layoutType)
                                     .pageNumber(pageNum)
-                                    .positionIndex(startIndex + imageChunks.size())
                                     .build());
                         }
                     }
@@ -410,9 +335,6 @@ public class PdfDocParser extends AbstractDocParser {
         return imageChunks;
     }
 
-    /**
-     * BufferedImage转byte[]
-     */
     private static byte[] bufferedImageToBytes(BufferedImage image) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ImageIO.write(image, "png", baos);
@@ -423,17 +345,10 @@ public class PdfDocParser extends AbstractDocParser {
         }
     }
 
-    /**
-     * 获取文件扩展名
-     */
     private String getFileExtension(String fileName) {
-        if (fileName == null || fileName.isEmpty()) {
-            return "";
-        }
+        if (fileName == null || fileName.isEmpty()) return "";
         int lastDot = fileName.lastIndexOf('.');
-        if (lastDot == -1 || lastDot == fileName.length() - 1) {
-            return "";
-        }
+        if (lastDot == -1 || lastDot == fileName.length() - 1) return "";
         return fileName.substring(lastDot + 1);
     }
 
