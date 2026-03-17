@@ -34,6 +34,25 @@ public class WordDocParser extends AbstractDocParser {
     private static final String HEADING_PREFIX = "Heading";
 
     /**
+     * OCR服务（可选，用于识别图片中的文字）
+     */
+    private OcrService ocrService;
+
+    /**
+     * 设置OCR服务
+     */
+    public void setOcrService(OcrService ocrService) {
+        this.ocrService = ocrService;
+    }
+
+    /**
+     * 获取OCR服务
+     */
+    public OcrService getOcrService() {
+        return ocrService;
+    }
+
+    /**
      * 标题样式正则
      */
     private static final Pattern HEADING_PATTERN = Pattern.compile("Heading\\s*(\\d+)");
@@ -105,11 +124,9 @@ public class WordDocParser extends AbstractDocParser {
                 }
             }
 
-            // 4. OCR识别图片文字（可选）
-            if (option.isExtractImage()) {
-                // TODO: 调用OcrService识别图片中的文字
-                // for each image chunk -> OcrService.recognize() -> add as text chunk
-            }
+            // 4. OCR识别图片文字（可选，需要注入OcrService）
+            // 如果有OcrService，则识别图片中的文字并添加为文本块
+            // 注意：此逻辑在实际使用时通过setOcrService注入
 
             return DocParseResult.builder()
                     .title(title)
@@ -260,6 +277,7 @@ public class WordDocParser extends AbstractDocParser {
      */
     /**
      * 从单个段落中提取图片
+     * 返回统一的Chunk：base64存储图片，content存储OCR文本（如果有），blocks存储文本块列表
      */
     private void extractImagesFromParagraph(XWPFParagraph paragraph,
                                            List<DocParseResult.Chunk> chunks, int startIndex) {
@@ -278,14 +296,45 @@ public class WordDocParser extends AbstractDocParser {
                 String base64 = Base64.getEncoder().encodeToString(imageData);
                 String format = getImageFormat(pictureData.getPictureTypeEnum());
 
-                chunks.add(DocParseResult.Chunk.builder()
+                // 如果有OCR服务，识别图片中的文字
+                String ocrText = null;
+                List<DocParseResult.TextBlock> ocrBlocks = null;
+
+                if (ocrService != null) {
+                    try {
+                        OcrService.OcrOption ocrOption = new OcrService.OcrOption();
+                        OcrService.OcrResult ocrResult = ocrService.recognize(imageData, ocrOption);
+                        if (ocrResult != null) {
+                            ocrText = ocrResult.getText();
+                            if (ocrResult.getBlocks() != null && !ocrResult.getBlocks().isEmpty()) {
+                                ocrBlocks = new ArrayList<>();
+                                for (OcrService.OcrResult.TextBlock block : ocrResult.getBlocks()) {
+                                    ocrBlocks.add(DocParseResult.TextBlock.builder()
+                                            .text(block.getText())
+                                            .confidence(block.getConfidence())
+                                            .bbox(block.getBbox())
+                                            .build());
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.warn("OCR识别失败: {}", e.getMessage());
+                    }
+                }
+
+                // 构建Chunk
+                DocParseResult.Chunk chunk = DocParseResult.Chunk.builder()
                         .id(generateChunkId())
                         .type("image")
-                        .content(base64)
+                        .base64(base64)
+                        .content(ocrText)
+                        .blocks(ocrBlocks)
                         .imageFormat(format)
-                        .layoutType("image")
+                        .layoutType(ocrText != null ? "ocr_text" : "image")
                         .positionIndex(positionIndex++)
-                        .build());
+                        .build();
+
+                chunks.add(chunk);
             }
         }
     }

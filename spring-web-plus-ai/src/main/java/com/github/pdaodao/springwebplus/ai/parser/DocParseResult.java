@@ -74,12 +74,22 @@ public class DocParseResult {
         private String type;
 
         /**
-         * 内容
+         * 内容字符串
          * - 文本：文本内容
          * - 表格：Markdown格式内容
-         * - 图片：Base64编码的图片数据
+         * - 图片：图片说明文字（如果有）
          */
         private String content;
+
+        /**
+         * Base64编码的数据（图片等）
+         */
+        private String base64;
+
+        /**
+         * 文本块列表（content的细化，包含位置、置信度等）
+         */
+        private java.util.List<TextBlock> blocks;
 
         /**
          * HTML格式内容（仅表格有效）
@@ -94,6 +104,7 @@ public class DocParseResult {
          * header: 页眉
          * footer: 页脚
          * page_number: 页码
+         * ocr_text: OCR识别的文字
          */
         private String layoutType;
 
@@ -192,5 +203,29 @@ public class DocParseResult {
          * 首行缩进（磅）
          */
         private Double firstLineIndent;
+    }
+
+    /**
+     * 文本块（content的细化，包含位置信息）
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TextBlock {
+        /**
+         * 文本内容
+         */
+        private String text;
+
+        /**
+         * 置信度
+         */
+        private Double confidence;
+
+        /**
+         * 位置信息 [x1, y1, x2, y2]
+         */
+        private int[] bbox;
     }
 }
