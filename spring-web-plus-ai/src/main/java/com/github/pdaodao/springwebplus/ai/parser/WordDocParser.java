@@ -51,12 +51,18 @@ public class WordDocParser extends AbstractDocParser {
             String title = null;
             int positionIndex = 0;
 
-            // 按文档原始顺序处理（段落和表格混合）
+            // 按文档原始顺序处理（段落、表格、图片混合）
             List<IBodyElement> bodyElements = document.getBodyElements();
             for (IBodyElement element : bodyElements) {
                 if (element instanceof XWPFParagraph) {
                     XWPFParagraph paragraph = (XWPFParagraph) element;
                     String text = paragraph.getText();
+
+                    // 提取段落中的图片（按位置插入）
+                    if (option.isExtractImage()) {
+                        extractImagesFromParagraph(paragraph, chunks, positionIndex);
+                    }
+
                     if (text == null || text.trim().isEmpty()) {
                         continue;
                     }
@@ -99,25 +105,10 @@ public class WordDocParser extends AbstractDocParser {
                 }
             }
 
-            // 3. 提取图片（可选）
+            // 4. OCR识别图片文字（可选）
             if (option.isExtractImage()) {
-
-
-                List<XWPFPictureData> pictures = document.getAllPictures();
-                for (XWPFPictureData picture : pictures) {
-                    byte[] imageData = picture.getData();
-                    String base64 = Base64.getEncoder().encodeToString(imageData);
-                    String format = getImageFormat(picture.getPictureTypeEnum());
-
-                    chunks.add(DocParseResult.Chunk.builder()
-                            .id(generateChunkId())
-                            .type("image")
-                            .content(base64)
-                            .imageFormat(format)
-                            .layoutType("image")
-                            .positionIndex(positionIndex++)
-                            .build());
-                }
+                // TODO: 调用OcrService识别图片中的文字
+                // for each image chunk -> OcrService.recognize() -> add as text chunk
             }
 
             return DocParseResult.builder()
@@ -262,6 +253,82 @@ public class WordDocParser extends AbstractDocParser {
         }
 
         return builder.build();
+    }
+
+    /**
+     * 从段落中提取图片（嵌入在Run中的图片）
+     */
+    /**
+     * 从单个段落中提取图片
+     */
+    private void extractImagesFromParagraph(XWPFParagraph paragraph,
+                                           List<DocParseResult.Chunk> chunks, int startIndex) {
+        int positionIndex = startIndex;
+
+        List<XWPFRun> runs = paragraph.getRuns();
+        if (runs == null) return;
+
+        for (XWPFRun run : runs) {
+            List<XWPFPicture> pictures = run.getEmbeddedPictures();
+            for (XWPFPicture pic : pictures) {
+                XWPFPictureData pictureData = pic.getPictureData();
+                if (pictureData == null) continue;
+
+                byte[] imageData = pictureData.getData();
+                String base64 = Base64.getEncoder().encodeToString(imageData);
+                String format = getImageFormat(pictureData.getPictureTypeEnum());
+
+                chunks.add(DocParseResult.Chunk.builder()
+                        .id(generateChunkId())
+                        .type("image")
+                        .content(base64)
+                        .imageFormat(format)
+                        .layoutType("image")
+                        .positionIndex(positionIndex++)
+                        .build());
+            }
+        }
+    }
+
+    /**
+     * 从段落列表中提取图片（已废弃，用extractImagesFromParagraph代替）
+     */
+    private void extractImagesFromParagraphs(List<IBodyElement> bodyElements,
+                                              List<DocParseResult.Chunk> chunks, int startIndex) {
+        int positionIndex = startIndex;
+
+        for (IBodyElement element : bodyElements) {
+            if (!(element instanceof XWPFParagraph)) {
+                continue;
+            }
+
+            XWPFParagraph paragraph = (XWPFParagraph) element;
+            List<XWPFRun> runs = paragraph.getRuns();
+            if (runs == null) continue;
+
+            for (XWPFRun run : runs) {
+                List<XWPFPicture> pictures = run.getEmbeddedPictures();
+                for (XWPFPicture pic : pictures) {
+                    XWPFPictureData pictureData = pic.getPictureData();
+                    if (pictureData == null) continue;
+
+                    byte[] imageData = pictureData.getData();
+                    String base64 = Base64.getEncoder().encodeToString(imageData);
+                    String format = getImageFormat(pictureData.getPictureTypeEnum());
+
+                    chunks.add(DocParseResult.Chunk.builder()
+                            .id(generateChunkId())
+                            .type("image")
+                            .content(base64)
+                            .imageFormat(format)
+                            .layoutType("image")
+                            .positionIndex(positionIndex++)
+                            .build());
+                }
+            }
+        }
+
+        System.out.println("DEBUG - 从段落提取图片数量: " + (positionIndex - startIndex));
     }
 
     /**
