@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
-
 import java.io.Serializable;
 
 /**
@@ -122,6 +121,16 @@ public class TableField implements Serializable, Cloneable, Comparable<TableFiel
      * 字典id
      */
     private String dicId;
+
+    /**
+     * 行级权限规则id
+     */
+    protected String rowRuleId;
+
+    /**
+     * 脱敏规则id
+     */
+    protected String maskRuleId;
 
     /**
      * excel 忽略
