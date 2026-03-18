@@ -1,9 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.store.lucene;
 
-import cn.hutool.core.util.IdUtil;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,8 @@ public class LuceneTest {
         // luceneStore.save(list, false);
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.addNamespace("test");
-        // query.setContent("校车");
+        query.setContent("校车");
+        query.setScore(0.3);
         final List<AiEmbedText> ret = luceneStore.query(query);
         for(final AiEmbedText text: ret){
             System.out.println(text.getId()+":"+text.getNamespace()+":"+text.getContent());

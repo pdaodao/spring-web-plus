@@ -5,8 +5,6 @@ import com.github.pdaodao.springwebplus.ai.AiVectorStore;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import org.apache.lucene.analysis.Analyzer;
-//import org.apache.lucene.analysis.ik.IKAnalyzer;
-import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
@@ -15,7 +13,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.wltea.analyzer.lucene.IKAnalyzer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,8 +43,7 @@ public class LuceneStore implements AiVectorStore {
 
     public LuceneStore(Path indexPath) throws IOException {
         this.indexPath = indexPath;
-        // this.analyzer = new IKAnalyzer();
-        this.analyzer = new CJKAnalyzer();
+        this.analyzer = new IKAnalyzer(true);
         // 确保索引目录存在
         if (indexPath != null && !Files.exists(indexPath)) {
             Files.createDirectories(indexPath);
