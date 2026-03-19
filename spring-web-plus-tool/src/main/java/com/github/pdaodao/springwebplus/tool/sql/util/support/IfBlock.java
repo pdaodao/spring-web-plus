@@ -81,7 +81,7 @@ public class IfBlock {
         }
         // 添加最后一个 if 之后的剩余部分
         result.append(template, lastEnd, template.length());
-        return result.toString().trim();
+        return removeRedundantWhere(result.toString().trim());
     }
 
     private static boolean evaluate(String testCondition, final Map<String, Object> params){
@@ -107,5 +107,19 @@ public class IfBlock {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * 移除 SQL 中多余的 WHERE 关键字。
+     * 此方法处理 WHERE 后面紧跟各种 SQL 子句或结尾的情况。
+     */
+    public static String removeRedundantWhere(final String sql) {
+        if (sql == null || sql.trim().isEmpty()) {
+            return sql;
+        }
+        final String regex = "(?i)\\s+WHERE\\s+(?=\\s*(?:GROUP\\s+BY|ORDER\\s+BY|HAVING|LIMIT|JOIN|INNER\\s+JOIN|LEFT\\s+JOIN|RIGHT\\s+JOIN|FULL\\s+OUTER\\s+JOIN|CROSS\\s+JOIN|UNION|UNION\\s+ALL|INTERSECT|EXCEPT|FOR\\s+UPDATE|\\)|$))";
+        // 将匹配到的 " WHERE " (包括前后空格) 替换为一个空格。
+        return sql.replaceAll(regex, " ");
     }
 }

@@ -17,6 +17,7 @@ import java.io.Serializable;
  * 字段信息
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TableField implements Serializable, Cloneable, Comparable<TableField> {
     /**

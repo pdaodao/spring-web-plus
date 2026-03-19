@@ -117,6 +117,9 @@ public class FilterItem {
      * @return
      */
     public int paramValueSize() {
+        if(param == null){
+            return 0;
+        }
         if(CollUtil.isNotEmpty(param.getValues())){
             return CollUtil.size(param.getValue());
         }

@@ -425,7 +425,7 @@ public class SqlUtil {
         if(filterItems == null){
             filterItems = new ArrayList<>();
         }
-        // 处理 if{a != null, sql...}
+        // 处理 <if test="...."></if>
         sql = processIf(sql, filterItems);
         sql = dropPlaceholderBracket(sql);
         final Statement st = CCJSqlParserUtil.parse(sql);
