@@ -20,7 +20,7 @@ public class LuceneTest {
         t2.setId("2");
         list.add(t2);
 
-        // luceneStore.save(list, false);
+        luceneStore.save(list, false);
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
         query.addNamespace("test");
         query.setContent("校车");
