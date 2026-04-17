@@ -20,7 +20,7 @@ public class WordDocParserTest {
 
         WordDocParser parser = new WordDocParser();
         ParseOption option = new ParseOption();
-        option.setExtractImage(false);  // 先不提取图片
+        option.setExtractImage(true);  // 提取图片
 
         try {
             DocParseResult result = parser.parse(file, option);

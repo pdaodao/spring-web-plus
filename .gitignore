@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+resources
+*.onnx
 .DS_Store
 .pdf
 test
