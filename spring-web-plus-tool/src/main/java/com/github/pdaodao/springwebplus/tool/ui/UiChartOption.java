@@ -45,7 +45,7 @@ public class UiChartOption {
         private String groupField;
 
         @Schema(description = "x轴是否添加区域缩放组件")
-        private Boolean xDataZoom = false;
+        private Boolean dataZoom = false;
     }
 
     @Data
