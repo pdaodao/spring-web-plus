@@ -100,4 +100,9 @@ public class TokenCounter {
         // 估算：英文单词*1.3 + 中文字符*2
         return (int) (wordCount * 1.3 + chineseCharCount * 2);
     }
+
+
+    public static void main(String[] args) {
+        System.out.println(countTokens("hello world"));
+    }
 }

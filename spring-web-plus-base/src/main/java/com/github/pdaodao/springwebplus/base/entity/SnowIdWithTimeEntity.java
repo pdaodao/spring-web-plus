@@ -4,16 +4,15 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 public abstract class SnowIdWithTimeEntity extends SnowIdEntity {
     @Schema(description = "创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
-    protected Date createTime;
+    protected LocalDateTime createTime;
 
     @Schema(description = "更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    protected Date updateTime;
+    protected LocalDateTime updateTime;
 }

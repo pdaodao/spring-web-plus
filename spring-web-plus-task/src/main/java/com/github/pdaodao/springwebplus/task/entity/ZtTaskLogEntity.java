@@ -14,6 +14,8 @@ import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -52,7 +54,7 @@ public class ZtTaskLogEntity extends SnowIdWithTimeEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "任务结束时间")
-    protected Date endTime;
+    protected LocalDateTime endTime;
 
     public void setError(String error) {
         this.error = StrUtils.cut(error, 300);

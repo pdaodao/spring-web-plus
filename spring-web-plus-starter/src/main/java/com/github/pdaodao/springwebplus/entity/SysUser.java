@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -60,10 +62,10 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     private String zfbid;
 
     @Schema(description = "密码更新时间")
-    private Date pwdUpdateTime;
+    private LocalDateTime pwdUpdateTime;
 
     @Schema(description = "上次登录时间")
-    private Date lastLoginTime;
+    private LocalDateTime lastLoginTime;
 
     @Schema(description = "最后登录id")
     private String loginIp;

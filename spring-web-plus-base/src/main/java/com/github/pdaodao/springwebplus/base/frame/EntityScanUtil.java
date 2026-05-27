@@ -24,6 +24,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -314,7 +315,7 @@ public class EntityScanUtil {
             return ff;
         }
 
-        if (propDesc.getFieldClass().equals(Date.class)) {
+        if (propDesc.getFieldClass().equals(Date.class) || propDesc.getFieldClass().equals(LocalDateTime.class)) {
             ff.setDataType(DataType.DATETIME);
             ff.setTypeName("datetime");
             return ff;

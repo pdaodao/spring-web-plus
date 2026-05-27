@@ -6,8 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeEntity;
 import com.github.pdaodao.springwebplus.base.pojo.TokenInfo;
 import lombok.Data;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @TableName("sys_user_token")
@@ -15,13 +14,13 @@ public class SysUserTokenEntity extends SnowIdWithTimeEntity {
     /**
      * 登陆时间
      */
-    private Date loginTime = new Date();
+    private LocalDateTime loginTime = LocalDateTime.now();
 
     /**
      * 上次使用时间
      */
     @JsonIgnoreProperties
-    private Date lastAccessTime;
+    private LocalDateTime lastAccessTime;
 
     /**
      * 用户id

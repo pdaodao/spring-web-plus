@@ -10,8 +10,10 @@ import java.util.List;
 @Schema(description = "网页结构")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UiPage {
-    private String id;
+    @Schema(description = "唯一id")
+    private String uuid;
 
+    @Schema(description = "标题")
     private String title;
 
     @Schema(description = "子组件")

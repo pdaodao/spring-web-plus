@@ -47,6 +47,7 @@ public class AiQuestionAnswer extends SnowIdWithTimeUserEntity implements WithTe
     private Boolean enabled;
 
     @TableLogic
+    @Schema(description = "是否删除")
     private Boolean isDeleted;
 
     private transient List<AiQuestionAnswer> children;
