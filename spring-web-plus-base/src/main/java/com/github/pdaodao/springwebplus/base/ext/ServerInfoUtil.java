@@ -15,8 +15,8 @@ import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -167,7 +167,7 @@ public class ServerInfoUtil {
             jvm.setVersion(version);
             jvm.setHome(home);
             jvm.setProcessId(processID);
-            jvm.setStartTime(new Date(startTime));
+            jvm.setStartTime(DateTimeUtil.ofEpochMilli(startTime));
             jvm.setUserTime(userTime);
             jvm.setUserTimeDesc(userTimeDesc);
             jvm.setProcessCpuRate(processCpuRate);

@@ -2,6 +2,8 @@ package com.github.pdaodao.springwebplus.tool.task.cron;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -152,6 +154,23 @@ public final class CronExpression implements Serializable, Cloneable {
         Date timeAfter = getTimeAfter(testDateCal.getTime());
 
         return ((timeAfter != null) && (timeAfter.equals(originalDate)));
+    }
+
+    /**
+     * Returns the next date/time <I>after</I> the given date/time which
+     * satisfies the cron expression.
+     *
+     * @param date the date/time at which to begin the search for the next valid
+     *             date/time
+     * @return the next valid date/time
+     */
+    public LocalDateTime getNextValidTimeAfter(LocalDateTime dateTime) {
+        Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date nextDate = getTimeAfter(date);
+        if(nextDate == null){
+            return null;
+        }
+        return nextDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     /**

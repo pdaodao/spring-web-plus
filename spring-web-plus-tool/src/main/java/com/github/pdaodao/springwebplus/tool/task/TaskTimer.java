@@ -6,8 +6,8 @@ import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -82,11 +82,11 @@ public class TaskTimer extends Thread{
                 if(t.getNextTime() == null){
                     continue;
                 }
-                final Date next = CronUtil.nextTime(t.getCronSetting(), new Date(t.getNextTime()));
+                final LocalDateTime next = CronUtil.nextTime(t.getCronSetting(), java.time.Instant.ofEpochMilli(t.getNextTime()).atZone(DateTimeUtil.ShangHaiZone).toLocalDateTime());
                 if(next == null){
                     t.setNextTime(null);
                 }else{
-                    t.setNextTime(next.getTime());
+                    t.setNextTime(next.atZone(DateTimeUtil.ShangHaiZone).toInstant().toEpochMilli());
                 }
                 loader.setNext(t.getTaskId(), t.getNextTime());
             }

@@ -2,11 +2,11 @@ package com.github.pdaodao.springwebplus.tool.data.converter;
 
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-public class DateValueConverter implements ValueConverter<Date>{
+public class DateValueConverter implements ValueConverter<LocalDateTime>{
     @Override
-    public Date get(Object obj) {
+    public LocalDateTime get(Object obj) {
         return DataValueUtil.toDate(obj);
     }
 }

@@ -6,7 +6,9 @@ import com.github.pdaodao.springwebplus.tool.task.TaskLogContext;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -33,7 +35,8 @@ public class TaskThreadPool {
         final TaskFuture taskFuture = TaskFuture.of(taskRunnable);
         TaskThreadPoolFactory.put(taskRunnable.getId(), taskFuture);
         final Future future = taskExecutor.submit(() -> {
-            LogUtil.setContext(null, taskRunnable.getId(), new Date(taskFuture.getStartExecuteTime()));
+            LocalDateTime startTime = Instant.ofEpochMilli(taskFuture.getStartExecuteTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LogUtil.setContext(null, taskRunnable.getId(), startTime);
             try{
                 taskRunnable.start();
                 taskRunnable.execute();

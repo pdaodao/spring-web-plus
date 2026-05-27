@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.base.pojo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 public class SysLog {
@@ -21,7 +21,7 @@ public class SysLog {
     private String userType;
 
     @Schema(description = "操作时间")
-    private Date operationTime;
+    private LocalDateTime operationTime;
 
     @Schema(description = "操作类型")
     private String operationType;

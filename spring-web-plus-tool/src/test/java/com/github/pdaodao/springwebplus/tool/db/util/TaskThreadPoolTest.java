@@ -22,7 +22,7 @@ public class TaskThreadPoolTest {
         for(long i = 1; i < 50; i++){
             final CronTaskInfo taskInfo = new CronTaskInfo();
             taskInfo.setTaskId(i+"");
-            ringThread.addToRing(taskInfo, DateTimeUtil.offsetSecond(DateTimeUtil.now(), 3).getTime());
+            ringThread.addToRing(taskInfo, DateTimeUtil.toEpochMilli(DateTimeUtil.offsetSecond(DateTimeUtil.now(), 3)));
             ThreadUtil.sleep(2000);
         }
     }
@@ -68,7 +68,7 @@ public class TaskThreadPoolTest {
         public void execute() throws Exception {
             log.info("MDC job start....");
             ThreadUtil.sleep(3000);
-            System.out.println(id + ":hello"+DateTimeUtil.formatDateTime(new Date()));
+            System.out.println(id + ":hello"+DateTimeUtil.formatDateTime(DateTimeUtil.now()));
 //            System.out.println(Thread.currentThread().getName()+":hello");
         }
     }

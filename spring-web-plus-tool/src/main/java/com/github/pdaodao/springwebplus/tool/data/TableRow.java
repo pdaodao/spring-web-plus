@@ -4,7 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.Data;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -171,7 +173,7 @@ public class TableRow implements Serializable, Cloneable {
         return data.getDouble(key, defaultValue);
     }
 
-    public Date getDate(final String key, final Date defaultValue) {
+    public LocalDateTime getDate(final String key, final LocalDateTime defaultValue) {
         return data.getDate(key, defaultValue);
     }
 

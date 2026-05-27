@@ -20,6 +20,7 @@ import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.base.util.IpUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,6 +51,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.print.DocFlavor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -134,7 +136,7 @@ public class SysLogAop {
             final MethodSignature methodSignature = (MethodSignature) signature;
             final Method method = methodSignature.getMethod();
             sysLog.setPath(servletPath);
-            sysLog.setOperationTime(new Date());
+            sysLog.setOperationTime(DateTimeUtil.now());
             // 设置日志链路ID
             String traceId = MDC.get("traceId");
             sysLog.setTraceId(traceId);
@@ -221,7 +223,7 @@ public class SysLogAop {
         if(sysLogListener != null){
             try{
                 if(sysLog.getOperationTime() != null){
-                    sysLog.setCost((int)(System.currentTimeMillis() - sysLog.getOperationTime().getTime()));
+                    sysLog.setCost((int)(System.currentTimeMillis() - DateTimeUtil.toEpochMilli(sysLog.getOperationTime())));
                 }
                 sysLogListener.onSave(sysLog);
             }catch (Exception e){

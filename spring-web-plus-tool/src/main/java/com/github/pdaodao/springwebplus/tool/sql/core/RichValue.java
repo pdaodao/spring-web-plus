@@ -6,8 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,7 +120,7 @@ public class RichValue {
         return DataValueUtil.toDouble(value);
     }
 
-    public Date dateValue(){
+    public LocalDateTime dateValue(){
         if(ObjectUtil.isEmpty(value)){
             return null;
         }

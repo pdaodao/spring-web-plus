@@ -11,6 +11,7 @@ import com.github.pdaodao.springwebplus.base.support.SysRequestErrorLog;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import java.util.Date;
 import java.util.Optional;
 
 
@@ -175,7 +175,7 @@ public class GlobalExceptionAdvice {
         log.setUserId(RequestUtil.getUserId());
         log.setMsg(StrUtils.cut(ret.getMsg(), 500));
         log.setTrace(StrUtils.cut(ret.getTrace(), 1000));
-        log.setCreateTime(new Date());
+        log.setCreateTime(DateTimeUtil.now());
         logService.get().save(log);
     }
 }

@@ -12,7 +12,7 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.Charset;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 任务日志打印工具
@@ -26,7 +26,7 @@ public class LogUtil {
         return logContext.get();
     }
 
-    public static TaskLogContext setContext(final String taskId, final String logId, final Date startTime){
+    public static TaskLogContext setContext(final String taskId, final String logId, final LocalDateTime startTime){
         final TaskLogContext ct = TaskLogContext.of(taskId, logId, startTime);
         logContext.set(ct);
         final String path = getLogPath();
@@ -148,7 +148,7 @@ public class LogUtil {
      * @param logId
      * @return
      */
-    public static String getLogPath(Date startTime, final String logId){
+    public static String getLogPath(LocalDateTime startTime, final String logId){
         final String name = String.format("%s.log", logId);
         final String path = FilePathUtil.pathJoin(basePath, DateTimeUtil.formatYearMonth(startTime), name);
         return path;
@@ -167,7 +167,7 @@ public class LogUtil {
      * @param logId
      * @return
      */
-    public static String getLogDataPath(final Date startTime, final String logId, final Integer sheetId){
+    public static String getLogDataPath(final LocalDateTime startTime, final String logId, final Integer sheetId){
         String name = String.format("%s-data.log",logId);
         if(sheetId != null && sheetId > 0){
             name = String.format("%s-data-%s.log",logId, sheetId);
@@ -183,7 +183,7 @@ public class LogUtil {
     }
 
     public static void main(String[] args) {
-        LogUtil.setContext("1", "1", new Date());
+        LogUtil.setContext("1", "1", LocalDateTime.now());
         LogUtil.appendLog("北京欢迎您");
     }
 }

@@ -16,12 +16,13 @@
 
 package com.github.pdaodao.springwebplus.base.util;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -438,14 +439,14 @@ public class IDCardUtil {
 		} 
 		return a; 
 	} 
-	public static Date getBirthday(String idcard) {
+	public static LocalDateTime getBirthday(String idcard) {
 		if(!validate(idcard)) {
 			return null;
-		} 
-		String result = ""; 
+		}
+		String result = "";
 		if (idcard.length() == 15) {
-            idcard = convertIdcarBy15bit(idcard);   
-        } 
+            idcard = convertIdcarBy15bit(idcard);
+        }
 		result = idcard.substring(6, 14);
 		try {
 			return DateTimeUtil.tryParse(result);
@@ -505,11 +506,11 @@ public class IDCardUtil {
 		return result; 
 	} 
 	public static int getAge(String idcard) {
-		int age = -1; 
-		final Date birthday = getBirthday(idcard);
+		int age = -1;
+		final LocalDateTime birthday = getBirthday(idcard);
 		if(birthday != null){
-			return DateUtil.ageOfNow(birthday);
+			return Period.between(birthday.toLocalDate(), LocalDateTime.now().toLocalDate()).getYears();
 		}
-		return age; 
+		return age;
 	} 
 } 

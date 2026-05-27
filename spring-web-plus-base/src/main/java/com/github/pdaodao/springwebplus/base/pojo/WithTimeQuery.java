@@ -6,7 +6,7 @@ import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Schema(description = "带时间查询")
@@ -18,34 +18,34 @@ public class WithTimeQuery extends PageRequestParam{
     private String endTime;
 
     @JsonIgnore
-    public Date getStartDate(){
+    public LocalDateTime getStartDate(){
         if(StrUtil.isBlank(startTime)){
             return null;
         }
         // 没有时间
         if(!StrUtil.contains(startTime, ":")){
-            final Date d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
+            final LocalDateTime d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
             if(d != null){
                 return DateTimeUtil.beginOfDay(d);
             }
         }
-        final Date d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_TIME_FORMATTER, DateTimeUtil.DATE_TIME_FORMATTER_SLASH);
+        final LocalDateTime d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_TIME_FORMATTER, DateTimeUtil.DATE_TIME_FORMATTER_SLASH);
         return d;
     }
 
     @JsonIgnore
-    public Date getEndDate(){
+    public LocalDateTime getEndDate(){
         if(StrUtil.isBlank(endTime)){
             return null;
         }
         // 没有时间
         if(!StrUtil.contains(endTime, ":")){
-            final Date d = DateTimeUtil.tryParse(endTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
+            final LocalDateTime d = DateTimeUtil.tryParse(endTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
             if(d != null){
                 return  DateTimeUtil.endOfDay(d);
             }
         }
-        final Date d = DateTimeUtil.tryParse(endTime, DateTimeUtil.DATE_TIME_FORMATTER, DateTimeUtil.DATE_TIME_FORMATTER_SLASH);
+        final LocalDateTime d = DateTimeUtil.tryParse(endTime, DateTimeUtil.DATE_TIME_FORMATTER, DateTimeUtil.DATE_TIME_FORMATTER_SLASH);
         return d;
     }
 }

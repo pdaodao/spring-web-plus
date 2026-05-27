@@ -9,7 +9,7 @@ import com.github.pdaodao.springwebplus.tool.task.cron.CronSettingType;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * cron表达式工具类
@@ -22,22 +22,22 @@ public class CronUtil {
      * @return
      * @throws Exception
      */
-    public static Date nextTime(final CronSetting cronSetting, Date lastTime) throws Exception {
+    public static LocalDateTime nextTime(final CronSetting cronSetting, LocalDateTime lastTime) throws Exception {
         if(cronSetting == null){
             return null;
         }
-        final Date now = DateTimeUtil.now();
+        final LocalDateTime now = DateTimeUtil.now();
         if(lastTime == null){
             lastTime = now;
         }
         if(CronSettingType.fixed == cronSetting.getType()){
             Preconditions.checkNotNull(cronSetting.getTimeInterval(), "fixed cron time is null");
-            return new Date(cronSetting.getTimeInterval());
+            return DateTimeUtil.offsetSecond(now, (int)(long) cronSetting.getTimeInterval());
         }
-        if(cronSetting.getBeginTime() != null && now.before(cronSetting.getBeginTime())){
+        if(cronSetting.getBeginTime() != null && now.isBefore(cronSetting.getBeginTime())){
              return null;
         }
-        if(cronSetting.getEndTime() != null && now.after(cronSetting.getEndTime())){
+        if(cronSetting.getEndTime() != null && now.isAfter(cronSetting.getEndTime())){
             return null;
         }
         if(CronSettingType.cron == cronSetting.getType()){
@@ -54,12 +54,12 @@ public class CronUtil {
         // 按小时调度 每小时的几分钟
         if(CronSettingType.hour == cronSetting.getType()){
             for(int i = 0; i <=1; i++){
-                final Date d = DateTimeUtil.offsetHour(lastTime, i);
+                final LocalDateTime d = DateTimeUtil.offsetHour(lastTime, i);
                 // 指定调度的分钟
                 if(cronSetting.getMinute() != null){
-                    d.setMinutes(cronSetting.getMinute());
+                    d.withMinute(cronSetting.getMinute());
                 }
-                if(d.after(DateTimeUtil.offsetSecond(now, 1))){
+                if(d.isAfter(DateTimeUtil.offsetSecond(now, 1))){
                     return d;
                 }
             }
@@ -67,24 +67,24 @@ public class CronUtil {
         }
         // 按天调度 几天调度一次
         if(CronSettingType.day == cronSetting.getType()){
-            final Date d = DateTimeUtil.offsetDay(lastTime, (int) (long)cronSetting.getTimeInterval());
+            final LocalDateTime d = DateTimeUtil.offsetDay(lastTime, (int) (long)cronSetting.getTimeInterval());
             if(CollUtil.isNotEmpty(cronSetting.getHours())){
-                final int nowH = now.getHours();
+                final int nowH = now.getHour();
                 boolean used = false;
                 for(final Integer h: cronSetting.getHours()){
                     if(h >= nowH && h < nowH + 1){
                         used = true;
-                        d.setHours(h);
+                        d.withHour(h);
                         break;
                     }
                 }
                 if(!used){
-                    d.setHours(cronSetting.getHours().get(0));
+                    d.withHour(cronSetting.getHours().get(0));
                 }
             }
             // 指定调度的分钟
             if(cronSetting.getMinute() != null){
-                d.setMinutes(cronSetting.getMinute());
+                d.withMinute(cronSetting.getMinute());
             }
             return d;
         }
@@ -93,13 +93,13 @@ public class CronUtil {
     }
 
     public static void main(String[] args) throws Exception{
-//        final Date d = new Date();
-//        d.setHours(11);
+//        final LocalDateTime d = LocalDateTime.now();
+//        d.withHour(11);
 //        System.out.println(DateTimeUtil.formatDateTime(d));
         final CronSetting cronSetting = CronSetting.of(CronSettingType.hour, 1);
         cronSetting.setHours(ListUtil.of(3));
         cronSetting.setMinute(5);
-        final Date next = CronUtil.nextTime(cronSetting, null);
+        final LocalDateTime next = CronUtil.nextTime(cronSetting, null);
         System.out.println(DateTimeUtil.formatDateTime(next));
     }
 
@@ -111,14 +111,14 @@ public class CronUtil {
      * @return
      * @throws Exception
      */
-    public static Date nextTime(final String cron, Date lastTime) throws Exception {
+    public static LocalDateTime nextTime(final String cron, LocalDateTime lastTime) throws Exception {
         if(StrUtil.isBlank(cron)){
             return null;
         }
         if(lastTime == null){
             lastTime = DateTimeUtil.now();
         }
-        final Date nextValidTime = new CronExpression(cron).getNextValidTimeAfter(lastTime);
+        final LocalDateTime nextValidTime = new CronExpression(cron).getNextValidTimeAfter(lastTime);
         return nextValidTime;
     }
 }

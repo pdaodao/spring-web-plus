@@ -1,34 +1,36 @@
 package com.github.pdaodao.springwebplus.tool.util;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.format.FastDateFormat;
 import cn.hutool.core.util.StrUtil;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class DateTimeUtil {
-    public static TimeZone ShangHaiZone = TimeZone.getTimeZone("GMT+8");
-    public static final FastDateFormat Year_Month_FORMATTER = FastDateFormat.getInstance("yyyyMM", ShangHaiZone);
-    public static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd", ShangHaiZone);
-    public static final FastDateFormat DATE_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMdd", ShangHaiZone);
-    public static final FastDateFormat DATE_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd", ShangHaiZone);
-    public static final FastDateFormat DATE_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd", ShangHaiZone);
-    public static final FastDateFormat DATE_TIME_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", ShangHaiZone);
-    public static final FastDateFormat DATE_TIME_FORMATTER3 = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS", ShangHaiZone);
-    public static final FastDateFormat DATE_TIME_FORMATTER_COMPACT = FastDateFormat.getInstance("yyyyMMddHHmmss", ShangHaiZone);
-    public static final FastDateFormat DATE_TIME_FORMATTER_SLASH = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss", ShangHaiZone);
-    public static final FastDateFormat DATE_TIME_FORMATTER_SLASH_NOSECOND = FastDateFormat.getInstance("yyyy/MM/dd HH:mm", ShangHaiZone);
+    public static ZoneId ShangHaiZone = ZoneId.of("GMT+8");
+    public static final DateTimeFormatter Year_Month_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter DATE_FORMATTER_COMPACT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    public static final DateTimeFormatter DATE_FORMATTER_SLASH = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    public static final DateTimeFormatter DATE_FORMATTER_DOT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER3 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_COMPACT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_SLASH = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_SLASH_NOSECOND = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
-    public static final FastDateFormat DATE_TIME_FORMATTER_DOT = FastDateFormat.getInstance("yyyy.MM.dd HH:mm:ss", ShangHaiZone);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_DOT = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 
-    public static Date tryParse(final String str, final FastDateFormat... format){
-        if(format == null || StrUtil.isBlank(str)){
+    public static LocalDateTime tryParse(final String str, final DateTimeFormatter... formatters){
+        if(formatters == null || StrUtil.isBlank(str)){
             return null;
         }
-        for(final FastDateFormat f: format){
+        for(final DateTimeFormatter f: formatters){
             try{
-                return f.parse(str);
+                return LocalDateTime.parse(str, f);
             }catch (Exception e){
 
             }
@@ -36,14 +38,14 @@ public class DateTimeUtil {
         return null;
     }
 
-    public static Date tryParse(String str){
+    public static LocalDateTime tryParse(String str){
         if(StrUtil.isBlank(str)){
             return null;
         }
         str = str.replace("T", " ");
         str = str.replace("Z", "");
         str = str.replace("+08:00", "");
-        Date d = null;
+        LocalDateTime d = null;
         // 有时间
         if(StrUtil.contains(str, ":") || str.length() > 10){
             if(str.contains("-")){
@@ -72,63 +74,70 @@ public class DateTimeUtil {
         return tryParse(str, DATE_FORMATTER_COMPACT);
     }
 
-    public static Date now(){
-        return new Date();
+    public static LocalDateTime now(){
+        return LocalDateTime.now(ShangHaiZone);
     }
 
     public static Long currentTimeMillis(){
         return System.currentTimeMillis();
     }
 
-    public static String formatDate(Long date) {
-        return DATE_FORMATTER.format(date);
+    public static String formatDate(Long epochMilli) {
+        return DATE_FORMATTER.format(Instant.ofEpochMilli(epochMilli).atZone(ShangHaiZone).toLocalDateTime());
     }
 
-    public static String formatYearMonth(Date date) {
-        return Year_Month_FORMATTER.format(date);
+    public static String formatYearMonth(LocalDateTime date) {
+        return date.format(Year_Month_FORMATTER);
     }
 
-    public static String formatDate(Date date) {
-        return DATE_FORMATTER.format(date);
+    public static String formatDate(LocalDateTime date) {
+        return date.format(DATE_FORMATTER);
     }
 
-    public static String formatDateSlash(Long date) {
-        return DATE_FORMATTER_SLASH.format(date);
+    public static String formatDateSlash(Long epochMilli) {
+        return Instant.ofEpochMilli(epochMilli).atZone(ShangHaiZone).toLocalDateTime().format(DATE_FORMATTER_SLASH);
     }
 
-    public static String formatDateTime(final Date date) {
+    public static String formatDateTime(final LocalDateTime date) {
         if(date == null){
             return null;
         }
-        return DATE_TIME_FORMATTER.format(date);
+        return date.format(DATE_TIME_FORMATTER);
     }
 
-    public static String formatDateTime3(final Date date) {
+    public static String formatDateTime3(final LocalDateTime date) {
         if(date == null){
             return null;
         }
-        return DATE_TIME_FORMATTER3.format(date);
+        return date.format(DATE_TIME_FORMATTER3);
     }
 
-    public static String formatDateTimeSlash(final Date date) {
+    public static String formatDateTimeSlash(final LocalDateTime date) {
         if(date == null){
             return StrUtil.EMPTY;
         }
-        return DATE_TIME_FORMATTER_SLASH.format(date);
+        return date.format(DATE_TIME_FORMATTER_SLASH);
     }
 
-    public static String formatDateTime(Long date) {
+    public static String formatDateTimeCompact(final LocalDateTime date) {
         if(date == null){
             return StrUtil.EMPTY;
         }
-        return DATE_TIME_FORMATTER.format(date);
+        return date.format(DATE_TIME_FORMATTER_COMPACT);
     }
 
-    public static String formatDateTimeSlash(Long date) {
-        if(date == null){
+    public static String formatDateTime(Long epochMilli) {
+        if(epochMilli == null){
             return StrUtil.EMPTY;
         }
-        return DATE_TIME_FORMATTER_SLASH.format(date);
+        return Instant.ofEpochMilli(epochMilli).atZone(ShangHaiZone).toLocalDateTime().format(DATE_TIME_FORMATTER);
+    }
+
+    public static String formatDateTimeSlash(Long epochMilli) {
+        if(epochMilli == null){
+            return StrUtil.EMPTY;
+        }
+        return Instant.ofEpochMilli(epochMilli).atZone(ShangHaiZone).toLocalDateTime().format(DATE_TIME_FORMATTER_SLASH);
     }
 
     /**
@@ -190,33 +199,55 @@ public class DateTimeUtil {
         return sb.toString();
     }
 
-    public static final Date offsetSecond(Date aDate, int seconds) {
-        return DateUtil.offsetSecond(aDate, seconds).toJdkDate();
+    public static final LocalDateTime offsetSecond(LocalDateTime dateTime, int seconds) {
+        return dateTime.plusSeconds(seconds);
     }
 
-    public static final Date offsetMinute(Date aDate, int minutes) {
-        return DateUtil.offsetMinute(aDate, minutes).toJdkDate();
+    public static final LocalDateTime offsetMinute(LocalDateTime dateTime, int minutes) {
+        return dateTime.plusMinutes(minutes);
     }
 
-    public static final Date offsetHour(Date aDate, int hour) {
-        return DateUtil.offsetHour(aDate, hour).toJdkDate();
+    public static final LocalDateTime offsetHour(LocalDateTime dateTime, int hours) {
+        return dateTime.plusHours(hours);
     }
 
-    public static final Date offsetDay(Date aDate, int days) {
-        return DateUtil.offsetDay(aDate, days).toJdkDate();
+    public static final LocalDateTime offsetDay(LocalDateTime dateTime, int days) {
+        return dateTime.plusDays(days);
     }
 
-    public static final Date beginOfDay(final Date aDate) {
-        if (aDate == null) {
+    public static final LocalDateTime beginOfDay(final LocalDateTime dateTime) {
+        if (dateTime == null) {
             return null;
         }
-        return DateUtil.beginOfDay(new Date()).toJdkDate();
+        return dateTime.truncatedTo(ChronoUnit.DAYS);
     }
 
-    public static Date endOfDay(final Date aDate) {
-        if (aDate == null) {
+    public static LocalDateTime endOfDay(final LocalDateTime dateTime) {
+        if (dateTime == null) {
             return null;
         }
-        return DateUtil.endOfDay(aDate).toJdkDate();
+        return dateTime.withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+    }
+
+    // Date -> LocalDateTime
+    public static LocalDateTime toLocalDateTime(Date date) {
+        if (date == null) return null;
+        return date.toInstant().atZone(ShangHaiZone).toLocalDateTime();
+    }
+
+    // LocalDateTime -> Date
+    public static Date toDate(LocalDateTime localDateTime) {
+        if (localDateTime == null) return null;
+        return Date.from(localDateTime.atZone(ShangHaiZone).toInstant());
+    }
+
+    // epoch millis -> LocalDateTime
+    public static LocalDateTime ofEpochMilli(long epochMilli) {
+        return Instant.ofEpochMilli(epochMilli).atZone(ShangHaiZone).toLocalDateTime();
+    }
+
+    // LocalDateTime -> epoch millis
+    public static long toEpochMilli(LocalDateTime localDateTime) {
+        return localDateTime.atZone(ShangHaiZone).toInstant().toEpochMilli();
     }
 }

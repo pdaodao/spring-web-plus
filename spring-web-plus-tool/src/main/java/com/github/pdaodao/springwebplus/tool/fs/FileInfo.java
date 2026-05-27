@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.tool.fs;
 import cn.hutool.core.io.FileUtil;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
@@ -18,7 +18,7 @@ public class FileInfo {
     private Boolean isDir;
     private transient String readableSize;
     private String objId;
-    protected Date createTime;
+    protected LocalDateTime createTime;
 
     public String getReadableSize() {
         if (Objects.isNull(size)) {

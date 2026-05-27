@@ -1,9 +1,10 @@
 package com.github.pdaodao.springwebplus.base.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 public class TokenInfo {
@@ -14,13 +15,13 @@ public class TokenInfo {
     /**
      * 登陆时间
      */
-    private Date loginTime = new Date();
+    private LocalDateTime loginTime = DateTimeUtil.now();
 
     /**
      * 上次使用时间
      */
     @JsonIgnoreProperties
-    private Date lastAccessTime;
+    private LocalDateTime lastAccessTime;
 
     /**
      * 用户id

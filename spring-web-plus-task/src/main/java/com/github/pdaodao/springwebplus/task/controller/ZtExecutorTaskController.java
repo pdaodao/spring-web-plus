@@ -6,13 +6,12 @@ import com.github.pdaodao.springwebplus.task.service.ZtExecutorService;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.LogResult;
 import com.github.pdaodao.springwebplus.tool.task.LogUtil;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 /**
  * 执行节点
@@ -39,7 +38,7 @@ public class ZtExecutorTaskController {
     @Operation(summary = "获取任务运行日志")
     public LogResult getLog(final String logId, @RequestParam(defaultValue = "0") final Integer from){
         SysLogAop.getLog().ignore();
-        final String logPath = LogUtil.getLogPath(new Date(), logId);
+        final String logPath = LogUtil.getLogPath(DateTimeUtil.now(), logId);
         return LogUtil.readLog(logPath, from);
     }
 

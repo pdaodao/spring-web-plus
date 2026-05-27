@@ -7,8 +7,9 @@ import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.dao.SysConfigDao;
 import com.github.pdaodao.springwebplus.entity.SysConfig;
 import com.github.pdaodao.springwebplus.tool.util.DataValueUtil;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -47,13 +48,13 @@ public class SysConfigUtil {
         return DataValueUtil.toLong(v);
     }
 
-    public static Date getAsDate(final String key, final Date defaultValue){
+    public static LocalDateTime getAsDate(final String key, final LocalDateTime defaultValue){
         Preconditions.checkNotBlank(key, "config key is blank.");
         final String v = getByKey(key);
         if(StrUtil.isBlank(v)){
             return defaultValue;
         }
-        return DataValueUtil.toDate(v);
+        return DateTimeUtil.tryParse(v);
     }
 
     public static Double getAsDouble(final String key, final Double defaultValue){

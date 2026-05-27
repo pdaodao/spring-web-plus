@@ -2,13 +2,12 @@ package com.github.pdaodao.springwebplus.tool.fs;
 
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public interface FileStorage {
@@ -51,9 +50,8 @@ public interface FileStorage {
         String fullPath = FilePathUtil.join(fileSep(), baseRootPath, relativePath, fileName);
         fullPath = processPathForSave(fullPath);
         if (exist(fullPath)) {
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             for (int i = 0; i < 100; i++) {
-                String name = sdf.format(new Date()) + i + fileName;
+                String name = DateTimeUtil.formatDateTimeCompact(DateTimeUtil.now()) + i + fileName;
                 if (i > 90) {
                     name = IdUtil.fastSimpleUUID() + fileName;
                 }

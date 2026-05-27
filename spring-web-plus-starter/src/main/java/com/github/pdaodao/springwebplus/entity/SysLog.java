@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @TableName(value = "sys_log", autoResultMap = true)
@@ -24,7 +24,7 @@ public class SysLog extends BaseEntity implements WithTeam {
     private String userNickname;
 
     @Schema(description = "操作时间")
-    private Date operationTime;
+    private LocalDateTime operationTime;
 
     @Schema(description = "操作类型")
     private String operationType;

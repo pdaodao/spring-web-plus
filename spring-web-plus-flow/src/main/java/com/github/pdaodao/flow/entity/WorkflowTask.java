@@ -12,7 +12,7 @@ import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * task 表只描述任务本身，不存储具体审批人
@@ -42,7 +42,7 @@ public class WorkflowTask extends AutoIdWithTimeUserEntity {
     private String teamId;
 
     @Schema(description = "审批到期时间")
-    private Date dueDate;
+    private LocalDateTime dueDate;
 
     @TableFieldSize(5000)
     @Schema(description = "表单数据")

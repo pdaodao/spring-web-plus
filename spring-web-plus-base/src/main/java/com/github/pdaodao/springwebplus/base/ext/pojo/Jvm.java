@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * JVM信息
@@ -56,7 +56,7 @@ public class Jvm implements Serializable {
     private int processId;
 
     @Schema(description = "服务启动的开始时间")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     @Schema(description = "服务已运行的时间")
     private long userTime;

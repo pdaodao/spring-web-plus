@@ -22,8 +22,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
@@ -77,10 +77,10 @@ public abstract class WithTaskCronController<T extends ZtTaskCronEntity> {
         Preconditions.checkNotNull(entity.getId(), "任务id不能为空.");
         Preconditions.checkNotNull(entity.getCronSetting(), "调度信息配置不能为空.");
         jobCronService().saveCron(entity);
-        Date now = DateTimeUtil.now();
+        LocalDateTime now = DateTimeUtil.now();
         final List<String> ret = new ArrayList<>();
         for(int i = 0; i < 10; i++){
-            final Date next = CronUtil.nextTime(entity.getCronSetting(), now);
+            final LocalDateTime next = CronUtil.nextTime(entity.getCronSetting(), now);
             now = next;
             ret.add(DateTimeUtil.formatDateTime(next));
         }

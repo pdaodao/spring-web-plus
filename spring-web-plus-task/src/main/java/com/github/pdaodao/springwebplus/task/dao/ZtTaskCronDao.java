@@ -14,8 +14,7 @@ import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.management.Query;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -26,10 +25,10 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
                 .set(ZtTaskCronEntity::getEnabled, cronEnabled));
     }
 
-    public List<ZtTaskCronEntity> loadCron(final Date nextTime){
+    public List<ZtTaskCronEntity> loadCron(final LocalDateTime nextTime){
         return list(QueryBuilder.lambda(ZtTaskCronEntity.class)
                 .eq(ZtTaskCronEntity::getEnabled, true)
-                .le(ZtTaskCronEntity::getNextTime, nextTime.getTime()).build());
+                .le(ZtTaskCronEntity::getNextTime, DateTimeUtil.toEpochMilli(nextTime)).build());
     }
 
     public List<ZtTaskCronEntity> list(final TaskCronQuery query){
@@ -45,13 +44,13 @@ public class ZtTaskCronDao extends BaseDao<ZtTaskCronMapper, ZtTaskCronEntity> {
      * @return
      */
     public Boolean saveCron(@RequestBody ZtTaskCronEntity entity) throws Exception{
-        final Date now = DateTimeUtil.now();
-        Date lastTime = entity.getCronSetting().getBeginTime();
-        if(lastTime == null || now.after(lastTime)){
+        final LocalDateTime now = DateTimeUtil.now();
+        LocalDateTime lastTime = entity.getCronSetting().getBeginTime();
+        if(lastTime == null || now.isAfter(lastTime)){
             lastTime = now;
         }
-        final Date next = CronUtil.nextTime(entity.getCronSetting(), lastTime);
-        final Long nextTime = next != null ? next.getTime() : null;
+        final LocalDateTime next = CronUtil.nextTime(entity.getCronSetting(), lastTime);
+        final Long nextTime = next != null ? DateTimeUtil.toEpochMilli(next) : null;
         entity.setNextTime(nextTime);
         return update(Wrappers.lambdaUpdate(ZtTaskCronEntity.class)
                 .eq(ZtTaskCronEntity::getId, entity.getId())

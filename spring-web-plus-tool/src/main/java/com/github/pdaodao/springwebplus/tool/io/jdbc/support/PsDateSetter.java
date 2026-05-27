@@ -8,10 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
-public class PsDateSetter implements PsSetter<Date> {
+public class PsDateSetter implements PsSetter<LocalDateTime> {
     private final String name;
     private final String from;
 
@@ -24,12 +24,12 @@ public class PsDateSetter implements PsSetter<Date> {
     }
 
     @Override
-    public Date set(PreparedStatement ps, int index, Object obj) throws SQLException {
-        final Date ret = DataValueUtil.toDate(obj);
+    public LocalDateTime set(PreparedStatement ps, int index, Object obj) throws SQLException {
+        final LocalDateTime ret = DataValueUtil.toDate(obj);
         if(ret == null){
             ps.setNull(index, Types.DATE);
         }else{
-            ps.setTimestamp(index, new Timestamp(ret.getTime()));
+            ps.setTimestamp(index, Timestamp.valueOf(ret));
         }
         return ret;
     }

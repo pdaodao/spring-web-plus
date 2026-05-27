@@ -52,19 +52,20 @@ public class DataValueUtil {
         if (obj == null) {
             return null;
         }
-        if(obj instanceof Date){
+        if(obj instanceof LocalDateTime){
             if(dataType == null){
-                final String str = DateTimeUtil.formatDateTime((Date) obj);
+                final String str = DateTimeUtil.formatDateTime((LocalDateTime) obj);
                 return DateTimeUtil.dropLastZero(str);
             }
             if(DataType.DATE == dataType){
-                return DateTimeUtil.formatDate((Date) obj);
+                return DateTimeUtil.formatDate((LocalDateTime) obj);
             }
-            return DateTimeUtil.formatDateTime3((Date) obj);
+            return DateTimeUtil.formatDateTime3((LocalDateTime) obj);
         }
-        if(obj instanceof LocalDateTime){
-            final String str = ((LocalDateTime)obj).toString().replace("T", " ");
-            return str;
+        if(obj instanceof Date){
+            final LocalDateTime datetime = ((Date) obj).toInstant().atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
+            final String str = DateTimeUtil.formatDateTime(datetime);
+            return DateTimeUtil.dropLastZero(str);
         }
         if(obj instanceof Collection<?> || obj instanceof Map<?,?>){
             return JsonUtil.toJsonString(obj);
@@ -131,20 +132,20 @@ public class DataValueUtil {
 
 
     /**
-     * 转为 Date
+     * 转为 LocalDateTime
      *
      * @param obj
      * @return
      */
-    public static Date toDate(final Object obj) {
+    public static LocalDateTime toDate(final Object obj) {
         if (obj == null) {
             return null;
         }
-        if (obj instanceof Date) {
-            return (Date) obj;
+        if (obj instanceof LocalDateTime) {
+            return (LocalDateTime) obj;
         }
         if (obj instanceof java.sql.Date) {
-            return Date.from(((java.sql.Date) obj).toInstant());
+            return ((java.sql.Date) obj).toInstant().atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
         }
         if (obj instanceof String) {
             final String str = (String) obj;
@@ -153,15 +154,11 @@ public class DataValueUtil {
             }
             return DateTimeUtil.tryParse(str);
         }
-        if(obj instanceof LocalDateTime){
-            final LocalDateTime datetime = (LocalDateTime) obj;
-            return new Date(datetime.atZone(ZoneId.of("Asia/Shanghai")).toInstant().toEpochMilli());
-        }
         if(obj instanceof Long){
             if((long)obj < 1743479428L){
-                return new Date((Long) obj*1000);
+                return java.time.Instant.ofEpochSecond((Long) obj).atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
             }
-            return new Date((Long) obj);
+            return java.time.Instant.ofEpochMilli((Long) obj).atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
         }
         return null;
     }

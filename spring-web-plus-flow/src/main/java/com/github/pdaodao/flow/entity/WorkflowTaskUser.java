@@ -11,7 +11,7 @@ import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -43,10 +43,10 @@ public class WorkflowTaskUser extends SnowIdWithTimeUserEntity {
     private FlowStatus flowStatus;
 
     @Schema(description = "分配时间")
-    private Date assignedTime;
+    private LocalDateTime assignedTime;
 
     @Schema(description = "审批完成时间")
-    private Date completedTime;
+    private LocalDateTime completedTime;
 
     @Schema(description = "备注")
     private String remark;
@@ -60,7 +60,7 @@ public class WorkflowTaskUser extends SnowIdWithTimeUserEntity {
     private Boolean notified;
 
     @Schema(description = "通知时间")
-    private Date notifyTime;
+    private LocalDateTime notifyTime;
 
     @TableFieldSize(5000)
     @Schema(description = "附件")

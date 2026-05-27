@@ -6,7 +6,7 @@ import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @TableName(value = "sys_login_log", autoResultMap = true)
@@ -19,7 +19,7 @@ public class SysLoginLog extends BaseEntity {
     private String userNickname;
 
     @Schema(description = "操作时间")
-    private Date operationTime;
+    private LocalDateTime operationTime;
 
     @Schema(description = "操作类型")
     private String operationType;

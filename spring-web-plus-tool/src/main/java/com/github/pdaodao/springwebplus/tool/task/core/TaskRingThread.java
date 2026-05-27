@@ -7,6 +7,9 @@ import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +89,7 @@ public class TaskRingThread extends Thread{
         if(taskInfo == null || nextTime < 1000){
             return false;
         }
-        Preconditions.assertTrue(nextTime > DateTimeUtil.offsetMinute(DateTimeUtil.now(), 1).getTime(), "非法的精细时间调度要在一分钟之内");
+        Preconditions.assertTrue(nextTime > DateTimeUtil.offsetMinute(DateTimeUtil.now(), 1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), "非法的精细时间调度要在一分钟之内");
         nextTime = (nextTime - 500) % 1000;
         final int tick = ((int) (nextTime / 100)) % 10;
         List<CronTaskInfo> list = ringData.get(tick);

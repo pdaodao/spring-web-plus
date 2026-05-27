@@ -5,9 +5,10 @@ import cn.hutool.core.collection.ListUtil;
 import com.github.pdaodao.springwebplus.tool.task.CronUtil;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskLoader;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ArrayListTaskLoader implements CronTaskLoader {
@@ -22,9 +23,9 @@ public class ArrayListTaskLoader implements CronTaskLoader {
             return;
         }
         if(task.getNextTime() == null){
-            final Date next = CronUtil.nextTime(task.getCronSetting(), new Date());
+            final LocalDateTime next = CronUtil.nextTime(task.getCronSetting(), LocalDateTime.now());
             Preconditions.checkNotNull(next, "next-time is null");
-            task.setNextTime(next.getTime());
+            task.setNextTime(next.atZone(DateTimeUtil.ShangHaiZone).toInstant().toEpochMilli());
         }
         list.add(task);
     }

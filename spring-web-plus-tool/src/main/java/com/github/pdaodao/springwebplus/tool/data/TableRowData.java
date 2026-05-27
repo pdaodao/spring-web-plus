@@ -9,6 +9,7 @@ import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -134,7 +135,7 @@ public class TableRowData extends LinkedHashMap<String, Object> implements Seria
         return DataValueUtil.toDouble(v);
     }
 
-    public Date getDate(final String key, final Date defaultValue) {
+    public LocalDateTime getDate(final String key, final LocalDateTime defaultValue) {
         final Object v = get(key);
         if (ObjectUtil.isNull(v)) {
             return defaultValue;

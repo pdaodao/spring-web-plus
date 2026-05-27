@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.util;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -23,7 +22,7 @@ import oshi.hardware.ComputerSystem;
 import oshi.hardware.HardwareAbstractionLayer;
 
 import java.io.File;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 软件授权工具类
@@ -42,7 +41,7 @@ public class LicenseUtil {
 
     public static void processLicense() {
         Preconditions.assertTrue(ArrayUtil.isEmpty(key), "license-secrete-key is null");
-        final Long current = DateUtil.current();
+        final Long current = System.currentTimeMillis();
         final StringBuilder sb = new StringBuilder();
         sb.append("\n");
         sb.append(StrUtil.repeat("#", 50)).append("\n\n");
@@ -50,13 +49,13 @@ public class LicenseUtil {
             sb.append("     machine-id:" + getMachineId()).append("\n");
             final LicenseInfo licenseInfo = LicenseUtil.readLicense();
             Preconditions.checkNotNull(licenseInfo.getExpire(), "illegal expire time");
-            Long expired = licenseInfo.getExpire().getTime();
+            Long expired = DateTimeUtil.toEpochMilli(licenseInfo.getExpire());
             if (StrUtil.isNotBlank(licenseInfo.getMachineId())) {
                 final String id = getMachineId();
                 Preconditions.checkArgument(StrUtil.equalsIgnoreCase(licenseInfo.getMachineId(), id), "invalid machine-id");
             }
             sb.append("\n");
-            if (DateTimeUtil.offsetDay(new Date(), 5).getTime() > expired) {
+            if (DateTimeUtil.toEpochMilli(DateTimeUtil.offsetDay(DateTimeUtil.now(), 5)) > expired) {
                 sb.append("license will expired at " + DateTimeUtil.formatDate(expired)).append("\n");
             }
             if (current > expired) {
@@ -130,7 +129,7 @@ public class LicenseUtil {
         final LicenseUtil.LicenseInfo info = new LicenseUtil.LicenseInfo();
         info.setMachineId(machineId);
         info.setName(name);
-        info.setExpire(DateTimeUtil.offsetDay(new Date(), day));
+        info.setExpire(DateTimeUtil.offsetDay(DateTimeUtil.now(), day));
         info.setRemark(RandomUtil.randomString(200));
         String json = JsonUtil.toJsonString(info);
         json = encryptPassword(json);
@@ -160,7 +159,7 @@ public class LicenseUtil {
 
         // 过期时间
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-        private Date expire;
+        private LocalDateTime expire;
 
         private String remark;
     }

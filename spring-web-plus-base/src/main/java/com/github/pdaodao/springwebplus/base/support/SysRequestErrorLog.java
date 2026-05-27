@@ -5,7 +5,7 @@ import com.github.pdaodao.springwebplus.base.entity.AutoIdEntity;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdEntity;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @TableName(value = "sys_access_error_log", autoResultMap = true)
@@ -25,5 +25,5 @@ public class SysRequestErrorLog extends AutoIdEntity {
 
     private String trace;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 }
