@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -74,6 +75,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             final String dateTimeFormat = sysDateTimeFormatOption.isPresent() ? sysDateTimeFormatOption.get().datetimeFormat() : "yyyy-MM-dd HH:mm:ss";
             builder.simpleDateFormat(dateTimeFormat);
             builder.failOnUnknownProperties(false);
+            builder.modules(new JavaTimeModule());
             builder.timeZone("Asia/Shanghai");
             builder.featuresToEnable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
             builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);

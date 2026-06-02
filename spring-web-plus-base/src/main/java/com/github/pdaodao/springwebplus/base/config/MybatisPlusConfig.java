@@ -17,6 +17,7 @@ import com.github.pdaodao.springwebplus.base.frame.JsonObjectNodeHandler;
 import com.github.pdaodao.springwebplus.base.frame.PgBoolToIntTypeHandler;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
+import org.apache.ibatis.type.LocalDateTimeTypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -27,6 +28,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.time.LocalDateTime;
 
 @Configuration
 @EnableTransactionManagement
@@ -65,6 +68,7 @@ public class MybatisPlusConfig {
             final TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
             typeHandlerRegistry.register(ArrayNode.class, new JsonArrayNodeHandler());
             typeHandlerRegistry.register(ObjectNode.class, new JsonObjectNodeHandler());
+            JacksonTypeHandler.setObjectMapper(JsonUtil.objectMapper);
         };
         return customizer;
     }
