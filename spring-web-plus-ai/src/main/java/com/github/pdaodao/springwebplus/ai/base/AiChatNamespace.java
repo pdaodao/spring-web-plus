@@ -12,6 +12,8 @@ public enum AiChatNamespace {
     api,
     @Schema(description = "术语")
     term,
+    @Schema(description = "问答对")
+    qa,
     @Schema(description = "知识库")
     knowledge
 }

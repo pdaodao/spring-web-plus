@@ -42,6 +42,7 @@ public class AiEmbedTextQuery {
     @Schema(description = "相似度得分")
     private Double score = 0.6;
 
+
     public static AiEmbedTextQuery of(final String text) {
         final AiEmbedTextQuery q = new AiEmbedTextQuery();
         q.setContent(text);

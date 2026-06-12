@@ -1,15 +1,12 @@
 package com.github.pdaodao.springwebplus.ai.entity;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-
 import java.util.List;
 
 @Data
@@ -17,7 +14,7 @@ import java.util.List;
 @TableName(value = "ai_question_answer", autoResultMap = true)
 public class AiQuestionAnswer extends SnowIdWithTimeUserEntity implements WithTeam, WithEnabled, WithDelete,
         WithPidString, WithChildren<AiQuestionAnswer> {
-    @Schema(description = "标题")
+    @Schema(description = "标题-问题")
     private String title;
 
     @Schema(description = "描述")
@@ -25,10 +22,6 @@ public class AiQuestionAnswer extends SnowIdWithTimeUserEntity implements WithTe
 
     @Schema(description = "团队id")
     private String teamId;
-
-    @TableFieldSize(5000)
-    @Schema(description = "问题")
-    private String question;
 
     @TableFieldSize(5000)
     @Schema(description = "答案")
@@ -57,9 +50,15 @@ public class AiQuestionAnswer extends SnowIdWithTimeUserEntity implements WithTe
         if (StrUtil.isNotBlank(title)) {
             sb.append(title);
         }
-        if (StrUtil.isNotBlank(remark)) {
-            sb.append(":").append(remark);
+        if (StrUtil.isNotBlank(answer)) {
+            sb.append(":").append(answer);
         }
+        return sb.toString();
+    }
+
+    public String toEmbeddingText(){
+        final StringBuilder sb = new StringBuilder();
+        sb.append(title);
         return sb.toString();
     }
 }
