@@ -130,6 +130,40 @@ public class DataValueUtil {
         return NumberUtil.parseInt(str, null);
     }
 
+    /**
+     * 转为 Date
+     *
+     * @param obj
+     * @return
+     */
+    public static Date toDate(final Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof Date) {
+            return (Date) obj;
+        }
+        if (obj instanceof java.sql.Date) {
+            return Date.from(((java.sql.Date) obj).toInstant());
+        }
+        if (obj instanceof String) {
+            final String str = (String) obj;
+            if(StrUtil.isBlank(str)){
+                return null;
+            }
+            return DateTimeUtil.toDate(DateTimeUtil.tryParse(str));
+        }
+        if(obj instanceof LocalDateTime){
+            final LocalDateTime datetime = (LocalDateTime) obj;
+            return new Date(datetime.atZone(ZoneId.of("Asia/Shanghai")).toInstant().toEpochMilli());
+        }
+        if(obj instanceof Long){
+            return new Date((Long) obj);
+        }
+        return null;
+    }
+
+
 
     /**
      * 转为 LocalDateTime
@@ -137,7 +171,7 @@ public class DataValueUtil {
      * @param obj
      * @return
      */
-    public static LocalDateTime toDate(final Object obj) {
+    public static LocalDateTime toLocalDate(final Object obj) {
         if (obj == null) {
             return null;
         }

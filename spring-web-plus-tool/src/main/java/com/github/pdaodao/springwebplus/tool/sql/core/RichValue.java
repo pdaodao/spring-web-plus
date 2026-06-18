@@ -124,6 +124,6 @@ public class RichValue {
         if(ObjectUtil.isEmpty(value)){
             return null;
         }
-        return DataValueUtil.toDate(value);
+        return DataValueUtil.toLocalDate(value);
     }
 }

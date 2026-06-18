@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.pdaodao</groupId>
-            <artifactId>spring-web-plus-base</artifactId>
+            <artifactId>spring-web-plus-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.pdaodao</groupId>

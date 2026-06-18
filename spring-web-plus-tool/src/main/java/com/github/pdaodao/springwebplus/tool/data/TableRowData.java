@@ -140,7 +140,7 @@ public class TableRowData extends LinkedHashMap<String, Object> implements Seria
         if (ObjectUtil.isNull(v)) {
             return defaultValue;
         }
-        return DataValueUtil.toDate(v);
+        return DataValueUtil.toLocalDate(v);
     }
 
     public Boolean getBoolean(final String key, final Boolean defaultValue) {

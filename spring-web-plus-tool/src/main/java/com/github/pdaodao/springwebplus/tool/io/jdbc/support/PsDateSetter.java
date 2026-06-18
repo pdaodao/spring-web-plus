@@ -25,7 +25,7 @@ public class PsDateSetter implements PsSetter<LocalDateTime> {
 
     @Override
     public LocalDateTime set(PreparedStatement ps, int index, Object obj) throws SQLException {
-        final LocalDateTime ret = DataValueUtil.toDate(obj);
+        final LocalDateTime ret = DataValueUtil.toLocalDate(obj);
         if(ret == null){
             ps.setNull(index, Types.DATE);
         }else{

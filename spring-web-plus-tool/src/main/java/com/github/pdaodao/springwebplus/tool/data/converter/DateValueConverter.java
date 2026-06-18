@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 public class DateValueConverter implements ValueConverter<LocalDateTime>{
     @Override
     public LocalDateTime get(Object obj) {
-        return DataValueUtil.toDate(obj);
+        return DataValueUtil.toLocalDate(obj);
     }
 }
