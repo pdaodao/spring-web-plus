@@ -45,6 +45,7 @@ public class AiChatTextController {
     @PostMapping("/save")
     @Operation(summary = "保存")
     public AiChatText save(@Validated @RequestBody final AiChatText text) throws Exception{
+        text.setTeamId(RequestUtil.getTeamOrDefault());
         termTextService.save(text);
         return text;
     }

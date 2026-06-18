@@ -12,6 +12,7 @@ import com.github.pdaodao.springwebplus.ai.query.AiChatTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
+import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class AiChatTextService {
             final StringBuilder sb = new StringBuilder();
             sb.append("已知以下业务知识:");
             for(final AiChatText t: list){
-                sb.append("\n -").append(t.getRemark());
+                sb.append("\n -").append(t.getContent());
             }
             log.info("业务术语检索:"+q);
             log.info(sb.toString());
@@ -90,6 +91,7 @@ public class AiChatTextService {
             term.setFileId(h.getDocId());
             term.setTeamId(h.getTeamId());
             term.setTitle(h.getTitle());
+            term.setContent(h.getContent());
             ret.add(term);
         }
         return ret;

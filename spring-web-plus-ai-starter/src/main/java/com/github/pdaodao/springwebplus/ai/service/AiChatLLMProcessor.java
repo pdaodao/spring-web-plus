@@ -97,6 +97,20 @@ public class AiChatLLMProcessor implements AiChatProcessor{
 
     @Override
     public LLMResponse http(AiChatContext context) {
-        return null;
+        final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
+        final List<Message> messages = new ArrayList<>();
+        // 业务术语
+        if(context.getChatApp() != null && BooleanUtil.isTrue(context.getChatApp().getTermEnabled())){
+            final String termMsg = termTextService.searchMsg(context.getReq().getTeamId(), context.getReq().getQuestion());
+            if(StrUtil.isNotBlank(termMsg)){
+                messages.add(SystemMessage.builder().text(termMsg).build());
+            }
+        }
+        // 用户问题
+        messages.add(UserMessage.builder().text(context.getReq().getQuestion()).build());
+        final String ret = model.call(Prompt.builder().messages(messages).build()).getResult().getOutput().getText();
+        final LLMResponse resp = LLMResponse.of();
+        resp.addTextBlock(ret);
+        return resp;
     }
 }

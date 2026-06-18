@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
@@ -18,6 +19,7 @@ public class MsgBlock {
     @Schema(description = "消息块id")
     private String id;
 
+    @JsonIgnore
     @Schema(description = "该消息是否结束")
     private Boolean isEnd;
 
