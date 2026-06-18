@@ -1,10 +1,10 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
-import com.github.pdaodao.springwebplus.ai.entity.AiQuestionAnswer;
-import com.github.pdaodao.springwebplus.ai.service.AiQuestionAnswerService;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatText;
+import com.github.pdaodao.springwebplus.ai.query.AiChatTextQuery;
+import com.github.pdaodao.springwebplus.ai.service.AiChatTextService;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
-import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
@@ -18,45 +18,46 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "问答对管理")
+@Tag(name = "知识文本管理")
 @RestController
-@RequestMapping(Constant.ChatApiPrefix + "/qa-set")
+@RequestMapping(Constant.ChatApiPrefix + "/doc-text")
 @AllArgsConstructor
-public class AiQuestionAnswerController {
-    private final AiQuestionAnswerService service;
+public class AiChatTextController {
+    private final AiChatTextService termTextService;
 
     @GetMapping("check-title")
-    @Operation(summary = "名称-问题是否可用")
+    @Operation(summary = "名称是否可用")
     public Boolean checkTitleExist(@Schema(description = "id") @RequestParam(required = false) final String id,
-                                   @Schema(description = "名称") @RequestParam final String title) {
+                                   @Schema(description = "名称") @RequestParam final String title,
+                                   @Schema(description = "主题id") @RequestParam final String topicId) {
         Preconditions.checkNotBlank(title, "请指定名称");
-        return service.checkDistinctTitle(RequestUtil.getTeamOrDefault(), id, title);
+        return termTextService.checkDistinctTitle(RequestUtil.getTeamOrDefault(), id, title, topicId);
     }
 
     @GetMapping("/list")
     @Operation(summary = "分页")
-    public List<AiQuestionAnswer> page(final PageRequestParam pageRequestParam) {
-        PageHelper.startPage(pageRequestParam);
-        final List<AiQuestionAnswer> list = service.infoList(RequestUtil.getTeamId(), pageRequestParam.getQ());
+    public List<AiChatText> page(final AiChatTextQuery query) {
+        PageHelper.startPage(query);
+        final List<AiChatText> list = termTextService.infoList(query);
         return list;
     }
 
     @PostMapping("/save")
-    @Operation(summary = "分页")
-    public AiQuestionAnswer save(@Validated @RequestBody final AiQuestionAnswer text) throws Exception{
-        service.save(text);
+    @Operation(summary = "保存")
+    public AiChatText save(@Validated @RequestBody final AiChatText text) throws Exception{
+        termTextService.save(text);
         return text;
     }
 
     @GetMapping("info")
     @Operation(summary = "详情")
-    public AiQuestionAnswer info(final String id) throws Exception{
-        return service.info(id);
+    public AiChatText info(final String id) throws Exception{
+        return termTextService.info(id);
     }
 
     @PostMapping("delete")
     @Operation(summary = "删除")
     public Boolean delete(@Validated @RequestBody IdWrap<String> idWrap) throws Exception{
-        return service.deleteById(idWrap.getId());
+        return termTextService.deleteById(idWrap.getId());
     }
 }

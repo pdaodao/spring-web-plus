@@ -5,9 +5,10 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiVectorStore;
 import com.github.pdaodao.springwebplus.ai.base.AiChatNamespace;
-import com.github.pdaodao.springwebplus.ai.dao.AiChatTermTextDao;
-import com.github.pdaodao.springwebplus.ai.entity.AiChatTermText;
+import com.github.pdaodao.springwebplus.ai.dao.AiChatTextDao;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatText;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
+import com.github.pdaodao.springwebplus.ai.query.AiChatTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
@@ -22,27 +23,27 @@ import java.util.Optional;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class AiChatTermTextService {
-    private final AiChatTermTextDao termTextDao;
+public class AiChatTextService {
+    private final AiChatTextDao termTextDao;
     private final Optional<AiVectorStore> vectorStore;
 
-    public Boolean checkDistinctTitle(final String teamId, final String id, final String title) {
-        return termTextDao.checkDistinctTitle(teamId, id, title);
+    public Boolean checkDistinctTitle(final String teamId, final String id, final String title, final String topic) {
+        return termTextDao.checkDistinctTitle(teamId, id, title, topic);
     }
 
-    public List<AiChatTermText> infoList(final String teamId, final String q){
-        return termTextDao.infoList(teamId, q);
+    public List<AiChatText> infoList(final AiChatTextQuery query){
+        return termTextDao.infoList(query);
     }
 
     public String searchMsg(final String teamId, final String q){
         try{
-            final List<AiChatTermText> list = search(teamId, q);
+            final List<AiChatText> list = search(teamId, q);
             if(CollUtil.isEmpty(list)){
                 return StrUtil.EMPTY;
             }
             final StringBuilder sb = new StringBuilder();
             sb.append("已知以下业务知识:");
-            for(final AiChatTermText t: list){
+            for(final AiChatText t: list){
                 sb.append("\n -").append(t.getRemark());
             }
             log.info("业务术语检索:"+q);
@@ -58,12 +59,16 @@ public class AiChatTermTextService {
     /**
      * 通过关键词到向量库中检索
      */
-    public List<AiChatTermText> search(final String teamId, final String q) throws Exception{
+    public List<AiChatText> search(final String teamId, final String q) throws Exception{
         if(vectorStore.isEmpty()){
-            return termTextDao.infoList(teamId, q);
+            final AiChatTextQuery query = new AiChatTextQuery();
+            query.setTeamId(teamId);
+            query.setQ(q);
+            return termTextDao.infoList(query);
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.addNamespace(AiChatNamespace.term.name());
+        // 先在所有里面搜 后续再可配置化
+        // query.addNamespace(AiChatNamespace.term.name());
         query.setTeamId(teamId);
         query.setContent(q);
         final AiChatContext context = AiChatContext.fromHolder();
@@ -75,32 +80,37 @@ public class AiChatTermTextService {
             query.setScore(0.6);
         }
         AiStoreEmbeddingUtil.buildQuery(query, AiChatModelProvider.ofEmbedding(teamId, null));
-        final List<AiChatTermText> ret = new ArrayList<>();
+        final List<AiChatText> ret = new ArrayList<>();
         final List<AiEmbedText> list = vectorStore.get().query(query);
         for(final AiEmbedText h: list){
-            final AiChatTermText term = new AiChatTermText();
+            final AiChatText term = new AiChatText();
             term.setId(h.getId());
+            term.setNamespace(AiChatNamespace.valueOf(h.getNamespace()));
+            term.setTopicId(h.getTopic());
+            term.setFileId(h.getDocId());
             term.setTeamId(h.getTeamId());
-            term.setTitle(h.getName());
-            term.setRemark(h.getTitle());
+            term.setTitle(h.getTitle());
             ret.add(term);
         }
         return ret;
     }
 
-    public void save(AiChatTermText text) throws Exception{
+    public void save(AiChatText text) throws Exception{
         termTextDao.save(text);
         if(vectorStore.isEmpty()){
             return;
         }
         final AiEmbedText embedText = new AiEmbedText();
-        embedText.setNamespace(AiChatNamespace.term.name());
-        embedText.setTeamId(text.getTeamId());
-        embedText.setType("text");
+        embedText.setNamespace(text.getNamespace().name());
+        embedText.setTopic(text.getTopicId());
         embedText.setId(text.getId());
-        embedText.setName(text.getTitle());
-        embedText.setTitle(text.getRemark());
+        embedText.setDocId(text.getFileId());
+
+        embedText.setTeamId(text.getTeamId());
+
+        embedText.setTitle(text.getTitle());
         embedText.setContent(text.toEmbeddingText());
+
         AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(text.getTeamId(), null));
         vectorStore.get().save(ListUtil.of(embedText), true);
     }
@@ -112,13 +122,12 @@ public class AiChatTermTextService {
             return true;
         }
         final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.addNamespace(AiChatNamespace.term.name());
         query.addId(id);
         vectorStore.get().deleteByQuery(query);
         return true;
     }
 
-    public AiChatTermText info(String id) {
+    public AiChatText info(String id) {
         return termTextDao.getById(id);
     }
 }

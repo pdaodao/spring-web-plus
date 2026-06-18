@@ -1,13 +1,11 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.base.LLMUsage;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
-import com.github.pdaodao.springwebplus.ai.entity.AiChatTermText;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import lombok.AllArgsConstructor;
@@ -33,7 +31,7 @@ import java.util.function.Consumer;
 @Service
 @AllArgsConstructor
 public class AiChatLLMProcessor implements AiChatProcessor{
-    private final AiChatTermTextService termTextService;
+    private final AiChatTextService termTextService;
     @Override
     public boolean accept(AiChatContext context) {
         return AiChatType.TextGen == context.getChatType();
