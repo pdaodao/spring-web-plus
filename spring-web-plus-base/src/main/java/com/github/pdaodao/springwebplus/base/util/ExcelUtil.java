@@ -109,6 +109,11 @@ public class ExcelUtil {
         return cn.hutool.poi.excel.ExcelUtil.getReader(inputStream).getSheetNames();
     }
 
+    public static List<String> getSheetNames(final String filePath) {
+        return cn.hutool.poi.excel.ExcelUtil.getReader(filePath).getSheetNames();
+    }
+
+
     /**
      * 读取数据为行
      *
@@ -147,15 +152,28 @@ public class ExcelUtil {
      * 读取为 map 结构
      *
      * @param inputStream
+     * @param sheetName
      * @param propertyName
      * @return
      */
-    public static List<Map<String, Object>> readMap(final InputStream inputStream, final List<String> propertyName) {
+    public static List<Map<String, Object>> readMap(final InputStream inputStream,
+                                                    final String sheetName,
+                                                    final List<String> propertyName) {
         final List<Map<String, Object>> result = new ArrayList<>();
         final ExcelMapHandler handler = new ExcelMapHandler(result, propertyName);
-        cn.hutool.poi.excel.ExcelUtil.readBySax(inputStream, 0, handler);
+        cn.hutool.poi.excel.ExcelUtil.readBySax(inputStream, sheetName, handler);
         return result;
     }
+
+    public static List<Map<String, Object>> readMapByFile(final String filePath,
+                                                    final String sheetName,
+                                                    final List<String> propertyName) {
+        final List<Map<String, Object>> result = new ArrayList<>();
+        final ExcelMapHandler handler = new ExcelMapHandler(result, propertyName);
+        cn.hutool.poi.excel.ExcelUtil.readBySax(filePath, sheetName, handler);
+        return result;
+    }
+
 
     private static <T> List<List<?>> toListRow(final List<T> entityList, final Function<T, ?>... fields) {
         Preconditions.checkNotNull(fields, "fields is null");

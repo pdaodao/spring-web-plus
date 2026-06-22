@@ -38,6 +38,20 @@ public class AiStoreEmbeddingUtil {
         }
     }
 
+    public static void buildBatch(final List<AiEmbedText> documents, final AiEmbedding aiEmbedding){
+        if(CollUtil.isEmpty(documents)){
+            return;
+        }
+        final List<String> texts = new ArrayList<>();
+        for(final AiEmbedText t: documents){
+            texts.add(t.getContent());
+        }
+        final List<float[]> retList = aiEmbedding.embed(texts);
+        for(int i = 0; i < documents.size(); i++){
+            documents.get(i).setEmbedding(retList.get(i));
+        }
+    }
+
 
     /**
      * 在保存数据前进行向量化

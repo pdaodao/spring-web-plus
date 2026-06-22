@@ -1,5 +1,7 @@
 package com.github.pdaodao.springwebplus.util;
 
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
@@ -10,12 +12,15 @@ import com.github.pdaodao.springwebplus.dao.SysFileDao;
 import com.github.pdaodao.springwebplus.entity.SysFile;
 import com.github.pdaodao.springwebplus.tool.data.PageResult;
 import com.github.pdaodao.springwebplus.tool.fs.FileInfo;
+import com.github.pdaodao.springwebplus.tool.fs.FileStorage;
 import com.github.pdaodao.springwebplus.tool.fs.InputStreamWrap;
 import com.github.pdaodao.springwebplus.tool.fs.local.LocalConfig;
 import com.github.pdaodao.springwebplus.tool.fs.local.LocalFileStorage;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -57,6 +62,20 @@ public class FileUploadUtil {
             fs.init();
             tempFileStorage = fs;
             return fs;
+        }
+    }
+
+    public static FileInfo upload(final String basePath, final MultipartFile file, final FileStorage fileStorage) throws Exception {
+        Preconditions.checkNotNull(fileStorage);
+        final String fileName = FileUtil.cleanInvalid(file.getOriginalFilename());
+        try (final InputStream inputStream = file.getInputStream()) {
+            final FileInfo fileInfo = new FileInfo();
+            fileInfo.setName(fileName);
+            fileInfo.setContentType(FileTypeUtil.getType(null, file.getOriginalFilename(), true));
+            final String fullPath = fileStorage.upload(basePath, file.getSize(), fileName, inputStream);
+            fileInfo.setPath(fullPath);
+            fileInfo.setSize(file.getSize());
+            return fileInfo;
         }
     }
 

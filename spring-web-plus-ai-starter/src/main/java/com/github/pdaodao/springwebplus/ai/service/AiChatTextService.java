@@ -15,11 +15,11 @@ import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 @Slf4j
@@ -97,24 +97,58 @@ public class AiChatTextService {
         return ret;
     }
 
-    public void save(AiChatText text) throws Exception{
+    public void saveBatch(final String topicId, final String teamId, final List<AiChatText> list) throws Exception{
+        if(CollUtil.isEmpty(list)){
+            return;
+        }
+        final AiChatTextQuery query = new AiChatTextQuery();
+        query.setTopicId(topicId);
+        final List<AiChatText> oldList = termTextDao.infoList(query);
+        final Set<String> old = new HashSet<>();
+        for(final AiChatText t: oldList){
+            if(StrUtil.isNotBlank(t.getTitle())){
+                old.add(t.getTitle());
+            }
+            old.add(t.toEmbeddingText());
+        }
+        final List<AiEmbedText> toAddList = new ArrayList<>();
+        for(final AiChatText t: list){
+            if(StrUtil.isNotBlank(t.getTitle()) && old.contains(t.getTitle())){
+                continue;
+            }
+            if(old.contains(t.toEmbeddingText())){
+                continue;
+            }
+            termTextDao.save(t);
+            toAddList.add(toAiEmbedText(t));
+        }
+        if(vectorStore.isEmpty()){
+            return;
+        }
+        AiStoreEmbeddingUtil.buildBatch(toAddList, AiChatModelProvider.ofEmbedding(teamId, null));
+        vectorStore.get().save(toAddList, false);
+    }
+
+    public void save(final AiChatText text) throws Exception{
         termTextDao.save(text);
         if(vectorStore.isEmpty()){
             return;
         }
+        final AiEmbedText embedText = toAiEmbedText(text);
+        AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(text.getTeamId(), null));
+        vectorStore.get().save(ListUtil.of(embedText), true);
+    }
+
+    private static AiEmbedText toAiEmbedText(final AiChatText text){
         final AiEmbedText embedText = new AiEmbedText();
         embedText.setNamespace(text.getNamespace().name());
         embedText.setTopic(text.getTopicId());
         embedText.setId(text.getId());
         embedText.setDocId(text.getFileId());
-
         embedText.setTeamId(text.getTeamId());
-
         embedText.setTitle(text.getTitle());
         embedText.setContent(text.toEmbeddingText());
-
-        AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(text.getTeamId(), null));
-        vectorStore.get().save(ListUtil.of(embedText), true);
+        return embedText;
     }
 
     public Boolean deleteById(final String id) throws Exception{
