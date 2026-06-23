@@ -81,11 +81,10 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 }else{
                     msgBlock.setIsEnd(false);
                 }
-                msgBlock.setId(chatResponse.getMetadata().getId());
                 try{
                     msgSender.sendMsg(msgBlock);
                 }catch (Exception e){
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }finally {
                 if(isEnd){
@@ -108,9 +107,12 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         }
         // 用户问题
         messages.add(UserMessage.builder().text(context.getReq().getQuestion()).build());
-        final String ret = model.call(Prompt.builder().messages(messages).build()).getResult().getOutput().getText();
+        final ChatResponse chatResponse = model.call(Prompt.builder().messages(messages).build());
+        final Usage usage = chatResponse.getMetadata().getUsage();
+        final String ret = chatResponse.getResult().getOutput().getText();
         final LLMResponse resp = LLMResponse.of();
         resp.addTextBlock(ret);
+        resp.setUsage(LLMUsage.of(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens()));
         return resp;
     }
 }

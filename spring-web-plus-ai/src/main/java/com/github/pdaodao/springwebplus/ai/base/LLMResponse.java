@@ -10,6 +10,9 @@ import java.util.List;
 @Schema(description = "大模型返回内容")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LLMResponse {
+    @Schema(description = "会话id")
+    private String sessionId;
+
     @Schema(description = "回答id")
     private String id;
 

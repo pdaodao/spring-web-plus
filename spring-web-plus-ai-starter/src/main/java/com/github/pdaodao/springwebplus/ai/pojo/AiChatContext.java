@@ -14,6 +14,7 @@ import java.util.List;
 
 @Data
 public class AiChatContext {
+    private Long startTime;
     private LLMRequest req;
 
     private AiChatApp chatApp;
