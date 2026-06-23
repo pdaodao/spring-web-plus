@@ -1,11 +1,13 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.base.LLMUsage;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatText;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import lombok.AllArgsConstructor;
@@ -38,14 +40,25 @@ public class AiChatLLMProcessor implements AiChatProcessor{
     }
 
     @Override
-    public void streaming(AiChatContext context, MsgSender sseEmitter) throws IOException, InterruptedException {
+    public void streaming(AiChatContext context, MsgSender sseEmitter) throws Exception {
         final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
         final List<Message> messages = new ArrayList<>();
         // 业务术语
         if(context.getChatApp() != null && BooleanUtil.isTrue(context.getChatApp().getTermEnabled())){
-            final String termMsg = termTextService.searchMsg(context.getReq().getTeamId(), context.getReq().getQuestion());
-            if(StrUtil.isNotBlank(termMsg)){
-                messages.add(SystemMessage.builder().text(termMsg).build());
+            final List<AiChatText> textList = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion());
+            if(CollUtil.isNotEmpty(textList)){
+                for(final AiChatText text: textList){
+                    if(StrUtil.similar(text.getTitle(), context.getReq().getQuestion()) > 0.92){
+                        final AiChatText info = termTextService.info(text.getId());
+                        final MsgBlock msgBlock = MsgBlock.ofText(info.getContent());
+                        sseEmitter.sendMsg(msgBlock);
+                        context.getResponse().addBlock(msgBlock);
+                        context.getResponse().setUsage(LLMUsage.of(0, 0, 0));
+                        return;
+                    }
+                }
+                final String text = AiChatTextService.buildMsg(textList);
+                messages.add(SystemMessage.builder().text(text).build());
             }
         }
         // 用户问题

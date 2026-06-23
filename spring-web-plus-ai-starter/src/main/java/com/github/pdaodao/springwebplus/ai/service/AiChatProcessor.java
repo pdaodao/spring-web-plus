@@ -10,7 +10,7 @@ import java.io.IOException;
 public interface AiChatProcessor {
     boolean accept(final AiChatContext context);
 
-    void streaming(final AiChatContext context, final MsgSender sseEmitter) throws IOException, InterruptedException;
+    void streaming(final AiChatContext context, final MsgSender sseEmitter) throws Exception;
 
     LLMResponse http(final AiChatContext context);
 }

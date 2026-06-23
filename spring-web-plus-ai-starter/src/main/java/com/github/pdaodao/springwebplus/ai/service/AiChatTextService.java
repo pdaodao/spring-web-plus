@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -42,25 +43,33 @@ public class AiChatTextService {
             if(CollUtil.isEmpty(list)){
                 return StrUtil.EMPTY;
             }
-            final StringBuilder sb = new StringBuilder();
-            sb.append("已知以下业务知识:");
-            for(final AiChatText t: list){
-                sb.append("\n -").append(t.getContent());
-            }
+            final String ret = buildMsg(list);
             log.info("业务术语检索:"+q);
-            log.info(sb.toString());
-            return sb.toString();
+            log.info(ret);
+            return ret;
         }catch (final Exception e){
             log.error(e.getMessage(), e);
         }
         return StrUtil.EMPTY;
     }
 
+    public static String buildMsg(final List<AiChatText> list){
+        if(CollUtil.isEmpty(list)){
+            return StrUtil.EMPTY;
+        }
+        final StringBuilder sb = new StringBuilder();
+        sb.append("已知以下业务知识:");
+        for(final AiChatText t: list){
+            sb.append(t.getContent()).append("\n ");
+        }
+        return sb.toString();
+    }
+
 
     /**
      * 通过关键词到向量库中检索
      */
-    public List<AiChatText> search(final String teamId, final String q) throws Exception{
+    public List<AiChatText> search(final String teamId, final String q) throws Exception {
         if(vectorStore.isEmpty()){
             final AiChatTextQuery query = new AiChatTextQuery();
             query.setTeamId(teamId);

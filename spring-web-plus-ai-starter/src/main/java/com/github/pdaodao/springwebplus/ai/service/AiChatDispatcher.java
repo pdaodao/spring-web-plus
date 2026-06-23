@@ -87,7 +87,7 @@ public class AiChatDispatcher {
         return context;
     }
 
-    public void streaming(final LLMRequest req, final MsgSender msgSender) throws IOException {
+    public void streaming(final LLMRequest req, final MsgSender msgSender) throws Exception {
         final AiChatContext context = prepare(req, msgSender);
         try {
             final AiChatProcessor p = selectProcessor(context);

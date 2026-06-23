@@ -15,6 +15,10 @@ public class AiChatStreamingBodyWrap implements StreamingResponseBody {
     @Override
     public void writeTo(final OutputStream outputStream) throws IOException {
         final StreamingMsgSender msgSender = new StreamingMsgSender(outputStream);
-        chatDispatcher.streaming(request, msgSender);
+        try{
+            chatDispatcher.streaming(request, msgSender);
+        }catch (Exception e){
+            throw new IOException(e);
+        }
     }
 }
