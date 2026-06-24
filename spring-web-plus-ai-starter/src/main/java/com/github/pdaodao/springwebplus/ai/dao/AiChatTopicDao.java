@@ -20,6 +20,16 @@ public class AiChatTopicDao extends BaseDao<AiChatTopicMapper, AiChatTopic> {
                 .build());
     }
 
+    public AiChatTopic saveInfo(final AiChatNamespace namespace, final String teamId, final String title, final String id){
+        final AiChatTopic t = new AiChatTopic();
+        t.setNamespace(namespace);
+        t.setTeamId(teamId);
+        t.setTitle(title);
+        t.setId(id);
+        save(t);
+        return t;
+    }
+
     public AiChatTopic saveByTitle(final AiChatNamespace namespace, final String teamId, final String title){
         Preconditions.checkNotBlank(title, "title is empty.");
         final AiChatTopic topic = getOne(QueryBuilder.lambda(AiChatTopic.class)
