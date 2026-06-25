@@ -50,6 +50,9 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 for(final AiChatText text: textList){
                     if(StrUtil.similar(text.getTitle(), context.getReq().getQuestion()) > 0.92){
                         final AiChatText info = termTextService.info(text.getId());
+                        if(info == null){
+                            continue;
+                        }
                         final MsgBlock msgBlock = MsgBlock.ofText(info.getContent());
                         sseEmitter.sendMsg(msgBlock);
                         context.getResponse().addBlock(msgBlock);

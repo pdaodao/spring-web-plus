@@ -41,6 +41,14 @@ public class AiChatText extends SnowIdWithTimeUserEntity implements WithTeam{
 
     private transient List<AiChatText> children;
 
+    public static AiChatText of(final String teamId, final AiChatNamespace namespace, final String id){
+        final AiChatText text = new AiChatText();
+        text.setTeamId(teamId);
+        text.setNamespace(namespace);
+        text.setId(id);
+        return text;
+    }
+
     public String content() {
         final StringBuilder sb = new StringBuilder();
         if (StrUtil.isNotBlank(title)) {
