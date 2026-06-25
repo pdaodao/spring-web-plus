@@ -10,12 +10,13 @@ import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
-import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class AiVectorStoreService {
@@ -39,38 +40,49 @@ public class AiVectorStoreService {
 
 
     @Async
-    public void save(final String teamId, final AiChatText text) throws Exception{
+    public void save(final String teamId, final AiChatText text){
         if(vectorStore.isEmpty() || text == null || StrUtil.isBlank(text.toEmbeddingText())){
             return;
         }
-        final AiEmbedText embedText = toAiEmbedText(text);
-        AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(teamId, null));
-        vectorStore.get().save(ListUtil.of(embedText), true);
+        try{
+            final AiEmbedText embedText = toAiEmbedText(text);
+            AiStoreEmbeddingUtil.buildForSave(embedText, vectorStore.get(), AiChatModelProvider.ofEmbedding(teamId, null));
+            vectorStore.get().save(ListUtil.of(embedText), true);
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
     }
 
     @Async
-    public void saveBatch(final String teamId, final List<AiChatText> list) throws Exception{
+    public void saveBatch(final String teamId, final List<AiChatText> list){
         if(vectorStore.isEmpty() || CollUtil.isEmpty(list)){
             return;
         }
-        final List<AiEmbedText> textList = new ArrayList<>();
-        for(final AiChatText t: list){
-            textList.add(toAiEmbedText(t));
+        try{
+            final List<AiEmbedText> textList = new ArrayList<>();
+            for(final AiChatText t: list){
+                textList.add(toAiEmbedText(t));
+            }
+            AiStoreEmbeddingUtil.buildBatch(textList, AiChatModelProvider.ofEmbedding(teamId, null));
+            vectorStore.get().save(textList, false);
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
         }
-        AiStoreEmbeddingUtil.buildBatch(textList, AiChatModelProvider.ofEmbedding(teamId, null));
-        vectorStore.get().save(textList, false);
     }
 
     @Async
-    public void deleteById(final String id, final String namespace) throws Exception{
-        Preconditions.checkNotBlank(id, "id不能为空");
-        if(vectorStore.isEmpty()){
+    public void deleteById(final String id, final String namespace){
+        if(vectorStore.isEmpty() || StrUtil.isBlank(id)){
             return;
         }
-        final AiEmbedTextQuery query = new AiEmbedTextQuery();
-        query.addId(id);
-        query.addNamespace(namespace);
-        vectorStore.get().deleteByQuery(query);
+        try{
+            final AiEmbedTextQuery query = new AiEmbedTextQuery();
+            query.addId(id);
+            query.addNamespace(namespace);
+            vectorStore.get().deleteByQuery(query);
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
     }
 
 
@@ -107,5 +119,4 @@ public class AiVectorStoreService {
         }
         return ret;
     }
-
 }

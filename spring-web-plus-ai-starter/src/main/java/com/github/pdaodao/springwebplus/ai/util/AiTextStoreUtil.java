@@ -14,22 +14,22 @@ public class AiTextStoreUtil {
         return SpringUtil.getBean(AiVectorStoreService.class).isEmpty();
     }
 
-    public static void save(final String teamId, final AiChatText text) throws Exception {
+    public static void save(final String teamId, final AiChatText text) {
         SpringUtil.getBean(AiVectorStoreService.class)
                 .save(teamId, text);
     }
 
-    public static void saveBatch(final String teamId, final List<AiChatText> list) throws Exception {
+    public static void saveBatch(final String teamId, final List<AiChatText> list){
         SpringUtil.getBean(AiVectorStoreService.class)
                 .saveBatch(teamId, list);
     }
 
-    public void deleteById(final String id, final String namespace) throws Exception {
+    public static void deleteById(final String id, final String namespace){
         SpringUtil.getBean(AiVectorStoreService.class)
                 .deleteById(id, namespace);
     }
 
-    public List<AiChatText> search(final String teamId, final String q) throws Exception {
+    public static List<AiChatText> search(final String teamId, final String q) throws Exception {
         return SpringUtil.getBean(AiVectorStoreService.class)
                 .search(teamId, q);
     }
