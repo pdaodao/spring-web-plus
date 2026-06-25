@@ -11,7 +11,13 @@ import java.io.OutputStream;
 
 @AllArgsConstructor
 public class StreamingMsgSender implements MsgSender {
+    private final LLMResponse response = new LLMResponse();
     private final OutputStream outputStream;
+
+    @Override
+    public LLMResponse getResponse() {
+        return response;
+    }
 
     private void sendText(final String text) throws IOException {
         if(StrUtil.isBlank(text)){
@@ -29,13 +35,13 @@ public class StreamingMsgSender implements MsgSender {
         sendText(JsonUtil.toJsonString(msgBlock));
     }
 
-    @Override
-    public void sendResponse(final LLMResponse response) throws IOException {
-        if(response == null){
-            return;
-        }
-        sendText(JsonUtil.toJsonString(response));
-    }
+//    @Override
+//    public void sendResponse(final LLMResponse response) throws IOException {
+//        if(response == null){
+//            return;
+//        }
+//        sendText(JsonUtil.toJsonString(response));
+//    }
 
     @Override
     public void done(final AiChatContext context, final Exception e) throws IOException {

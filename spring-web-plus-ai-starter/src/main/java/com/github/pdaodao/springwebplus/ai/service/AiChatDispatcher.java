@@ -20,7 +20,6 @@ import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,8 +50,6 @@ public class AiChatDispatcher {
     private AiChatContext prepare(final LLMRequest req, final MsgSender msgSender) {
         Preconditions.checkNotBlank(req.getAppId(), "问答场景id不能为空.");
         final AiChatContext context = AiChatContext.of(req, msgSender);
-        context.setStartTime(DateTimeUtil.currentTimeMillis());
-        context.setResponse(new LLMResponse());
         context.setPhase(req.getPhase());
         final AiChatApp app = AiChatDaoUtil.getAppById(req.getAppId());
         Preconditions.checkNotNull(app, "问答场景不存在.");
@@ -106,17 +103,16 @@ public class AiChatDispatcher {
     }
 
 
-    public LLMResponse http(final LLMRequest req) {
-        final AiChatContext context = prepare(req, null);
+    public void http(final LLMRequest req, final MsgSender msgSender) throws Exception{
+        final AiChatContext context = prepare(req, msgSender);
         final long t1 = DateTimeUtil.currentTimeMillis();
         final AiChatProcessor p = selectProcessor(context);
         Preconditions.checkNotNull(p, "未找到处理逻辑:" + context.getChatType());
         try{
-            final LLMResponse rr = p.http(context);
-            context.setResponse(rr);
+            p.http(context, msgSender);
             lastPrepare(context, null);
-            return rr;
         }catch (Exception e){
+            msgSender.sendError(ExceptionUtil.getSimpleMsg(e));
             lastPrepare(context, e);
         } finally {
             final long t2 = DateTimeUtil.currentTimeMillis();
@@ -125,7 +121,6 @@ public class AiChatDispatcher {
             }
             AiChatContext.clear();
         }
-        return null;
     }
 
     private AiChatProcessor selectProcessor(final AiChatContext context) {

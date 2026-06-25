@@ -44,6 +44,9 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     @TableField(typeHandler = StringListJsonHandler.class)
     private List<String> examples;
 
+    @Schema(description = "提示词")
+    private String prompt;
+
     @Schema(description = "知识库列表")
     @TableField(typeHandler = IdTitleListTypeHandler.class)
     private List<IdTitle> knowledgeIds;

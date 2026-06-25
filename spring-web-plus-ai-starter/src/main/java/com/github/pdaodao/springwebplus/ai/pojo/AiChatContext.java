@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatSessionMsg;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.tool.table.TableInfo;
+import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -38,6 +39,8 @@ public class AiChatContext {
         final AiChatContext context = new AiChatContext();
         context.setReq(req);
         context.setMsgSender(msgSender);
+        context.setResponse(msgSender.getResponse());
+        context.setStartTime(DateTimeUtil.currentTimeMillis());
         AiChatContextHolder.set(context);
         return context;
     }

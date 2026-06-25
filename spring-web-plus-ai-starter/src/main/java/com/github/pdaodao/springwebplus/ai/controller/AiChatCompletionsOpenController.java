@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatStreamingBodyWrap;
+import com.github.pdaodao.springwebplus.ai.pojo.HttpMsgSender;
 import com.github.pdaodao.springwebplus.ai.service.AiChatDispatcher;
 import com.github.pdaodao.springwebplus.base.auth.IgnoreLogin;
 import com.github.pdaodao.springwebplus.entity.SysApiKey;
@@ -41,10 +42,11 @@ public class AiChatCompletionsOpenController {
     @IgnoreLogin
     @PostMapping(path = "http")
     @Operation(summary = "http问答")
-    public LLMResponse chatHttp(@RequestBody LLMRequest chatReq) {
+    public LLMResponse chatHttp(@RequestBody LLMRequest chatReq) throws Exception{
+        final HttpMsgSender msgSender = HttpMsgSender.of();
         final LLMRequest req = prepare(chatReq);
-        final LLMResponse rr = chatDispatcher.http(req);
-        return rr;
+        chatDispatcher.http(req, msgSender);
+        return msgSender.getResponse();
     }
 
     private LLMRequest prepare(final LLMRequest req) {

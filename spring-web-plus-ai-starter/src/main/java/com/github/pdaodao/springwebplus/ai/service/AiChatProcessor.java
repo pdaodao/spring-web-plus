@@ -12,5 +12,5 @@ public interface AiChatProcessor {
 
     void streaming(final AiChatContext context, final MsgSender sseEmitter) throws Exception;
 
-    LLMResponse http(final AiChatContext context);
+    void http(final AiChatContext context, final MsgSender sseEmitter) throws Exception;
 }

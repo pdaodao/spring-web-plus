@@ -39,10 +39,11 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         return AiChatType.TextGen == context.getChatType();
     }
 
-    @Override
-    public void streaming(AiChatContext context, MsgSender sseEmitter) throws Exception {
-        final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
+    private List<Message> buildChatMessage(AiChatContext context, MsgSender sseEmitter) throws Exception{
         final List<Message> messages = new ArrayList<>();
+        if(StrUtil.isNotBlank(context.getChatApp().getPrompt())){
+            messages.add(SystemMessage.builder().text(context.getChatApp().getPrompt()).build());
+        }
         // 业务术语
         if(context.getChatApp() != null && BooleanUtil.isTrue(context.getChatApp().getTermEnabled())){
             final List<AiChatText> textList = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion());
@@ -54,10 +55,12 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                             continue;
                         }
                         final MsgBlock msgBlock = MsgBlock.ofText(info.getContent());
-                        sseEmitter.sendMsg(msgBlock);
                         context.getResponse().addBlock(msgBlock);
                         context.getResponse().setUsage(LLMUsage.of(0, 0, 0));
-                        return;
+                        if(sseEmitter != null){
+                            sseEmitter.sendMsg(msgBlock);
+                        }
+                        return null;
                     }
                 }
                 final String text = AiChatTextService.buildMsg(textList);
@@ -66,6 +69,16 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         }
         // 用户问题
         messages.add(UserMessage.builder().text(context.getReq().getQuestion()).build());
+        return messages;
+    }
+
+    @Override
+    public void streaming(AiChatContext context, MsgSender sseEmitter) throws Exception {
+        final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
+        final List<Message> messages = buildChatMessage(context, sseEmitter);
+        if(CollUtil.isEmpty(messages)){
+            return;
+        }
         final CountDownLatch latch = new CountDownLatch(1);
         final Flux<ChatResponse> fluxResp = model.stream(Prompt.builder().messages(messages).build());
         fluxResp.subscribe(new ChatResponseConsumer(latch, context, sseEmitter));
@@ -111,24 +124,16 @@ public class AiChatLLMProcessor implements AiChatProcessor{
     }
 
     @Override
-    public LLMResponse http(AiChatContext context) {
+    public void http(final AiChatContext context, final MsgSender sseEmitter) throws Exception{
         final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
-        final List<Message> messages = new ArrayList<>();
-        // 业务术语
-        if(context.getChatApp() != null && BooleanUtil.isTrue(context.getChatApp().getTermEnabled())){
-            final String termMsg = termTextService.searchMsg(context.getReq().getTeamId(), context.getReq().getQuestion());
-            if(StrUtil.isNotBlank(termMsg)){
-                messages.add(SystemMessage.builder().text(termMsg).build());
-            }
+        final List<Message> messages = buildChatMessage(context, sseEmitter);
+        if(CollUtil.isEmpty(messages)){
+            return;
         }
-        // 用户问题
-        messages.add(UserMessage.builder().text(context.getReq().getQuestion()).build());
         final ChatResponse chatResponse = model.call(Prompt.builder().messages(messages).build());
         final Usage usage = chatResponse.getMetadata().getUsage();
         final String ret = chatResponse.getResult().getOutput().getText();
-        final LLMResponse resp = LLMResponse.of();
-        resp.addTextBlock(ret);
-        resp.setUsage(LLMUsage.of(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens()));
-        return resp;
+        sseEmitter.sendMsg(MsgBlock.ofText(ret));
+        context.getResponse().setUsage(LLMUsage.of(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens()));
     }
 }
