@@ -45,6 +45,7 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     private List<String> examples;
 
     @Schema(description = "提示词")
+    @Size(max = 500, message = "提示词最大不能超过500")
     private String prompt;
 
     @Schema(description = "知识库列表")
