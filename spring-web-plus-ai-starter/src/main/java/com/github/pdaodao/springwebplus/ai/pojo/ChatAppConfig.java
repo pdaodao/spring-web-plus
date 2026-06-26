@@ -17,4 +17,7 @@ public class ChatAppConfig {
     @Schema(description = "相似度得分")
     @TableFieldSize(defaultValue = "0.6")
     private Double score = 0.6;
+
+    @Schema(description = "未检索到知识文本时的提示信息")
+    private String noTextTips;
 }

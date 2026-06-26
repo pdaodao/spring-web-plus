@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -76,11 +77,27 @@ public class MsgBlock {
         return msgBlock;
     }
 
+    public void appendText(final String appendText){
+        if(StrUtil.isNullOrUndefined(appendText)){
+            return;
+        }
+        if(StrUtil.isNullOrUndefined(text)){
+            text = appendText;
+        }else{
+            text = text + appendText;
+        }
+    }
+
     public static MsgBlock of(final MsgType msgType, final String text){
         final MsgBlock msgBlock = new MsgBlock();
         msgBlock.setType(msgType);
         msgBlock.setText(text);
         return msgBlock;
+    }
+
+    public MsgBlock usage(final Integer promptTokens, final Integer completionTokens, final Integer totalTokens){
+        setUsage(LLMUsage.of(promptTokens, completionTokens, totalTokens));
+        return this;
     }
 
     public MsgBlock setIsEnd(){

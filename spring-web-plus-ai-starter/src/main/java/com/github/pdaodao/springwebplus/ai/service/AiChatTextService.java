@@ -47,9 +47,9 @@ public class AiChatTextService {
             return StrUtil.EMPTY;
         }
         final StringBuilder sb = new StringBuilder();
-        sb.append("已知以下业务知识:");
+        sb.append("已知以下业务知识:\n");
         for(final AiChatText t: list){
-            sb.append(t.getContent()).append("\n ");
+            sb.append("#").append(t.getContent()).append("\n");
         }
         return sb.toString();
     }

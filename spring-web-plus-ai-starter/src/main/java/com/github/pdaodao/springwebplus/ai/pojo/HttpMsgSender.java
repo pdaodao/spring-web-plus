@@ -23,7 +23,7 @@ public class HttpMsgSender implements MsgSender {
 
     @Override
     public void sendMsg(final MsgBlock msgBlock) throws IOException {
-        if(msgBlock == null){
+        if(msgBlock == null || msgBlock.getUsage() == null){
             return;
         }
         response.addBlock(msgBlock);
@@ -41,6 +41,7 @@ public class HttpMsgSender implements MsgSender {
         final MsgBlock msgBlock = new MsgBlock();
         msgBlock.setType(MsgType.error);
         msgBlock.setText(errorMsg);
+        msgBlock.usage(0, 0, 0);
         sendMsg(msgBlock);
     }
 }

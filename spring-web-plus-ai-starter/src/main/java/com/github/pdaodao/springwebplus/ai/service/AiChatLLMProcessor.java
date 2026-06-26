@@ -4,12 +4,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
-import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.base.LLMUsage;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatText;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
+import com.github.pdaodao.springwebplus.ai.util.AiTextUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -22,7 +22,6 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -49,22 +48,25 @@ public class AiChatLLMProcessor implements AiChatProcessor{
             final List<AiChatText> textList = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion());
             if(CollUtil.isNotEmpty(textList)){
                 for(final AiChatText text: textList){
-                    if(StrUtil.similar(text.getTitle(), context.getReq().getQuestion()) > 0.92){
+                    if(AiTextUtil.similar(text.getTitle(), context.getReq().getQuestion()) > 0.92){
                         final AiChatText info = termTextService.info(text.getId());
                         if(info == null){
                             continue;
                         }
                         final MsgBlock msgBlock = MsgBlock.ofText(info.getContent());
-                        context.getResponse().addBlock(msgBlock);
-                        context.getResponse().setUsage(LLMUsage.of(0, 0, 0));
-                        if(sseEmitter != null){
-                            sseEmitter.sendMsg(msgBlock);
-                        }
+                        msgBlock.usage(0, 0, 0);
+                        sseEmitter.sendMsg(msgBlock);
                         return null;
                     }
                 }
                 final String text = AiChatTextService.buildMsg(textList);
+                log.info(text);
                 messages.add(SystemMessage.builder().text(text).build());
+            }else if(StrUtil.isNotBlank(context.getChatApp().getAppConfig().getNoTextTips())){
+                final MsgBlock msgBlock = MsgBlock.ofText(context.getChatApp().getAppConfig().getNoTextTips());
+                msgBlock.usage(0, 0, 0);
+                sseEmitter.sendMsg(msgBlock);
+                return null;
             }
         }
         // 用户问题
@@ -81,14 +83,13 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         }
         final CountDownLatch latch = new CountDownLatch(1);
         final Flux<ChatResponse> fluxResp = model.stream(Prompt.builder().messages(messages).build());
-        fluxResp.subscribe(new ChatResponseConsumer(latch, context, sseEmitter));
+        fluxResp.subscribe(new ChatResponseConsumer(latch, sseEmitter));
         latch.await(10, TimeUnit.MINUTES);
     }
 
     @AllArgsConstructor
     public static class ChatResponseConsumer implements Consumer<ChatResponse> {
         final CountDownLatch latch;
-        private final AiChatContext context;
         private final MsgSender msgSender;
         final StringBuilder sb = new StringBuilder();
 
@@ -102,11 +103,12 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 final String finishReason = chatResponse.getResult().getMetadata().getFinishReason();
                 if(StrUtil.containsIgnoreCase(finishReason, "done")
                         || StrUtil.containsIgnoreCase(finishReason, "stop")){
-                    msgBlock.setIsEnd(true);
                     isEnd = true;
-                    context.getResponse().addBlock(MsgBlock.ofText(sb.toString()));
+                    msgBlock.setIsEnd(true);
                     final Usage usage = chatResponse.getMetadata().getUsage();
-                    context.getResponse().setUsage(LLMUsage.of(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens()));
+                    final MsgBlock all = MsgBlock.ofText(sb.toString());
+                    all.usage(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
+                    msgSender.sendMsg(all);
                 }else{
                     msgBlock.setIsEnd(false);
                 }
@@ -115,7 +117,9 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
-            }finally {
+            }catch (Exception e){
+                latch.countDown();
+            }finally{
                 if(isEnd){
                     latch.countDown();
                 }
@@ -133,7 +137,9 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         final ChatResponse chatResponse = model.call(Prompt.builder().messages(messages).build());
         final Usage usage = chatResponse.getMetadata().getUsage();
         final String ret = chatResponse.getResult().getOutput().getText();
-        sseEmitter.sendMsg(MsgBlock.ofText(ret));
-        context.getResponse().setUsage(LLMUsage.of(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens()));
+        final MsgBlock msgBlock = MsgBlock.ofText(ret);
+        msgBlock.usage(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
+        msgBlock.setIsEnd(true);
+        sseEmitter.sendMsg(msgBlock);
     }
 }

@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
-import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatAppDao;

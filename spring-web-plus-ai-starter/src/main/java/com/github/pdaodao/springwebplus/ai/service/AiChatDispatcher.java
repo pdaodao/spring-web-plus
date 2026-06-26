@@ -3,7 +3,6 @@ package com.github.pdaodao.springwebplus.ai.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.LLMRequest;
-import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
 import com.github.pdaodao.springwebplus.ai.base.MsgType;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatSessionDao;
@@ -33,9 +32,6 @@ public class AiChatDispatcher {
     private void lastPrepare(final AiChatContext context, final Exception e){
         context.getSessionMsg().setErrorMsg(e == null ? null : ExceptionUtil.getSimpleMsg(e));
         context.getSessionMsg().setAnswer(context.getResponse());
-        if(context.getResponse() != null && context.getSessionMsg() != null){
-            context.getResponse().setSessionId(context.getSessionMsg().getSessionId());
-        }
         final long t2 = DateTimeUtil.currentTimeMillis();
         context.getResponse().setCost(t2 - context.getStartTime());
         context.getSessionMsg().setLlmCost((int)(t2 - context.getStartTime()));
@@ -74,6 +70,7 @@ public class AiChatDispatcher {
             sessionDao.save(session);
             req.setSessionId(session.getId());
         }
+        context.getResponse().setSessionId(req.getSessionId());
         final AiChatSessionMsg sessionMsg = new AiChatSessionMsg();
         sessionMsg.setQuestion(req.getQuestion());
         sessionMsg.setSessionId(req.getSessionId());

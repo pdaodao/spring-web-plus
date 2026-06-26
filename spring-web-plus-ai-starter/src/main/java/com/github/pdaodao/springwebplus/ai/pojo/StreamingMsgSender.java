@@ -33,6 +33,9 @@ public class StreamingMsgSender implements MsgSender {
             return;
         }
         sendText(JsonUtil.toJsonString(msgBlock));
+        if(msgBlock.getUsage() != null){
+            response.addBlock(msgBlock);
+        }
     }
 
 //    @Override

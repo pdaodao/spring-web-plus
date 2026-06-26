@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.pojo;
 
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
+import com.github.pdaodao.springwebplus.ai.base.LLMUsage;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
 
 import java.io.IOException;

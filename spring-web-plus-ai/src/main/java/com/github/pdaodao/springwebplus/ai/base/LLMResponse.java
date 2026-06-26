@@ -37,9 +37,10 @@ public class LLMResponse {
             blocks = new ArrayList<>();
         }
         blocks.add(block);
+        addUsage(block.getUsage());
     }
 
-    public void addUsage(final LLMUsage llmUsage){
+    private void addUsage(final LLMUsage llmUsage){
         if(llmUsage == null){
             return;
         }
