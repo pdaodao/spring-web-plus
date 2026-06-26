@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.pojo;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
@@ -33,12 +34,17 @@ public class StreamingMsgSender implements MsgSender {
             return;
         }
         sendText(JsonUtil.toJsonString(msgBlock));
-        if(msgBlock.getUsage() != null){
-            response.addBlock(msgBlock);
-        }
     }
 
-//    @Override
+    @Override
+    public void saveMsg(MsgBlock msgBlock) {
+        if(msgBlock == null){
+            return;
+        }
+        response.addBlock(msgBlock);
+    }
+
+    //    @Override
 //    public void sendResponse(final LLMResponse response) throws IOException {
 //        if(response == null){
 //            return;

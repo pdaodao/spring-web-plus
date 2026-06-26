@@ -11,6 +11,8 @@ public interface MsgSender {
 
     void sendMsg(final MsgBlock msgBlock) throws IOException;
 
+    void saveMsg(final MsgBlock msgBlock);
+
     // void sendResponse(final LLMResponse response) throws IOException;
 
     void done(final AiChatContext context, final Exception e) throws IOException;

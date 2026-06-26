@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
-import com.github.pdaodao.springwebplus.ai.base.LLMUsage;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatText;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
@@ -56,6 +55,7 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                         final MsgBlock msgBlock = MsgBlock.ofText(info.getContent());
                         msgBlock.usage(0, 0, 0);
                         sseEmitter.sendMsg(msgBlock);
+                        sseEmitter.saveMsg(msgBlock);
                         return null;
                     }
                 }
@@ -66,6 +66,7 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 final MsgBlock msgBlock = MsgBlock.ofText(context.getChatApp().getAppConfig().getNoTextTips());
                 msgBlock.usage(0, 0, 0);
                 sseEmitter.sendMsg(msgBlock);
+                sseEmitter.saveMsg(msgBlock);
                 return null;
             }
         }
@@ -104,13 +105,10 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 if(StrUtil.containsIgnoreCase(finishReason, "done")
                         || StrUtil.containsIgnoreCase(finishReason, "stop")){
                     isEnd = true;
-                    msgBlock.setIsEnd(true);
                     final Usage usage = chatResponse.getMetadata().getUsage();
                     final MsgBlock all = MsgBlock.ofText(sb.toString());
                     all.usage(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
-                    msgSender.sendMsg(all);
-                }else{
-                    msgBlock.setIsEnd(false);
+                    msgSender.saveMsg(all);
                 }
                 try{
                     msgSender.sendMsg(msgBlock);
@@ -139,7 +137,6 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         final String ret = chatResponse.getResult().getOutput().getText();
         final MsgBlock msgBlock = MsgBlock.ofText(ret);
         msgBlock.usage(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
-        msgBlock.setIsEnd(true);
         sseEmitter.sendMsg(msgBlock);
     }
 }

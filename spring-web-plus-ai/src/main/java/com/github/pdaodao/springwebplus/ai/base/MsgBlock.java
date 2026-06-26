@@ -20,10 +20,6 @@ public class MsgBlock {
     @Schema(description = "消息块id")
     private String id;
 
-    @JsonIgnore
-    @Schema(description = "该消息是否结束")
-    private Boolean isEnd;
-
     @Schema(description = "消息类型标识")
     private MsgType type;
 
@@ -97,11 +93,6 @@ public class MsgBlock {
 
     public MsgBlock usage(final Integer promptTokens, final Integer completionTokens, final Integer totalTokens){
         setUsage(LLMUsage.of(promptTokens, completionTokens, totalTokens));
-        return this;
-    }
-
-    public MsgBlock setIsEnd(){
-        isEnd = true;
         return this;
     }
 
