@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.base.config.support;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,20 +13,20 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
+import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,6 +139,14 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         // 1. pdaodao 获取分页信息
         final IPage<?> page = ParameterUtils.findPage(parameter).orElse(PageHelper.getPage());
         PageHelper.setUsed();
+        final Map<String, ResultMapping> mappingMap = new LinkedHashMap<>();
+        for(final ResultMap m: ms.getResultMaps()){
+            for(final ResultMapping mp: m.getResultMappings()){
+                mappingMap.put(mp.getColumn(), mp);
+                mappingMap.put(mp.getProperty(), mp);
+            }
+        }
+
         if (null == page || page.getSize() < 1) {
             // 不需要分页 删除该部分
             if (isSubQueryPage) {
@@ -148,7 +157,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
                 final List<OrderItem> orders = page.orders();
                 if (CollectionUtils.isNotEmpty(orders)) {
                     String buildSql = boundSql.getSql();
-                    checkOrderField(buildSql, orders);
+                    checkOrderField(buildSql, orders, mappingMap);
                     buildSql = this.concatOrderBy(buildSql, orders);
                     PluginUtils.mpBoundSql(boundSql).sql(buildSql);
                 }
@@ -168,7 +177,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         List<OrderItem> orders = page.orders();
         if (CollectionUtils.isNotEmpty(orders)) {
             addOrdered = true;
-            checkOrderField(buildSql, orders);
+            checkOrderField(buildSql, orders, mappingMap);
             buildSql = this.concatOrderBy(buildSql, orders);
         }
 
@@ -214,7 +223,7 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
         return false;
     }
 
-    protected void checkOrderField(final String sql, List<OrderItem> orders ){
+    protected void checkOrderField(final String sql, List<OrderItem> orders, final Map<String, ResultMapping> mappingMap){
         if(StrUtil.isBlank(sql) || CollUtil.isEmpty(orders)){
             return;
         }
@@ -226,6 +235,12 @@ public class WithSubQueryPageInnerInterceptor extends PaginationInnerInterceptor
                 i.setColumn(StrUtils.toUnderlineCase(i.getColumn()));
                 continue;
             }
+            if(mappingMap.containsKey(i.getColumn())){
+                final ResultMapping m = mappingMap.get(i.getColumn());
+                i.setColumn(m.getColumn());
+                continue;
+            }
+            Preconditions.assertTrue(true, "unknown order by field {}", i.getColumn());
         }
     }
 
