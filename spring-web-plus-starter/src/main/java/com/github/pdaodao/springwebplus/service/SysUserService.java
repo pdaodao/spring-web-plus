@@ -7,6 +7,7 @@ import com.github.pdaodao.springwebplus.dao.SysUserRoleDao;
 import com.github.pdaodao.springwebplus.entity.SysRole;
 import com.github.pdaodao.springwebplus.entity.SysUser;
 import com.github.pdaodao.springwebplus.entity.SysUserRole;
+import com.github.pdaodao.springwebplus.pojo.UserPassword;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
@@ -77,8 +78,8 @@ public class SysUserService {
      * @param sysUser
      * @return
      */
-    public boolean updatePassword(final SysUser sysUser) {
-        return true;
+    public boolean updatePassword(final String userId, final String password) {
+        return sysUserDao.updatePassword(userId, password);
     }
 
     public List<SysRole> userRoles(final String userId){

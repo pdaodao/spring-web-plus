@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.controller;
 import com.github.pdaodao.springwebplus.base.auth.Permission;
 import com.github.pdaodao.springwebplus.base.util.PageHelper;
 import com.github.pdaodao.springwebplus.entity.SysUser;
+import com.github.pdaodao.springwebplus.pojo.UserPassword;
 import com.github.pdaodao.springwebplus.query.SysUserQuery;
 import com.github.pdaodao.springwebplus.service.SysUserService;
 import com.github.pdaodao.springwebplus.util.Constant;
@@ -70,7 +71,8 @@ public class SysUserController {
     @PostMapping("/reset-password")
     @Permission("sys:user:reset-password")
     public Boolean resetSysUserPassword(@Valid @RequestBody SysUser sysUser) {
-        return sysUserService.updatePassword(sysUser);
+        // todo 需要判定管理员
+        return true;
     }
 
     @PostMapping("/update-profile")
@@ -82,9 +84,8 @@ public class SysUserController {
 
     @Operation(summary = "修改用户密码")
     @PostMapping("/updatePassword")
-    public Boolean updatePassword(@Valid @RequestBody SysUser sysUser) {
-        boolean flag = sysUserService.updatePassword(sysUser);
-        return flag;
+    public Boolean updatePassword(@Valid @RequestBody UserPassword userPassword) {
+        return true;
     }
 
 //    @PostMapping("/importExcel")

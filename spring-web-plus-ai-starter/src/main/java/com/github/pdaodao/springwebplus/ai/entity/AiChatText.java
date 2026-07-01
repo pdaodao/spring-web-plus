@@ -30,6 +30,9 @@ public class AiChatText extends SnowIdWithTimeUserEntity implements WithTeam{
     @TableFieldSize(defaultValue = "0")
     private String topicId;
 
+    @Schema(description = "主题标题")
+    private transient String topicTitle;
+
     @Schema(description = "描述")
     private String remark;
 

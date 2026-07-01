@@ -11,7 +11,10 @@ import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.dao.SysMenuDao;
 import com.github.pdaodao.springwebplus.entity.SysMenu;
 import com.github.pdaodao.springwebplus.entity.SysRole;
+import com.github.pdaodao.springwebplus.entity.SysUser;
+import com.github.pdaodao.springwebplus.pojo.UserPassword;
 import com.github.pdaodao.springwebplus.service.LoginService;
+import com.github.pdaodao.springwebplus.service.SysUserService;
 import com.github.pdaodao.springwebplus.tool.util.BeanUtils;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.Constant;
@@ -21,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Request;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -33,6 +37,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class SysLoginController {
     private final LoginService loginService;
+    private final SysUserService sysUserService;
     private final SysMenuDao menuDao;
 
     @PostMapping
@@ -89,5 +94,12 @@ public class SysLoginController {
         }
         loginService.logout(RequestUtil.getCurrentUser());
         return true;
+    }
+
+    @Operation(summary = "修改密码")
+    @PostMapping("/updatePassword")
+    public Boolean updatePassword(@Valid @RequestBody UserPassword userPassword) {
+        userPassword.setUserId(RequestUtil.getUserId());
+        return loginService.updatePassword(userPassword);
     }
 }

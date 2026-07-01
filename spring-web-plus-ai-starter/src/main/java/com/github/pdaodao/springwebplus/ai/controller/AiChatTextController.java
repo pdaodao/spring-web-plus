@@ -47,8 +47,15 @@ public class AiChatTextController {
     @Operation(summary = "名称是否可用")
     public Boolean checkTitleExist(@Schema(description = "id") @RequestParam(required = false) final String id,
                                    @Schema(description = "名称") @RequestParam final String title,
-                                   @Schema(description = "主题id") @RequestParam final String topicId) {
+                                   @Schema(description = "主题id") @RequestParam String topicId) {
         Preconditions.checkNotBlank(title, "请指定名称");
+        if(StrUtil.isNotBlank(id) && StrUtil.isBlank(topicId)){
+            final AiChatText old = termTextService.info(id);
+            if(old != null){
+                topicId = old.getTopicId();
+            }
+        }
+        Preconditions.checkNotBlank(topicId, "分类主题id不能为空.");
         return termTextService.checkDistinctTitle(RequestUtil.getTeamOrDefault(), id, title, topicId);
     }
 

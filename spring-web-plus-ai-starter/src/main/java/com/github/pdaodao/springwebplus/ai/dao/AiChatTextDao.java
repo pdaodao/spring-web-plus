@@ -27,13 +27,7 @@ public class AiChatTextDao extends BaseDao<AiChatTextMapper, AiChatText> {
     }
 
     public List<AiChatText> infoList(final AiChatTextQuery query){
-        return list(QueryBuilder.lambda(AiChatText.class)
-                .eq(AiChatText::getTeamId, query.getTeamId())
-                .eq(AiChatText::getNamespace, query.getNamespace())
-                .eq(AiChatText::getTopicId, query.getTopicId())
-                .eq(AiChatText::getFileId, query.getFileId())
-                .like(query.getQ(), AiChatText::getTitle, AiChatText::getContent)
-                .build());
+        return baseMapper.infoList(query);
     }
 
     @Override
