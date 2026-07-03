@@ -4,8 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatAppDao;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
+import com.github.pdaodao.springwebplus.ai.dao.AiChatTopicDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatApp;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatAppTopic;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
+import com.github.pdaodao.springwebplus.ai.entity.AiChatTopic;
+import com.github.pdaodao.springwebplus.ai.query.AiChatTopicQuery;
 import com.github.pdaodao.springwebplus.ai.service.AiChatTextInfoProviderFactory;
 import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
@@ -32,6 +36,7 @@ import java.util.Map;
 public class AiChatAppController {
     private final AiChatAppDao appDao;
     private final AiChatModelDao modelDao;
+    private final AiChatTopicDao topicDao;
     private final AiChatTextInfoProviderFactory providerFactory;
 
     @GetMapping("list")
@@ -78,10 +83,20 @@ public class AiChatAppController {
         return ret;
     }
 
-    @GetMapping("knowledgeList")
-    @Operation(summary = "知识库列表")
-    public List<IdTitle> knowledgeList() {
-        return new ArrayList<>();
+    @GetMapping("topics")
+    @Operation(summary = "知识主题分类列表")
+    public List<AiChatAppTopic> topicList(final AiChatTopicQuery query) {
+        query.setTeamId(RequestUtil.getTeamOrDefault());
+        final List<AiChatTopic> ts = topicDao.infoList(query);
+        final List<AiChatAppTopic> ret = new ArrayList<>();
+        for(final AiChatTopic t: ts){
+            final AiChatAppTopic r = new AiChatAppTopic();
+            r.setTopicId(t.getId());
+            r.setTopicTitle(t.getTitle());
+            r.setTopicNamespace(t.getNamespace());
+            ret.add(r);
+        }
+        return ret;
     }
 
     @GetMapping("datasourceList")

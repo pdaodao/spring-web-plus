@@ -43,7 +43,7 @@ public class AiChatLLMProcessor implements AiChatProcessor{
             messages.add(SystemMessage.builder().text(context.getChatApp().getPrompt()).build());
         }
         // 业务术语
-        if(context.getChatApp() != null && BooleanUtil.isTrue(context.getChatApp().getTermEnabled())){
+        if(context.getChatApp() != null && CollUtil.isNotEmpty(context.getChatApp().getTopics())){
             final List<AiChatText> textList = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion());
             if(CollUtil.isNotEmpty(textList)){
                 for(final AiChatText text: textList){

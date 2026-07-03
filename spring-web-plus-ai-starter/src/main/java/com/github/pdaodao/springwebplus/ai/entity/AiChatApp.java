@@ -2,11 +2,13 @@ package com.github.pdaodao.springwebplus.ai.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
 import com.github.pdaodao.springwebplus.ai.pojo.ChatAppConfig;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
+import com.github.pdaodao.springwebplus.base.entity.WithDelete;
 import com.github.pdaodao.springwebplus.base.entity.WithTeam;
 import com.github.pdaodao.springwebplus.base.frame.StringListJsonHandler;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
@@ -21,7 +23,7 @@ import java.util.List;
 @Data
 @Schema(description = "问答场景")
 @TableName(value = "ai_chat_app", autoResultMap = true)
-public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
+public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam , WithDelete {
     @Schema(description = "标题")
     private String title;
 
@@ -48,13 +50,8 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     @Size(max = 500, message = "提示词最大不能超过500")
     private String prompt;
 
-    @Schema(description = "知识库列表")
-    @TableField(typeHandler = IdTitleListTypeHandler.class)
-    private List<IdTitle> knowledgeIds;
-
-    @Schema(description = "是否启用术语")
-    @TableFieldSize(defaultValue = "true")
-    private Boolean termEnabled;
+    @Schema(description = "主题分类列表")
+    private transient List<AiChatAppTopic> topics;
 
     @Schema(description = "数据源")
     @TableField(typeHandler = JacksonTypeHandler.class)
@@ -71,6 +68,10 @@ public class AiChatApp extends SnowIdWithTimeUserEntity implements WithTeam {
     @TableFieldIndex
     @Schema(description = "团队-租户id")
     private String teamId;
+
+    @TableLogic
+    @TableFieldSize(defaultValue = "0")
+    private Boolean isDeleted;
 
     @Schema(description = "图标文件路径")
     @Size(max = 256, message = "图标长度最大不能超过256")

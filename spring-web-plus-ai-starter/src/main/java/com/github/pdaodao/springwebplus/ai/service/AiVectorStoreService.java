@@ -10,6 +10,7 @@ import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedText;
 import com.github.pdaodao.springwebplus.ai.store.AiEmbedTextQuery;
 import com.github.pdaodao.springwebplus.ai.store.AiStoreEmbeddingUtil;
+import com.github.pdaodao.springwebplus.ai.util.AiTextUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -34,7 +35,8 @@ public class AiVectorStoreService {
         embedText.setDocId(text.getFileId());
         embedText.setTeamId(text.getTeamId());
         embedText.setTitle(text.getTitle());
-        embedText.setContent(text.toEmbeddingText());
+        // 繁体中文转为简体中文
+        embedText.setContent(AiTextUtil.toSimple(text.toEmbeddingText()));
         return embedText;
     }
 
@@ -94,7 +96,8 @@ public class AiVectorStoreService {
         // 先在所有里面搜 后续再可配置化
         // query.addNamespace(AiChatNamespace.term.name());
         query.setTeamId(teamId);
-        query.setContent(q);
+        // 转为简体中文
+        query.setContent(AiTextUtil.toSimple(q));
         final AiChatContext context = AiChatContext.fromHolder();
         if(context != null && context.getChatApp() != null && context.getChatApp().getAppConfig() != null){
             query.setTopK(context.getChatApp().getAppConfig().getTopK());
