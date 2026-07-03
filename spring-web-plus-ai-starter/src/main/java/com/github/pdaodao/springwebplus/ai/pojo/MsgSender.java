@@ -1,12 +1,14 @@
 package com.github.pdaodao.springwebplus.ai.pojo;
 
 import com.github.pdaodao.springwebplus.ai.base.LLMResponse;
-import com.github.pdaodao.springwebplus.ai.base.LLMUsage;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
+import com.github.pdaodao.springwebplus.ai.base.MsgBlockProcessor;
 
 import java.io.IOException;
 
 public interface MsgSender {
+    void setMsgBlockProcessor(MsgBlockProcessor processor);
+
     LLMResponse getResponse();
 
     void sendMsg(final MsgBlock msgBlock) throws IOException;

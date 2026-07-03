@@ -1,7 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.service;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatType;
 import com.github.pdaodao.springwebplus.ai.base.MsgBlock;
@@ -9,6 +8,7 @@ import com.github.pdaodao.springwebplus.ai.entity.AiChatText;
 import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import com.github.pdaodao.springwebplus.ai.util.AiTextUtil;
+import com.github.pdaodao.springwebplus.ai.util.ToTraditionalMsgProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -38,10 +38,13 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         return AiChatType.TextGen == context.getChatType();
     }
 
-    private List<Message> buildChatMessage(AiChatContext context, MsgSender sseEmitter) throws Exception{
+    private List<Message> buildChatMessage(final AiChatContext context, final MsgSender sseEmitter) throws Exception{
         final List<Message> messages = new ArrayList<>();
         if(StrUtil.isNotBlank(context.getChatApp().getPrompt())){
             messages.add(SystemMessage.builder().text(context.getChatApp().getPrompt()).build());
+        }
+        if(StrUtil.similar(context.getReq().getQuestion(), AiTextUtil.toSimple(context.getReq().getQuestion())) < 0.9){
+            sseEmitter.setMsgBlockProcessor(ToTraditionalMsgProcessor.of());
         }
         // 业务术语
         if(context.getChatApp() != null && CollUtil.isNotEmpty(context.getChatApp().getTopics())){
