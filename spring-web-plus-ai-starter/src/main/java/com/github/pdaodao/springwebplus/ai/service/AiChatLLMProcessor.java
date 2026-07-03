@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,7 +45,8 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         }
         // 业务术语
         if(context.getChatApp() != null && CollUtil.isNotEmpty(context.getChatApp().getTopics())){
-            final List<AiChatText> textList = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion());
+            final List<String> topicIds = context.getChatApp().getTopics().stream().map(t -> t.getTopicId()).collect(Collectors.toList());
+            final List<AiChatText> textList = termTextService.search(context.getReq().getTeamId(), context.getReq().getQuestion(), topicIds);
             if(CollUtil.isNotEmpty(textList)){
                 for(final AiChatText text: textList){
                     if(AiTextUtil.similar(text.getTitle(), context.getReq().getQuestion()) > 0.92){

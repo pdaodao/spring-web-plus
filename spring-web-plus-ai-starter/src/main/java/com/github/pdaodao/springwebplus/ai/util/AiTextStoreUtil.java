@@ -29,8 +29,8 @@ public class AiTextStoreUtil {
                 .deleteById(id, namespace);
     }
 
-    public static List<AiChatText> search(final String teamId, final String q) throws Exception {
+    public static List<AiChatText> search(final String teamId, final String q, final List<String> topicIds) throws Exception {
         return SpringUtil.getBean(AiVectorStoreService.class)
-                .search(teamId, q);
+                .search(teamId, q, topicIds);
     }
 }

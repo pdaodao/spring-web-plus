@@ -1,13 +1,12 @@
 package com.github.pdaodao.springwebplus.ai.store;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 @Data
 @Schema(description = "向量查询")
@@ -88,6 +87,17 @@ public class AiEmbedTextQuery {
         }
         topics.add(topic);
     }
+
+    public void addTopics(final Collection<String> topicIds){
+        if(CollUtil.isEmpty(topicIds)){
+            return;
+        }
+        if(topics == null){
+            topics = new HashSet<>();
+        }
+        topics.addAll(topicIds);
+    }
+
 
     public void addDocId(final String docId){
         if(StrUtil.isBlank(docId)){

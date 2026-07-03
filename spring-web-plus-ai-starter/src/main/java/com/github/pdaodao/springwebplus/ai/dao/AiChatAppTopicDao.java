@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.dao;
 
+import cn.hutool.core.collection.CollUtil;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatAppTopic;
 import com.github.pdaodao.springwebplus.ai.mapper.AiChatAppTopicMapper;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
@@ -16,6 +17,11 @@ public class AiChatAppTopicDao extends BaseDao<AiChatAppTopicMapper, AiChatAppTo
     }
 
     public Boolean saveTopics(final String appId, final List<AiChatAppTopic> list){
+        if(CollUtil.isNotEmpty(list)){
+            for(AiChatAppTopic t: list){
+                t.setAppId(appId);
+            }
+        }
         final List<AiChatAppTopic> old = byAppId(appId);
         return saveDiffListById(list, old);
     }

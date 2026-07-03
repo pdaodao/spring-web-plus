@@ -88,7 +88,7 @@ public class AiVectorStoreService {
     }
 
 
-    public List<AiChatText> search(final String teamId, final String q) throws Exception {
+    public List<AiChatText> search(final String teamId, final String q, final List<String> topicIds) throws Exception {
         if(vectorStore.isEmpty()){
             return null;
         }
@@ -96,6 +96,7 @@ public class AiVectorStoreService {
         // 先在所有里面搜 后续再可配置化
         // query.addNamespace(AiChatNamespace.term.name());
         query.setTeamId(teamId);
+        query.addTopics(topicIds);
         // 转为简体中文
         query.setContent(AiTextUtil.toSimple(q));
         final AiChatContext context = AiChatContext.fromHolder();

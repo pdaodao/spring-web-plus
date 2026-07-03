@@ -26,9 +26,9 @@ public class AiChatTextService {
         return termTextDao.infoList(query);
     }
 
-    public String searchMsg(final String teamId, final String q){
+    public String searchMsg(final String teamId, final String q, final List<String> topicIds){
         try{
-            final List<AiChatText> list = search(teamId, q);
+            final List<AiChatText> list = search(teamId, q, topicIds);
             if(CollUtil.isEmpty(list)){
                 return StrUtil.EMPTY;
             }
@@ -58,14 +58,14 @@ public class AiChatTextService {
     /**
      * 通过关键词到向量库中检索
      */
-    public List<AiChatText> search(final String teamId, final String q) throws Exception {
+    public List<AiChatText> search(final String teamId, final String q, final List<String> topicIds) throws Exception {
         if(vectorStore.isEmpty()){
             final AiChatTextQuery query = new AiChatTextQuery();
             query.setTeamId(teamId);
             query.setQ(q);
             return termTextDao.infoList(query);
         }
-        return vectorStore.search(teamId, q);
+        return vectorStore.search(teamId, q, topicIds);
     }
 
     public void saveBatch(final String topicId, final String teamId, final List<AiChatText> list) throws Exception{
