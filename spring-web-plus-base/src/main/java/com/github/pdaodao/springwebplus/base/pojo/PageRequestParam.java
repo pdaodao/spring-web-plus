@@ -140,4 +140,12 @@ public class PageRequestParam {
         page.setOptimizeCountSql(false);
         return page;
     }
+
+    public void defaultOrderBy(final String field, boolean orderAsc){
+        if(StrUtil.isNotBlank(orderBy)){
+            return;
+        }
+        this.orderBy = field;
+        this.setOrderAsc(orderAsc);
+    }
 }

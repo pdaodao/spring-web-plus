@@ -6,6 +6,7 @@ import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -24,9 +25,9 @@ public class WithTimeQuery extends PageRequestParam{
         }
         // 没有时间
         if(!StrUtil.contains(startTime, ":")){
-            final LocalDateTime d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
+            final LocalDate d = DateTimeUtil.tryParseDate(startTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
             if(d != null){
-                return DateTimeUtil.beginOfDay(d);
+                return d.atTime(0, 0);
             }
         }
         final LocalDateTime d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_TIME_FORMATTER, DateTimeUtil.DATE_TIME_FORMATTER_SLASH);
@@ -40,12 +41,18 @@ public class WithTimeQuery extends PageRequestParam{
         }
         // 没有时间
         if(!StrUtil.contains(endTime, ":")){
-            final LocalDateTime d = DateTimeUtil.tryParse(endTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
+            final LocalDate d = DateTimeUtil.tryParseDate(endTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
             if(d != null){
-                return  DateTimeUtil.endOfDay(d);
+                return d.plusDays(1).atTime(0, 0);
             }
         }
         final LocalDateTime d = DateTimeUtil.tryParse(endTime, DateTimeUtil.DATE_TIME_FORMATTER, DateTimeUtil.DATE_TIME_FORMATTER_SLASH);
         return d;
+    }
+
+    public static void main(String[] args) {
+        final String startTime = "2026-07-06";
+        final LocalDateTime d = DateTimeUtil.tryParse(startTime, DateTimeUtil.DATE_FORMATTER, DateTimeUtil.DATE_FORMATTER_SLASH);
+        System.out.println(d);
     }
 }

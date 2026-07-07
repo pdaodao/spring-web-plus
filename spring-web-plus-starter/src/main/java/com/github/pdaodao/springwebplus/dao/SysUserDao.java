@@ -34,4 +34,12 @@ public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
                 .set(SysUser::getUpdateTime, DateTimeUtil.now())
                 .eq(SysUser::getId, userId));
     }
+
+    public boolean updateLoginTime(String id, final String ip) {
+        return update(Wrappers.lambdaUpdate(SysUser.class)
+                .set(SysUser::getLastLoginTime, DateTimeUtil.now())
+                .set(SysUser::getLoginIp, ip)
+                .eq(SysUser::getId, id));
+
+    }
 }

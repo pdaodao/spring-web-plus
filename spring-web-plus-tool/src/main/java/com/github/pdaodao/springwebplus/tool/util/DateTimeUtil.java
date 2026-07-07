@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.tool.util;
 import cn.hutool.core.util.StrUtil;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +38,20 @@ public class DateTimeUtil {
         }
         return null;
     }
+
+    public static LocalDate tryParseDate(final String str, final DateTimeFormatter... formatters){
+        if(formatters == null || StrUtil.isBlank(str)){
+            return null;
+        }
+        for(final DateTimeFormatter f: formatters){
+            try{
+                return LocalDate.parse(str, f);
+            }catch (Exception e){
+            }
+        }
+        return null;
+    }
+
 
     public static LocalDateTime tryParse(String str){
         if(StrUtil.isBlank(str)){

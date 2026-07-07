@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 
 @Data
 @AutoConfiguration(after = AiAutoConfig.class)
-@ConditionalOnProperty("ai.embedding.baseUrl")
 public class AiEmbeddingAutoConfig {
     @Value("${ai.embedding.baseUrl:}")
     private String baseUrl;

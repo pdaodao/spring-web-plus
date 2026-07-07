@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.service;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.pdaodao.springwebplus.base.auth.SysLogAop;
 import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.LoginUserInfo;
 import com.github.pdaodao.springwebplus.entity.SysRole;
@@ -50,6 +51,7 @@ public class SysUserLoginService implements LoginService {
         result.setUsername(sysUser.getUsername());
         result.setUserNickname(sysUser.getNickname());
         result.setAvatar(sysUser.getAvatar());
+        sysUserService.updateLoginTime(sysUser.getId(), SysLogAop.getLog().getIp());
         return result;
     }
 

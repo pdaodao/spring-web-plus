@@ -27,9 +27,11 @@ public class SysLogController {
 
     @GetMapping("list")
     @Operation(summary = "操作记录")
-    public List<SysLog> list(final WithTimeQuery query){
+    public List<SysLog> logList(final WithTimeQuery query){
+        query.defaultOrderBy("id", false);
         PageHelper.startPage(query);
         final List<SysLog> list = logDao.list(QueryBuilder.lambda(SysLog.class)
+                .like(query.getQ(), SysLog::getModule, SysLog::getDescription, SysLog::getUserNickname)
                 .ge(SysLog::getCreateTime, query.getStartDate())
                 .le(SysLog::getCreateTime, query.getEndDate()).build());
         return list;

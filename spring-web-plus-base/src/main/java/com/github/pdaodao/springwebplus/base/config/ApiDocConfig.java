@@ -44,6 +44,7 @@ public class ApiDocConfig implements InitializingBean {
                 .pathsToMatch("/**")
                 .addOpenApiCustomizer(openApi -> openApi
                         .info(new Info().title("System API")))
+                .packagesToExclude("com.github.pdaodao.springwebplus.ai")
                 .packagesToScan(packagedToMatch)
                 .build();
     }

@@ -30,12 +30,10 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     private String nickname;
 
     @Schema(description = "密码")
-    @JsonIgnore
     @Length(max = 64, message = "密码长度超过限制")
     private String password;
 
     @Schema(description = "盐值")
-    @JsonIgnore
     @Length(max = 16, message = "长度超过限制")
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private String salt;
