@@ -1,5 +1,6 @@
 package com.github.pdaodao.springwebplus.ai.dao;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pdaodao.springwebplus.ai.base.ChatModelType;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
@@ -25,6 +26,14 @@ public class AiChatModelDao extends BaseDao<AiChatModelMapper, AiChatModel> {
                 .eq(AiChatModel::getTeamId, teamId)
                 .eq(AiChatModel::getEnabled, enabled)
                 .eq(AiChatModel::getType, type).build());
+    }
+
+    public long countByProvider(final String provider){
+        if(StrUtil.isBlank(provider)){
+            return 0;
+        }
+        return count(Wrappers.lambdaQuery(AiChatModel.class)
+                .eq(AiChatModel::getProviderId, provider));
     }
 
     @Cacheable(key = "#p0")

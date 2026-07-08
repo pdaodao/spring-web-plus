@@ -6,6 +6,6 @@ package com.github.pdaodao.springwebplus.ai.base;
 public enum ChatModelType {
     LLM,
     EMBEDDING,
-    VIDEO,
-    IMAGE
+    // VIDEO,
+   // IMAGE
 }
