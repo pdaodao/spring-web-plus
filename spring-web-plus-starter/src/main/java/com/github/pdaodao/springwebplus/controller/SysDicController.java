@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name = "系统字典")
-@RequestMapping(Constant.ApiPrefix + "/dic")
+@RequestMapping(Constant.ApiPrefix + "/data-dic")
 @AllArgsConstructor
 public class SysDicController {
     private final SysDicDao dicDao;
@@ -41,7 +41,7 @@ public class SysDicController {
     @PostMapping("/save")
     @Operation(summary = "字典保存")
     public SysDic save(@Valid @RequestBody SysDic dic) {
-        if(StrUtil.isBlank(dic.getPid())){
+        if(StrUtil.isBlank(dic.getId()) && StrUtil.isBlank(dic.getPid())){
             dic.setPid("0");
         }
         dicDao.save(dic);

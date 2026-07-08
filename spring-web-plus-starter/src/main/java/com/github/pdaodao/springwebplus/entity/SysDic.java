@@ -16,7 +16,6 @@ import java.util.List;
 @Schema(description = "系统字典")
 public class SysDic extends BaseEntity implements WithPidString, WithChildren<SysDic> {
     @Schema(description = "编码")
-    @NotBlank(message = "编码不能为空")
     private String name;
 
     @Schema(description = "标题")
@@ -26,6 +25,10 @@ public class SysDic extends BaseEntity implements WithPidString, WithChildren<Sy
     @Schema(description = "父id")
     @TableFieldSize(defaultValue = "0")
     private String pid;
+
+    @Schema(description = "是否是分类")
+    @TableFieldSize(defaultValue = "0")
+    private Boolean isDir;
 
     @Schema(description = "备注")
     private String remark;
