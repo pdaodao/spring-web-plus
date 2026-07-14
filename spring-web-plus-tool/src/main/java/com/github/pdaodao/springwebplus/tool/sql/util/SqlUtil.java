@@ -104,6 +104,18 @@ public class SqlUtil {
     }
 
     /**
+     * 清除字段名称中的非字母数字下划线
+     * @param name
+     * @return
+     */
+    public static String cleanName(final String name){
+        if(StrUtil.isBlank(name)){
+            return null;
+        }
+        return name.replaceAll("[^a-zA-Z0-9_]", "");
+    }
+
+    /**
      * 去掉 sql 语句中的转义符
      *
      * @param sql

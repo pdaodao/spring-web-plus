@@ -21,8 +21,10 @@ public class FilterTree extends FilterItem {
 
     private List<FilterTree> children;
 
-    public static FilterTree create(){
-        return new FilterTree();
+    public static FilterTree of(final LogicOperator logic){
+        final FilterTree f = new FilterTree();
+        f.setLogic(logic);
+        return f;
     }
 
     public static FilterTree of(final String name, final WhereOperator op, Object... params) {
@@ -33,6 +35,16 @@ public class FilterTree extends FilterItem {
         f.setParamValue(RichValue.ofLiteral(params));
         return f;
     }
+
+    public static FilterTree ofRichValue(final String name, final WhereOperator op, final RichValue richValue) {
+        final FilterTree f = new FilterTree();
+        f.setLogic(LogicOperator.and);
+        f.setName(name.trim());
+        f.setOp(op);
+        f.setParam(richValue);
+        return f;
+    }
+
 
     public static FilterTree ofListParams(final String name, final WhereOperator op, List<Object> params) {
         final FilterTree f = new FilterTree();
@@ -97,40 +109,29 @@ public class FilterTree extends FilterItem {
         return true;
     }
 
-    public String toSql(final DbDialect dialect, final SqlWithMapParams ps){
+    public SqlWithMapParams toParamSql(final DbDialect dialect){
         if(StrUtil.isNotBlank(getName())){
-            final StringBuilder sb = new StringBuilder();
-            sb.append(super.toSql(dialect));
-            if(op != null){
-                if(StrUtil.isNotBlank(getDicId())
-                        && WhereOperator.eq == getOp()
-                        && param != null && param.size() > 1){
-                    op = WhereOperator.in;
-                }
-                sb.append(" ").append(op.sql).append(" ");
-                final String valueInSql = valueInSql();
-                if(StrUtil.isNotBlank(valueInSql)){
-                    sb.append(valueInSql);
-                }
-            }
-            return sb.toString();
+            return super.toParamSql(dialect);
         }
         if(CollUtil.isEmpty(getChildren())){
-            return StrUtil.EMPTY;
+            return  null;
         }
+        final SqlWithMapParams sqlWithMapParams = new SqlWithMapParams();
         final StringBuilder sb = new StringBuilder();
-        sb.append(" (");
+        sb.append(" ( ");
         boolean isFirst = true;
         for(final FilterTree sub: getChildren()){
-            final String subStr = sub.toSql(dialect, ps);
+            final SqlWithMapParams subSql = sub.toParamSql(dialect);
             if(!isFirst){
                 sb.append(" ").append(sub.getLogic().name()).append(" ");
             }
-            sb.append(subStr);
+            sqlWithMapParams.addParams(subSql.getParams());
+            sb.append(subSql.getSql());
             sb.append(" ");
             isFirst = false;
         }
-        sb.append(")");
-        return sb.toString();
+        sb.append(" )");
+        sqlWithMapParams.setSql(sb.toString());
+        return sqlWithMapParams;
     }
 }

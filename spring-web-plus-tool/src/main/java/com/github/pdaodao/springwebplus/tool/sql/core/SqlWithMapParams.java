@@ -1,7 +1,10 @@
 package com.github.pdaodao.springwebplus.tool.sql.core;
 
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.NamedSql;
+import com.github.pdaodao.springwebplus.tool.sql.util.SqlUtil;
 import lombok.Data;
 
 import java.util.LinkedHashMap;
@@ -43,7 +46,7 @@ public class SqlWithMapParams {
         if (params == null) {
             params = new LinkedHashMap<>();
         }
-        name = name.trim();
+        name = SqlUtil.cleanName(name);
         if (params.containsKey(name)) {
             for (int i = 0; i < 10000; i++) {
                 if (!params.containsKey(name + i)) {
@@ -53,6 +56,16 @@ public class SqlWithMapParams {
             }
         }
         params.put(name, value);
-        return name;
+        return ":"+name;
+    }
+
+    public void addParams(final Map<String, Object> pp){
+        if(MapUtil.isEmpty(pp)){
+            return;
+        }
+        if (params == null) {
+            params = new LinkedHashMap<>();
+        }
+        params.putAll(pp);
     }
 }

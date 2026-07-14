@@ -16,7 +16,7 @@ public class WhereTest {
         w.lt("f3", 3);
         w.in("f4", ListUtil.list(false, 1, 2, 3));
         final SqlWithMapParams p = new SqlWithMapParams();
-        System.out.println(w.toSql(new MysqlDialect(), p));
+        System.out.println(w.toSql(new MysqlDialect()));
         System.out.println("hello");
     }
 }

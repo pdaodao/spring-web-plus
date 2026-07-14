@@ -98,6 +98,10 @@ public class FilterItem {
         if (ObjectUtil.isNull(pValue)) {
             return;
         }
+        if(pValue instanceof RichValue){
+            param = (RichValue) pValue;
+            return;
+        }
         if (param == null) {
             param = new RichValue();
             param.setType(RichValue.ValueType.lr);
@@ -145,7 +149,8 @@ public class FilterItem {
         return sb.toString();
     }
 
-    public String toSql(final DbDialect dialect){
+
+    public String nameSql(final DbDialect dialect){
         final StringBuilder sb = new StringBuilder();
 //        if(StrUtil.isNotBlank(fn)){
 //            if("count_distinct".equalsIgnoreCase(fn)){
@@ -163,6 +168,62 @@ public class FilterItem {
 //            sb.append(")");
 //        }
         return sb.toString();
+    }
+
+    public SqlWithMapParams toParamSql(final DbDialect dialect){
+        if(StrUtil.isBlank(name)){
+            return null;
+        }
+        Preconditions.checkNotNull(op, "FilterItem op is null.");
+        final SqlWithMapParams sqlWithMapParams = new SqlWithMapParams();
+        final String vv = StrUtil.toString(paramValue());
+        final StringBuilder sb = new StringBuilder();
+        sb.append(nameSql(dialect));
+        if(StrUtil.isNotBlank(getDicId())
+                && WhereOperator.eq == getOp()
+                && param != null && param.size() > 1){
+            op = WhereOperator.in;
+        }
+        sb.append(" ").append(op.sql).append(" ");
+        boolean processed = false;
+        if(WhereOperator.in == op){
+            final List<String> list = new ArrayList<>();
+            for(final Object v: param.getValues()){
+                final String vName = sqlWithMapParams.addParam(getName(), v);
+                list.add(vName);
+            }
+            sb.append("("+StrUtil.join(",", list)+")");
+            processed = true;
+        }
+        if(op.sql.equalsIgnoreCase("like")){
+            String likeValue = "'%"+ vv +"%'";
+            if(WhereOperator.sw == op){
+                likeValue = vv +"%'";
+            }
+            if(WhereOperator.ew == op){
+                likeValue = "'%"+ vv +"'";
+            }
+            final String vName = sqlWithMapParams.addParam(getName(), likeValue);
+            sb.append(vName);
+            processed = true;
+        }
+        if(op.sql.equalsIgnoreCase("IS")){
+            processed = true;
+        }
+
+        if(WhereOperator.bt == op || WhereOperator.nbt == op){
+            Preconditions.checkArgument(param.size() == 2, "between的值为两个例如 a,b");
+            final String left = sqlWithMapParams.addParam(getName(), param.get(0));
+            final String right = sqlWithMapParams.addParam(getName(), param.get(1));
+            sb.append(left + " AND " + right);
+            processed = true;
+        }
+        if (processed == false){
+            final String vName = sqlWithMapParams.addParam(getName(), param.getValue());
+            sb.append(vName);
+        }
+        sqlWithMapParams.setSql(sb.toString());
+        return sqlWithMapParams;
     }
 
     protected String valueInSql(){

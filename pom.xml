@@ -168,6 +168,7 @@
                 <groupId>org.duckdb</groupId>
                 <artifactId>duckdb_jdbc</artifactId>
                 <version>1.2.2.0</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
@@ -183,11 +184,13 @@
                 <groupId>io.github.mymonstercat</groupId>
                 <artifactId>rapidocr</artifactId>
                 <version>0.0.7</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.github.mymonstercat</groupId>
                 <artifactId>rapidocr-onnx-platform</artifactId>
                 <version>0.0.7</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>co.elastic.clients</groupId>

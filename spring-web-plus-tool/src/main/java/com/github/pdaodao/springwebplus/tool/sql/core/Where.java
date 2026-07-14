@@ -137,13 +137,7 @@ public class Where {
         return this;
     }
 
-    public SqlWithMapParams toSql(final DbDialect dialect, SqlWithMapParams p){
-        final SqlWithMapParams sql = new SqlWithMapParams();
-        if(p != null){
-            sql.setParams(p.getParams());
-        }
-        final String filter = filterTree.toSql(dialect, p);
-        sql.setSql(filter);
-        return sql;
+    public SqlWithMapParams toSql(final DbDialect dialect){
+        return filterTree.toParamSql(dialect);
     }
 }

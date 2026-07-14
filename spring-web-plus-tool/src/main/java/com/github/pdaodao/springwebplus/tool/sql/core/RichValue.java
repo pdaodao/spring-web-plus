@@ -26,7 +26,7 @@ public class RichValue {
 
     public Object get(final int index){
         if(values == null){
-            return null;
+            return value;
         }
         return values.get(index).getValue();
     }
