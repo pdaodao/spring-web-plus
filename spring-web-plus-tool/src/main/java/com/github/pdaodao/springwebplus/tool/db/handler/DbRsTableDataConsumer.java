@@ -16,6 +16,7 @@ public class DbRsTableDataConsumer implements DbRsConsumer {
     @Override
     public void fields(List<TableField> fields) {
         tableData.setFields(fields);
+        tableData.init();
     }
 
     @Override

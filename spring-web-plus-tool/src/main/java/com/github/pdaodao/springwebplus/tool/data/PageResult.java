@@ -58,6 +58,12 @@ public class PageResult<T> {
         return pageR;
     }
 
+    public void init(){
+        if(data == null){
+            data = new ArrayList<>();
+        }
+    }
+
     public PageResult<T> add(T row) {
         if (row == null) {
             return this;

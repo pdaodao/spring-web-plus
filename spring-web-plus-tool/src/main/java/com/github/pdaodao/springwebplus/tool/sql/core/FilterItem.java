@@ -190,7 +190,7 @@ public class FilterItem {
             final List<String> list = new ArrayList<>();
             for(final Object v: param.getValues()){
                 final String vName = sqlWithMapParams.addParam(getName(), v);
-                list.add(vName);
+                list.add(":"+vName);
             }
             sb.append("("+StrUtil.join(",", list)+")");
             processed = true;
@@ -204,7 +204,7 @@ public class FilterItem {
                 likeValue = "'%"+ vv +"'";
             }
             final String vName = sqlWithMapParams.addParam(getName(), likeValue);
-            sb.append(vName);
+            sb.append(":"+vName);
             processed = true;
         }
         if(op.sql.equalsIgnoreCase("IS")){
@@ -215,12 +215,12 @@ public class FilterItem {
             Preconditions.checkArgument(param.size() == 2, "between的值为两个例如 a,b");
             final String left = sqlWithMapParams.addParam(getName(), param.get(0));
             final String right = sqlWithMapParams.addParam(getName(), param.get(1));
-            sb.append(left + " AND " + right);
+            sb.append(":"+left + " AND " + ":"+right);
             processed = true;
         }
         if (processed == false){
             final String vName = sqlWithMapParams.addParam(getName(), param.getValue());
-            sb.append(vName);
+            sb.append(":"+vName);
         }
         sqlWithMapParams.setSql(sb.toString());
         return sqlWithMapParams;

@@ -114,7 +114,7 @@ public class FilterTree extends FilterItem {
             return super.toParamSql(dialect);
         }
         if(CollUtil.isEmpty(getChildren())){
-            return  null;
+            return new SqlWithMapParams();
         }
         final SqlWithMapParams sqlWithMapParams = new SqlWithMapParams();
         final StringBuilder sb = new StringBuilder();

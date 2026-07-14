@@ -56,7 +56,7 @@ public class SqlWithMapParams {
             }
         }
         params.put(name, value);
-        return ":"+name;
+        return name;
     }
 
     public void addParams(final Map<String, Object> pp){
