@@ -31,6 +31,9 @@ public class AiChatTopic extends SnowIdWithTimeUserEntity implements WithTeam, W
     @TableFieldSize(defaultValue = "0")
     private String pid;
 
+    @Schema(description = "父主题分类名称")
+    private transient String topicTitle;
+
     @Schema(description = "文件类型")
     @TableFieldSize(defaultValue = "topic")
     private String fileType;

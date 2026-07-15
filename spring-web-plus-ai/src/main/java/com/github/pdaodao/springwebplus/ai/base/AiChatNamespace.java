@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum AiChatNamespace {
     @Schema(description = "数据源")
     database,
+    @Schema(description = "数据表")
+    table,
     @Schema(description = "接口")
     api,
-    @Schema(description = "术语")
-    term,
     @Schema(description = "问答对")
     qa,
     @Schema(description = "知识库")
-    knowledge
+    file
 }

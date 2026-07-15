@@ -1,8 +1,10 @@
 package com.github.pdaodao.springwebplus.ai.dao;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatNamespace;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatTopic;
 import com.github.pdaodao.springwebplus.ai.mapper.AiChatTopicMapper;
+import com.github.pdaodao.springwebplus.ai.query.AiChatTextQuery;
 import com.github.pdaodao.springwebplus.ai.query.AiChatTopicQuery;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
@@ -19,6 +21,11 @@ public class AiChatTopicDao extends BaseDao<AiChatTopicMapper, AiChatTopic> {
                 .eq(AiChatTopic::getPid, query.getPid())
                 .build());
     }
+
+    public List<AiChatTopic> fileList(final AiChatTextQuery query){
+        return baseMapper.fileList(query);
+    }
+
 
     public AiChatTopic saveInfo(final AiChatNamespace namespace, final String teamId, final String title, final String id){
         final AiChatTopic t = new AiChatTopic();
