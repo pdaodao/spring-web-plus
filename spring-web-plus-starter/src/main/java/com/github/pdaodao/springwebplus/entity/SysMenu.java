@@ -26,7 +26,7 @@ public class SysMenu extends BaseEntity implements WithChildren<SysMenu>, WithPi
     @Schema(description = "父id")
     private String pid;
 
-    @Schema(description = "菜单类型，1：目录，2：菜单，3：权限")
+    @Schema(description = "菜单类型，1：目录，2：菜单，3：按钮")
     private Integer type;
 
     @Schema(description = "前端路由地址")

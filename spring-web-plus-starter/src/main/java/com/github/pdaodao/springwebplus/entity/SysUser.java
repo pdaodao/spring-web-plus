@@ -3,16 +3,14 @@ package com.github.pdaodao.springwebplus.entity;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeUserEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -31,11 +29,13 @@ public class SysUser extends SnowIdWithTimeUserEntity {
 
     @Schema(description = "密码")
     @Length(max = 64, message = "密码长度超过限制")
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private String password;
 
     @Schema(description = "盐值")
     @Length(max = 16, message = "长度超过限制")
     @TableField(updateStrategy = FieldStrategy.NEVER)
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private String salt;
 
     @Schema(description = "手机号码")
@@ -69,6 +69,7 @@ public class SysUser extends SnowIdWithTimeUserEntity {
     private String loginIp;
 
     @Schema(description = "状态，0：禁用，1：启用")
+    @TableFieldSize(defaultValue = "1")
     private Boolean enabled;
 
     @Schema(description = "语言")
