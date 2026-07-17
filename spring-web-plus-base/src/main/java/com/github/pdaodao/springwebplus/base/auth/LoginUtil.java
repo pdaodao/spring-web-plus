@@ -11,6 +11,7 @@ import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import com.github.pdaodao.springwebplus.base.pojo.TokenInfo;
 import com.github.pdaodao.springwebplus.base.service.TokenStore;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
+import com.github.pdaodao.springwebplus.base.util.I18nUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
@@ -47,16 +48,16 @@ public class LoginUtil {
     public static void checkLogin() throws Exception{
         final TokenInfo tokenInfo = tokenInfo();
         if(tokenInfo == null){
-            throw new RestException(RestCode.NO_USER_INFO, "请重新登陆");
+            throw new RestException(RestCode.NO_USER_INFO, I18nUtil.getMessage("auth.please_login"));
         }
         if(isTokenExpired(tokenInfo)){
-            throw new RestException(RestCode.NO_USER_INFO, "登陆已过期请重新登陆");
+            throw new RestException(RestCode.NO_USER_INFO, I18nUtil.getMessage("auth.session_expired"));
         }
     }
 
     public static void login(final TokenInfo tokenInfo) throws Exception{
-        Preconditions.checkNotNull(tokenInfo, "tokenInfo is null.");
-        Preconditions.checkNotNull(tokenInfo.getUserId(), "token用户信息为空.");
+        Preconditions.checkNotNull(tokenInfo, I18nUtil.getMessage("auth.token_null", "tokenInfo is null"));
+        Preconditions.checkNotNull(tokenInfo.getUserId(), I18nUtil.getMessage("auth.token_empty"));
         if(StrUtil.isBlank(tokenInfo.getToken())){
             final String token = IdUtil.snowIdString()+ RandomUtil.randomString(3);
             tokenInfo.setToken(token);
@@ -202,7 +203,7 @@ public class LoginUtil {
      * @return
      */
     public static boolean isTokenExpired(final TokenInfo tokenInfo){
-        Preconditions.checkNotNull(tokenInfo, "token信息为空.");
+        Preconditions.checkNotNull(tokenInfo, I18nUtil.getMessage("auth.token_empty"));
         if(tokenInfo.getLoginTime() == null){
             return true;
         }

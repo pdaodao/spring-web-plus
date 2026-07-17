@@ -4,7 +4,7 @@ public class ExceptionUtil {
 
     public static String getSimpleMsg(final Throwable e) {
         if (e == null) {
-            return "异常为空.";
+            return I18nUtil.getMessage("validation.exception_null");
         }
         String msg = cn.hutool.core.exceptions.ExceptionUtil.getSimpleMessage(e);
         if (msg.contains(":")) {
@@ -15,7 +15,7 @@ public class ExceptionUtil {
 
     public static String getTraceMsg(final Throwable e) {
         if (e == null) {
-            return "异常为空.";
+            return I18nUtil.getMessage("validation.exception_null");
         }
         return cn.hutool.core.exceptions.ExceptionUtil.stacktraceToOneLineString(e, 300);
     }

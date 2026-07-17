@@ -5,6 +5,7 @@ import com.github.pdaodao.springwebplus.base.pojo.CurrentUserInfo;
 import com.github.pdaodao.springwebplus.base.pojo.RestCode;
 import com.github.pdaodao.springwebplus.base.pojo.RestException;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
+import com.github.pdaodao.springwebplus.base.util.I18nUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +45,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             LoginUtil.checkLogin();
             final CurrentUserInfo currentUserInfo = LoginUtil.userInfo();
             RequestUtil.setCurrentUser(currentUserInfo);
-            Preconditions.checkNotNull(currentUserInfo, "请重新登录后再操作.");
+            Preconditions.checkNotNull(currentUserInfo, I18nUtil.getMessage("auth.please_relogin"));
 
         }catch (Exception e){
             throw new RestException(RestCode.NO_USER_INFO, ExceptionUtil.getSimpleMsg(e))

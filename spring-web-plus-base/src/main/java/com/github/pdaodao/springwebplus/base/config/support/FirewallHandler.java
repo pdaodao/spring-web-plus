@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.pdaodao.springwebplus.base.config.FirewallConfig;
+import com.github.pdaodao.springwebplus.base.util.I18nUtil;
 import com.github.pdaodao.springwebplus.base.util.IpUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,10 +40,10 @@ public class FirewallHandler implements HandlerInterceptor {
         try {
             // 1. 检查 ip是否允许访问
             final boolean ipAllowed = isIpAllowed(ipAddress);
-            Preconditions.checkArgument(ipAllowed, "当前ip不允许访问.");
+            Preconditions.checkArgument(ipAllowed, I18nUtil.getMessage("firewall.ip_denied"));
             // 2. 检查 qps 限制
             final boolean qpsAllowed = qpsAllowed(ipAddress, apiPath);
-            Preconditions.checkArgument(qpsAllowed, "QPS限制拦截.");
+            Preconditions.checkArgument(qpsAllowed, I18nUtil.getMessage("firewall.qps_limit"));
             return true;
         } catch (Exception e) {
             log.error("防火墙拦截器处理异常: IP={}, API={}", ipAddress, apiPath, e);

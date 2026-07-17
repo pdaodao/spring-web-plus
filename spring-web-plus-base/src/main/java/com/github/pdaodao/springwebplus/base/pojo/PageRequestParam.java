@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
+import com.github.pdaodao.springwebplus.base.util.I18nUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -51,14 +52,14 @@ public class PageRequestParam {
             if (pageNum != null) {
                 pageRequestParam.setPageNum(NumberUtil.parseInt(Objects.toString(pageNum)));
                 if (pageRequestParam.getPageNum() < 1) {
-                    throw RestException.invalidParam("分页页号最小为1");
+                    throw RestException.invalidParam(I18nUtil.getMessage("validation.pagenum_min"));
                 }
             }
             Object pageSize = params.get("pageSize");
             if (pageSize != null) {
                 pageRequestParam.setPageSize(NumberUtil.parseInt(Objects.toString(pageSize)));
                 if (pageRequestParam.getPageSize() < 1) {
-                    throw RestException.invalidParam("每页小于最小为1");
+                    throw RestException.invalidParam(I18nUtil.getMessage("validation.pagesize_min"));
                 }
             }
         }

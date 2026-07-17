@@ -9,6 +9,7 @@ import com.github.pdaodao.springwebplus.base.pojo.RestResponse;
 import com.github.pdaodao.springwebplus.base.service.SysRequestErrorLogService;
 import com.github.pdaodao.springwebplus.base.support.SysRequestErrorLog;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
+import com.github.pdaodao.springwebplus.base.util.I18nUtil;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
@@ -96,7 +97,7 @@ public class GlobalExceptionAdvice {
             final RestResponse<String> restResponse = new RestResponse();
             restResponse.setCode(404);
             restResponse.setData(url);
-            restResponse.setMsg("not found");
+            restResponse.setMsg(I18nUtil.getMessage("sys.not_found_short"));
             return restResponse;
         }
         if(url.replaceAll("/", "").length() <= url.length() -2){
@@ -132,7 +133,7 @@ public class GlobalExceptionAdvice {
         if (e != null) {
             if(e instanceof BadSqlGrammarException){
                 log.error(e.getMessage(), e);
-                rest.setMsg("数据库交互语句错误");
+                rest.setMsg(I18nUtil.getMessage("common.database.error"));
             }else{
                 rest.setMsg(e.getMessage());
             }
@@ -143,7 +144,7 @@ public class GlobalExceptionAdvice {
                 rest.setTrace(ExceptionUtil.getTraceMsg(e));
             }
             if (StringUtils.isBlank(rest.getMsg())) {
-                rest.setMsg("内部服务器错误");
+                rest.setMsg(I18nUtil.getMessage("common.internal.error"));
             }
         }
         rest.setRequestId(IdUtil.snowIdString());
@@ -159,7 +160,7 @@ public class GlobalExceptionAdvice {
 
         if (StrUtil.isNotBlank(rest.getMsg()) &&
                 (rest.getMsg().contains("Cause: java.sql") || rest.getMsg().contains("SQLSyntaxError"))) {
-            rest.setMsg("内部sql错误");
+            rest.setMsg(I18nUtil.getMessage("common.sql.error"));
             rest.setTrace(rest.getMsg());
         }
         return rest;
