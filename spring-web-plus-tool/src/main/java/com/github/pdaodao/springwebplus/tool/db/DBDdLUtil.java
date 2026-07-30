@@ -10,7 +10,6 @@ import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
 import com.github.pdaodao.springwebplus.tool.db.pojo.DDLBuildContext;
 import com.github.pdaodao.springwebplus.tool.sql.core.SqlCmd;
 import lombok.extern.slf4j.Slf4j;
-
 import javax.sql.DataSource;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class DBDdLUtil {
      * @param tableInfo
      * @param old
      */
-    public static void tableCheck(final DbDialect dbDialect,
+    public static String tableCheck(final DbDialect dbDialect,
                                   final boolean isDeleteField,
                                   final DataSource ds, final TableInfo tableInfo, final TableInfo old) {
         final List<String> sqls = genDDL(dbDialect, isDeleteField, tableInfo, old);
@@ -37,6 +36,7 @@ public class DBDdLUtil {
             log.error(e.getMessage(), e);
         }
         autoIdRestart(dbDialect, ds, tableInfo);
+        return StrUtil.join(";\n", sqls);
     }
 
     public static String autoIdRestart(final DbDialect dbDialect, final DataSource ds, final TableInfo tableInfo) {
