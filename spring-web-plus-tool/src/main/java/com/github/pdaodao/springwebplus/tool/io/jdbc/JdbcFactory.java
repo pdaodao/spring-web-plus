@@ -3,7 +3,7 @@ package com.github.pdaodao.springwebplus.tool.io.jdbc;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.io.Reader;
 import com.github.pdaodao.springwebplus.tool.io.Writer;
-import com.github.pdaodao.springwebplus.tool.io.lang.ReaderWriterFactory;
+import com.github.pdaodao.springwebplus.tool.io.ReaderWriterFactory;
 import com.github.pdaodao.springwebplus.tool.io.pojo.ReaderInfo;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;

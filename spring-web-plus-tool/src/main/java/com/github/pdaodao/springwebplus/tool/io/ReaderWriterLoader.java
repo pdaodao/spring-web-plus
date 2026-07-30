@@ -3,7 +3,6 @@ package com.github.pdaodao.springwebplus.tool.io;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ServiceLoaderUtil;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
-import com.github.pdaodao.springwebplus.tool.io.lang.ReaderWriterFactory;
 import com.github.pdaodao.springwebplus.tool.io.pojo.ReaderInfo;
 import com.github.pdaodao.springwebplus.tool.io.pojo.WriterInfo;
 import com.github.pdaodao.springwebplus.tool.lang.PluginClassLoaderFactory;

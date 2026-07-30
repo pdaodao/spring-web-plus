@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.io.lang;
+package com.github.pdaodao.springwebplus.tool.io;
 
 import com.github.pdaodao.springwebplus.tool.table.TableField;
 

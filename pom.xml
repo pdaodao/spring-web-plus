@@ -123,6 +123,11 @@
                 <artifactId>spring-web-plus-flow</artifactId>
                 <version>3.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.13</version>
+            </dependency>
             <!-- 国密 -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
@@ -170,11 +175,11 @@
                 <version>1.2.2.0</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka-clients</artifactId>
-                <version>4.0.0</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.apache.kafka</groupId>-->
+<!--                <artifactId>kafka-clients</artifactId>-->
+<!--                <version>4.0.0</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
