@@ -5,6 +5,8 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.data.DataType;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
@@ -175,25 +177,56 @@ public class DataValueUtil {
         if (obj == null) {
             return null;
         }
+        // 统一时区常量
+        final ZoneId SHANGHAI_ZONE = ZoneId.of("Asia/Shanghai");
+
+        // 1. 原生LocalDateTime
         if (obj instanceof LocalDateTime) {
             return (LocalDateTime) obj;
         }
-        if (obj instanceof java.sql.Date) {
-            return ((java.sql.Date) obj).toInstant().atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
+
+        // 2. java.sql.Timestamp (数据库最常用，优先于java.util.Date)
+        if (obj instanceof java.sql.Timestamp) {
+            return ((java.sql.Timestamp) obj).toInstant().atZone(SHANGHAI_ZONE).toLocalDateTime();
         }
+
+        // 3. java.sql.Date (只有日期，时间补 00:00:00)
+        if (obj instanceof java.sql.Date) {
+            return ((java.sql.Date) obj).toLocalDate().atStartOfDay();
+        }
+
+        // 4. java.util.Date
+        if (obj instanceof Date) {
+            return ((Date) obj).toInstant().atZone(SHANGHAI_ZONE).toLocalDateTime();
+        }
+
+        // 5. Long 时间戳：秒 / 毫秒
+        if (obj instanceof Long) {
+            long ts = (Long) obj;
+            // 阈值 1743479428 作为区分秒/毫秒临界点
+            Instant instant;
+            if (ts < 1743479428L) {
+                instant = Instant.ofEpochSecond(ts);
+            } else {
+                instant = Instant.ofEpochMilli(ts);
+            }
+            return instant.atZone(SHANGHAI_ZONE).toLocalDateTime();
+        }
+
+        // 6. 字符串解析
         if (obj instanceof String) {
             final String str = (String) obj;
-            if(StrUtil.isBlank(str)){
+            if (StrUtil.isBlank(str)) {
                 return null;
             }
-            return DateTimeUtil.tryParse(str);
-        }
-        if(obj instanceof Long){
-            if((long)obj < 1743479428L){
-                return java.time.Instant.ofEpochSecond((Long) obj).atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
+            try {
+                return DateTimeUtil.tryParse(str);
+            } catch (Exception e) {
+                // 字符串格式非法，返回null，不向上抛出
+                return null;
             }
-            return java.time.Instant.ofEpochMilli((Long) obj).atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
         }
+        // 其他未知类型
         return null;
     }
 

@@ -45,6 +45,10 @@ public class JdbcCdcDbWriter implements Writer, Runnable{
         this.targetTablePrefix = targetTablePrefix;
     }
 
+    public void setAutoCreateTable(boolean autoCreateTable) {
+        this.autoCreateTable = autoCreateTable;
+    }
+
     @Override
     public void write(TableRow row) throws Exception {
         if(StrUtil.isBlank(row.getTag()) || row.getData() == null){
