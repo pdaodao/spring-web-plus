@@ -47,7 +47,7 @@ public class JdbcReader implements Reader {
         }
         Preconditions.checkNotBlank(sql, "sql语句为空");
         final String countSql = SqlUtil.countSql(sql);
-        total = executor.queryForLong(countSql, null);
+        total = executor.queryForLong(countSql);
         if (total < 1) {
             return;
         }

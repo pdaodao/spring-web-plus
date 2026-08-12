@@ -16,8 +16,8 @@ import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import com.github.pdaodao.springwebplus.base.pojo.handler.IdTitleListTypeHandler;
 import com.github.pdaodao.springwebplus.tool.data.IdTitle;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data

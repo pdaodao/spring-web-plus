@@ -59,7 +59,7 @@ public class MinioFileStorage implements FileStorage {
         String contentType = new MimetypesFileTypeMap().getContentType(new File(fullPath));
         PutObjectArgs build = PutObjectArgs.builder().bucket(config.getBucketName())
                 .object(fullPath)
-                .stream(inputStream, fileSize, -1)
+                .stream(inputStream, fileSize, -1l)
                 .contentType(contentType)
                 .build();
         try {

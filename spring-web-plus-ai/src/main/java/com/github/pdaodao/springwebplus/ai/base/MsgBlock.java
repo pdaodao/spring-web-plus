@@ -1,14 +1,14 @@
 package com.github.pdaodao.springwebplus.ai.base;
 
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
+import com.github.pdaodao.springwebplus.tool.data.TableRowData;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
 import java.util.List;
+
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -22,6 +22,9 @@ public class MsgBlock {
 
     @Schema(description = "消息类型标识")
     private MsgType type;
+
+    @Schema(description = "思考文本内容")
+    private String thinking;
 
     @Schema(description = "文本内容")
     private String text;
@@ -50,6 +53,9 @@ public class MsgBlock {
 
     @Schema(description = "耗时ms")
     private Long cost;
+
+    @Schema(description = "附加信息")
+    private TableRowData metadata;
 
 //    private String query;
 //

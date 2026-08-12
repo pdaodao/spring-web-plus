@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.ai.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
@@ -14,14 +15,21 @@ import com.github.pdaodao.springwebplus.ai.util.Constant;
 import com.github.pdaodao.springwebplus.base.pojo.IdWrap;
 import com.github.pdaodao.springwebplus.base.util.RequestUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
+import io.agentscope.core.message.ContentBlock;
+import io.agentscope.core.message.TextBlock;
+import io.agentscope.core.message.UserMessage;
+import io.agentscope.core.model.ChatModelBase;
+import io.agentscope.core.model.ChatResponse;
+import io.agentscope.core.model.GenerateOptions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.StringBufferInputStream;
 import java.util.List;
 
 @Slf4j
@@ -77,8 +85,20 @@ public class AiChatModelController {
             }
         }
         if(entity.getType() == null || entity.getType() == ChatModelType.LLM){
-            final ChatModel chatModel = AiChatModelUtil.of(entity.getProviderId(), entity.toOption());
-            return chatModel.call("你好 你是谁");
+            final ChatModelBase chatModel = AiChatModelUtil.of(entity.getProviderId(), entity.toOption());
+            final ChatResponse resp = chatModel.stream(ListUtil.of(new UserMessage("你好 你是谁")), null, GenerateOptions.builder()
+                    .additionalBodyParam("think", false).stream(false).build())
+                    .blockFirst();
+            final StringBuilder sb = new StringBuilder();
+            for(final ContentBlock b: resp.getContent()){
+                if(b instanceof TextBlock t){
+                    if(sb.length() > 1){
+                        sb.append("\n");
+                    }
+                    sb.append(t.getText());
+                }
+            }
+            return sb.toString();
         }
         if(ChatModelType.EMBEDDING == entity.getType()){
             final AiEmbedding aiEmbedding = AiChatModelUtil.ofEmbedding(null, entity.toOption());

@@ -188,7 +188,7 @@ public class JdbcSqlExecutor implements AutoCloseable {
      */
     public Long tableCount(final String tableName) throws SQLException {
         final String sql = "select count(1) as ct  from " + getDialect().quoteIdentifier(tableName);
-        return queryForLong(sql, null);
+        return queryForLong(sql);
     }
 
     /**

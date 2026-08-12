@@ -9,7 +9,8 @@ import com.github.pdaodao.springwebplus.ai.core.AiChatModelUtil;
 import com.github.pdaodao.springwebplus.ai.dao.AiChatModelDao;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatModel;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
-import org.springframework.ai.chat.model.ChatModel;
+import io.agentscope.core.model.ChatModelBase;
+
 import java.util.List;
 
 public class AiChatModelProvider {
@@ -19,10 +20,10 @@ public class AiChatModelProvider {
      * @param modelId
      * @return
      */
-    public static ChatModel of(final String teamId, final String modelId){
+    public static ChatModelBase of(final String teamId, final String modelId){
         final AiChatModel model = ofModelInfo(teamId, modelId, ChatModelType.LLM);
         if(model == null){
-            return SpringUtil.getBean(ChatModel.class);
+            return SpringUtil.getBean(ChatModelBase.class);
         }
         return AiChatModelUtil.of(model.getProviderId(), model.toOption());
     }

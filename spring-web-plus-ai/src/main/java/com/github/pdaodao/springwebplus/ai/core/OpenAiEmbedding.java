@@ -2,18 +2,12 @@ package com.github.pdaodao.springwebplus.ai.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.AiEmbedding;
 import com.github.pdaodao.springwebplus.ai.store.VectorCache;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.document.MetadataMode;
-import org.springframework.ai.openai.OpenAiEmbeddingModel;
-import org.springframework.ai.openai.OpenAiEmbeddingOptions;
-import org.springframework.ai.openai.api.OpenAiApi;
-
 import java.util.*;
 
 @Slf4j
@@ -25,7 +19,7 @@ public class OpenAiEmbedding implements AiEmbedding {
 
     private final int batchSize;
 
-    private OpenAiEmbeddingModel embeddingModel;
+    private EmbeddingModel embeddingModel;
     private int dimension = 1024;
 
     private VectorCache vectorCache;
@@ -57,17 +51,12 @@ public class OpenAiEmbedding implements AiEmbedding {
         vectorCache.put(key, embed);
     }
 
-    private OpenAiEmbeddingModel model() {
+    private EmbeddingModel model() {
         if (embeddingModel != null) {
             return embeddingModel;
         }
         synchronized (this) {
-            final OpenAiApi openAiApi = OpenAiApi.builder()
-                    .baseUrl(baseUrl)
-                    .apiKey(apiKey)
-                    .build();
-            embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED,
-                    OpenAiEmbeddingOptions.builder().dimensions(dimension).model(model).build());
+            embeddingModel = new OpenAiEmbeddingModel(baseUrl, apiKey, model, dimension);
         }
         return embeddingModel;
     }

@@ -10,8 +10,8 @@ import com.github.pdaodao.springwebplus.base.entity.WithPidString;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import javax.validation.constraints.Size;
 
 @Data
 @Schema(description = "大模型问答会话消息")

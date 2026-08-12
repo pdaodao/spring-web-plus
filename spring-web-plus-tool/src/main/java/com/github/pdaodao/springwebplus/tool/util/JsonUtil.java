@@ -64,7 +64,7 @@ public class JsonUtil {
 
         if (node.isArray()) {
             for (JsonNode arr : node) {
-                final String t = toJsonString(arr, null);
+                final String t = toJsonString(arr);
                 if (t != null) {
                     ret.add(t);
                 }

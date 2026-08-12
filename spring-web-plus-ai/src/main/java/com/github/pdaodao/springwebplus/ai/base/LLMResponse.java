@@ -25,6 +25,10 @@ public class LLMResponse {
     @Schema(description = "耗时ms")
     private Long cost;
 
+    // stop
+    @Schema(description = "结束原因")
+    private String finishReason;
+
     public static LLMResponse of(){
         return new LLMResponse();
     }

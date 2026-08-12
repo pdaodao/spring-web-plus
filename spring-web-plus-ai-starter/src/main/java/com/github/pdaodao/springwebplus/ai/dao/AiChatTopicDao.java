@@ -1,6 +1,5 @@
 package com.github.pdaodao.springwebplus.ai.dao;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.ai.base.AiChatNamespace;
 import com.github.pdaodao.springwebplus.ai.entity.AiChatTopic;
 import com.github.pdaodao.springwebplus.ai.mapper.AiChatTopicMapper;

@@ -28,7 +28,10 @@
 <!--            <artifactId>http</artifactId>-->
 <!--            <version>0.0.1</version>-->
 <!--        </dependency>-->
-
+        <dependency>
+            <groupId>com.github.pdaodao</groupId>
+            <artifactId>spring-web-plus-starter</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.pdaodao</groupId>
             <artifactId>spring-web-plus-tool</artifactId>
@@ -55,19 +58,33 @@
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-openai</artifactId>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-core</artifactId>
+            <version>${agentscope.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.apache.poi</groupId>
+                    <groupId>com.squareup.okhttp3</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-ollama</artifactId>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-extensions-model-openai</artifactId>
+            <version>${agentscope.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-extensions-model-ollama</artifactId>
+            <version>${agentscope.version}</version>
+        </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>io.agentscope</groupId>-->
+<!--            <artifactId>agentscope-harness</artifactId>-->
+<!--            <version>${agentscope.version}</version>-->
+<!--        </dependency>-->
 
         <!-- 文档解析依赖 -->
         <dependency>

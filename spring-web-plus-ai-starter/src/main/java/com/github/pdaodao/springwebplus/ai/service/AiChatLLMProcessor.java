@@ -9,17 +9,14 @@ import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import com.github.pdaodao.springwebplus.ai.util.AiTextUtil;
 import com.github.pdaodao.springwebplus.ai.util.ToTraditionalMsgProcessor;
+import io.agentscope.core.message.*;
+import io.agentscope.core.model.ChatModelBase;
+import io.agentscope.core.model.ChatResponse;
+import io.agentscope.core.model.ChatUsage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.SystemMessage;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.metadata.Usage;
-import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Text;
 import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +35,10 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         return AiChatType.TextGen == context.getChatType();
     }
 
-    private List<Message> buildChatMessage(final AiChatContext context, final MsgSender sseEmitter) throws Exception{
-        final List<Message> messages = new ArrayList<>();
+    private List<Msg> buildChatMessage(final AiChatContext context, final MsgSender sseEmitter) throws Exception{
+        final List<Msg> messages = new ArrayList<>();
         if(StrUtil.isNotBlank(context.getChatApp().getPrompt())){
-            messages.add(SystemMessage.builder().text(context.getChatApp().getPrompt()).build());
+            messages.add(new SystemMessage(context.getChatApp().getPrompt()));
         }
         if(StrUtil.similar(context.getReq().getQuestion(), AiTextUtil.toSimple(context.getReq().getQuestion())) < 0.9){
             sseEmitter.setMsgBlockProcessor(ToTraditionalMsgProcessor.of());
@@ -66,7 +63,7 @@ public class AiChatLLMProcessor implements AiChatProcessor{
                 }
                 final String text = AiChatTextService.buildMsg(textList);
                 log.info(text);
-                messages.add(SystemMessage.builder().text(text).build());
+                messages.add(new SystemMessage(text));
             }else if(StrUtil.isNotBlank(context.getChatApp().getAppConfig().getNoTextTips())){
                 final MsgBlock msgBlock = MsgBlock.ofText(context.getChatApp().getAppConfig().getNoTextTips());
                 msgBlock.usage(0, 0, 0);
@@ -76,19 +73,19 @@ public class AiChatLLMProcessor implements AiChatProcessor{
             }
         }
         // 用户问题
-        messages.add(UserMessage.builder().text(context.getReq().getQuestion()).build());
+        messages.add(new UserMessage(context.getReq().getQuestion()));
         return messages;
     }
 
     @Override
     public void streaming(AiChatContext context, MsgSender sseEmitter) throws Exception {
-        final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
-        final List<Message> messages = buildChatMessage(context, sseEmitter);
+        final ChatModelBase model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
+        final List<Msg> messages = buildChatMessage(context, sseEmitter);
         if(CollUtil.isEmpty(messages)){
             return;
         }
         final CountDownLatch latch = new CountDownLatch(1);
-        final Flux<ChatResponse> fluxResp = model.stream(Prompt.builder().messages(messages).build());
+        final Flux<ChatResponse> fluxResp = model.stream(messages, null, null);
         fluxResp.subscribe(new ChatResponseConsumer(latch, sseEmitter));
         latch.await(10, TimeUnit.MINUTES);
     }
@@ -103,16 +100,22 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         public void accept(final ChatResponse chatResponse) {
             boolean isEnd = false;
             try{
-                final AssistantMessage msg = chatResponse.getResult().getOutput();
-                final MsgBlock msgBlock = MsgBlock.ofText(msg.getText());
-                sb.append(msg.getText());
-                final String finishReason = chatResponse.getResult().getMetadata().getFinishReason();
+                String text = null;
+                if(CollUtil.isNotEmpty(chatResponse.getContent())){
+                    if(chatResponse.getContent().get(0) instanceof TextBlock t){
+                        text = t.getText();
+                    }
+                }
+                // todo
+                final MsgBlock msgBlock = MsgBlock.ofText(text);
+                sb.append(text);
+                final String finishReason = chatResponse.getFinishReason();
                 if(StrUtil.containsIgnoreCase(finishReason, "done")
                         || StrUtil.containsIgnoreCase(finishReason, "stop")){
                     isEnd = true;
-                    final Usage usage = chatResponse.getMetadata().getUsage();
+                    final ChatUsage usage = chatResponse.getUsage();
                     final MsgBlock all = MsgBlock.ofText(sb.toString());
-                    all.usage(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
+                    all.usage(usage.getInputTokens(), usage.getOutputTokens(), usage.getTotalTokens());
                     msgSender.saveMsg(all);
                 }
                 try{
@@ -132,16 +135,22 @@ public class AiChatLLMProcessor implements AiChatProcessor{
 
     @Override
     public void http(final AiChatContext context, final MsgSender sseEmitter) throws Exception{
-        final ChatModel model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
-        final List<Message> messages = buildChatMessage(context, sseEmitter);
+        final ChatModelBase model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
+        final List<Msg> messages = buildChatMessage(context, sseEmitter);
         if(CollUtil.isEmpty(messages)){
             return;
         }
-        final ChatResponse chatResponse = model.call(Prompt.builder().messages(messages).build());
-        final Usage usage = chatResponse.getMetadata().getUsage();
-        final String ret = chatResponse.getResult().getOutput().getText();
-        final MsgBlock msgBlock = MsgBlock.ofText(ret);
-        msgBlock.usage(usage.getPromptTokens(), usage.getCompletionTokens(), usage.getTotalTokens());
-        sseEmitter.sendMsg(msgBlock);
+        final ChatResponse chatResponse = model.stream(messages, null, null).blockLast();
+        final ChatUsage usage = chatResponse.getUsage();
+        if(CollUtil.isNotEmpty(chatResponse.getContent())){
+            for(final ContentBlock b: chatResponse.getContent()){
+                if(b instanceof TextBlock t){
+                    final String ret = t.getText();
+                    final MsgBlock msgBlock = MsgBlock.ofText(ret);
+                    msgBlock.usage(usage.getInputTokens(), usage.getOutputTokens(), usage.getTotalTokens());
+                    sseEmitter.sendMsg(msgBlock);
+                }
+            }
+        }
     }
 }
