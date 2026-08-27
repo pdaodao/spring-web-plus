@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STTrueFalse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,7 +79,7 @@ public class AiChatModelController {
     @PostMapping("test")
     @Operation(summary = "测试连接")
     public String test(@Validated @RequestBody AiChatModel entity) {
-        if (StrUtil.isBlank(entity.getId()) && StrUtil.equals(Constant.FakePassword, entity.getApiKey())) {
+        if (StrUtil.isNotBlank(entity.getId()) && StrUtil.equals(Constant.FakePassword, entity.getApiKey())) {
             final AiChatModel old = dao.getById(entity.getId());
             if (old != null) {
                 entity.setApiKey(old.getApiKey());

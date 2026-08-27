@@ -20,6 +20,13 @@ public class AiChatModelUtil {
     private static final Map<String, ChatModelBase> chatModelMap = new ConcurrentHashMap<>();
     private static final Map<String, AiEmbedding>  embeddingMap = new ConcurrentHashMap<>();
 
+    public static GenerateOptions.Builder ofGenerateOptions(){
+        return GenerateOptions.builder()
+                .additionalBodyParam("think", false);
+    }
+
+
+
     /**
      * 向量化模型
      * @param provider
