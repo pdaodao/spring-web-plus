@@ -9,14 +9,17 @@ import com.github.pdaodao.springwebplus.ai.pojo.AiChatContext;
 import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import com.github.pdaodao.springwebplus.ai.util.AiTextUtil;
 import com.github.pdaodao.springwebplus.ai.util.ToTraditionalMsgProcessor;
+import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
 import io.agentscope.core.message.*;
 import io.agentscope.core.model.ChatModelBase;
 import io.agentscope.core.model.ChatResponse;
 import io.agentscope.core.model.ChatUsage;
+import io.agentscope.core.model.GenerateOptions;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Text;
 import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,46 +93,60 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         latch.await(10, TimeUnit.MINUTES);
     }
 
-    @AllArgsConstructor
-    public static class ChatResponseConsumer implements Consumer<ChatResponse> {
+    public static class ChatResponseConsumer implements Subscriber<ChatResponse> {
         final CountDownLatch latch;
         private final MsgSender msgSender;
         final StringBuilder sb = new StringBuilder();
+        private ChatUsage chatUsage;
+
+        public ChatResponseConsumer(CountDownLatch latch, MsgSender msgSender) {
+            this.latch = latch;
+            this.msgSender = msgSender;
+        }
 
         @Override
-        public void accept(final ChatResponse chatResponse) {
-            boolean isEnd = false;
-            try{
-                String text = null;
-                if(CollUtil.isNotEmpty(chatResponse.getContent())){
-                    if(chatResponse.getContent().get(0) instanceof TextBlock t){
-                        text = t.getText();
-                    }
-                }
-                // todo
-                final MsgBlock msgBlock = MsgBlock.ofText(text);
-                sb.append(text);
-                final String finishReason = chatResponse.getFinishReason();
-                if(StrUtil.containsIgnoreCase(finishReason, "done")
-                        || StrUtil.containsIgnoreCase(finishReason, "stop")){
-                    isEnd = true;
-                    final ChatUsage usage = chatResponse.getUsage();
-                    final MsgBlock all = MsgBlock.ofText(sb.toString());
-                    all.usage(usage.getInputTokens(), usage.getOutputTokens(), usage.getTotalTokens());
-                    msgSender.saveMsg(all);
-                }
-                try{
-                    msgSender.sendMsg(msgBlock);
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
-            }catch (Exception e){
-                latch.countDown();
-            }finally{
-                if(isEnd){
-                    latch.countDown();
+        public void onSubscribe(Subscription subscription) {
+            subscription.request(Long.MAX_VALUE);
+        }
+
+        @Override
+        public void onNext(ChatResponse chatResponse) {
+            String text = StrUtil.EMPTY;
+            if(CollUtil.isNotEmpty(chatResponse.getContent())){
+                if(chatResponse.getContent().get(0) instanceof TextBlock t){
+                    text = t.getText();
                 }
             }
+            // todo
+            final MsgBlock msgBlock = MsgBlock.ofText(text);
+            sb.append(text);
+            if(chatResponse.getUsage() != null){
+                chatUsage = chatResponse.getUsage();
+            }
+            try{
+                msgSender.sendMsg(msgBlock);
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            try{
+                msgSender.sendMsg(MsgBlock.ofText(ExceptionUtil.getSimpleMsg(throwable)));
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+        }
+
+        @Override
+        public void onComplete() {
+            final MsgBlock all = MsgBlock.ofText(sb.toString());
+            if(chatUsage != null){
+                all.usage(chatUsage.getInputTokens(), chatUsage.getOutputTokens(), chatUsage.getTotalTokens());
+            }
+            msgSender.saveMsg(all);
+            latch.countDown();
         }
     }
 
@@ -140,7 +157,8 @@ public class AiChatLLMProcessor implements AiChatProcessor{
         if(CollUtil.isEmpty(messages)){
             return;
         }
-        final ChatResponse chatResponse = model.stream(messages, null, null).blockLast();
+        final ChatResponse chatResponse = model.stream(messages, null,
+                GenerateOptions.builder().stream(false).build()).blockLast();
         final ChatUsage usage = chatResponse.getUsage();
         if(CollUtil.isNotEmpty(chatResponse.getContent())){
             for(final ContentBlock b: chatResponse.getContent()){
