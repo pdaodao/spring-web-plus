@@ -90,6 +90,9 @@ public class OpenAiEmbeddingModel implements EmbeddingModel {
         if (!url.endsWith("/")) {
             url += "/";
         }
+        if(StrUtil.contains(url, "v1")){
+            return url + "embeddings";
+        }
         return url + "v1/embeddings";
     }
 }

@@ -22,6 +22,7 @@ public class AiChatModelUtil {
 
     public static GenerateOptions.Builder ofGenerateOptions(){
         return GenerateOptions.builder()
+                .reasoningEffort("low")
                 .additionalBodyParam("think", false);
     }
 
