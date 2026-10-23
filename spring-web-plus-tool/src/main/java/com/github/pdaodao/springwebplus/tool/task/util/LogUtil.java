@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.task;
+package com.github.pdaodao.springwebplus.tool.task.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
@@ -6,11 +6,10 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.LineHandler;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pdaodao.springwebplus.tool.task.base.LogResult;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.FilePathUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-import lombok.extern.slf4j.Slf4j;
-
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 
@@ -19,31 +18,17 @@ import java.time.LocalDateTime;
  */
 public class LogUtil {
     public final static Charset UTF8 = Charset.forName("UTF-8");
-    private static final ThreadLocal<TaskLogContext> logContext = new ThreadLocal<>();
     private static final String basePath = FilePathUtil.pathJoin(System.getProperty("user.dir"), "task");
 
-    public static TaskLogContext getContext(){
-        return logContext.get();
+    public static TaskContext getContext(){
+        return TaskContextHolder.get();
     }
 
-    public static TaskLogContext setContext(final String taskId, final String logId, final LocalDateTime startTime){
-        final TaskLogContext ct = TaskLogContext.of(taskId, logId, startTime);
-        logContext.set(ct);
+    public static TaskContext setContext(final String taskId, final String logId, final LocalDateTime startTime){
+        final TaskContext ct = TaskContextHolder.of(taskId, logId, startTime);
         final String path = getLogPath();
         FileUtil.touch(path);
         return ct;
-    }
-
-    public static TaskLogContext setContext(final TaskLogContext taskLogContext){
-        logContext.set(taskLogContext);
-        final String path = getLogPath();
-        FileUtil.touch(path);
-        return taskLogContext;
-    }
-
-
-    public static void clear(){
-        logContext.remove();
     }
 
     /**
@@ -155,7 +140,7 @@ public class LogUtil {
     }
 
     private static String getLogPath(){
-        final TaskLogContext ct = logContext.get();
+        final TaskContext ct = TaskContextHolder.get();
         Preconditions.checkNotNull(ct, "任务运行id为空.");
         return getLogPath(ct.getStartTime(), ct.getLogId());
     }
@@ -177,7 +162,7 @@ public class LogUtil {
     }
 
     private static String getLogDataPath(final Integer sheetId){
-        final TaskLogContext ct = logContext.get();
+        final TaskContext ct = TaskContextHolder.get();
         Preconditions.checkNotNull(ct, "任务运行id为空.");
         return getLogDataPath(ct.getStartTime(), ct.getLogId(), sheetId);
     }

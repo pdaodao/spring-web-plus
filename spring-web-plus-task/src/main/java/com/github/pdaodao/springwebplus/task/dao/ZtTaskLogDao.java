@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pdaodao.springwebplus.base.dao.BaseDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.mapper.ZtTaskLogMapper;
-import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
+import com.github.pdaodao.springwebplus.tool.task.base.TaskStatus;
 import org.springframework.stereotype.Component;
 
 @Component

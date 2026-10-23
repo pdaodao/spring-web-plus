@@ -1,22 +1,19 @@
 package com.github.pdaodao.springwebplus.task.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.pdaodao.springwebplus.base.entity.AutoIdWithTimeEntity;
 import com.github.pdaodao.springwebplus.base.entity.SnowIdWithTimeEntity;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
 import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
-import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
+import com.github.pdaodao.springwebplus.tool.task.base.TaskStatus;
 import com.github.pdaodao.springwebplus.tool.util.StrUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Schema(description = "任务运行记录")

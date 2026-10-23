@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.task;
+package com.github.pdaodao.springwebplus.tool.task.base;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

@@ -21,7 +21,7 @@ public class ZtExecutorAdminController {
     private final ZtExecutorService nodeService;
     @IgnoreLogin
     @PostMapping("callback")
-    @Operation(summary = "任务回掉")
+    @Operation(summary = "任务回调")
     public Boolean callback(@RequestBody CronTaskInfo taskInfo){
         return true;
     }

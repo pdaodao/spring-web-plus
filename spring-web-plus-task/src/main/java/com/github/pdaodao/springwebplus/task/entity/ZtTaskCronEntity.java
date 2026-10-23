@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.pdaodao.springwebplus.base.entity.*;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldIndex;
 import com.github.pdaodao.springwebplus.base.frame.TableFieldSize;
-import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
+import com.github.pdaodao.springwebplus.tool.task.base.TaskStatus;
 import com.github.pdaodao.springwebplus.tool.task.cron.CronSetting;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

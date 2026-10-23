@@ -1,11 +1,10 @@
 package com.github.pdaodao.springwebplus.tool.task.core;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import com.github.pdaodao.springwebplus.tool.task.LogUtil;
-import com.github.pdaodao.springwebplus.tool.task.TaskLogContext;
+import com.github.pdaodao.springwebplus.tool.task.util.LogUtil;
+import com.github.pdaodao.springwebplus.tool.task.util.TaskContextHolder;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -48,7 +47,7 @@ public class TaskThreadPool {
                 taskRunnable.end(null, taskFuture.getEndExecuteTime() - taskFuture.getStartExecuteTime());
             }finally {
                 TaskThreadPoolFactory.remove(taskRunnable.getId());
-                LogUtil.clear();
+                TaskContextHolder.clean();
             }
         });
         taskFuture.setFuture(future);

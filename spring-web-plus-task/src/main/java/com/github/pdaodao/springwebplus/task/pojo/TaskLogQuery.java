@@ -1,7 +1,7 @@
 package com.github.pdaodao.springwebplus.task.pojo;
 
 import com.github.pdaodao.springwebplus.base.pojo.PageRequestParam;
-import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
+import com.github.pdaodao.springwebplus.tool.task.base.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

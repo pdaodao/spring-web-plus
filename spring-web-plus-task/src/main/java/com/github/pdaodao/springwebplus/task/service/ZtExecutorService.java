@@ -8,9 +8,9 @@ import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskExecutorEntity;
 import com.github.pdaodao.springwebplus.tool.task.CronTaskInfo;
-import com.github.pdaodao.springwebplus.tool.task.LogResult;
+import com.github.pdaodao.springwebplus.tool.task.base.LogResult;
 import com.github.pdaodao.springwebplus.tool.task.TaskFactory;
-import com.github.pdaodao.springwebplus.tool.task.TaskStatus;
+import com.github.pdaodao.springwebplus.tool.task.base.TaskStatus;
 import com.github.pdaodao.springwebplus.tool.task.core.TaskRunnable;
 import com.github.pdaodao.springwebplus.tool.task.core.TaskThreadPoolFactory;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
@@ -112,8 +112,7 @@ public class ZtExecutorService {
         try{
             final TaskRunnable taskRunnable = taskFactory.executor(taskInfo);
             Preconditions.checkNotNull(taskRunnable, "不支持该任务运行{}", taskInfo.getTaskType());
-            TaskThreadPoolFactory.ofBig()
-                    .execute(taskRunnable);
+            TaskThreadPoolFactory.ofBig().execute(taskRunnable);
         }catch (Exception e){
             logEntity.setTaskStatus(TaskStatus.failed);
             logEntity.setError(ExceptionUtil.getSimpleMsg(e));

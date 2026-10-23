@@ -10,22 +10,28 @@ import com.github.pdaodao.springwebplus.ai.pojo.MsgSender;
 import com.github.pdaodao.springwebplus.ai.util.AiTextUtil;
 import com.github.pdaodao.springwebplus.ai.util.ToTraditionalMsgProcessor;
 import com.github.pdaodao.springwebplus.base.util.ExceptionUtil;
+import io.agentscope.core.ReActAgent;
+import io.agentscope.core.agent.RuntimeContext;
+import io.agentscope.core.event.AgentEvent;
 import io.agentscope.core.message.*;
 import io.agentscope.core.model.ChatModelBase;
 import io.agentscope.core.model.ChatResponse;
 import io.agentscope.core.model.ChatUsage;
 import io.agentscope.core.model.GenerateOptions;
+import io.agentscope.core.state.InMemoryAgentStateStore;
+import io.agentscope.core.tool.Toolkit;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,7 +47,7 @@ public class AiChatLLMProcessor implements AiChatProcessor{
     private List<Msg> buildChatMessage(final AiChatContext context, final MsgSender sseEmitter) throws Exception{
         final List<Msg> messages = new ArrayList<>();
         if(StrUtil.isNotBlank(context.getChatApp().getPrompt())){
-            messages.add(new SystemMessage(context.getChatApp().getPrompt()));
+            messages.add(new UserMessage(context.getChatApp().getPrompt()));
         }
         if(StrUtil.similar(context.getReq().getQuestion(), AiTextUtil.toSimple(context.getReq().getQuestion())) < 0.9){
             sseEmitter.setMsgBlockProcessor(ToTraditionalMsgProcessor.of());
@@ -83,16 +89,69 @@ public class AiChatLLMProcessor implements AiChatProcessor{
     @Override
     public void streaming(AiChatContext context, MsgSender sseEmitter) throws Exception {
         final ChatModelBase model = AiChatModelProvider.of(context.getReq().getTeamId(), context.getModelId());
+        final InMemoryAgentStateStore store = new InMemoryAgentStateStore();
+        final ReActAgent agent = ReActAgent.builder()
+                .toolkit(new Toolkit())
+                .model(model)
+                .maxIters(10)
+                .stateStore(store)
+                .build();
+
         final List<Msg> messages = buildChatMessage(context, sseEmitter);
         if(CollUtil.isEmpty(messages)){
             return;
         }
         final CountDownLatch latch = new CountDownLatch(1);
-        final Flux<ChatResponse> fluxResp = model.stream(messages, null, null);
-        fluxResp.subscribe(new ChatResponseConsumer(latch, sseEmitter));
+        final Mono<Msg> fluxResp = agent.call(messages, RuntimeContext.builder()
+                        .userId("1")
+                        .sessionId("1")
+                .build());
+
+//        final Flux<ChatResponse> fluxResp = model.stream(messages, null, null);
+        fluxResp.subscribe(new ChatResponseConsumerMsg(latch, sseEmitter));
         latch.await(10, TimeUnit.MINUTES);
     }
 
+    public static class ChatResponseConsumerMsg implements Subscriber<Msg>{
+
+        final CountDownLatch latch;
+        private final MsgSender msgSender;
+        final StringBuilder sb = new StringBuilder();
+        private ChatUsage chatUsage;
+        public ChatResponseConsumerMsg(CountDownLatch latch, MsgSender msgSender) {
+            this.latch = latch;
+            this.msgSender = msgSender;
+        }
+
+        @Override
+        public void onSubscribe(Subscription subscription) {
+            subscription.request(Long.MAX_VALUE);
+        }
+
+        @Override
+        public void onNext(final Msg msg) {
+            System.out.println("hello");
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            try{
+                msgSender.sendMsg(MsgBlock.ofText(ExceptionUtil.getSimpleMsg(throwable)));
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+        }
+
+        @Override
+        public void onComplete() {
+            final MsgBlock all = MsgBlock.ofText(sb.toString());
+            if(chatUsage != null){
+                all.usage(chatUsage.getInputTokens(), chatUsage.getOutputTokens(), chatUsage.getTotalTokens());
+            }
+            msgSender.saveMsg(all);
+            latch.countDown();
+        }
+    }
     public static class ChatResponseConsumer implements Subscriber<ChatResponse> {
         final CountDownLatch latch;
         private final MsgSender msgSender;

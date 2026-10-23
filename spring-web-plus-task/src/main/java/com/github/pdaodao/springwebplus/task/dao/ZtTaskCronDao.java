@@ -8,7 +8,7 @@ import com.github.pdaodao.springwebplus.task.entity.ZtTaskLogEntity;
 import com.github.pdaodao.springwebplus.task.mapper.ZtTaskCronMapper;
 import com.github.pdaodao.springwebplus.task.pojo.TaskCronQuery;
 import com.github.pdaodao.springwebplus.task.pojo.TaskLogQuery;
-import com.github.pdaodao.springwebplus.tool.task.CronUtil;
+import com.github.pdaodao.springwebplus.tool.task.util.CronUtil;
 import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.JsonUtil;
 import org.springframework.stereotype.Component;

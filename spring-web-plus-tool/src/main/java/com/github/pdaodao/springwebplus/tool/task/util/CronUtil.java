@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.task;
+package com.github.pdaodao.springwebplus.tool.task.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;

@@ -1,4 +1,4 @@
-package com.github.pdaodao.springwebplus.tool.task;
+package com.github.pdaodao.springwebplus.tool.task.base;
 
 /**
  * 任务运行状态
