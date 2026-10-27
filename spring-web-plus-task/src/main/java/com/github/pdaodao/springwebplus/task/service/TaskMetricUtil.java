@@ -3,6 +3,7 @@ package com.github.pdaodao.springwebplus.task.service;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.base.util.IdUtil;
 import com.github.pdaodao.springwebplus.base.util.SpringUtil;
+import com.github.pdaodao.springwebplus.task.dao.ZtTaskLogDao;
 import com.github.pdaodao.springwebplus.task.dao.ZtTaskMetricDao;
 import com.github.pdaodao.springwebplus.task.entity.ZtTaskMetricEntity;
 import com.github.pdaodao.springwebplus.tool.task.util.TaskContext;
@@ -12,6 +13,19 @@ import com.github.pdaodao.springwebplus.tool.task.util.TaskContextHolder;
  * 任务运行指标工具类
  */
 public class TaskMetricUtil {
+
+    /**
+     * 设置日志记录中的数据行数
+     * @param logId
+     * @param dataRows
+     */
+    public static void setDataRows(final String logId, final Long dataRows){
+        if(StrUtil.isBlank(logId) || dataRows == null){
+            return;
+        }
+        SpringUtil.getBean(ZtTaskLogDao.class).setDataRows(logId, dataRows);
+    }
+
     public static ZtTaskMetricEntity save(final String tableName, final Long readCount, final Long writeCount){
         final TaskContext context = TaskContextHolder.get();
         String id = context == null || StrUtil.isBlank(context.getLogId()) ? IdUtil.snowIdString() : context.getLogId();
