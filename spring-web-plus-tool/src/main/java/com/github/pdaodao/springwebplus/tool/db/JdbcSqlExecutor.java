@@ -9,6 +9,7 @@ import cn.hutool.db.sql.SqlExecutor;
 import com.github.pdaodao.springwebplus.tool.data.PageInfo;
 import com.github.pdaodao.springwebplus.tool.data.TableData;
 import com.github.pdaodao.springwebplus.tool.data.TableRowData;
+import com.github.pdaodao.springwebplus.tool.db.handler.RsObjectHandler;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.sql.core.SqlWithMapParams;
 import com.github.pdaodao.springwebplus.tool.db.dialect.DbDialect;
@@ -192,6 +193,33 @@ public class JdbcSqlExecutor implements AutoCloseable {
     }
 
     /**
+     * 清空表
+     * @param tableName
+     * @return
+     * @throws SQLException
+     */
+    public Long truncateTable(final String tableName) throws SQLException {
+        final String sql = "truncate table " + getDialect().quoteIdentifier(tableName);
+        return queryForLong(sql);
+    }
+
+    /**
+     * 按sql语句删除数据
+     * @param sql
+     * @return
+     * @throws SQLException
+     */
+    public Long delete(final String sql) throws SQLException {
+        Preconditions.checkNotBlank(sql, "sql is blank.");
+        return queryForLong(sql);
+    }
+
+    public Object maxFieldValue(final String tableName, final String field) throws SQLException{
+        final String sql = "select max( " + getDialect().quoteIdentifier(field)+") as a from {}"+getDialect().quoteIdentifier(tableName);
+        return queryForObject(sql);
+    }
+
+    /**
      * sql 执行
      *
      * @param sql
@@ -340,6 +368,16 @@ public class JdbcSqlExecutor implements AutoCloseable {
             currentPs.set(null);
         }
     }
+
+    public Object queryForObject(final String sql, Object... params) throws SQLException {
+        try (final Connection connection = provider.getConnection()) {
+            final PreparedStatement ps = ps(connection, sql);
+            return SqlExecutor.queryAndClosePs(ps, new RsObjectHandler(), params);
+        } finally {
+            currentPs.set(null);
+        }
+    }
+
 
     private PreparedStatement ps(final Connection connection, final String sql) throws SQLException {
         Preconditions.checkNotEmpty(sql, "sql is empty");
