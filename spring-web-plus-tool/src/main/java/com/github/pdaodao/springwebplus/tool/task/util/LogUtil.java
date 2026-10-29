@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.task.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.LineHandler;
@@ -99,7 +100,15 @@ public class LogUtil {
         if(throwable == null){
             return;
         }
-        appendLog(ExceptionUtil.getRootCauseMessage(throwable));
+        log("error", ExceptionUtil.getRootCauseMessage(throwable));
+    }
+
+    public static void warn(String msg, Object... args){
+        log("warn", msg, args);
+    }
+
+    public static void info(String msg, Object... args){
+        log("info", msg, args);
     }
 
     /**
@@ -108,17 +117,22 @@ public class LogUtil {
      * @param args
      */
     public static void appendLog(String msg, Object... args){
+        log("info", msg, args);
+    }
+
+    public static void log(final String type, String msg, Object... args){
         if(StrUtil.isBlank(msg)){
             return;
         }
         try{
             msg = StrUtil.format(msg, args);
-            msg = DateTimeUtil.formatDateTime(DateTimeUtil.now()) + " [" + Thread.currentThread().getName() + "] " + msg + "\n";
-            FileUtil.appendString(msg, getLogPath(), UTF8);
+            msg = "["+type+"] "+DateTimeUtil.formatDateTime(DateTimeUtil.now()) +": " + msg;
+            FileUtil.appendUtf8Lines(ListUtil.of(msg), getLogPath());
         }catch (Exception e){
             //log.error(e.getMessage(), e);
         }
     }
+
 
     /**
      * 有些任务不需要记录日志文件 所以可以删掉

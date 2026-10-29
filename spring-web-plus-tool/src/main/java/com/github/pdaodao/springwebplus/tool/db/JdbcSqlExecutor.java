@@ -209,13 +209,18 @@ public class JdbcSqlExecutor implements AutoCloseable {
      * @return
      * @throws SQLException
      */
-    public Long delete(final String sql) throws SQLException {
+    public int delete(final String sql, @Nullable Object... args) throws SQLException {
         Preconditions.checkNotBlank(sql, "sql is blank.");
-        return queryForLong(sql);
+        try (final Connection connection = provider.getConnection()) {
+            final PreparedStatement ps = ps(connection, sql);
+            return SqlExecutor.executeUpdate(ps, args);
+        } finally {
+            currentPs.set(null);
+        }
     }
 
     public Object maxFieldValue(final String tableName, final String field) throws SQLException{
-        final String sql = "select max( " + getDialect().quoteIdentifier(field)+") as a from {}"+getDialect().quoteIdentifier(tableName);
+        final String sql = "select max( " + getDialect().quoteIdentifier(field)+") as a from "+getDialect().quoteIdentifier(tableName);
         return queryForObject(sql);
     }
 
