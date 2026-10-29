@@ -1,6 +1,7 @@
 package com.github.pdaodao.springwebplus.tool.io.pojo;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pdaodao.springwebplus.tool.table.DbInfo;
 import com.github.pdaodao.springwebplus.tool.table.HasDbInfo;
@@ -9,6 +10,7 @@ import com.github.pdaodao.springwebplus.tool.lang.ConfigOptions;
 import lombok.Data;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class ReaderInfo implements HasDbInfo {
@@ -37,6 +39,13 @@ public class ReaderInfo implements HasDbInfo {
     public ReaderInfo setFields(List<TableField> fields) {
         this.fields = fields;
         return this;
+    }
+
+    public List<String> fieldNames(){
+        if(CollUtil.isEmpty(fields)){
+            return ListUtil.empty();
+        }
+        return fields.stream().map(t -> t.getName()).collect(Collectors.toList());
     }
 
     public ReaderInfo setOption(final String key, Object val) {
