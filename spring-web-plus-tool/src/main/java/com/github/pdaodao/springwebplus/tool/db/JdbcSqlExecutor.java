@@ -198,9 +198,15 @@ public class JdbcSqlExecutor implements AutoCloseable {
      * @return
      * @throws SQLException
      */
-    public Long truncateTable(final String tableName) throws SQLException {
+    public void truncateTable(final String tableName) throws SQLException {
+        Preconditions.checkNotBlank(tableName, "tableName is empty.");
         final String sql = "truncate table " + getDialect().quoteIdentifier(tableName);
-        return queryForLong(sql);
+        try (final Connection connection = provider.getConnection()) {
+            final PreparedStatement ps = ps(connection, sql);
+            SqlExecutor.executeUpdate(ps);
+        } finally {
+            currentPs.set(null);
+        }
     }
 
     /**

@@ -42,6 +42,7 @@ public class TaskThreadPool {
                 taskFuture.setEndExecuteTime(DateTimeUtil.currentTimeMillis());
                 taskRunnable.end(null, taskFuture.getEndExecuteTime() - taskFuture.getStartExecuteTime());
             }catch (Exception e){
+                LogUtil.error(e);
                 taskFuture.setEndExecuteTime(DateTimeUtil.currentTimeMillis());
                 taskFuture.setException(e);
                 taskRunnable.end(null, taskFuture.getEndExecuteTime() - taskFuture.getStartExecuteTime());
