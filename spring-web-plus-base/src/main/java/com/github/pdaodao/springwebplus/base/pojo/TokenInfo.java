@@ -12,6 +12,9 @@ public class TokenInfo {
      * token
      */
     public String token;
+
+    private String wxid;
+
     /**
      * 登陆时间
      */

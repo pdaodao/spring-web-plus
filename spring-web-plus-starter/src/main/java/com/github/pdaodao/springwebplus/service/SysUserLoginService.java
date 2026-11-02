@@ -12,6 +12,7 @@ import com.github.pdaodao.springwebplus.pojo.UserPassword;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.queue.PredicatedQueue;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
@@ -51,6 +52,7 @@ public class SysUserLoginService implements LoginService {
         result.setUsername(sysUser.getUsername());
         result.setUserNickname(sysUser.getNickname());
         result.setAvatar(sysUser.getAvatar());
+        result.setWxid(sysUser.getWxid());
         sysUserService.updateLoginTime(sysUser.getId(), SysLogAop.getLog().getIp());
         return result;
     }

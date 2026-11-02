@@ -21,6 +21,12 @@ public class SysUserDao extends BaseDao<SysUserMapper, SysUser> {
         return baseMapper.infoWithRole(query);
     }
 
+    public SysUser byWxid(final String wxOpenid){
+        return baseMapper.selectOne(QueryBuilder.lambda(SysUser.class)
+                .eq(SysUser::getWxid, wxOpenid)
+                .build());
+    }
+
     public List<SysUser> list(final SysUserQuery query) {
         return list(QueryBuilder.lambda(SysUser.class)
                 .like(query.getUsername(), SysUser::getUsername, SysUser::getNickname)

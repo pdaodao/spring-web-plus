@@ -50,6 +50,7 @@ public class SysLoginController {
         tokenInfo.setUsername(userInfo.getUsername());
         tokenInfo.setUserNickname(userInfo.getUserNickname());
         tokenInfo.setAvatar(userInfo.getAvatar());
+        tokenInfo.setWxid(userInfo.getWxid());
         tokenInfo.setDevice("PC");
         LoginUtil.login(tokenInfo);
         userInfo.setToken(tokenInfo.getToken());

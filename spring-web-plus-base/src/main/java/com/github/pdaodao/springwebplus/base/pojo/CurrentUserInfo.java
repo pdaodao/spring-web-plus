@@ -11,6 +11,9 @@ import lombok.Data;
 public class CurrentUserInfo {
     // 主键
     private String id;
+
+    private String wxid;
+
     // 登录用户名
     private String username;
 

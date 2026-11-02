@@ -2,6 +2,7 @@ package com.github.pdaodao.springwebplus.service;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pdaodao.springwebplus.base.query.QueryBuilder;
 import com.github.pdaodao.springwebplus.dao.SysRoleDao;
 import com.github.pdaodao.springwebplus.dao.SysUserDao;
 import com.github.pdaodao.springwebplus.dao.SysUserRoleDao;
@@ -14,6 +15,8 @@ import com.github.pdaodao.springwebplus.tool.util.DateTimeUtil;
 import com.github.pdaodao.springwebplus.tool.util.Preconditions;
 import com.github.pdaodao.springwebplus.util.PasswordUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@CacheConfig(cacheNames = "sysUser")
 public class SysUserService {
     private final SysUserDao sysUserDao;
     private final SysRoleDao roleDao;
@@ -30,6 +34,12 @@ public class SysUserService {
     public SysUser infoWithRole(final String id, final String username) {
         return sysUserDao.infoWithRole(id, username);
     }
+
+    @Cacheable
+    public SysUser byWxid(final String wxOpenid){
+        return sysUserDao.byWxid(wxOpenid);
+    }
+
 
     /**
      * 添加/修改 用户
